@@ -2,16 +2,7 @@ import { _DOMMODULE } from './../../utils'
 import { _L10N } from './../../utils'
 import _PORT from './port'
 _L10N();
-window.addEventListener('error', function (error) {
-  console.log('message', error.message);
-  console.log('file', error.filename);
-  console.log('line', error.lineno);
-  console.log('row', error.colno);
-  console.log('time', error.timeStamp);
-  console.log('target', error.target);
-  console.log('target', error.target.nodeName);
-  console.log('target', error.AT_TARGET);
-}, false);
+
 new _DOMMODULE({
   el: document.getElementById('menu'),
   events: {
@@ -25,7 +16,7 @@ new _DOMMODULE({
   port: null,
   disabled: false,
 
-  autoinit() {bla.blubb();
+  autoinit() {
     browser.storage.sync.get().then(storage => {
       if (storage.settings) {
         if (!storage || !storage.sync || storage.sync.settings) return storage.settings.addon.active;
