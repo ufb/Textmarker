@@ -1,0 +1,19 @@
+{
+  "name": "textmarker",
+  "version": "3.0.0",
+  "description": "webextensions-addon-textmarker",
+  "main": "src/main.js",
+  "dependencies": {
+    "webpack": "3.7.1"
+  },
+  "devDependencies": {
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.1",
+    "babel-preset-es2015": "6.24.1",
+    "gulp": "3.9.1",
+    "gulp-webpack": "1.5.0",
+    "vinyl-named": "1.1.0",
+    "webpack-stream": "4.0.0"
+  },
+  "author": "underflyingbirches"
+}

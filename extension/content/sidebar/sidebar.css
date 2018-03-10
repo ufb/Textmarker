@@ -1,0 +1,46 @@
+body {
+  padding: 20px 20px;
+  font-size: 14px;
+}
+#bg-colors {
+  margin-bottom: 56px;
+}
+#links div {
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.bg-color-box {
+  margin-bottom: 14px;
+}
+.column-left {
+  width: 52px;
+  display: inline-block;
+}
+h2 {
+  font-size: 110%;
+  margin-bottom: 14px;
+  font-weight: normal;
+  color: #777;
+}
+small strong {
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 5px;
+}
+label {
+  vertical-align: middle;
+}
+input {
+  vertical-align: middle;
+  padding: 0;
+}
+input[disabled] {
+  opacity: 0.25;
+}
+small {
+  color: #777;
+  font-size: 12px;
+  line-height: 1.275;
+  display: inline-block;
+}

@@ -1,0 +1,35 @@
+tm {display: inline;}
+bm {
+  background: url("./../icons/bm.png") no-repeat 6px center #eee;
+  height: 22px;
+  position: fixed;
+  right: 0;
+  top: 1px;
+  display: block;
+  width: 30px;
+  z-index: 2147483647;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+bm:hover {background-color: #c8c8c8;}
+
+.textLayer { opacity: 1; }
+.textLayer ::-moz-selection { background: rgba(51,153,255,0.3) !important; }
+.textLayer .selected { color: #fff; }
+.textLayer tm {color:#000;}
+.textLayer bm {
+  height: 24px;
+  width: 30px;
+  top: 37px;
+  right: 42px;
+  border: none;
+  background-color: transparent;
+}
+.textLayer bm:hover {
+  background: hsla(0,0%,0%,.12) no-repeat;
+  background-image: url("./../icons/bm.png"), linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
+  background-position: center 5px, 0 0;
+  border: 1px solid hsla(0,0%,0%,.35);
+  border-color: hsla(0,0%,0%,.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42);
+  box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset, 0 0 1px hsla(0,0%,100%,.15) inset, 0 1px 0 hsla(0,0%,100%,.05);
+}
