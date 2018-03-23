@@ -1,3 +1,4 @@
+import _ERRORTRACKER from './../../utils'
 import { _L10N } from './../../utils'
 import _NAV from './modules/nav'
 import _TOGGLER from './modules/toggler'

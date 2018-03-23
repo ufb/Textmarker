@@ -71,7 +71,7 @@ export class _PORT extends _MODULE {
     }
   }
   addConnectionListeners(cb) {
-    browser.runtime.onConnect.addListener(port => {//console.log(this.name,'onConnect to',port.name);
+    browser.runtime.onConnect.addListener(port => {
       port.onMessage.addListener(this.proxy(this, this.passMessage));
       !cb || cb();
     });

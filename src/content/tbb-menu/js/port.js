@@ -6,7 +6,8 @@ export default new _PORT({
   events: {
     CONNECTION: [
       'toggle:addon',
-      'open:addon-page'
+      'open:addon-page',
+      'error:browser-console'
     ]
   }
 })

@@ -27,7 +27,9 @@ export default new _PORT({
       'import:storage',
       'toggle:sync',
       'change:custom-search-setting',
-      'changed:per-page-count'
+      'changed:per-page-count',
+      'error:browser-console',
+      'clear:logs'
     ]
   }
 })

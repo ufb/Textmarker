@@ -181,6 +181,9 @@ export default new _MODULE({
       .then(() => browser.storage.sync.set({ version: version }));
   },
   _set_log(log) {
+    if (log.clear) {
+      return browser.storage.local.set({ logs: [] });
+    }
     return this._get_logs().then(logs => {
       logs.push(log);
       if (logs.length > 200) logs.shift();

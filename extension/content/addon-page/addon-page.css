@@ -61,12 +61,12 @@ h1 span {
   color: #c8c8c8;
 }
 h1 a:hover {
-  color: #3a74ad;
+  color: #2ba5b7;
 }
 h2 {
   font-weight: normal;
   padding: 0 0 27px;
-  color: #3a74ad;
+  color: #2ba5b7;
 }
 h2 span {
   color: #c8c8c8;
@@ -78,12 +78,12 @@ h3 {
   font-size: 1.15em;
   font-weight: normal;
   padding: 0 0 20px;
-  color: #3a74ad;
+  color: #2ba5b7;
 }
 h4 {
   font-size: 1em;
   font-weight: normal;
-  color: #3a74ad;
+  color: #2ba5b7;
   padding: 25px 0 15px;
 }
 ul,
@@ -114,7 +114,7 @@ label span {
   height: 22px;
   width: 22px;
   text-align: center;
-  color: #3a74ad;
+  color: #2ba5b7;
   text-indent: -1000px;
   overflow: hidden;
   border: 1px solid #c8c8c8;
@@ -123,7 +123,7 @@ label span {
   margin-right: 8px;
 }
 select {
-  background: url(../icons/arrow-blue.png) no-repeat right 7px;
+  background: url(../icons/arrow-down.png) no-repeat right 7px;
   -moz-appearance: none;
   border: 1px solid #c8c8c8;
   border-radius: 2px;
@@ -208,16 +208,17 @@ input[type="number"] {
 /* BUTTONS */
 button {
   border: 1px solid #c8c8c8;
-  background: #fff;
-  color: #3a74ad;
+  background-image: linear-gradient(#fff 62.5%,#eee 37.5%);
+  color: #555;
   cursor: pointer;
-  font-size: inherit;
+  font-size: 13px;
   padding: 3px 7px 5px;
   float: left;
+	min-height: 22px;
   transition: background 0.5s;
 }
 button:hover {
-  background-color: #fbfbfb;
+  background-image: linear-gradient(#eee 62.5%,#fff 37.5%);
   color: #40566b;
 }
 /* HELPER CLASSES */
@@ -256,7 +257,7 @@ button:hover {
   margin: 8px 8px 0 0;
 }
 .blue {
-	color: #3a74ad !important;
+	color: #2ba5b7 !important;
 }
 .red {
   color: #ad3a3a !important;
@@ -295,7 +296,7 @@ small.ref {
   height: 22px;
   width: 22px;
   font-size: 0.8em;
-  padding: 1px 5px 3px;
+  padding: 3px 5px;
   background-repeat: no-repeat;
   background-position: 5px 5px;
   background-size: 13px;
@@ -336,11 +337,11 @@ small.ref {
   transition: margin 0.1s;
 }
 .sync-switch.active .switch-indicator {
-  background-color: rgba(78, 153, 140, 0.75);
+  background-color: rgba(43, 165, 183, 0.75);
   margin-left: 0;
 }
 .sync-switch.active:hover .switch-indicator {
-  background-color: rgb(78, 153, 140);
+  background-color: #2ba5b7;
 }
 /* NAVS */
 .nav li {
@@ -355,12 +356,13 @@ small.ref {
   padding-top: 127px;
 }
 #mainnav li:hover {
-  background-color: #40566b;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 #mainnav li {
   padding: 14px 20px 20px 37px;
   background-repeat: no-repeat;
   background-position: 12px 16px;
+	filter: hue-rotate(331deg) brightness(1.3);
 }
 #mainnav-new {
   background-image: url(../icons/stapler-blue.png);
@@ -388,15 +390,18 @@ small.ref {
   background-image: url(../icons/dna-blue.png);
 }
 #mainnav li.active {
-  background-color: #3a74ad;
+  background-color: #2ba5b7;
   background-position: 0 6px;
-  color: #fbfbfb;
+  color: rgb(55, 65, 75);
+  font-weight: bold;
+	filter: unset;
+	background-image: none;
 }
 #mainnav li.deactivated {
 	color: rgba(255, 255, 255, 0.25);
 }
 #mainnav li span.icon {
-  color: #3a74ad;
+  color: #2ba5b7;
   margin-right: 10px;
 }
 /* subnavs */
@@ -409,7 +414,7 @@ small.ref {
   padding: 10px 10px 17px;
 }
 .subnav li.active {
-  border-bottom: 4px solid #4972ab;
+  border-bottom: 4px solid #2ba5b7;
 }
 .subnav li.disabled {
   color: #c8c8c8;
@@ -448,7 +453,7 @@ small.ref {
   padding-bottom: 20px;
 }
 .content a {
-  color: #3a74ad;
+  color: #2ba5b7;
   text-decoration: underline;
 }
 .tab {
@@ -573,6 +578,7 @@ small.ref {
 }
 .quick-buttons button {
   background-color: rgba(55, 65, 75, 0.7);
+	background-image: none;
   color: #fbfbfb;
   border: none;
 }
@@ -716,6 +722,9 @@ button.clean {
 	cursor: default;
 }
 /* EXPORT - IMPORT */
+a.export {
+	text-decoration: none !important;
+}
 #export-import button {
 	float: none;
   margin: 0 0 10px;
@@ -729,7 +738,7 @@ a .at {
   font-family: times;
 }
 #contact a:hover {
-  color: #3aad74;
+  font-style: italic;
 }
 
 /* LOGS */
@@ -762,7 +771,7 @@ a .at {
     float: none;
   }
   .subnav li.active {
-    color: #3a74ad;
+    color: #2ba5b7;
     border: 0;
     text-decoration: underline;
   }
@@ -829,6 +838,7 @@ a .at {
     width: 48px;
     height: 48px;
     background: url(../icons/menu-blue.png) no-repeat;
+    filter: hue-rotate(331deg) brightness(1.3);
     position: absolute;
     top: 25px;
     left: 21px;

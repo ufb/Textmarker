@@ -1,3 +1,4 @@
+import _ERRORTRACKER from './utils'
 import _STORAGE from './storage'
 import './port'
 import './modules/error-logging'

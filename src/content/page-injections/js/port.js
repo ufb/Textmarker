@@ -11,7 +11,8 @@ export default new _PORT({
       'copy:marks',
       'save:entry?',
       'update:entry?',
-      'lookup:word'
+      'lookup:word',
+      'error:browser-console'
     ]
   }
 });

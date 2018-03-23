@@ -26,7 +26,7 @@
 
     <section id="main">
       <h1>
-        <a class="moz-addon" href="">Textmarker 3.2.4</a>
+        <a class="moz-addon" href="">Textmarker 3.3.0</a>
         <span>by <a class="moz-developer" href="">underflyingbirches</a></span>
       </h1>
 
@@ -787,17 +787,17 @@
           <p><span data-l10n-id="t614"></span><br>
           <span data-l10n-id="t615"></span></p>
           <br>
+          <h3 data-l10n-id="h611"></h3>
           <a class='export' id="export-local" download="textmarker-data.json" href="">
             <button class="export-button" data-type="local" data-l10n-id="t616"></button>
           </a>
-          <br>
+          <button class="import-button" data-l10n-id="t618" data-type="local"></button>
+          <input id="import--local" type="file" value="Import" class="import-file" data-type="local">
+          <br><br>
+          <h3 data-l10n-id="h612"></h3>
           <a class='export' id="export-synced" download="textmarker-data.json" href="">
             <button class="export-button" data-type="synced" data-l10n-id="t617"></button>
           </a>
-          <br><br>
-          <button class="import-button" data-l10n-id="t618" data-type="local"></button>
-          <input id="import--local" type="file" value="Import" class="import-file" data-type="local">
-          <br>
           <button class="import-button" data-l10n-id="t619" data-type="sync"></button>
           <input id="import--sync" type="file" value="Import" class="import-file" data-type="sync">
           <br><br>
@@ -842,6 +842,9 @@
             </thead>
             <tbody></tbody>
           </table>
+          <br>
+          <div class="seperator"></div>
+          <button id="clear-logs" data-l10n-id="t814"></button>
         </section>
       </div>
     </section>

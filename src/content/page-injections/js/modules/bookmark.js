@@ -48,6 +48,7 @@ export default class _BOOKMARK {
     let bm = this.icon ||
           (() => {
             var bm = window.document.createElement('bm');
+            if (_STORE.pdf) bm.className = 'textmarker-bookmark-control';
 
             bm.addEventListener('click', () => this.scrollIntoView(), false);
 
