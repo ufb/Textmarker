@@ -508,11 +508,14 @@ var _ERRORTRACKER = new _module._MODULE({
     var _this = this;
 
     window.addEventListener('error', function (error) {
-      _this.emit('error:browser-console', {
-        message: error.message,
-        location: error.filename.split('/').pop().split('.').shift() + ':' + error.lineno + ':' + error.colno,
-        time: new Date().getTime()
-      });
+      var file = error.filename.split('/').pop();
+      if (['sidebar.wp.js', 'tbb-menu.wp.js', 'options.wp.js', 'addon-page.wp.js'].includes(file)) {
+        _this.emit('error:browser-console', {
+          message: error.message,
+          location: error.filename.split('/').pop().split('.').shift() + ':' + error.lineno + ':' + error.colno,
+          time: new Date().getTime()
+        });
+      }
     }, false);
   }
 });
