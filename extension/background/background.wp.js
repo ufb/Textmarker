@@ -458,22 +458,17 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      var _this2 = this;
-
       if (!this.port) {
         var port = this.port = browser.runtime.connect({ name: this.name });
-        port.onDisconnect.addListener(function () {
-          return _this2.port = null;
-        });
       }
     }
   }, {
     key: 'addConnectionListeners',
     value: function addConnectionListeners(cb) {
-      var _this3 = this;
+      var _this2 = this;
 
       browser.runtime.onConnect.addListener(function (port) {
-        port.onMessage.addListener(_this3.proxy(_this3, _this3.passMessage));
+        port.onMessage.addListener(_this2.proxy(_this2, _this2.passMessage));
         !cb || cb();
       });
     }
@@ -955,8 +950,11 @@ __webpack_require__(25);
 
 __webpack_require__(26);
 
+__webpack_require__(27);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import _IDB from './modules/indexeddb'
 new _utils._MODULE({
   events: {
     ENV: {
@@ -983,9 +981,6 @@ new _utils._MODULE({
           var loadReason = _this.loadReason = details.reason;
           var prevVersion = details.previousVersion || '2';
           if (loadReason && (loadReason === 'update' || loadReason === 'install')) {
-            if (loadReason === 'update') {
-              _this.emit('clear:logs');
-            }
             _this.emit(loadReason + ':app', prevVersion);
           } else {
             _this.emit('check:storage');
@@ -1046,7 +1041,6 @@ new _utils._MODULE({
     });
   }
 });
-//import _IDB from './modules/indexeddb'
 
 /***/ }),
 /* 18 */
@@ -1062,7 +1056,7 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b'],
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'found:marks', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b'],
     CONNECTION: ['started:app', 'updated:settings', 'toggled:sync-settings']
   }
 });
@@ -1162,10 +1156,13 @@ new _utils._MODULE({
     var _this = this;
 
     _storage2.default.get('history').then(function (history) {
-      var entries = history.entries;
+      var entries = history.entries,
+          entry = void 0;
       for (var e in entries) {
-        if (url === _this.getHashlessURL(entries[e].url)) {
-          sendResponse(entries[e]);
+        entry = entries[e];
+        if (url === _this.getHashlessURL(entry.url)) {
+          sendResponse(entry);
+          _this.emit('find:marks', entry);
           break;
         }
       }
@@ -2059,6 +2056,79 @@ new _utils._MODULE({
     if (changedItem.history) this.emit('updated:history');
   }
 });
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(2);
+
+new _utils._MODULE({
+  events: {
+    ENV: {
+      'find:marks': 'find'
+    }
+  },
+  find: function find(entry) {
+    _MARKTRACKER().init(entry);
+  }
+});
+
+var _MARKTRACKER = function _MARKTRACKER() {
+
+  return new _utils._MODULE({
+    init: function init(entry) {
+      this.entry = entry;
+      this.marks = this.sortById(entry.marks);
+      this.tempMarks = [];
+      this.t = new Date().getTime();
+      this.find(this.marks);
+    },
+    find: function find(marks) {
+      var _this = this;
+
+      if (!marks.length) {
+        this.entry.marks = this.tempMarks;console.log('step 1:', new Date().getTime() - this.t);
+        this.emit('found:marks', this.entry, this.t);
+      } else {
+        var mark = this.convertDescription(marks.shift());
+        browser.find.find(mark.text, { includeRangeData: true }).then(function (matches) {
+          mark.restorationData = matches;
+          _this.tempMarks.push(mark);
+          _this.find(marks);
+        });
+      }
+    },
+    convertDescription: function convertDescription(mark) {
+      if (typeof mark.conds.o === 'undefined') {
+        var conds = mark.conds,
+            convertedConds = {
+          o: conds.startOffset,
+          n1: conds.firstNodeName,
+          n2: conds.firstParentNodeName,
+          p1: conds.firstTextNodePosition,
+          p2: conds.firstNodePosition,
+          p3: conds.firstParentNodePosition,
+          p4: conds.firstGrampaNodePosition
+        };
+        delete mark.conds;
+        mark.conds = convertedConds;
+      }
+      return mark;
+    },
+    sortById: function sortById(marks) {
+      return marks.sort(function (mark1, mark2) {
+        var id1 = mark1.id;
+        var id2 = mark2.id;
+        if (id1 === id2) return 0;
+        return id1 < id2 ? -1 : 1;
+      });
+    }
+  });
+};
 
 /***/ })
 /******/ ]);

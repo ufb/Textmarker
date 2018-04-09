@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 42);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -466,22 +466,17 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      var _this2 = this;
-
       if (!this.port) {
         var port = this.port = browser.runtime.connect({ name: this.name });
-        port.onDisconnect.addListener(function () {
-          return _this2.port = null;
-        });
       }
     }
   }, {
     key: 'addConnectionListeners',
     value: function addConnectionListeners(cb) {
-      var _this3 = this;
+      var _this2 = this;
 
       browser.runtime.onConnect.addListener(function (port) {
-        port.onMessage.addListener(_this3.proxy(_this3, _this3.passMessage));
+        port.onMessage.addListener(_this2.proxy(_this2, _this2.passMessage));
         !cb || cb();
       });
     }
@@ -1216,7 +1211,8 @@ exports.default = _SELECTION;
 /* 39 */,
 /* 40 */,
 /* 41 */,
-/* 42 */
+/* 42 */,
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1226,16 +1222,16 @@ var _utils = __webpack_require__(1);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 __webpack_require__(12);
 
-__webpack_require__(44);
+__webpack_require__(45);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1256,7 +1252,7 @@ exports.default = new _utils._PORT({
 });
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1264,19 +1260,19 @@ exports.default = new _utils._PORT({
 
 var _utils = __webpack_require__(1);
 
-var _page = __webpack_require__(45);
+var _page = __webpack_require__(46);
 
 var _page2 = _interopRequireDefault(_page);
 
-var _contextmenu = __webpack_require__(46);
+var _contextmenu = __webpack_require__(47);
 
 var _contextmenu2 = _interopRequireDefault(_contextmenu);
 
-var _marker = __webpack_require__(47);
+var _marker = __webpack_require__(48);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _restorer = __webpack_require__(50);
+var _restorer = __webpack_require__(51);
 
 var _restorer2 = _interopRequireDefault(_restorer);
 
@@ -1314,7 +1310,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1495,7 +1491,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1545,7 +1541,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1949,11 +1945,11 @@ var _store = __webpack_require__(12);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _markItem = __webpack_require__(48);
+var _markItem = __webpack_require__(49);
 
 var _markItem2 = _interopRequireDefault(_markItem);
 
-var _bookmark = __webpack_require__(49);
+var _bookmark = __webpack_require__(50);
 
 var _bookmark2 = _interopRequireDefault(_bookmark);
 
@@ -1964,7 +1960,7 @@ var _selection2 = _interopRequireDefault(_selection);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2063,6 +2059,7 @@ var _MARK = function () {
 						if (!this.keyData.conds) this.describe();
 
 						//NODES_CACHE.pop();
+						//this.emit()
 
 						return this;
 				}
@@ -2249,7 +2246,7 @@ var _MARK = function () {
 exports.default = _MARK;
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2362,7 +2359,7 @@ var _BOOKMARK = function () {
 exports.default = _BOOKMARK;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2378,485 +2375,155 @@ exports.default = function () {
   return [new Restorer({
     events: {
       ENV: {
-        'restore:marks': 'init'
+        //'restore:marks': 'init'
+        'found:marks': 'init'
       }
     },
-    queue: [],
-    cache: [],
     lost: [],
     restored: [],
     area: 'sync',
-    phase: 1,
 
-    init: function init(entry) {
-      if (_store2.default.pdf) return false;
-
-      _store2.default.name = entry.name;
+    init: function init(entry, t) {
+      if (_store2.default.pdf || _store2.default.name !== entry.name) return false;
+      this.t = t;
       _store2.default.entry = entry;
-
-      var now = [],
-          postponed = [],
-          marks = entry.marks,
-          l = marks.length,
-          i = 0,
-          mark = void 0;
-
       this.area = entry.synced ? 'sync' : 'local';
 
-      for (; i < l; i++) {
-        mark = marks[i];
+      var marks = entry.marks;
 
-        this.convertDescription(mark).createTempObject(mark);
+      this.lost = marks.lost;
 
-        if (mark.conds.n1 === 'TM') postponed.push(mark);else now.push(mark);
-      }
-
-      this.queue.push(now);
-
-      for (i = 0, l = postponed.length; i < l; i++) {
-        this.queue.push([postponed[i]]);
-      }this.restore().report();
+      this.restore(marks).report();
     },
-    convertDescription: function convertDescription(mark) {
-      if (typeof mark.conds.o === 'undefined') {
-        var conds = mark.conds,
-            convertedConds = {
-          o: conds.startOffset,
-          n1: conds.firstNodeName,
-          n2: conds.firstParentNodeName,
-          p1: conds.firstTextNodePosition,
-          p2: conds.firstNodePosition,
-          p3: conds.firstParentNodePosition,
-          p4: conds.firstGrampaNodePosition
-        };
-        delete mark.conds;
-        mark.conds = convertedConds;
-      }
-      return this;
-    },
-    createTempObject: function createTempObject(mark) {
-      var trimmedText = this.squeeze(mark.text);
+    restore: function restore(marks) {
+      if (!marks.length) return this;
 
-      mark.temp = {
-        trimmedText: trimmedText,
-        trimmedTextLength: trimmedText.length,
-        possiblePositions: [],
-        possibleStartNodes: [],
-        possibleEnds: {},
-        possibleFocusOffsets: []
-      };
-    },
-    restore: function restore() {
-      if (this.phase === 2) this.sortQueueById();
+      var nodes = this.getDocumentTextNodes();
+      var selection = window.getSelection();
+      var range = document.createRange();
 
-      var marks = this.marks = this.queue.shift(),
-          length = marks ? marks.length : 0;
+      var restorationData = void 0,
+          count = void 0,
+          rangeData = void 0,
+          startNode = void 0,
+          endNode = void 0,
+          endOffset = void 0,
+          textLength = void 0,
+          prevLength = void 0,
+          selectionObject = void 0;
 
-      this.length = length;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-      if (length) {
-        this.setBodySelection(window.document.body).getTextPositions(marks, length);
+      try {
+        for (var _iterator = marks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var mark = _step.value;
 
-        if (this.phase === 1 && length > 1) this.postponeOverlappings();
-
-        this.findPossibleExtrema().ruleOutMultiples().recreateMarks();
-      }
-
-      this.phase++;
-
-      if (this.queue.length) this.restore();
-
-      return this;
-    },
-    sortQueueById: function sortQueueById() {
-      var marks = this.queue,
-          l = marks ? marks.length : 0,
-          temp = [],
-          res = [],
-          i = 0,
-          mark = void 0,
-          t = void 0;
-
-      while (l--) {
-        if (!marks[l].length) continue;
-        mark = marks[l][0];
-        temp[mark.id] = mark;
-      }
-      this.queue = [];
-
-      for (t = temp.length; i < t; i++) {
-        if (temp[i]) this.queue.push([temp[i]]);
-      }
-      return this;
-    },
-    getTextPositions: function getTextPositions(marks, l) {
-      var trimmedSelectionText = this.trimmedSelectionText,
-          allPossibleStartPositions = this.allPossibleStartPositions = [],
-          endPositions = [],
-          mark = void 0,
-          markTemp = void 0,
-          trimmedText = void 0,
-          trimmedTextLength = void 0,
-          p = void 0,
-          endPosition = void 0;
-
-      while (l--) {
-        p = undefined;
-        mark = marks[l];
-        markTemp = mark.temp;
-
-        if (!markTemp) {
-          marks.splice(l, 1);
-          continue;
-        }
-
-        trimmedText = markTemp.trimmedText;
-        trimmedTextLength = markTemp.trimmedTextLength;
-
-        while (p !== -1) {
-          if (p === undefined) p = -1;
-          p = trimmedSelectionText.indexOf(trimmedText, p + 1);
-          endPosition = p + trimmedTextLength;
-          markTemp.possiblePositions.push(p);
-          allPossibleStartPositions.push([p, endPosition, mark]);
-          endPositions.push(endPosition);
-        }
-
-        markTemp.possiblePositions.pop();
-        allPossibleStartPositions.pop();
-        endPositions.pop();
-
-        if (!markTemp.possiblePositions.length) this.lost.push(mark);
-      }
-      this.sortPossibleStartPositions(allPossibleStartPositions);
-      this.maxPosition = Math.max.apply(null, endPositions);
-
-      return this;
-    },
-    sortPossibleStartPositions: function sortPossibleStartPositions(positions) {
-      var l = positions.length,
-          temp = [],
-          i = 0,
-          pos = void 0,
-          start = void 0,
-          t = void 0;
-
-      while (l--) {
-        pos = positions[l];
-        start = pos[0];
-
-        if (temp[start]) temp.splice(start + 1, 0, pos);else temp[start] = pos;
-      }
-      t = temp.length;
-      this.allPossibleStartPositions = [];
-
-      for (; i < t; i++) {
-        if (temp[i]) this.allPossibleStartPositions.push(temp[i]);
-      }
-    },
-    postponeOverlappings: function postponeOverlappings() {
-      var positions = this.allPossibleStartPositions,
-          p = positions.length,
-          postponed = [],
-          pos1 = void 0,
-          pos2 = void 0,
-          i = void 0,
-          m1 = void 0,
-          m2 = void 0,
-          id = void 0;
-
-      if (p > 1) {
-        while (p-- > 1) {
-          pos1 = positions[p - 1];
-          pos2 = positions[p];
-
-          if (pos1[1] > pos2[0] && pos1[0] < pos2[1]) {
-            m1 = pos1[2];
-            m2 = pos2[2];
-
-            if (m1.id < m2.id) {
-              id = m2.id;
-
-              if (!postponed.includes(id)) {
-                this.postpone(m2);
-                postponed.push(id);
-              }
-            } else {
-              id = m1.id;
-
-              if (!postponed.includes(id)) {
-                this.postpone(m1);
-                postponed.push(id);
-              }
-            }
+          // make loop async -> wait for restoration of prev mark before continue
+          // -> only if its endNode is in same textNode as startNodes of other marks?
+          restorationData = mark.restorationData;
+          count = restorationData.count;
+          if (!count) {
+            this.lost.push(mark);
+            continue;
           }
-        }
-        p = postponed.length;
-
-        for (i = 0; i < p; i++) {
-          this.cutOutFor(postponed[i]);
-        }
-      }
-      return this;
-    },
-    cutOutFor: function cutOutFor(id) {
-      var positions = this.allPossibleStartPositions,
-          p = positions.length;
-
-      while (p--) {
-        if (positions[p][2].id === id) this.allPossibleStartPositions.splice(p, 1);
-      }
-    },
-    postpone: function postpone(mark) {
-      var queue = this.queue,
-          l = queue.length,
-          alreadyIncluded = false;
-
-      while (l--) {
-        if (queue[l][0] === mark) {
-          alreadyIncluded = true;
-          break;
-        }
-      }
-      if (!alreadyIncluded) this.queue.push([mark]);
-    },
-    findPossibleExtrema: function findPossibleExtrema() {
-      var selection = this.selection,
-          range = this.range,
-          nodes = this.bodyTextNodes,
-          n = nodes.length,
-          indices = this.allPossibleStartPositions,
-          phase = this.phase,
-          cache = this.cache = [],
-          satisfied = [],
-          i = 0,
-          chars = 0,
-          nextStartFound = void 0,
-          endingsInThisNode = void 0,
-          node = void 0,
-          nodesText = void 0,
-          nodesTextLength = void 0,
-          mark = void 0,
-          diff = void 0,
-          l = void 0,
-          startPosition = void 0,
-          endPosition = void 0,
-          e = void 0,
-          f = void 0,
-          id = void 0,
-          p = void 0,
-          q = void 0,
-          x = void 0,
-          m = void 0,
-          possibleFocusOffset = void 0,
-          startFoundFor = void 0,
-          postponed = void 0,
-          hasEndingsInThisNode = void 0;
-
-      for (; i < n; i++) {
-        node = nodes[i];
-        nodesText = this.squeeze(node.data);
-        nodesTextLength = nodesText.length;
-        chars += nodesTextLength;
-        l = indices.length;
-        startFoundFor = [];
-        postponed = [];
-        hasEndingsInThisNode = null;
-
-        while (l--) {
-          startPosition = indices[l][0];
-          endPosition = indices[l][1];
-          mark = indices[l][2];
-          id = mark.id;
-
-          mark.temp.startFoundFor = mark.temp.startFoundFor || [];
-          mark.temp.endFoundFor = mark.temp.endFoundFor || [];
-
-          if (!mark.temp.startFoundFor.includes(startPosition) && chars > startPosition && mark.temp.possibleStartNodes.length < mark.temp.possiblePositions.length) {
-            if (hasEndingsInThisNode && hasEndingsInThisNode.id < mark.id) {
-              if (phase === 1) {
-                this.postpone(mark);
-                postponed.push(id);
-              }
-              indices.splice(l, 1);
-
-              continue;
-            } else {
-              if (!this.satisfiesDescription(mark, node)) {
-                if (phase === 1 && id !== 1) {
-                  this.postpone(mark);
-                  postponed.push(id);
-                }
-                indices.splice(l, 1);
-
-                continue;
-              } else {
-                mark.temp.possibleStartNodes.push(node);
-                mark.temp.startFoundFor.push(startPosition);
-                startFoundFor.push(id);
-              }
-            }
+          rangeData = restorationData.rangeData[0];
+          startNode = nodes[rangeData.startTextNodePos].parentNode.childNodes[mark.conds.p1];
+          // if (count > 1) mark = this.ruleOutMultiples(mark);
+          endNode = nodes[rangeData.endTextNodePos];
+          endOffset = rangeData.endOffset;
+          prevLength = 0;
+          textLength = endNode.data.length;
+          while (textLength < endOffset) {
+            endNode = endNode.nextSibling;
+            endNode = endNode.nodeType === 3 ? endNode : endNode.firstChild;
+            prevLength = textLength;
+            textLength += endNode.data.length;
           }
-          if (mark.temp.startFoundFor.includes(startPosition) && !mark.temp.endFoundFor.includes(endPosition) && chars - endPosition >= 0) {
-            if (Math.min.apply(null, startFoundFor) < id) {
-              if (phase === 1) {
-                this.postpone(mark);
-                postponed.push(id);
-              }
-              indices.splice(l, 1);
-            } else {
-              possibleFocusOffset = this.findFocusOffset(mark, node, endPosition - (chars - nodesTextLength));
-              mark.temp.possibleFocusOffsets.push(possibleFocusOffset);
-              mark.temp.endFoundFor.push(endPosition);
-              mark.temp.possibleEnds[startPosition] = {
-                node: node,
-                offset: possibleFocusOffset
-              };
-              if (!satisfied.includes(id)) {
-                cache.push(mark);
-                satisfied.push(id);
-              }
-
-              hasEndingsInThisNode = mark;
-              indices.splice(l, 1);
-            }
-          }
-        }
-        p = postponed.length;
-
-        if (p) for (x = 0; x < p; x++) {
-          this.cutOutFor(postponed[x]);
-        }if (chars > this.maxPosition) break;
-      }
-      if (phase !== 1) {
-        for (m in this.marks) {
-          if (!satisfied.includes(this.marks[m].id)) this.lost.push(mark);
-        }
-      }
-      return this;
-    },
-    ruleOutMultiples: function ruleOutMultiples() {
-      var cache = this.cache,
-          i = cache.length,
-          mark = void 0,
-          possibleStartNodes = void 0,
-          p = void 0,
-          parent = void 0,
-          grampa = void 0,
-          grandgrampa = void 0,
-          matches = void 0,
-          failed = void 0,
-          q = void 0;
-
-      while (i--) {
-        mark = cache[i];
-        matches = [];
-        failed = false;
-        possibleStartNodes = mark.temp.possibleStartNodes;
-        p = possibleStartNodes.length;
-
-        if (p > 1) {
-          while (p--) {
-            parent = possibleStartNodes[p].parentNode.parentNode;
-            grampa = parent.parentNode || 0;
-
-            if (!grampa || mark.conds.p3 === this.whichChild(grampa, parent)) matches.push(p);
-          }
-          if (!matches.length) p = 0;else {
-            if (matches.length === 1) p = matches[0];else {
-              p = undefined;
-
-              while (matches.length) {
-                q = matches.pop();
-                parent = possibleStartNodes[q].parentNode;
-                grampa = parent.parentNode || 0;
-                grandgrampa = grampa && grampa.parentNode ? grampa.parentNode : 0;
-
-                if (!grandgrampa || mark.conds.p4 === this.whichChild(grandgrampa, grampa)) {
-                  p = q;
-                  break;
-                }
-              }
-              if (!p) p = 0;
-            }
-          }
-        } else p = 0;
-
-        p = p || 0;
-
-        mark.temp.startNode = mark.temp.possibleStartNodes[p];
-
-        this.setMatchingEnd(mark, p);
-      }
-      return this;
-    },
-    setMatchingEnd: function setMatchingEnd(mark, p) {
-      var startPosition = mark.temp.startFoundFor[p],
-          end = mark.temp.possibleEnds[startPosition];
-
-      mark.temp.endNode = end.node;
-      mark.temp.focusOffset = end.offset;
-    },
-    satisfiesDescription: function satisfiesDescription(mark, node) {
-      var description = mark.conds,
-          parentNode = node.parentNode,
-          grampa = parentNode.parentNode,
-          grandgrampa = grampa && grampa.parentNode ? grampa.parentNode : 0,
-          startOffset = description.o,
-          relevantNodeText = node.data.substring(startOffset).trim(),
-          l = relevantNodeText.length,
-          markText = mark.text.trim(),
-          m = markText.length,
-          textsMatch = void 0;
-
-      if (m <= l) textsMatch = this.squeeze(relevantNodeText).indexOf(this.squeeze(markText)) === 0;else textsMatch = this.squeeze(markText).indexOf(this.squeeze(relevantNodeText)) === 0;
-
-      return textsMatch && parentNode.nodeName === description.n1 && (!grampa || grampa.nodeName === description.n2) && this.whichChild(parentNode, node) === description.p1;
-    },
-    findFocusOffset: function findFocusOffset(mark, node, n) {
-      var nodeText = node.data,
-          l = nodeText.length,
-          i = 0,
-          counter = 0;
-
-      for (; i < l; i++) {
-        if (this.squeeze(nodeText[i])) counter++;
-
-        if (counter === n) return (/\s$/.test(mark.text) ? i + 2 : i + 1
-        );
-      }
-    },
-    recreateMarks: function recreateMarks() {
-      var range = this.range,
-          selection = this.selection,
-          marks = this.cache,
-          i = marks.length,
-          mark = void 0,
-          markTemp = void 0,
-          start = void 0,
-          end = void 0,
-          focusOffset = void 0;
-
-      while (i--) {
-        mark = marks[i];
-        markTemp = mark.temp;
-        start = markTemp.startNode;
-        end = markTemp.endNode;
-        focusOffset = markTemp.focusOffset;
-
-        if (!start || !end || !(typeof focusOffset === 'number')) this.lost.push(mark);else {
+          endOffset -= prevLength;
+          console.log(startNode, mark.conds.o, endNode, endOffset);
           try {
-            range.setStart(start, mark.conds.o);
-            range.setEnd(end, focusOffset);
-            selection.resume(range);
-            this.emit('restored:range', selection, mark);
+            range.setStart(startNode, mark.conds.o);
+            range.setEnd(endNode, endOffset);
+            selection.addRange(range);
+            selectionObject = new _selection2.default();
+            selectionObject.resume(range);
+            this.emit('restored:range', selectionObject, mark);
             this.restored.push(mark);
           } catch (e) {
             this.lost.push(mark);
           }
-          delete mark.temp;
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
         }
       }
+
+      console.log('total duration:', new Date().getTime() - this.t);
+      return this;
+    },
+    ruleOutMultiples: function ruleOutMultiples(mark) {
+      var _this2 = this;
+
+      var nodes = this.nodes;
+      var conds = mark.conds;
+      var rangeData = mark.restorationData.rangeData,
+          tempRuledOut = [],
+          nodeDataSaved = false,
+          l = void 0,
+          data = void 0,
+          test = void 0;
+
+      var runTest = function runTest(test) {
+        var l = rangeData.length;
+        while (l--) {
+          data = rangeData[l];
+          if (!nodeDataSaved) {
+            data.startNode = nodes[data.startTextNodePos];
+            data.parent = data.startNode.parentNode;
+            data.grandpa = data.parent.parentNode;
+            data.grandgrandpa = data.grandpa.parentNode;
+          }
+          if (!test(data)) {
+            tempRuledOut.push(rangeData.splice(l, 1)[0]);
+          }
+        }
+        nodeDataSaved = true;
+      };
+      var tests = [function (data) {
+        return _this2.whichChild(data.parent, data.startNode) == conds.p1;
+      }, function (data) {
+        return data.parent.nodeName === conds.n1;
+      }, function (data) {
+        return data.grandpa.nodeName === conds.n2;
+      }, function (data) {
+        return _this2.whichChild(data.grandpa, data.parent) == conds.p2;
+      }, function (data) {
+        return _this2.whichChild(data.grandgrandpa, data.grandpa) == conds.p3;
+      }];
+
+      while (tests.length) {
+        runTest(tests.shift());
+        l = rangeData.length;
+        if (!l) {
+          rangeData.push(tempRuledOut.shift());
+          return mark;
+        }
+        if (l === 1) return mark;
+      }
+      rangeData.length = 1;
+      return mark;
     }
   }), new Restorer({
     events: {
@@ -3063,40 +2730,18 @@ var Restorer = function (_MODULE2) {
   }
 
   _createClass(Restorer, [{
-    key: 'processPeuAPeu',
-    value: function processPeuAPeu(data, func, cb) {
-      var d = Array.prototype.slice.call(data),
-          done = void 0,
-          time0 = void 0;
+    key: 'getDocumentTextNodes',
+    value: function getDocumentTextNodes() {
+      var walker = document.createTreeWalker(document, window.NodeFilter.SHOW_TEXT, null, false),
+          nodes = [],
+          node = walker.nextNode();
 
-      (function rec() {
-        var max = +new Date() + 500;
-        do {
-          done = func(d[0]);
-          if (done) d.shift();
-        } while (d.length > 0 && max > +new Date());
-
-        if (d.length > 0) window.setTimeout(function () {
-          return rec();
-        }, 25);else cb();
-      })();
-    }
-  }, {
-    key: 'setBodySelection',
-    value: function setBodySelection(el) {
-      var selection = this.selection = new _selection2.default(el);
-
-      this.trimmedSelectionText = this.squeeze(selection.text);
-
-      this.bodyTextNodes = selection.nodes;
-      this.range = selection.range;
-
-      return this;
-    }
-  }, {
-    key: 'squeeze',
-    value: function squeeze(text) {
-      return text.replace(/\t|\s|\n|\r/g, '');
+      while (node) {
+        nodes.push(node);
+        node = walker.nextNode();
+      }
+      this.nodes = nodes;
+      return nodes;
     }
   }, {
     key: 'whichChild',

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 51);
+/******/ 	return __webpack_require__(__webpack_require__.s = 52);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -543,7 +543,7 @@ exports.default = _class;
 
 /***/ }),
 
-/***/ 51:
+/***/ 52:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -553,7 +553,7 @@ var _utils = __webpack_require__(1);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _port = __webpack_require__(52);
+var _port = __webpack_require__(53);
 
 var _port2 = _interopRequireDefault(_port);
 
@@ -659,7 +659,7 @@ new _utils._DOMMODULE({
 
 /***/ }),
 
-/***/ 52:
+/***/ 53:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -856,22 +856,17 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      var _this2 = this;
-
       if (!this.port) {
         var port = this.port = browser.runtime.connect({ name: this.name });
-        port.onDisconnect.addListener(function () {
-          return _this2.port = null;
-        });
       }
     }
   }, {
     key: 'addConnectionListeners',
     value: function addConnectionListeners(cb) {
-      var _this3 = this;
+      var _this2 = this;
 
       browser.runtime.onConnect.addListener(function (port) {
-        port.onMessage.addListener(_this3.proxy(_this3, _this3.passMessage));
+        port.onMessage.addListener(_this2.proxy(_this2, _this2.passMessage));
         !cb || cb();
       });
     }

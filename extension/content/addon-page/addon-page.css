@@ -663,7 +663,7 @@ button.clean {
 	text-decoration: underline;
 }
 .entry:hover .name {
-  color: rgb(58, 173, 116);
+  color: #2ba5b7;
 }
 .nowrap {
   white-space: nowrap;

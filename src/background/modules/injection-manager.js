@@ -12,10 +12,11 @@ new _MODULE({
   },
   checkUrl(url, sender, sendResponse) {
     _STORAGE.get('history').then(history => {
-      let entries = history.entries;
+      let entries = history.entries, entry;
       for (let e in entries) {
-        if (url === this.getHashlessURL(entries[e].url)) {
-          sendResponse(entries[e]);
+        entry = entries[e];
+        if (url === this.getHashlessURL(entry.url)) {
+          sendResponse(entry);
           break;
         }
       }
