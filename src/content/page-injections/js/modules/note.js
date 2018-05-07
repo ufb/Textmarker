@@ -3,6 +3,8 @@ import _STORE from './../_store'
 
 export default function(mark) {
 
+  const BODY = window.document.body;
+
   return new _DOMMODULE({
 		events: {
       DOM: {
@@ -61,23 +63,23 @@ export default function(mark) {
     show() {
       const el = this.el;
       const pos = this.getPosition();
-      let left = pos.left;
       const innerWindowWidth = window.innerWidth;
+      let left = pos.left;
       if (left + 360 > innerWindowWidth) {
         left = innerWindowWidth - 360;
       }
-      window.document.body.appendChild(el);
+      BODY.appendChild(el);
       el.setAttribute('style', 'display:block;top:' + (pos.top + pos.offset) + 'px;left:' + left + 'px;');
       this.visible = true;
     },
     bringUpFront() {
-      Array.from(window.document.body.getElementsByTagName('tmnote')).forEach(note => {
+      Array.from(BODY.getElementsByTagName('tmnote')).forEach(note => {
         if (note === this.el) note.style.zIndex = 2147483647;
         else note.style.zIndex = 2147483646;
       });
     },
     hide() {
-      window.document.body.removeChild(this.el);
+      BODY.removeChild(this.el);
       this.visible = false;
     },
     addMarkListeners() {
@@ -85,25 +87,25 @@ export default function(mark) {
         if (noteonclick) {
           const handler = this.markClickHandler = () => this.show();
 
-          for (let w of this.mark.wrappers) {
-            w.addEventListener('click', handler, false);
-            w.setAttribute('title', browser.i18n.getMessage('toggle_note'));
+          for (let wrapper of this.mark.wrappers) {
+            wrapper.addEventListener('click', handler, false);
+            wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note'));
           }
         }
       });
     },
     removeMarkListeners() {
       if (!this.markClickHandler) return;
-      for (let w of this.mark.wrappers) {
-        w.removeEventListener('click', this.markClickHandler, false);
-        w.removeAttribute('title');
+      for (let wrapper of this.mark.wrappers) {
+        wrapper.removeEventListener('click', this.markClickHandler, false);
+        wrapper.removeAttribute('title');
       }
     },
     getPosition() {
       const rect = this.mark.wrappers[this.mark.wrappers.length - 1].getBoundingClientRect();
       return {
-        top: rect.top + window.pageYOffset - window.document.body.clientTop,
-        left: rect.left + window.pageXOffset - window.document.body.clientLeft,
+        top: rect.top + window.pageYOffset - BODY.clientTop,
+        left: rect.left + window.pageXOffset - BODY.clientLeft,
         offset: rect.height
       };
     }

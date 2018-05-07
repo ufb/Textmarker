@@ -4,6 +4,8 @@ import _NOTE from './note'
 
 export default function() {
 
+  const DOC = window.document;
+
   return new _MODULE({
     events: {
       ENV: {
@@ -21,20 +23,20 @@ export default function() {
       for (let mark of marks) {
         if (mark.keyData.note) this.add(mark);
       }
-      if (Object.keys(this.notes).length) this.toggleToggler(true);
+      if (!this.isEmpty(this.notes)) this.toggleToggler(true);
     },
     addAndShow(mark) {
-      if (!Object.keys(this.notes).length) this.toggleToggler(true);
+      if (this.isEmpty(this.notes)) this.toggleToggler(true);
       this.add(mark).show();
     },
     remove(id) {
       delete this.notes[id];
-      if (!Object.keys(this.notes).length) this.toggleToggler(false);
+      if (this.isEmpty(this.notes)) this.toggleToggler(false);
     },
     toggleAll() {
       if (!this.notes) return;
       const notes = this.notes;
-      let meth = window.document.getElementsByTagName('tmnote').length ? 'hide' : 'show',
+      let meth = DOC.getElementsByTagName('tmnote').length ? 'hide' : 'show',
           condition = meth === 'hide' ? true : false,
           note;
       for (let n in notes) {
@@ -45,11 +47,11 @@ export default function() {
       }
     },
     toggleToggler(show) {
-      const tmui = window.document.getElementsByTagName('tm-ui')[0];
+      const tmui = DOC.getElementsByTagName('tm-ui')[0];
       if (show) {
         _STORE.get('noteicon').then(noteicon => {
           if (noteicon) {
-            const toggle = this.toggle = window.document.createElement('tm-notes-toggle');
+            const toggle = this.toggle = DOC.createElement('tm-notes-toggle');
             toggle.title = browser.i18n.getMessage('toggle_notes');
             tmui.appendChild(toggle);
             toggle.onclick = () => this.toggleAll();
@@ -60,6 +62,9 @@ export default function() {
         tmui.removeChild(this.toggle);
         this.toggle = null;
       }
+    },
+    isEmpty(obj) {
+      return !Object.keys(obj).length;
     }
   });
 }
