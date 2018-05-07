@@ -5,13 +5,14 @@ export default function() {
   return new _MODULE({
     events: {
       ENV: {
-        'started:app': 'openInitPage',
+        //'started:app': 'openInitPage',
         'open:addon-page': 'openAddonPage',
         'lookup:word': 'openSearch',
         'open:entries': 'open'
       }
     },
     urls: {
+      news: 'content/addon-page/addon-page.html#page=news',
       settings: 'content/addon-page/addon-page.html#page=settings',
       history: 'content/addon-page/addon-page.html#page=history',
       info: 'content/addon-page/addon-page.html#page=new',

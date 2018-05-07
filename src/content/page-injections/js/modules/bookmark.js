@@ -47,7 +47,7 @@ export default class _BOOKMARK {
   insertIcon() {
     let bm = this.icon ||
           (() => {
-            var bm = window.document.createElement('bm');
+            var bm = window.document.createElement('tm-bm');
             if (_STORE.pdf) bm.className = 'textmarker-bookmark-control';
 
             bm.addEventListener('click', () => this.scrollIntoView(), false);
@@ -57,7 +57,8 @@ export default class _BOOKMARK {
             return bm;
           })();
 
-    window.document.body.appendChild(bm);
+    window.document.getElementsByTagName('tm-ui')[0].appendChild(bm);
+    bm.title = browser.i18n.getMessage('bm_scroll');
     this.iconShown = true;
   }
   removeIcon() {

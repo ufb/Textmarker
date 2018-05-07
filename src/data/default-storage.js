@@ -11,6 +11,7 @@ export default {
       '-b': ['', '', true],
       m: ['', true, true],
       w: ['', true, true],
+      n: ['', '', true],
       '2': ['', true],
       '3': ['', true]
     },
@@ -33,6 +34,8 @@ export default {
     },
     misc: {
       bmicon: true,
+      noteicon: true,
+      noteonclick: true,
       overwrite: false,
       failureNote: true,
       successNote: true,

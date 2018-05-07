@@ -82,15 +82,18 @@ export default function() {
       return (name === 'TEXTAREA' || name === 'INPUT' || el.contentEditable === 'true');
     },
     delegate(e) {
-      return _STORE.get('settings').then(settings => {
+      const key = e.key.toLowerCase(),
+          modKey = (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey),
+          functionKeys = ['b', 's', 'y', 'z'],
+          defaultMarkers = ['m', '2', '3'];
+
+      if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
+
+      if (this.isEditable(e.target)) return true;
+
+      _STORE.get('settings').then(settings => {
 
         if (!settings) return true;
-
-        const key = e.key.toLowerCase(),
-            modKey = (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey),
-            defaultMarkers = ['m', '2', '3'];
-
-        if (this.isEditable(e.target)) return true;
 
         if (!modKey) {
           if (key === 'w' && !settings.shortcuts.w[0] && settings.shortcuts.w[1]) this.lookup();

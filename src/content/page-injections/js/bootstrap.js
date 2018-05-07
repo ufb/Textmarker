@@ -4,6 +4,7 @@ import _PAGE from './modules/page'
 import _CTM from './modules/contextmenu'
 import _MARKER from './modules/marker'
 import _RESTORER from './modules/restorer'
+import _NOTES from './modules/notes'
 
 new _MODULE({
   events: {
@@ -25,10 +26,13 @@ new _MODULE({
   power(on) {
     if (!on || this.bootstrapped) return false;
 
+    window.document.body.appendChild(window.document.createElement('tm-ui'));
+
     _PAGE();
     _CTM();
     _RESTORER();
     _MARKER();
+    _NOTES();
 
     this.bootstrapped = true;
   }

@@ -36,7 +36,7 @@ export default function() {
     },
     allowedKeys: 'a b c d e f g h i j k l n o p q r s t u v x y z 0 1 4 5 6 7 8 9 enter - +'.split(' '),
     allowedShortcuts: ['', 'ctrlKey', 'shiftKey', 'altKey', 'ctrlKey-shiftKey', 'ctrlKey-altKey', 'shiftKey-altKey', 'metaKey', 'metaKey-shiftKey', 'metaKey-altKey'],
-    allowedQuickbuttonOpts: ['title', 'url', 'text', 'text +meta', 'text +lost', 'text m', 'text 2', 'text 3', 'text c', 'text lost'],
+    allowedQuickbuttonOpts: ['title', 'url', 'text', 'text +meta', 'text +notes', 'text +lost', 'text m', 'text 2', 'text 3', 'text c', 'text lost'],
     markerKeys: ['m', '2', '3'],
     customMarkerKeys: [],
     marker: null,
@@ -168,6 +168,8 @@ export default function() {
       let miscSettings = settings.misc;
 
       document.getElementById('misc-bm').checked = miscSettings.bmicon;
+      document.getElementById('misc-noteicon').checked = miscSettings.noteicon;
+      document.getElementById('misc-noteonclick').checked = miscSettings.noteonclick;
       document.getElementById('notes-restoration-failure').checked = miscSettings.failureNote;
       document.getElementById('notes-restoration-success').checked = miscSettings.successNote;
       document.getElementById('notes-pbm').checked = miscSettings.pbmNote;

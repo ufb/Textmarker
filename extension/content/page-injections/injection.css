@@ -1,17 +1,35 @@
 tm {display: inline;}
-bm {
-  background: url("./../icons/bm.png") no-repeat center;
-  height: 18px;
-  position: fixed;
-  right: 0;
-  top: 0;
+tm-ui {
   display: block;
-  width: 12px;
+  right: 1px;
+  top: 1px;
   z-index: 2147483647;
+  position: fixed;
+  background: #fff;
+  border: 1px solid #eee;
+  padding-top: 3px;
+}
+tm-bm, tm-notes-toggle {
+  display: inline-block;
   cursor: pointer;
+  margin-left: 3px;
+  margin-right: 3px;
+  vertical-align: top;
+  width: 12px;
   filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.25));
 }
-bm:hover {
+tm-bm {
+  background: url("./../icons/bm.png") no-repeat center;
+  height: 18px;
+}
+tm-bm:hover {
+  filter: brightness(1.15);
+}
+tm-notes-toggle {
+  background: url("./../icons/note.png") no-repeat center;
+  height: 16px;
+}
+tm-notes-toggle:hover {
   filter: brightness(1.15);
 }
 #textmarker-bookmark-anchor {
@@ -22,7 +40,7 @@ bm:hover {
 .textLayer ::-moz-selection { background: rgba(51,153,255,0.3) !important; }
 .textLayer .selected { color: #fff; }
 .textLayer tm {color:#000;}
-bm.textmarker-bookmark-control {
+tm-bm.textmarker-bookmark-control {
   height: 24px;
   width: 30px;
   top: 37px;
@@ -30,11 +48,59 @@ bm.textmarker-bookmark-control {
   border: none;
   background-color: transparent;
 }
-bm.textmarker-bookmark-control:hover {
+tm-bm.textmarker-bookmark-control:hover {
   background: hsla(0,0%,0%,.12) no-repeat;
   background-image: url("./../icons/bm.png"), linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
   background-position: center 5px, 0 0;
   border: 1px solid hsla(0,0%,0%,.35);
   border-color: hsla(0,0%,0%,.32) hsla(0,0%,0%,.38) hsla(0,0%,0%,.42);
   box-shadow: 0 1px 0 hsla(0,0%,100%,.05) inset, 0 0 1px hsla(0,0%,100%,.15) inset, 0 1px 0 hsla(0,0%,100%,.05);
+}
+tmnote {
+  display: none;
+  position: absolute;
+  font-family: Verdana, sans-serif;
+  font-size: 12px;
+  color: #444;
+  line-height: 1.4;
+  margin: 0;
+  z-index: 2147483646;
+}
+tmnote-delete,
+tmnote-minimize {
+  position: absolute;
+  display: block;
+  font-size: 14px;
+  background: #ffe;
+  right: -20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+  height: 16px;
+}
+tmnote-delete:hover,
+tmnote-minimize:hover {
+  color: #222;
+  background: #ffc;
+}
+tmnote-delete {
+  top: 2px;
+  font-size: 12px;
+  padding: 4px 6px 0 10px;
+}
+tmnote-minimize {
+  top: 24px;
+  padding: 0 6px 4px 10px;
+}
+tmnote-content {
+  display: block;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  position: relative;
+  width: 300px;
+  min-height: 50px;
+  background-image: linear-gradient(#ffe, #ffd);
+  min-height: 70px;
 }

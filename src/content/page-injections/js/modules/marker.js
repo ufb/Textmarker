@@ -19,7 +19,10 @@ export default function() {
         'ctx:-b': 'removeBookmark',
         'ctx:d': 'remove',
         'ctx:m': 'onMarkerKey',
-        'updated:misc-settings': 'showBookmarkIcon'
+        'ctx:n': 'addNote',
+        'updated:misc-settings': 'showBookmarkIcon',
+        'updated:note': 'autosave',
+        'removed:note': 'autosave'
 			}
 		},
 		selection: null,
@@ -192,17 +195,16 @@ export default function() {
       this.store(this.mark(mark.key, mark), selection.text, false);
     },
     onFinishedRestoration() {
+      this.emit('restore:notes', this.done);
       this.sortById();
       this.scrollToBookmark();
     },
+    addNote(id) {
+      this.emit('add:note', this.findMark(id));
+    },
     setBookmark(m) {
-      m = m ? m : _STORE.tmid ? _STORE.tmid : '';
       let bookmark = this.bookmark,
-          mark = !m ?
-            this.done[this.done.length - 1] :
-              typeof m === 'string' ?
-            this.getById(m.split('_')[0]) :
-            m;
+          mark = this.findMark(m);
 
       if (!mark) return false;
 
@@ -257,6 +259,16 @@ export default function() {
 			}
 			return pos ? { mark: null, position: null } : false;
 		},
+		findMark(x) {
+			x = x ? x : _STORE.tmid ? _STORE.tmid : '';
+
+			let mark = !x ?
+				this.done[this.done.length - 1] :
+					typeof x === 'string' ?
+				this.getById(x.split('_')[0]) :
+				x;
+			return mark;
+		},
     sortById() {
       this.done.sort((mark1, mark2) => {
         const id1 = mark1.id;
@@ -289,7 +301,7 @@ export default function() {
     onMarkerKey(e, key) {
 			let selection = this.selection = new _SELECTION();
 
-			if (!selection) return false;
+			if (!selection.nodes) return false;
 
       if (e) this.preventDefault(e)
 

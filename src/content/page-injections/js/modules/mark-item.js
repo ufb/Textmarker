@@ -12,7 +12,8 @@ export default class _MARK {
       style: '',
       bookmark: false,
       conds: null,
-      text: selection.text
+      text: selection.text,
+      note: ''
     };
     for (let d in defaults) {
       if (!preSettings.hasOwnProperty(d)) {
@@ -40,7 +41,8 @@ export default class _MARK {
 			style: preSettings.style,
 			conds: preSettings.conds,
 			text: preSettings.text,
-			bookmark: preSettings.bookmark
+			bookmark: preSettings.bookmark,
+      note: preSettings.note
 		};
   }
 
@@ -148,6 +150,7 @@ export default class _MARK {
 	}
 	createWrappers(style, number) {
 		let wrappers = [],
+        hasNote = this.keyData.note,
         i = 0,
         wrapper;
 
@@ -155,6 +158,7 @@ export default class _MARK {
 			wrapper = window.document.createElement('tm');
 			wrapper.setAttribute('style', style);
 			wrapper.setAttribute('data-tm-id', this.id + '_' + i);
+      if (hasNote) wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note'));
       //wrapper.setAttribute('contextmenu', 'textmarker-ctm');
 			wrappers.push(wrapper);
 		}

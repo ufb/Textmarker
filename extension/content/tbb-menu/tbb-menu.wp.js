@@ -60,11 +60,53 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
+
+var _copy = __webpack_require__(3);
+
+var _extend = __webpack_require__(4);
+
+var _extend2 = _interopRequireDefault(_extend);
+
+var _module = __webpack_require__(1);
+
+var _dommodule = __webpack_require__(11);
+
+var _port = __webpack_require__(6);
+
+var _l10n = __webpack_require__(12);
+
+var _l10n2 = _interopRequireDefault(_l10n);
+
+var _errorTracker = __webpack_require__(7);
+
+var _errorTracker2 = _interopRequireDefault(_errorTracker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports._COPY = _copy._COPY;
+exports._EXTEND = _extend2.default;
+exports._MODULE = _module._MODULE;
+exports._DOMMODULE = _dommodule._DOMMODULE;
+exports._PORT = _port._PORT;
+exports._L10N = _l10n2.default;
+exports._ERRORTRACKER = _errorTracker2.default;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -115,48 +157,6 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 
   return _MODULE;
 }(_mediator2.default);
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
-
-var _copy = __webpack_require__(3);
-
-var _extend = __webpack_require__(4);
-
-var _extend2 = _interopRequireDefault(_extend);
-
-var _module = __webpack_require__(0);
-
-var _dommodule = __webpack_require__(10);
-
-var _port = __webpack_require__(6);
-
-var _l10n = __webpack_require__(11);
-
-var _l10n2 = _interopRequireDefault(_l10n);
-
-var _errorTracker = __webpack_require__(7);
-
-var _errorTracker2 = _interopRequireDefault(_errorTracker);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports._COPY = _copy._COPY;
-exports._EXTEND = _extend2.default;
-exports._MODULE = _module._MODULE;
-exports._DOMMODULE = _dommodule._DOMMODULE;
-exports._PORT = _port._PORT;
-exports._L10N = _l10n2.default;
-exports._ERRORTRACKER = _errorTracker2.default;
 
 /***/ }),
 /* 2 */,
@@ -304,7 +304,7 @@ exports._PORT = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _module = __webpack_require__(0);
+var _module = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -466,9 +466,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      if (!this.port) {
-        var port = this.port = browser.runtime.connect({ name: this.name });
-      }
+      this.port = this.port || browser.runtime.connect({ name: this.name });
     }
   }, {
     key: 'addConnectionListeners',
@@ -496,7 +494,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _module = __webpack_require__(0);
+var _module = __webpack_require__(1);
 
 var _ERRORTRACKER = new _module._MODULE({
   autoinit: function autoinit() {
@@ -520,7 +518,8 @@ exports.default = _ERRORTRACKER;
 /***/ }),
 /* 8 */,
 /* 9 */,
-/* 10 */
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -533,7 +532,7 @@ exports._DOMMODULE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _module = __webpack_require__(0);
+var _module = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -654,7 +653,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -765,7 +764,6 @@ function translateDocument() {
 }
 
 /***/ }),
-/* 12 */,
 /* 13 */,
 /* 14 */,
 /* 15 */,
@@ -780,18 +778,17 @@ function translateDocument() {
 /* 24 */,
 /* 25 */,
 /* 26 */,
-/* 27 */,
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _port = __webpack_require__(29);
+var _port = __webpack_require__(28);
 
 var _port2 = _interopRequireDefault(_port);
 
@@ -841,7 +838,7 @@ new _utils._DOMMODULE({
 });
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -851,7 +848,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 exports.default = new _utils._PORT({
   name: 'tbb-menu',

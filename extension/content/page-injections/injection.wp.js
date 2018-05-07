@@ -60,11 +60,53 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 43);
+/******/ 	return __webpack_require__(__webpack_require__.s = 42);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
+
+var _copy = __webpack_require__(3);
+
+var _extend = __webpack_require__(4);
+
+var _extend2 = _interopRequireDefault(_extend);
+
+var _module = __webpack_require__(1);
+
+var _dommodule = __webpack_require__(11);
+
+var _port = __webpack_require__(6);
+
+var _l10n = __webpack_require__(12);
+
+var _l10n2 = _interopRequireDefault(_l10n);
+
+var _errorTracker = __webpack_require__(7);
+
+var _errorTracker2 = _interopRequireDefault(_errorTracker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports._COPY = _copy._COPY;
+exports._EXTEND = _extend2.default;
+exports._MODULE = _module._MODULE;
+exports._DOMMODULE = _dommodule._DOMMODULE;
+exports._PORT = _port._PORT;
+exports._L10N = _l10n2.default;
+exports._ERRORTRACKER = _errorTracker2.default;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -115,48 +157,6 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 
   return _MODULE;
 }(_mediator2.default);
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
-
-var _copy = __webpack_require__(3);
-
-var _extend = __webpack_require__(4);
-
-var _extend2 = _interopRequireDefault(_extend);
-
-var _module = __webpack_require__(0);
-
-var _dommodule = __webpack_require__(10);
-
-var _port = __webpack_require__(6);
-
-var _l10n = __webpack_require__(11);
-
-var _l10n2 = _interopRequireDefault(_l10n);
-
-var _errorTracker = __webpack_require__(7);
-
-var _errorTracker2 = _interopRequireDefault(_errorTracker);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports._COPY = _copy._COPY;
-exports._EXTEND = _extend2.default;
-exports._MODULE = _module._MODULE;
-exports._DOMMODULE = _dommodule._DOMMODULE;
-exports._PORT = _port._PORT;
-exports._L10N = _l10n2.default;
-exports._ERRORTRACKER = _errorTracker2.default;
 
 /***/ }),
 /* 2 */,
@@ -304,7 +304,7 @@ exports._PORT = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _module = __webpack_require__(0);
+var _module = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -466,9 +466,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      if (!this.port) {
-        var port = this.port = browser.runtime.connect({ name: this.name });
-      }
+      this.port = this.port || browser.runtime.connect({ name: this.name });
     }
   }, {
     key: 'addConnectionListeners',
@@ -496,7 +494,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _module = __webpack_require__(0);
+var _module = __webpack_require__(1);
 
 var _ERRORTRACKER = new _module._MODULE({
   autoinit: function autoinit() {
@@ -519,8 +517,134 @@ exports.default = _ERRORTRACKER;
 
 /***/ }),
 /* 8 */,
-/* 9 */,
-/* 10 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(0);
+
+exports.default = new _utils._MODULE({
+  events: {
+    ENV: {
+      'toggled:sync': 'setAreas'
+    }
+  },
+  initialized: false,
+  area_settings: 'sync',
+  area_history: 'sync',
+  area_entry: 'sync',
+
+  pdf: false,
+  iframe: false,
+  name: undefined,
+  isNew: true,
+  entry: null,
+  tmid: '',
+
+  setAreas: function setAreas() {
+    var _this = this;
+
+    return browser.storage.sync.get().then(function (storage) {
+      if (storage && storage.sync) {
+        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
+        _this.area_history = storage.sync.history ? 'sync' : 'local';
+      }
+    });
+  },
+  get: function get() {
+    var _this2 = this;
+
+    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
+
+    var meth = this['_get_' + field];
+    if (!meth) throw 'field ' + field + ' doesn\'t exist';
+
+    if (!this.initialized) {
+      this.initialized = true;
+      return this.setAreas().then(function () {
+        return _this2['_get_' + field]();
+      });
+    }
+    return this['_get_' + field]();
+  },
+  _get_history: function _get_history() {
+    return browser.storage.sync.get().then(function (syncedStorage) {
+      var syncedHistory = syncedStorage.history;
+
+      return browser.storage.local.get().then(function (localStorage) {
+        var localHistory = localStorage.history;
+        if (!syncedHistory) return localHistory;
+        if (!localHistory) return syncedHistory;
+
+        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
+        for (var e in localHistory.entries) {
+          syncedHistory.entries[e] = localHistory.entries[e];
+        }return syncedHistory;
+      });
+    });
+  },
+  _get_settings: function _get_settings() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings;
+    });
+  },
+  _get_bmicon: function _get_bmicon() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.bmicon;
+    });
+  },
+  _get_noteicon: function _get_noteicon() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.noteicon;
+    });
+  },
+  _get_noteonclick: function _get_noteonclick() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.noteonclick;
+    });
+  },
+  _get_autosave: function _get_autosave() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.history.autosave;
+    });
+  },
+  _get_markers: function _get_markers() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings.markers;
+    });
+  },
+  _get_shortcuts: function _get_shortcuts() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings.shortcuts;
+    });
+  },
+  _get_mode: function _get_mode() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings || storage.settings.addon.active) return true;
+      return false;
+    });
+  },
+  _get_naming: function _get_naming() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return 'custom';
+      return storage.settings.history.naming;
+    });
+  }
+});
+
+/***/ }),
+/* 10 */,
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -533,7 +657,7 @@ exports._DOMMODULE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _module = __webpack_require__(0);
+var _module = __webpack_require__(1);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -654,7 +778,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -765,120 +889,6 @@ function translateDocument() {
 }
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _utils = __webpack_require__(1);
-
-exports.default = new _utils._MODULE({
-  events: {
-    ENV: {
-      'toggled:sync': 'setAreas'
-    }
-  },
-  initialized: false,
-  area_settings: 'sync',
-  area_history: 'sync',
-  area_entry: 'sync',
-
-  pdf: false,
-  iframe: false,
-  name: undefined,
-  isNew: true,
-  entry: null,
-  tmid: '',
-
-  setAreas: function setAreas() {
-    var _this = this;
-
-    return browser.storage.sync.get().then(function (storage) {
-      if (storage && storage.sync) {
-        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
-        _this.area_history = storage.sync.history ? 'sync' : 'local';
-      }
-    });
-  },
-  get: function get() {
-    var _this2 = this;
-
-    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
-
-    var meth = this['_get_' + field];
-    if (!meth) throw 'field ' + field + ' doesn\'t exist';
-
-    if (!this.initialized) {
-      this.initialized = true;
-      return this.setAreas().then(function () {
-        return _this2['_get_' + field]();
-      });
-    }
-    return this['_get_' + field]();
-  },
-  _get_history: function _get_history() {
-    return browser.storage.sync.get().then(function (syncedStorage) {
-      var syncedHistory = syncedStorage.history;
-
-      return browser.storage.local.get().then(function (localStorage) {
-        var localHistory = localStorage.history;
-        if (!syncedHistory) return localHistory;
-        if (!localHistory) return syncedHistory;
-
-        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
-        for (var e in localHistory.entries) {
-          syncedHistory.entries[e] = localHistory.entries[e];
-        }return syncedHistory;
-      });
-    });
-  },
-  _get_settings: function _get_settings() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings;
-    });
-  },
-  _get_bmicon: function _get_bmicon() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return true;
-      return storage.settings.misc.bmicon;
-    });
-  },
-  _get_autosave: function _get_autosave() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return false;
-      return storage.settings.history.autosave;
-    });
-  },
-  _get_markers: function _get_markers() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings.markers;
-    });
-  },
-  _get_shortcuts: function _get_shortcuts() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings.shortcuts;
-    });
-  },
-  _get_mode: function _get_mode() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings || storage.settings.addon.active) return true;
-      return false;
-    });
-  },
-  _get_naming: function _get_naming() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return 'custom';
-      return storage.settings.history.naming;
-    });
-  }
-});
-
-/***/ }),
 /* 13 */,
 /* 14 */,
 /* 15 */,
@@ -894,7 +904,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _store = __webpack_require__(12);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -1211,27 +1221,26 @@ exports.default = _SELECTION;
 /* 39 */,
 /* 40 */,
 /* 41 */,
-/* 42 */,
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
+__webpack_require__(43);
+
+__webpack_require__(9);
+
 __webpack_require__(44);
-
-__webpack_require__(12);
-
-__webpack_require__(45);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1241,7 +1250,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
 exports.default = new _utils._PORT({
   name: 'injection',
@@ -1252,29 +1261,33 @@ exports.default = new _utils._PORT({
 });
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
-var _page = __webpack_require__(46);
+var _page = __webpack_require__(45);
 
 var _page2 = _interopRequireDefault(_page);
 
-var _contextmenu = __webpack_require__(47);
+var _contextmenu = __webpack_require__(46);
 
 var _contextmenu2 = _interopRequireDefault(_contextmenu);
 
-var _marker = __webpack_require__(48);
+var _marker = __webpack_require__(47);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _restorer = __webpack_require__(51);
+var _restorer = __webpack_require__(50);
 
 var _restorer2 = _interopRequireDefault(_restorer);
+
+var _notes = __webpack_require__(51);
+
+var _notes2 = _interopRequireDefault(_notes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1300,17 +1313,20 @@ new _utils._MODULE({
   power: function power(on) {
     if (!on || this.bootstrapped) return false;
 
+    window.document.body.appendChild(window.document.createElement('tm-ui'));
+
     (0, _page2.default)();
     (0, _contextmenu2.default)();
     (0, _restorer2.default)();
     (0, _marker2.default)();
+    (0, _notes2.default)();
 
     this.bootstrapped = true;
   }
 });
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1404,15 +1420,18 @@ exports.default = function () {
     delegate: function delegate(e) {
       var _this2 = this;
 
-      return _store2.default.get('settings').then(function (settings) {
+      var key = e.key.toLowerCase(),
+          modKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey,
+          functionKeys = ['b', 's', 'y', 'z'],
+          defaultMarkers = ['m', '2', '3'];
+
+      if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
+
+      if (this.isEditable(e.target)) return true;
+
+      _store2.default.get('settings').then(function (settings) {
 
         if (!settings) return true;
-
-        var key = e.key.toLowerCase(),
-            modKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey,
-            defaultMarkers = ['m', '2', '3'];
-
-        if (_this2.isEditable(e.target)) return true;
 
         if (!modKey) {
           if (key === 'w' && !settings.shortcuts.w[0] && settings.shortcuts.w[1]) _this2.lookup();else if (settings.markers[key] && (!defaultMarkers.includes(key) || !settings.shortcuts[key] || !settings.shortcuts[key][0] && settings.shortcuts[key][1])) {
@@ -1482,16 +1501,16 @@ exports.default = function () {
   });
 };
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(12);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1525,23 +1544,25 @@ exports.default = function () {
     registerHandler: function registerHandler() {
       this.addListener('mousedown', function (e) {
         if (e.button === 2) {
-          if (e.target.nodeName === 'TM') _store2.default.tmid = e.target.getAttribute('data-tm-id');else _store2.default.tmid = '';
+          if (e.target.nodeName === 'TM') {
+            _store2.default.tmid = e.target.getAttribute('data-tm-id');
+          } else _store2.default.tmid = '';
         }
       }, window.document);
     }
   });
 };
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(12);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1566,7 +1587,10 @@ exports.default = function () {
         'ctx:-b': 'removeBookmark',
         'ctx:d': 'remove',
         'ctx:m': 'onMarkerKey',
-        'updated:misc-settings': 'showBookmarkIcon'
+        'ctx:n': 'addNote',
+        'updated:misc-settings': 'showBookmarkIcon',
+        'updated:note': 'autosave',
+        'removed:note': 'autosave'
       }
     },
     selection: null,
@@ -1748,15 +1772,18 @@ exports.default = function () {
       this.store(this.mark(mark.key, mark), selection.text, false);
     },
     onFinishedRestoration: function onFinishedRestoration() {
+      this.emit('restore:notes', this.done);
       this.sortById();
       this.scrollToBookmark();
+    },
+    addNote: function addNote(id) {
+      this.emit('add:note', this.findMark(id));
     },
     setBookmark: function setBookmark(m) {
       var _this3 = this;
 
-      m = m ? m : _store2.default.tmid ? _store2.default.tmid : '';
       var bookmark = this.bookmark,
-          mark = !m ? this.done[this.done.length - 1] : typeof m === 'string' ? this.getById(m.split('_')[0]) : m;
+          mark = this.findMark(m);
 
       if (!mark) return false;
 
@@ -1811,6 +1838,12 @@ exports.default = function () {
       }
       return pos ? { mark: null, position: null } : false;
     },
+    findMark: function findMark(x) {
+      x = x ? x : _store2.default.tmid ? _store2.default.tmid : '';
+
+      var mark = !x ? this.done[this.done.length - 1] : typeof x === 'string' ? this.getById(x.split('_')[0]) : x;
+      return mark;
+    },
     sortById: function sortById() {
       this.done.sort(function (mark1, mark2) {
         var id1 = mark1.id;
@@ -1846,7 +1879,7 @@ exports.default = function () {
 
       var selection = this.selection = new _selection2.default();
 
-      if (!selection) return false;
+      if (!selection.nodes) return false;
 
       if (e) this.preventDefault(e);
 
@@ -1939,17 +1972,17 @@ exports.default = function () {
   });
 };
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(12);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _markItem = __webpack_require__(49);
+var _markItem = __webpack_require__(48);
 
 var _markItem2 = _interopRequireDefault(_markItem);
 
-var _bookmark = __webpack_require__(50);
+var _bookmark = __webpack_require__(49);
 
 var _bookmark2 = _interopRequireDefault(_bookmark);
 
@@ -1960,7 +1993,7 @@ var _selection2 = _interopRequireDefault(_selection);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1972,7 +2005,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _store = __webpack_require__(12);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -1994,7 +2027,8 @@ var _MARK = function () {
 						style: '',
 						bookmark: false,
 						conds: null,
-						text: selection.text
+						text: selection.text,
+						note: ''
 				};
 				for (var d in defaults) {
 						if (!preSettings.hasOwnProperty(d)) {
@@ -2022,7 +2056,8 @@ var _MARK = function () {
 						style: preSettings.style,
 						conds: preSettings.conds,
 						text: preSettings.text,
-						bookmark: preSettings.bookmark
+						bookmark: preSettings.bookmark,
+						note: preSettings.note
 				};
 		}
 
@@ -2059,7 +2094,6 @@ var _MARK = function () {
 						if (!this.keyData.conds) this.describe();
 
 						//NODES_CACHE.pop();
-						//this.emit()
 
 						return this;
 				}
@@ -2145,6 +2179,7 @@ var _MARK = function () {
 				key: 'createWrappers',
 				value: function createWrappers(style, number) {
 						var wrappers = [],
+						    hasNote = this.keyData.note,
 						    i = 0,
 						    wrapper = void 0;
 
@@ -2152,6 +2187,7 @@ var _MARK = function () {
 								wrapper = window.document.createElement('tm');
 								wrapper.setAttribute('style', style);
 								wrapper.setAttribute('data-tm-id', this.id + '_' + i);
+								if (hasNote) wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note'));
 								//wrapper.setAttribute('contextmenu', 'textmarker-ctm');
 								wrappers.push(wrapper);
 						}
@@ -2246,7 +2282,7 @@ var _MARK = function () {
 exports.default = _MARK;
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2258,7 +2294,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _store = __webpack_require__(12);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2321,7 +2357,7 @@ var _BOOKMARK = function () {
       var _this2 = this;
 
       var bm = this.icon || function () {
-        var bm = window.document.createElement('bm');
+        var bm = window.document.createElement('tm-bm');
         if (_store2.default.pdf) bm.className = 'textmarker-bookmark-control';
 
         bm.addEventListener('click', function () {
@@ -2333,7 +2369,8 @@ var _BOOKMARK = function () {
         return bm;
       }();
 
-      window.document.body.appendChild(bm);
+      window.document.getElementsByTagName('tm-ui')[0].appendChild(bm);
+      bm.title = browser.i18n.getMessage('bm_scroll');
       this.iconShown = true;
     }
   }, {
@@ -2359,7 +2396,7 @@ var _BOOKMARK = function () {
 exports.default = _BOOKMARK;
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2375,155 +2412,485 @@ exports.default = function () {
   return [new Restorer({
     events: {
       ENV: {
-        //'restore:marks': 'init'
-        'found:marks': 'init'
+        'restore:marks': 'init'
       }
     },
+    queue: [],
+    cache: [],
     lost: [],
     restored: [],
     area: 'sync',
+    phase: 1,
 
-    init: function init(entry, t) {
-      if (_store2.default.pdf || _store2.default.name !== entry.name) return false;
-      this.t = t;
+    init: function init(entry) {
+      if (_store2.default.pdf) return false;
+
+      _store2.default.name = entry.name;
       _store2.default.entry = entry;
+
+      var now = [],
+          postponed = [],
+          marks = entry.marks,
+          l = marks.length,
+          i = 0,
+          mark = void 0;
+
       this.area = entry.synced ? 'sync' : 'local';
 
-      var marks = entry.marks;
+      for (; i < l; i++) {
+        mark = marks[i];
 
-      this.lost = marks.lost;
+        this.convertDescription(mark).createTempObject(mark);
 
-      this.restore(marks).report();
+        if (mark.conds.n1 === 'TM') postponed.push(mark);else now.push(mark);
+      }
+
+      this.queue.push(now);
+
+      for (i = 0, l = postponed.length; i < l; i++) {
+        this.queue.push([postponed[i]]);
+      }this.restore().report();
     },
-    restore: function restore(marks) {
-      if (!marks.length) return this;
+    convertDescription: function convertDescription(mark) {
+      if (typeof mark.conds.o === 'undefined') {
+        var conds = mark.conds,
+            convertedConds = {
+          o: conds.startOffset,
+          n1: conds.firstNodeName,
+          n2: conds.firstParentNodeName,
+          p1: conds.firstTextNodePosition,
+          p2: conds.firstNodePosition,
+          p3: conds.firstParentNodePosition,
+          p4: conds.firstGrampaNodePosition
+        };
+        delete mark.conds;
+        mark.conds = convertedConds;
+      }
+      return this;
+    },
+    createTempObject: function createTempObject(mark) {
+      var trimmedText = this.squeeze(mark.text);
 
-      var nodes = this.getDocumentTextNodes();
-      var selection = window.getSelection();
-      var range = document.createRange();
+      mark.temp = {
+        trimmedText: trimmedText,
+        trimmedTextLength: trimmedText.length,
+        possiblePositions: [],
+        possibleStartNodes: [],
+        possibleEnds: {},
+        possibleFocusOffsets: []
+      };
+    },
+    restore: function restore() {
+      if (this.phase === 2) this.sortQueueById();
 
-      var restorationData = void 0,
-          count = void 0,
-          rangeData = void 0,
-          startNode = void 0,
-          endNode = void 0,
-          endOffset = void 0,
-          textLength = void 0,
-          prevLength = void 0,
-          selectionObject = void 0;
+      var marks = this.marks = this.queue.shift(),
+          length = marks ? marks.length : 0;
 
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      this.length = length;
 
-      try {
-        for (var _iterator = marks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var mark = _step.value;
+      if (length) {
+        this.setBodySelection(window.document.body).getTextPositions(marks, length);
 
-          // make loop async -> wait for restoration of prev mark before continue
-          // -> only if its endNode is in same textNode as startNodes of other marks?
-          restorationData = mark.restorationData;
-          count = restorationData.count;
-          if (!count) {
-            this.lost.push(mark);
-            continue;
+        if (this.phase === 1 && length > 1) this.postponeOverlappings();
+
+        this.findPossibleExtrema().ruleOutMultiples().recreateMarks();
+      }
+
+      this.phase++;
+
+      if (this.queue.length) this.restore();
+
+      return this;
+    },
+    sortQueueById: function sortQueueById() {
+      var marks = this.queue,
+          l = marks ? marks.length : 0,
+          temp = [],
+          res = [],
+          i = 0,
+          mark = void 0,
+          t = void 0;
+
+      while (l--) {
+        if (!marks[l].length) continue;
+        mark = marks[l][0];
+        temp[mark.id] = mark;
+      }
+      this.queue = [];
+
+      for (t = temp.length; i < t; i++) {
+        if (temp[i]) this.queue.push([temp[i]]);
+      }
+      return this;
+    },
+    getTextPositions: function getTextPositions(marks, l) {
+      var trimmedSelectionText = this.trimmedSelectionText,
+          allPossibleStartPositions = this.allPossibleStartPositions = [],
+          endPositions = [],
+          mark = void 0,
+          markTemp = void 0,
+          trimmedText = void 0,
+          trimmedTextLength = void 0,
+          p = void 0,
+          endPosition = void 0;
+
+      while (l--) {
+        p = undefined;
+        mark = marks[l];
+        markTemp = mark.temp;
+
+        if (!markTemp) {
+          marks.splice(l, 1);
+          continue;
+        }
+
+        trimmedText = markTemp.trimmedText;
+        trimmedTextLength = markTemp.trimmedTextLength;
+
+        while (p !== -1) {
+          if (p === undefined) p = -1;
+          p = trimmedSelectionText.indexOf(trimmedText, p + 1);
+          endPosition = p + trimmedTextLength;
+          markTemp.possiblePositions.push(p);
+          allPossibleStartPositions.push([p, endPosition, mark]);
+          endPositions.push(endPosition);
+        }
+
+        markTemp.possiblePositions.pop();
+        allPossibleStartPositions.pop();
+        endPositions.pop();
+
+        if (!markTemp.possiblePositions.length) this.lost.push(mark);
+      }
+      this.sortPossibleStartPositions(allPossibleStartPositions);
+      this.maxPosition = Math.max.apply(null, endPositions);
+
+      return this;
+    },
+    sortPossibleStartPositions: function sortPossibleStartPositions(positions) {
+      var l = positions.length,
+          temp = [],
+          i = 0,
+          pos = void 0,
+          start = void 0,
+          t = void 0;
+
+      while (l--) {
+        pos = positions[l];
+        start = pos[0];
+
+        if (temp[start]) temp.splice(start + 1, 0, pos);else temp[start] = pos;
+      }
+      t = temp.length;
+      this.allPossibleStartPositions = [];
+
+      for (; i < t; i++) {
+        if (temp[i]) this.allPossibleStartPositions.push(temp[i]);
+      }
+    },
+    postponeOverlappings: function postponeOverlappings() {
+      var positions = this.allPossibleStartPositions,
+          p = positions.length,
+          postponed = [],
+          pos1 = void 0,
+          pos2 = void 0,
+          i = void 0,
+          m1 = void 0,
+          m2 = void 0,
+          id = void 0;
+
+      if (p > 1) {
+        while (p-- > 1) {
+          pos1 = positions[p - 1];
+          pos2 = positions[p];
+
+          if (pos1[1] > pos2[0] && pos1[0] < pos2[1]) {
+            m1 = pos1[2];
+            m2 = pos2[2];
+
+            if (m1.id < m2.id) {
+              id = m2.id;
+
+              if (!postponed.includes(id)) {
+                this.postpone(m2);
+                postponed.push(id);
+              }
+            } else {
+              id = m1.id;
+
+              if (!postponed.includes(id)) {
+                this.postpone(m1);
+                postponed.push(id);
+              }
+            }
           }
-          rangeData = restorationData.rangeData[0];
-          startNode = nodes[rangeData.startTextNodePos].parentNode.childNodes[mark.conds.p1];
-          // if (count > 1) mark = this.ruleOutMultiples(mark);
-          endNode = nodes[rangeData.endTextNodePos];
-          endOffset = rangeData.endOffset;
-          prevLength = 0;
-          textLength = endNode.data.length;
-          while (textLength < endOffset) {
-            endNode = endNode.nextSibling;
-            endNode = endNode.nodeType === 3 ? endNode : endNode.firstChild;
-            prevLength = textLength;
-            textLength += endNode.data.length;
+        }
+        p = postponed.length;
+
+        for (i = 0; i < p; i++) {
+          this.cutOutFor(postponed[i]);
+        }
+      }
+      return this;
+    },
+    cutOutFor: function cutOutFor(id) {
+      var positions = this.allPossibleStartPositions,
+          p = positions.length;
+
+      while (p--) {
+        if (positions[p][2].id === id) this.allPossibleStartPositions.splice(p, 1);
+      }
+    },
+    postpone: function postpone(mark) {
+      var queue = this.queue,
+          l = queue.length,
+          alreadyIncluded = false;
+
+      while (l--) {
+        if (queue[l][0] === mark) {
+          alreadyIncluded = true;
+          break;
+        }
+      }
+      if (!alreadyIncluded) this.queue.push([mark]);
+    },
+    findPossibleExtrema: function findPossibleExtrema() {
+      var selection = this.selection,
+          range = this.range,
+          nodes = this.bodyTextNodes,
+          n = nodes.length,
+          indices = this.allPossibleStartPositions,
+          phase = this.phase,
+          cache = this.cache = [],
+          satisfied = [],
+          i = 0,
+          chars = 0,
+          nextStartFound = void 0,
+          endingsInThisNode = void 0,
+          node = void 0,
+          nodesText = void 0,
+          nodesTextLength = void 0,
+          mark = void 0,
+          diff = void 0,
+          l = void 0,
+          startPosition = void 0,
+          endPosition = void 0,
+          e = void 0,
+          f = void 0,
+          id = void 0,
+          p = void 0,
+          q = void 0,
+          x = void 0,
+          m = void 0,
+          possibleFocusOffset = void 0,
+          startFoundFor = void 0,
+          postponed = void 0,
+          hasEndingsInThisNode = void 0;
+
+      for (; i < n; i++) {
+        node = nodes[i];
+        nodesText = this.squeeze(node.data);
+        nodesTextLength = nodesText.length;
+        chars += nodesTextLength;
+        l = indices.length;
+        startFoundFor = [];
+        postponed = [];
+        hasEndingsInThisNode = null;
+
+        while (l--) {
+          startPosition = indices[l][0];
+          endPosition = indices[l][1];
+          mark = indices[l][2];
+          id = mark.id;
+
+          mark.temp.startFoundFor = mark.temp.startFoundFor || [];
+          mark.temp.endFoundFor = mark.temp.endFoundFor || [];
+
+          if (!mark.temp.startFoundFor.includes(startPosition) && chars > startPosition && mark.temp.possibleStartNodes.length < mark.temp.possiblePositions.length) {
+            if (hasEndingsInThisNode && hasEndingsInThisNode.id < mark.id) {
+              if (phase === 1) {
+                this.postpone(mark);
+                postponed.push(id);
+              }
+              indices.splice(l, 1);
+
+              continue;
+            } else {
+              if (!this.satisfiesDescription(mark, node)) {
+                if (phase === 1 && id !== 1) {
+                  this.postpone(mark);
+                  postponed.push(id);
+                }
+                indices.splice(l, 1);
+
+                continue;
+              } else {
+                mark.temp.possibleStartNodes.push(node);
+                mark.temp.startFoundFor.push(startPosition);
+                startFoundFor.push(id);
+              }
+            }
           }
-          endOffset -= prevLength;
-          console.log(startNode, mark.conds.o, endNode, endOffset);
+          if (mark.temp.startFoundFor.includes(startPosition) && !mark.temp.endFoundFor.includes(endPosition) && chars - endPosition >= 0) {
+            if (Math.min.apply(null, startFoundFor) < id) {
+              if (phase === 1) {
+                this.postpone(mark);
+                postponed.push(id);
+              }
+              indices.splice(l, 1);
+            } else {
+              possibleFocusOffset = this.findFocusOffset(mark, node, endPosition - (chars - nodesTextLength));
+              mark.temp.possibleFocusOffsets.push(possibleFocusOffset);
+              mark.temp.endFoundFor.push(endPosition);
+              mark.temp.possibleEnds[startPosition] = {
+                node: node,
+                offset: possibleFocusOffset
+              };
+              if (!satisfied.includes(id)) {
+                cache.push(mark);
+                satisfied.push(id);
+              }
+
+              hasEndingsInThisNode = mark;
+              indices.splice(l, 1);
+            }
+          }
+        }
+        p = postponed.length;
+
+        if (p) for (x = 0; x < p; x++) {
+          this.cutOutFor(postponed[x]);
+        }if (chars > this.maxPosition) break;
+      }
+      if (phase !== 1) {
+        for (m in this.marks) {
+          if (!satisfied.includes(this.marks[m].id)) this.lost.push(mark);
+        }
+      }
+      return this;
+    },
+    ruleOutMultiples: function ruleOutMultiples() {
+      var cache = this.cache,
+          i = cache.length,
+          mark = void 0,
+          possibleStartNodes = void 0,
+          p = void 0,
+          parent = void 0,
+          grampa = void 0,
+          grandgrampa = void 0,
+          matches = void 0,
+          failed = void 0,
+          q = void 0;
+
+      while (i--) {
+        mark = cache[i];
+        matches = [];
+        failed = false;
+        possibleStartNodes = mark.temp.possibleStartNodes;
+        p = possibleStartNodes.length;
+
+        if (p > 1) {
+          while (p--) {
+            parent = possibleStartNodes[p].parentNode.parentNode;
+            grampa = parent.parentNode || 0;
+
+            if (!grampa || mark.conds.p3 === this.whichChild(grampa, parent)) matches.push(p);
+          }
+          if (!matches.length) p = 0;else {
+            if (matches.length === 1) p = matches[0];else {
+              p = undefined;
+
+              while (matches.length) {
+                q = matches.pop();
+                parent = possibleStartNodes[q].parentNode;
+                grampa = parent.parentNode || 0;
+                grandgrampa = grampa && grampa.parentNode ? grampa.parentNode : 0;
+
+                if (!grandgrampa || mark.conds.p4 === this.whichChild(grandgrampa, grampa)) {
+                  p = q;
+                  break;
+                }
+              }
+              if (!p) p = 0;
+            }
+          }
+        } else p = 0;
+
+        p = p || 0;
+
+        mark.temp.startNode = mark.temp.possibleStartNodes[p];
+
+        this.setMatchingEnd(mark, p);
+      }
+      return this;
+    },
+    setMatchingEnd: function setMatchingEnd(mark, p) {
+      var startPosition = mark.temp.startFoundFor[p],
+          end = mark.temp.possibleEnds[startPosition];
+
+      mark.temp.endNode = end.node;
+      mark.temp.focusOffset = end.offset;
+    },
+    satisfiesDescription: function satisfiesDescription(mark, node) {
+      var description = mark.conds,
+          parentNode = node.parentNode,
+          grampa = parentNode.parentNode,
+          grandgrampa = grampa && grampa.parentNode ? grampa.parentNode : 0,
+          startOffset = description.o,
+          relevantNodeText = node.data.substring(startOffset).trim(),
+          l = relevantNodeText.length,
+          markText = mark.text.trim(),
+          m = markText.length,
+          textsMatch = void 0;
+
+      if (m <= l) textsMatch = this.squeeze(relevantNodeText).indexOf(this.squeeze(markText)) === 0;else textsMatch = this.squeeze(markText).indexOf(this.squeeze(relevantNodeText)) === 0;
+
+      return textsMatch && parentNode.nodeName === description.n1 && (!grampa || grampa.nodeName === description.n2) && this.whichChild(parentNode, node) === description.p1;
+    },
+    findFocusOffset: function findFocusOffset(mark, node, n) {
+      var nodeText = node.data,
+          l = nodeText.length,
+          i = 0,
+          counter = 0;
+
+      for (; i < l; i++) {
+        if (this.squeeze(nodeText[i])) counter++;
+
+        if (counter === n) return (/\s$/.test(mark.text) ? i + 2 : i + 1
+        );
+      }
+    },
+    recreateMarks: function recreateMarks() {
+      var range = this.range,
+          selection = this.selection,
+          marks = this.cache,
+          i = marks.length,
+          mark = void 0,
+          markTemp = void 0,
+          start = void 0,
+          end = void 0,
+          focusOffset = void 0;
+
+      while (i--) {
+        mark = marks[i];
+        markTemp = mark.temp;
+        start = markTemp.startNode;
+        end = markTemp.endNode;
+        focusOffset = markTemp.focusOffset;
+
+        if (!start || !end || !(typeof focusOffset === 'number')) this.lost.push(mark);else {
           try {
-            range.setStart(startNode, mark.conds.o);
-            range.setEnd(endNode, endOffset);
-            selection.addRange(range);
-            selectionObject = new _selection2.default();
-            selectionObject.resume(range);
-            this.emit('restored:range', selectionObject, mark);
+            range.setStart(start, mark.conds.o);
+            range.setEnd(end, focusOffset);
+            selection.resume(range);
+            this.emit('restored:range', selection, mark);
             this.restored.push(mark);
           } catch (e) {
             this.lost.push(mark);
           }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
+          delete mark.temp;
         }
       }
-
-      console.log('total duration:', new Date().getTime() - this.t);
-      return this;
-    },
-    ruleOutMultiples: function ruleOutMultiples(mark) {
-      var _this2 = this;
-
-      var nodes = this.nodes;
-      var conds = mark.conds;
-      var rangeData = mark.restorationData.rangeData,
-          tempRuledOut = [],
-          nodeDataSaved = false,
-          l = void 0,
-          data = void 0,
-          test = void 0;
-
-      var runTest = function runTest(test) {
-        var l = rangeData.length;
-        while (l--) {
-          data = rangeData[l];
-          if (!nodeDataSaved) {
-            data.startNode = nodes[data.startTextNodePos];
-            data.parent = data.startNode.parentNode;
-            data.grandpa = data.parent.parentNode;
-            data.grandgrandpa = data.grandpa.parentNode;
-          }
-          if (!test(data)) {
-            tempRuledOut.push(rangeData.splice(l, 1)[0]);
-          }
-        }
-        nodeDataSaved = true;
-      };
-      var tests = [function (data) {
-        return _this2.whichChild(data.parent, data.startNode) == conds.p1;
-      }, function (data) {
-        return data.parent.nodeName === conds.n1;
-      }, function (data) {
-        return data.grandpa.nodeName === conds.n2;
-      }, function (data) {
-        return _this2.whichChild(data.grandpa, data.parent) == conds.p2;
-      }, function (data) {
-        return _this2.whichChild(data.grandgrandpa, data.grandpa) == conds.p3;
-      }];
-
-      while (tests.length) {
-        runTest(tests.shift());
-        l = rangeData.length;
-        if (!l) {
-          rangeData.push(tempRuledOut.shift());
-          return mark;
-        }
-        if (l === 1) return mark;
-      }
-      rangeData.length = 1;
-      return mark;
     }
   }), new Restorer({
     events: {
@@ -2702,9 +3069,9 @@ exports.default = function () {
   })];
 };
 
-var _utils = __webpack_require__(1);
+var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(12);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2730,18 +3097,40 @@ var Restorer = function (_MODULE2) {
   }
 
   _createClass(Restorer, [{
-    key: 'getDocumentTextNodes',
-    value: function getDocumentTextNodes() {
-      var walker = document.createTreeWalker(document, window.NodeFilter.SHOW_TEXT, null, false),
-          nodes = [],
-          node = walker.nextNode();
+    key: 'processPeuAPeu',
+    value: function processPeuAPeu(data, func, cb) {
+      var d = Array.prototype.slice.call(data),
+          done = void 0,
+          time0 = void 0;
 
-      while (node) {
-        nodes.push(node);
-        node = walker.nextNode();
-      }
-      this.nodes = nodes;
-      return nodes;
+      (function rec() {
+        var max = +new Date() + 500;
+        do {
+          done = func(d[0]);
+          if (done) d.shift();
+        } while (d.length > 0 && max > +new Date());
+
+        if (d.length > 0) window.setTimeout(function () {
+          return rec();
+        }, 25);else cb();
+      })();
+    }
+  }, {
+    key: 'setBodySelection',
+    value: function setBodySelection(el) {
+      var selection = this.selection = new _selection2.default(el);
+
+      this.trimmedSelectionText = this.squeeze(selection.text);
+
+      this.bodyTextNodes = selection.nodes;
+      this.range = selection.range;
+
+      return this;
+    }
+  }, {
+    key: 'squeeze',
+    value: function squeeze(text) {
+      return text.replace(/\t|\s|\n|\r/g, '');
     }
   }, {
     key: 'whichChild',
@@ -2784,6 +3173,291 @@ var Restorer = function (_MODULE2) {
 
   return Restorer;
 }(_utils._MODULE);
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function () {
+
+  return new _utils._MODULE({
+    events: {
+      ENV: {
+        'add:note': 'addAndShow',
+        'removed:note': 'remove',
+        'restore:notes': 'restore'
+      }
+    },
+    notes: {},
+    toggle: null,
+    add: function add(mark) {
+      return this.notes[mark.id] = new _note2.default(mark);
+    },
+    restore: function restore(marks) {
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = marks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var mark = _step.value;
+
+          if (mark.keyData.note) this.add(mark);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      if (Object.keys(this.notes).length) this.toggleToggler(true);
+    },
+    addAndShow: function addAndShow(mark) {
+      if (!Object.keys(this.notes).length) this.toggleToggler(true);
+      this.add(mark).show();
+    },
+    remove: function remove(id) {
+      delete this.notes[id];
+      if (!Object.keys(this.notes).length) this.toggleToggler(false);
+    },
+    toggleAll: function toggleAll() {
+      if (!this.notes) return;
+      var notes = this.notes;
+      var meth = window.document.getElementsByTagName('tmnote').length ? 'hide' : 'show',
+          condition = meth === 'hide' ? true : false,
+          note = void 0;
+      for (var n in notes) {
+        note = notes[n];
+        if (note.visible === condition) {
+          note[meth]();
+        }
+      }
+    },
+    toggleToggler: function toggleToggler(show) {
+      var _this = this;
+
+      var tmui = window.document.getElementsByTagName('tm-ui')[0];
+      if (show) {
+        _store2.default.get('noteicon').then(function (noteicon) {
+          if (noteicon) {
+            var toggle = _this.toggle = window.document.createElement('tm-notes-toggle');
+            toggle.title = browser.i18n.getMessage('toggle_notes');
+            tmui.appendChild(toggle);
+            toggle.onclick = function () {
+              return _this.toggleAll();
+            };
+          }
+        });
+      } else {
+        if (!this.toggle) return;
+        tmui.removeChild(this.toggle);
+        this.toggle = null;
+      }
+    }
+  });
+};
+
+var _utils = __webpack_require__(0);
+
+var _store = __webpack_require__(9);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _note = __webpack_require__(52);
+
+var _note2 = _interopRequireDefault(_note);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (mark) {
+
+  return new _utils._DOMMODULE({
+    events: {
+      DOM: {
+        click: {
+          'tmnote-delete': 'remove',
+          'tmnote-minimize': 'hide',
+          'tmnote-content': 'bringUpFront'
+        },
+        keyup: {
+          'tmnote-content': 'update'
+        }
+      }
+    },
+    addListenersManually: true,
+    el: null,
+    mark: mark,
+    markClickHandler: null,
+    text: '',
+    visible: false,
+
+    autoinit: function autoinit() {
+      this.createNoteElement();
+      this.addListeners();
+      this.addMarkListeners();
+    },
+    createNoteElement: function createNoteElement() {
+      var note = this.el = document.createElement('tmnote');
+      var del = this.del = document.createElement('tmnote-delete');
+      var min = this.min = document.createElement('tmnote-minimize');
+      var p = this.textElement = document.createElement('tmnote-content');
+      var text = this.mark.keyData.note || '';
+      var delText = document.createTextNode(String.fromCharCode(10005));
+      var minText = document.createTextNode(String.fromCharCode(0x2013));
+
+      if (text) {
+        p.appendChild(document.createTextNode(text));
+      }
+      p.setAttribute('contenteditable', true);
+      del.appendChild(delText);
+      min.appendChild(minText);
+      note.appendChild(del);
+      note.appendChild(min);
+      note.appendChild(p);
+    },
+    remove: function remove(e, el) {
+      this.hide();
+      this.mark.keyData.note = '';
+      this.removeMarkListeners();
+      this.emit('removed:note', this.mark.id);
+    },
+    update: function update(e, el) {
+      this.mark.keyData.note = el.textContent;
+      this.emit('updated:note');
+    },
+    show: function show() {
+      var el = this.el;
+      var pos = this.getPosition();
+      var left = pos.left;
+      var innerWindowWidth = window.innerWidth;
+      if (left + 360 > innerWindowWidth) {
+        left = innerWindowWidth - 360;
+      }
+      window.document.body.appendChild(el);
+      el.setAttribute('style', 'display:block;top:' + (pos.top + pos.offset) + 'px;left:' + left + 'px;');
+      this.visible = true;
+    },
+    bringUpFront: function bringUpFront() {
+      var _this = this;
+
+      Array.from(window.document.body.getElementsByTagName('tmnote')).forEach(function (note) {
+        if (note === _this.el) note.style.zIndex = 2147483647;else note.style.zIndex = 2147483646;
+      });
+    },
+    hide: function hide() {
+      window.document.body.removeChild(this.el);
+      this.visible = false;
+    },
+    addMarkListeners: function addMarkListeners() {
+      var _this2 = this;
+
+      _store2.default.get('noteonclick').then(function (noteonclick) {
+        if (noteonclick) {
+          var handler = _this2.markClickHandler = function () {
+            return _this2.show();
+          };
+
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = _this2.mark.wrappers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var w = _step.value;
+
+              w.addEventListener('click', handler, false);
+              w.setAttribute('title', browser.i18n.getMessage('toggle_note'));
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+        }
+      });
+    },
+    removeMarkListeners: function removeMarkListeners() {
+      if (!this.markClickHandler) return;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = this.mark.wrappers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var w = _step2.value;
+
+          w.removeEventListener('click', this.markClickHandler, false);
+          w.removeAttribute('title');
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+    },
+    getPosition: function getPosition() {
+      var rect = this.mark.wrappers[this.mark.wrappers.length - 1].getBoundingClientRect();
+      return {
+        top: rect.top + window.pageYOffset - window.document.body.clientTop,
+        left: rect.left + window.pageXOffset - window.document.body.clientLeft,
+        offset: rect.height
+      };
+    }
+  });
+};
+
+var _utils = __webpack_require__(0);
+
+var _store = __webpack_require__(9);
+
+var _store2 = _interopRequireDefault(_store);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ })
 /******/ ]);

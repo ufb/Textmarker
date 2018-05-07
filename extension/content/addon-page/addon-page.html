@@ -13,7 +13,7 @@
   	<nav id="mainnav" class="nav">
       <div class="menu-toggler toggle-button" data-target="mainnav-list" data-toggle="toggle"></div>
   		<ul id="mainnav-list">
-  			<!--<li id="mainnav-new" data-target="new" class="nav-button" data-l10n-id="mainnav_news"></li>-->
+  			<li id="mainnav-news" data-target="news" class="nav-button" data-l10n-id="mainnav_news"></li>
   			<li id="mainnav-manual" data-target="manual" class="nav-button active" data-l10n-id="mainnav_manual"></li>
   			<li id="mainnav-settings" data-target="settings" class="nav-button" data-l10n-id="mainnav_settings"></li>
         <li id="mainnav-history" data-target="history" class="nav-button" data-l10n-id="mainnav_history"></li>
@@ -30,17 +30,12 @@
         <span>by <a class="moz-developer" href="">underflyingbirches</a></span>
       </h1>
 
-      <!-- <div id="new" class="content none">
+      <div id="news" class="content none">
         <h2 data-l10n-id="h10"></h2>
-        <nav class="subnav nav">
-          <ul class="clearfix">
-            <li data-target="new-general" class="nav-button active" data-l10n-id="subnav_news_general"></li><li data-target="new-features" class="nav-button" data-l10n-id="subnav_news_new"></li><li data-target="new-changes" class="nav-button" data-l10n-id="subnav_news_change"></li>
-          </ul>
-        </nav>
-        <div id="new-general" class="tab none"></div>
-        <div id="new-features" class="tab none"></div>
-        <div id="new-changes" class="tab none"></div>
-      </div> -->
+        <h4 class="inline-block" data-l10n-id="h111"></h4>
+        <p data-l10n-id="t111"></p>
+        <small data-l10n-id="t112"></small>
+      </div>
 
       <div id="manual" class="content none">
         <h2 data-l10n-id="h20"></h2>
@@ -146,6 +141,18 @@
               <span data-l10n-id="t2414"></span><br>
               <span data-l10n-id="t2415"></span>
             </small>
+          </article>
+          <article>
+            <h4 data-l10n-id="h257"></h4>
+            <p data-l10n-id="t2522"></p>
+            <ol class="unset">
+              <li data-l10n-id="t2523"></li>
+              <li data-l10n-id="t2524"></li>
+              <li data-l10n-id="t2525"></li>
+              <li data-l10n-id="t2526"></li>
+              <li data-l10n-id="t2527"></li>
+              <li data-l10n-id="t2528"></li>
+            </ol>
           </article>
           <article>
             <h4 data-l10n-id="h247"></h4>
@@ -550,6 +557,10 @@
               <label class="function" for="cm-m" class="fake-cb"><span>&#10003;</span> Marker M</label>
             </div>
             <div class="option-row">
+              <input type="checkbox" id="cm-n" name="n" class="ctm-cb">
+              <label class="function" for="cm-n" class="fake-cb"><span>&#10003;</span> <sup data-l10n-id="t4211"></sup></label>
+            </div>
+            <div class="option-row">
               <input type="checkbox" id="cm-w" name="w" class="ctm-cb">
               <label class="function" for="cm-w" class="fake-cb"><span>&#10003;</span> <sup data-l10n-id="t427"></sup></label>
             </div>
@@ -602,6 +613,7 @@
               <select id="quickbutton-download-select" class="customize-quickbuttons" name="download">
                 <option value="text" data-l10n-id="t439"></option>
                 <option value="text +meta" data-l10n-id="t438"></option>
+                <option value="text +notes" data-l10n-id="t4317"></option>
                 <option value="text +lost" data-l10n-id="x423"></option>
                 <option value="text m" data-l10n-id="t4310"></option>
                 <option value="text 2" data-l10n-id="t4311"></option>
@@ -652,6 +664,17 @@
         <div id="settings-misc" class="tab none">
           <section id="customize-misc">
             <h3 class="inline-block" data-l10n-id="h441"></h3>
+            <br>
+            <div class="option-row">
+              <h4 data-l10n-id="h444"></h4>
+              <input type="checkbox" id="misc-noteicon" name="noteicon" class="misc-cb">
+              <label for="misc-noteicon" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t447"></sup></label>
+              <br><br>
+              <input type="checkbox" id="misc-noteonclick" name="noteonclick" class="misc-cb">
+              <label for="misc-noteonclick" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t448"></sup></label>
+              <br><br>
+              <small data-l10n-id="t449"></small>
+            </div>
             <br>
             <div class="option-row">
               <h4 data-l10n-id="h442"></h4>
@@ -718,6 +741,7 @@
             <select id="specification" class="specification blue">
               <option value="text" data-l10n-id="t439"></option>
               <option value="text +meta" selected data-l10n-id="t438"></option>
+              <option value="text +notes" data-l10n-id="t4317"></option>
               <option value="text +lost" data-l10n-id="x423"></option>
               <option value="text m" data-l10n-id="t4310"></option>
               <option value="text 2" data-l10n-id="t4311"></option>

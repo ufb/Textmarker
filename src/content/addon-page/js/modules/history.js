@@ -204,6 +204,7 @@ export default function() {
     getText(names, spec) {
       let all_marks_plus_meta = spec === '+meta',
           all_marks_plus_lost = spec === '+lost',
+          all_marks_plus_meta_and_notes = spec === '+notes',
           all_marks_lost = spec === 'lost',
           defaultMarkers = ['m', '2', '3', 2, 3],
 
@@ -217,6 +218,7 @@ export default function() {
 
           newLine = '\r\n',
           newLines = '\r\n\r\n',
+          note = browser.i18n.getMessage('note'),
           text = '',
           l = names.length,
           i = 0,
@@ -234,7 +236,7 @@ export default function() {
           n = lost.length;
 
           if (!all_marks_lost) {
-            if (all_marks_plus_meta) {
+            if (all_marks_plus_meta || all_marks_plus_meta_and_notes) {
                 text += name + newLine +
                 'URL: ' + entry.url + newLine +
                 browser.i18n.getMessage('page_title') + ': ' + entry.title + newLine +
@@ -249,6 +251,10 @@ export default function() {
               if (reject && reject(mark.key)) continue;
 
               text += mark.text + newLines;
+
+              if (all_marks_plus_meta_and_notes) {
+                text += '  ' + note + ':' + newLine + '  ' + mark.note + newLines + newLine;
+              }
             }
           }
           if (all_marks_lost || all_marks_plus_lost) {

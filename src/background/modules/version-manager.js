@@ -24,6 +24,11 @@ new _MODULE({
     if (!settings.history.sorted) {
       settings.history.sorted = _DEFAULT_STORAGE.settings.history.sorted;
     }
+    if (!settings.shortcuts.n) {
+      settings.shortcuts.n = _DEFAULT_STORAGE.shortcuts.n;
+      settings.misc.noteicon = _DEFAULT_STORAGE.misc.noteicon;
+      settings.misc.noteonclick = _DEFAULT_STORAGE.misc.noteonclick;
+    }
 
     return settings;
   },

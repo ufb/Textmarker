@@ -27,7 +27,9 @@ export default function() {
     registerHandler() {
       this.addListener('mousedown', e => {
         if (e.button === 2) {
-          if (e.target.nodeName === 'TM') _STORE.tmid = e.target.getAttribute('data-tm-id');
+          if (e.target.nodeName === 'TM') {
+            _STORE.tmid = e.target.getAttribute('data-tm-id');
+          }
           else _STORE.tmid = '';
         }
       }, window.document);

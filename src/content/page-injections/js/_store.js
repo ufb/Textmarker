@@ -63,6 +63,18 @@ export default new _MODULE({
       return storage.settings.misc.bmicon;
     });
   },
+  _get_noteicon() {
+    return browser.storage[this.area_settings].get().then(storage => {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.noteicon;
+    });
+  },
+  _get_noteonclick() {
+    return browser.storage[this.area_settings].get().then(storage => {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.noteonclick;
+    });
+  },
   _get_autosave() {
     return browser.storage[this.area_settings].get().then(storage => {
       if (!storage || !storage.settings) return false;

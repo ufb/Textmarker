@@ -15,7 +15,8 @@ export default function() {
       w: { contexts: ['selection'] },
       d: { contexts: ['page'] },
       b: { contexts: ['page'] },
-      '-b': { contexts: ['page'] }
+      '-b': { contexts: ['page'] },
+      n: { contexts: ['page'] }
     },
     created: [],
 
