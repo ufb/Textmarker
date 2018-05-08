@@ -1313,7 +1313,7 @@ new _utils._MODULE({
   power: function power(on) {
     if (!on || this.bootstrapped) return false;
 
-    window.document.body.appendChild(window.document.createElement('tm-ui'));
+    window.document.body.appendChild(window.document.createElement('tmui'));
 
     (0, _page2.default)();
     (0, _contextmenu2.default)();
@@ -1544,7 +1544,7 @@ exports.default = function () {
     registerHandler: function registerHandler() {
       this.addListener('mousedown', function (e) {
         if (e.button === 2) {
-          if (e.target.nodeName === 'TM') {
+          if (e.target.classList.contains('textmarker-highlight')) {
             _store2.default.tmid = e.target.getAttribute('data-tm-id');
           } else _store2.default.tmid = '';
         }
@@ -2185,6 +2185,7 @@ var _MARK = function () {
 
 						for (; i < number; i++) {
 								wrapper = window.document.createElement('tm');
+								wrapper.classList.add('textmarker-highlight');
 								wrapper.setAttribute('style', style);
 								wrapper.setAttribute('data-tm-id', this.id + '_' + i);
 								if (hasNote) wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note'));
@@ -2357,7 +2358,7 @@ var _BOOKMARK = function () {
       var _this2 = this;
 
       var bm = this.icon || function () {
-        var bm = window.document.createElement('tm-bm');
+        var bm = window.document.createElement('tmbm');
         if (_store2.default.pdf) bm.className = 'textmarker-bookmark-control';
 
         bm.addEventListener('click', function () {
@@ -2369,7 +2370,7 @@ var _BOOKMARK = function () {
         return bm;
       }();
 
-      window.document.getElementsByTagName('tm-ui')[0].appendChild(bm);
+      window.document.getElementsByTagName('tmui')[0].appendChild(bm);
       bm.title = browser.i18n.getMessage('bm_scroll');
       this.iconShown = true;
     }
@@ -2380,7 +2381,7 @@ var _BOOKMARK = function () {
 
       if (!icon) return;
 
-      window.document.body.removeChild(icon);
+      window.document.getElementsByTagName('tmui')[0].removeChild(icon);
       this.iconShown = false;
     }
   }, {
@@ -3187,6 +3188,8 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.default = function () {
 
+  var DOC = window.document;
+
   return new _utils._MODULE({
     events: {
       ENV: {
@@ -3226,20 +3229,20 @@ exports.default = function () {
         }
       }
 
-      if (Object.keys(this.notes).length) this.toggleToggler(true);
+      if (!this.isEmpty(this.notes)) this.toggleToggler(true);
     },
     addAndShow: function addAndShow(mark) {
-      if (!Object.keys(this.notes).length) this.toggleToggler(true);
+      if (this.isEmpty(this.notes)) this.toggleToggler(true);
       this.add(mark).show();
     },
     remove: function remove(id) {
       delete this.notes[id];
-      if (!Object.keys(this.notes).length) this.toggleToggler(false);
+      if (this.isEmpty(this.notes)) this.toggleToggler(false);
     },
     toggleAll: function toggleAll() {
       if (!this.notes) return;
       var notes = this.notes;
-      var meth = window.document.getElementsByTagName('tmnote').length ? 'hide' : 'show',
+      var meth = DOC.getElementsByTagName('tmnote').length ? 'hide' : 'show',
           condition = meth === 'hide' ? true : false,
           note = void 0;
       for (var n in notes) {
@@ -3252,11 +3255,11 @@ exports.default = function () {
     toggleToggler: function toggleToggler(show) {
       var _this = this;
 
-      var tmui = window.document.getElementsByTagName('tm-ui')[0];
+      var tmui = DOC.getElementsByTagName('tmui')[0];
       if (show) {
         _store2.default.get('noteicon').then(function (noteicon) {
           if (noteicon) {
-            var toggle = _this.toggle = window.document.createElement('tm-notes-toggle');
+            var toggle = _this.toggle = DOC.createElement('tmnotestoggle');
             toggle.title = browser.i18n.getMessage('toggle_notes');
             tmui.appendChild(toggle);
             toggle.onclick = function () {
@@ -3269,6 +3272,9 @@ exports.default = function () {
         tmui.removeChild(this.toggle);
         this.toggle = null;
       }
+    },
+    isEmpty: function isEmpty(obj) {
+      return !Object.keys(obj).length;
     }
   });
 };
@@ -3298,16 +3304,18 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.default = function (mark) {
 
+  var BODY = window.document.body;
+
   return new _utils._DOMMODULE({
     events: {
       DOM: {
         click: {
-          'tmnote-delete': 'remove',
-          'tmnote-minimize': 'hide',
-          'tmnote-content': 'bringUpFront'
+          'tmnotedelete': 'remove',
+          'tmnoteminimize': 'hide',
+          'textarea': 'bringUpFront'
         },
         keyup: {
-          'tmnote-content': 'update'
+          'textarea': 'update'
         }
       }
     },
@@ -3317,6 +3325,7 @@ exports.default = function (mark) {
     markClickHandler: null,
     text: '',
     visible: false,
+    recentlyUpdated: false,
 
     autoinit: function autoinit() {
       this.createNoteElement();
@@ -3325,22 +3334,20 @@ exports.default = function (mark) {
     },
     createNoteElement: function createNoteElement() {
       var note = this.el = document.createElement('tmnote');
-      var del = this.del = document.createElement('tmnote-delete');
-      var min = this.min = document.createElement('tmnote-minimize');
-      var p = this.textElement = document.createElement('tmnote-content');
+      var del = this.del = document.createElement('tmnotedelete');
+      var min = this.min = document.createElement('tmnoteminimize');
+      var p = this.textElement = document.createElement('textarea');
       var text = this.mark.keyData.note || '';
       var delText = document.createTextNode(String.fromCharCode(10005));
       var minText = document.createTextNode(String.fromCharCode(0x2013));
 
-      if (text) {
-        p.appendChild(document.createTextNode(text));
-      }
-      p.setAttribute('contenteditable', true);
+      p.setAttribute('data-tm-note', true);
       del.appendChild(delText);
       min.appendChild(minText);
       note.appendChild(del);
       note.appendChild(min);
       note.appendChild(p);
+      if (text) p.value = text;
     },
     remove: function remove(e, el) {
       this.hide();
@@ -3349,39 +3356,47 @@ exports.default = function (mark) {
       this.emit('removed:note', this.mark.id);
     },
     update: function update(e, el) {
-      this.mark.keyData.note = el.textContent;
-      this.emit('updated:note');
+      var _this = this;
+
+      if (!this.recentlyUpdated) {
+        this.recentlyUpdated = true;
+        window.setTimeout(function () {
+          _this.mark.keyData.note = el.value;
+          _this.emit('updated:note');
+          _this.recentlyUpdated = false;
+        }, 3000);
+      }
     },
     show: function show() {
       var el = this.el;
       var pos = this.getPosition();
-      var left = pos.left;
       var innerWindowWidth = window.innerWidth;
+      var left = pos.left;
       if (left + 360 > innerWindowWidth) {
         left = innerWindowWidth - 360;
       }
-      window.document.body.appendChild(el);
+      BODY.appendChild(el);
       el.setAttribute('style', 'display:block;top:' + (pos.top + pos.offset) + 'px;left:' + left + 'px;');
       this.visible = true;
     },
     bringUpFront: function bringUpFront() {
-      var _this = this;
+      var _this2 = this;
 
-      Array.from(window.document.body.getElementsByTagName('tmnote')).forEach(function (note) {
-        if (note === _this.el) note.style.zIndex = 2147483647;else note.style.zIndex = 2147483646;
+      Array.from(BODY.getElementsByTagName('tmnote')).forEach(function (note) {
+        if (note === _this2.el) note.style.zIndex = 2147483647;else note.style.zIndex = 2147483646;
       });
     },
     hide: function hide() {
-      window.document.body.removeChild(this.el);
+      BODY.removeChild(this.el);
       this.visible = false;
     },
     addMarkListeners: function addMarkListeners() {
-      var _this2 = this;
+      var _this3 = this;
 
       _store2.default.get('noteonclick').then(function (noteonclick) {
         if (noteonclick) {
-          var handler = _this2.markClickHandler = function () {
-            return _this2.show();
+          var handler = _this3.markClickHandler = function () {
+            return _this3.show();
           };
 
           var _iteratorNormalCompletion = true;
@@ -3389,11 +3404,11 @@ exports.default = function (mark) {
           var _iteratorError = undefined;
 
           try {
-            for (var _iterator = _this2.mark.wrappers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var w = _step.value;
+            for (var _iterator = _this3.mark.wrappers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var wrapper = _step.value;
 
-              w.addEventListener('click', handler, false);
-              w.setAttribute('title', browser.i18n.getMessage('toggle_note'));
+              wrapper.addEventListener('click', handler, false);
+              wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note'));
             }
           } catch (err) {
             _didIteratorError = true;
@@ -3420,10 +3435,10 @@ exports.default = function (mark) {
 
       try {
         for (var _iterator2 = this.mark.wrappers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var w = _step2.value;
+          var wrapper = _step2.value;
 
-          w.removeEventListener('click', this.markClickHandler, false);
-          w.removeAttribute('title');
+          wrapper.removeEventListener('click', this.markClickHandler, false);
+          wrapper.removeAttribute('title');
         }
       } catch (err) {
         _didIteratorError2 = true;
@@ -3443,8 +3458,8 @@ exports.default = function (mark) {
     getPosition: function getPosition() {
       var rect = this.mark.wrappers[this.mark.wrappers.length - 1].getBoundingClientRect();
       return {
-        top: rect.top + window.pageYOffset - window.document.body.clientTop,
-        left: rect.left + window.pageXOffset - window.document.body.clientLeft,
+        top: rect.top + window.pageYOffset - BODY.clientTop,
+        left: rect.left + window.pageXOffset - BODY.clientLeft,
         offset: rect.height
       };
     }

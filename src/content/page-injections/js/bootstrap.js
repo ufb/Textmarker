@@ -26,7 +26,7 @@ new _MODULE({
   power(on) {
     if (!on || this.bootstrapped) return false;
 
-    window.document.body.appendChild(window.document.createElement('tm-ui'));
+    window.document.body.appendChild(window.document.createElement('tmui'));
 
     _PAGE();
     _CTM();

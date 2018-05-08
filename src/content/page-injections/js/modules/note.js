@@ -9,12 +9,12 @@ export default function(mark) {
 		events: {
       DOM: {
         click: {
-          'tmnote-delete': 'remove',
-          'tmnote-minimize': 'hide',
-          'tmnote-content': 'bringUpFront'
+          'tmnotedelete': 'remove',
+          'tmnoteminimize': 'hide',
+          'textarea': 'bringUpFront'
         },
         keyup: {
-          'tmnote-content': 'update'
+          'textarea': 'update'
         }
       }
 		},
@@ -24,6 +24,7 @@ export default function(mark) {
     markClickHandler: null,
     text: '',
     visible: false,
+    recentlyUpdated: false,
 
     autoinit() {
       this.createNoteElement();
@@ -33,22 +34,20 @@ export default function(mark) {
 
     createNoteElement() {
       const note = this.el = document.createElement('tmnote');
-      const del = this.del = document.createElement('tmnote-delete');
-      const min = this.min = document.createElement('tmnote-minimize');
-      const p = this.textElement = document.createElement('tmnote-content');
+      const del = this.del = document.createElement('tmnotedelete');
+      const min = this.min = document.createElement('tmnoteminimize');
+      const p = this.textElement = document.createElement('textarea');
       const text = this.mark.keyData.note || '';
       const delText = document.createTextNode(String.fromCharCode(10005));
       const minText = document.createTextNode(String.fromCharCode(0x2013));
 
-      if (text) {
-        p.appendChild(document.createTextNode(text));
-      }
-      p.setAttribute('contenteditable', true);
+      p.setAttribute('data-tm-note', true);
       del.appendChild(delText);
       min.appendChild(minText);
       note.appendChild(del);
       note.appendChild(min);
       note.appendChild(p);
+      if (text) p.value = text;
     },
     remove(e, el) {
       this.hide();
@@ -57,8 +56,14 @@ export default function(mark) {
       this.emit('removed:note', this.mark.id);
     },
     update(e, el) {
-      this.mark.keyData.note = el.textContent;
-      this.emit('updated:note');
+      if (!this.recentlyUpdated) {
+        this.recentlyUpdated = true;
+        window.setTimeout(() => {
+          this.mark.keyData.note = el.value;
+          this.emit('updated:note');
+          this.recentlyUpdated = false;
+        }, 3000);
+      }
     },
     show() {
       const el = this.el;

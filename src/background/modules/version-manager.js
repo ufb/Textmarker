@@ -16,20 +16,23 @@ new _MODULE({
   updateSettings(settings) {
     const noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
 
-    noteTypes.forEach(noteType => {
-      if (!settings.misc[noteType]) {
-        settings.misc[noteType] = _DEFAULT_STORAGE.settings.misc[noteType];
+    if (!settings.shortcuts) {
+      settings = _DEFAULT_STORAGE.settings;
+    } else {
+      noteTypes.forEach(noteType => {
+        if (!settings.misc[noteType]) {
+          settings.misc[noteType] = _DEFAULT_STORAGE.settings.misc[noteType];
+        }
+      });
+      if (!settings.history.sorted) {
+        settings.history.sorted = _DEFAULT_STORAGE.settings.history.sorted;
       }
-    });
-    if (!settings.history.sorted) {
-      settings.history.sorted = _DEFAULT_STORAGE.settings.history.sorted;
+      if (!settings.shortcuts.n) {
+        settings.shortcuts.n = _DEFAULT_STORAGE.settings.shortcuts.n;
+        settings.misc.noteicon = _DEFAULT_STORAGE.settings.misc.noteicon;
+        settings.misc.noteonclick = _DEFAULT_STORAGE.settings.misc.noteonclick;
+      }
     }
-    if (!settings.shortcuts.n) {
-      settings.shortcuts.n = _DEFAULT_STORAGE.shortcuts.n;
-      settings.misc.noteicon = _DEFAULT_STORAGE.misc.noteicon;
-      settings.misc.noteonclick = _DEFAULT_STORAGE.misc.noteonclick;
-    }
-
     return settings;
   },
   updateHistory(history) {
@@ -99,7 +102,8 @@ new _MODULE({
       }
       return _STORAGE.set('storage', 'sync');
     })
-    .then(() => { if (prevVersion < '3.1') { _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'); }})
+    .then(() => { if (prevVersion < '4') { _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'); }})
+    .then(() => { if (prevVersion < '4') { _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'); }})
     .then(() => { if (prevVersion < '3') { _STORAGE.update('history', history => this.updateHistory(history), 'sync'); }})
     .then(() => _STORAGE.set('storage', 'local'))
     .then(() => this.emit('initialized:storage', prevVersion))

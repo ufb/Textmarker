@@ -47,11 +47,11 @@ export default function() {
       }
     },
     toggleToggler(show) {
-      const tmui = DOC.getElementsByTagName('tm-ui')[0];
+      const tmui = DOC.getElementsByTagName('tmui')[0];
       if (show) {
         _STORE.get('noteicon').then(noteicon => {
           if (noteicon) {
-            const toggle = this.toggle = DOC.createElement('tm-notes-toggle');
+            const toggle = this.toggle = DOC.createElement('tmnotestoggle');
             toggle.title = browser.i18n.getMessage('toggle_notes');
             tmui.appendChild(toggle);
             toggle.onclick = () => this.toggleAll();

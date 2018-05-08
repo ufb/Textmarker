@@ -1590,20 +1590,23 @@ new _utils._MODULE({
   updateSettings: function updateSettings(settings) {
     var noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
 
-    noteTypes.forEach(function (noteType) {
-      if (!settings.misc[noteType]) {
-        settings.misc[noteType] = _defaultStorage2.default.settings.misc[noteType];
+    if (!settings.shortcuts) {
+      settings = _defaultStorage2.default.settings;
+    } else {
+      noteTypes.forEach(function (noteType) {
+        if (!settings.misc[noteType]) {
+          settings.misc[noteType] = _defaultStorage2.default.settings.misc[noteType];
+        }
+      });
+      if (!settings.history.sorted) {
+        settings.history.sorted = _defaultStorage2.default.settings.history.sorted;
       }
-    });
-    if (!settings.history.sorted) {
-      settings.history.sorted = _defaultStorage2.default.settings.history.sorted;
+      if (!settings.shortcuts.n) {
+        settings.shortcuts.n = _defaultStorage2.default.settings.shortcuts.n;
+        settings.misc.noteicon = _defaultStorage2.default.settings.misc.noteicon;
+        settings.misc.noteonclick = _defaultStorage2.default.settings.misc.noteonclick;
+      }
     }
-    if (!settings.shortcuts.n) {
-      settings.shortcuts.n = _defaultStorage2.default.shortcuts.n;
-      settings.misc.noteicon = _defaultStorage2.default.misc.noteicon;
-      settings.misc.noteonclick = _defaultStorage2.default.misc.noteonclick;
-    }
-
     return settings;
   },
   updateHistory: function updateHistory(history) {
@@ -1677,10 +1680,16 @@ new _utils._MODULE({
       }
       return _storage2.default.set('storage', 'sync');
     }).then(function () {
-      if (prevVersion < '3.1') {
+      if (prevVersion < '4') {
         _storage2.default.update('settings', function (settings) {
           return _this.updateSettings(settings);
         }, 'sync');
+      }
+    }).then(function () {
+      if (prevVersion < '4') {
+        _storage2.default.update('settings', function (settings) {
+          return _this.updateSettings(settings);
+        }, 'local');
       }
     }).then(function () {
       if (prevVersion < '3') {

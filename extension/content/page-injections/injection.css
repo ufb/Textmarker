@@ -1,5 +1,15 @@
-tm {display: inline;}
-tm-ui {
+tm {display: inline !important;}
+span.textmarker-highlight {
+  all: inherit;
+  display: inline !important;
+  position: static !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  float: none !important;
+}
+tmui {
   display: block;
   right: 1px;
   top: 1px;
@@ -9,7 +19,7 @@ tm-ui {
   border: 1px solid #eee;
   padding-top: 3px;
 }
-tm-bm, tm-notes-toggle {
+tmbm, tmnotestoggle {
   display: inline-block;
   cursor: pointer;
   margin-left: 3px;
@@ -18,29 +28,29 @@ tm-bm, tm-notes-toggle {
   width: 12px;
   filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.25));
 }
-tm-bm {
+tmbm {
   background: url("./../icons/bm.png") no-repeat center;
   height: 18px;
 }
-tm-bm:hover {
+tmbm:hover {
   filter: brightness(1.15);
 }
-tm-notes-toggle {
+tmnotestoggle {
   background: url("./../icons/note.png") no-repeat center;
   height: 16px;
 }
-tm-notes-toggle:hover {
+tmnotestoggle:hover {
   filter: brightness(1.15);
 }
 #textmarker-bookmark-anchor {
-  padding-left: 15px;
+  padding-left: 15px !important;
   background: url("./../icons/bm2.png") no-repeat -2px 0;
 }
 .textLayer { opacity: 1; }
 .textLayer ::-moz-selection { background: rgba(51,153,255,0.3) !important; }
 .textLayer .selected { color: #fff; }
 .textLayer tm {color:#000;}
-tm-bm.textmarker-bookmark-control {
+tmbm.textmarker-bookmark-control {
   height: 24px;
   width: 30px;
   top: 37px;
@@ -48,7 +58,7 @@ tm-bm.textmarker-bookmark-control {
   border: none;
   background-color: transparent;
 }
-tm-bm.textmarker-bookmark-control:hover {
+tmbm.textmarker-bookmark-control:hover {
   background: hsla(0,0%,0%,.12) no-repeat;
   background-image: url("./../icons/bm.png"), linear-gradient(hsla(0,0%,100%,.05), hsla(0,0%,100%,0));
   background-position: center 5px, 0 0;
@@ -66,8 +76,8 @@ tmnote {
   margin: 0;
   z-index: 2147483646;
 }
-tmnote-delete,
-tmnote-minimize {
+tmnotedelete,
+tmnoteminimize {
   position: absolute;
   display: block;
   font-size: 14px;
@@ -80,27 +90,30 @@ tmnote-minimize {
   line-height: 1;
   height: 16px;
 }
-tmnote-delete:hover,
-tmnote-minimize:hover {
+tmnotedelete:hover,
+tmnoteminimize:hover {
   color: #222;
   background: #ffc;
 }
-tmnote-delete {
+tmnotedelete {
   top: 2px;
   font-size: 12px;
   padding: 4px 6px 0 10px;
 }
-tmnote-minimize {
+tmnoteminimize {
   top: 24px;
   padding: 0 6px 4px 10px;
 }
-tmnote-content {
-  display: block;
-  padding: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  position: relative;
-  width: 300px;
-  min-height: 50px;
-  background-image: linear-gradient(#ffe, #ffd);
-  min-height: 70px;
+body > tmnote > textarea[data-tm-note] {
+  display: block !important;
+  padding: 10px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  position: relative !important;
+  min-width: 300px !important;
+  background-image: linear-gradient(#ffe, #ffd) !important;
+  min-height: 100px !important;
+  font-family: Verdana, sans-serif !important;
+  font-size: 12px !important;
+  border: 0 !important;
+  margin: 0 !important;
 }

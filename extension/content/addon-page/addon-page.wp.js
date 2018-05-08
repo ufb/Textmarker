@@ -1465,10 +1465,13 @@ exports.default = function () {
 
             if (reject && reject(mark.key)) continue;
 
+            if (all_marks_plus_meta_and_notes) {
+              text += '---' + newLine;
+            }
             text += mark.text + newLines;
 
-            if (all_marks_plus_meta_and_notes) {
-              text += '  ' + note + ':' + newLine + '  ' + mark.note + newLines + newLine;
+            if (all_marks_plus_meta_and_notes && mark.note) {
+              text += '  ' + note + ':' + newLine + '  ' + mark.note + newLines;
             }
           }
         }
