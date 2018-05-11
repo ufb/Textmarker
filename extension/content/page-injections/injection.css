@@ -18,6 +18,7 @@ tmui {
   background: #fff;
   border: 1px solid #eee;
   padding-top: 3px;
+  box-sizing: border-box !important;
 }
 tmbm, tmnotestoggle {
   display: inline-block;
@@ -75,6 +76,7 @@ tmnote {
   line-height: 1.4;
   margin: 0;
   z-index: 2147483646;
+  box-sizing: border-box !important;
 }
 tmnotedelete,
 tmnoteminimize {
@@ -88,7 +90,8 @@ tmnoteminimize {
   cursor: pointer;
   color: #888;
   line-height: 1;
-  height: 16px;
+  height: 20px;
+  box-sizing: border-box !important;
 }
 tmnotedelete:hover,
 tmnoteminimize:hover {
@@ -116,4 +119,5 @@ body > tmnote > textarea[data-tm-note] {
   font-size: 12px !important;
   border: 0 !important;
   margin: 0 !important;
+  box-sizing: border-box !important;
 }

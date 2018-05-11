@@ -495,7 +495,7 @@ export default function() {
 
         return (
           textsMatch &&
-          parentNode.nodeName === description.n1 &&
+          (parentNode.nodeName === description.n1 || (description.n1 === 'TM' && parentNode.hasAttribute('data-tm-id'))) &&
           (!grampa || grampa.nodeName === description.n2) &&
           this.whichChild(parentNode, node) === description.p1
         );
@@ -640,7 +640,7 @@ export default function() {
           }
           extremes.forEach((pos, i) => {
             if (typeof pos === 'string') {
-              extremes[i] = currContainer.querySelector('tm[data-tm-id="' + pos + '"]');
+              extremes[i] = currContainer.querySelector('span[data-tm-id="' + pos + '"]');
             } else {
               divsOnPage = divsOnPage || currContainer.getElementsByClassName('textLayer')[0].querySelectorAll('div');
               d = d || divsOnPage.length;

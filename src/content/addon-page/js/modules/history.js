@@ -253,10 +253,10 @@ export default function() {
               if (all_marks_plus_meta_and_notes) {
                 text += '---' + newLine;
               }
-              text += mark.text + newLines;
+              text += mark.text.replace(/\n/g, '\r\n') + newLines;
 
               if (all_marks_plus_meta_and_notes && mark.note) {
-                text += '  ' + note + ':' + newLine + '  ' + mark.note + newLines;
+                text += '  ' + note + ':' + newLine + '  ' + mark.note.replace(/\n/g, '\r\n  ') + newLines;
               }
             }
           }
@@ -266,7 +266,7 @@ export default function() {
             for (j = 0; j < n; j++) {
               mark = lost[j];
 
-              text += mark.text + newLines;
+              text += mark.text.replace(/\n/g, '\r\n') + newLines;
             }
           }
           text += newLines + newLines + newLines;

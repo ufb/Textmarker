@@ -1029,7 +1029,11 @@ while (n--) {
 }var tab = window.location.hash.split('=')[1],
     allowedVals = ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'logs'];
 
-if (allowedVals.includes(tab)) window.document.getElementById('mainnav-' + tab).click();
+if (allowedVals.includes(tab)) {
+    window.document.getElementById('mainnav-' + tab).click();
+    tab = tab[0].toUpperCase() + tab.substr(1);
+    window.document.title = 'Textmarker - ' + browser.i18n.getMessage(tab);
+}
 /* end: configure navs */
 
 /* configure toggle elements */
@@ -1060,6 +1064,7 @@ var _NAV = function () {
     _classCallCheck(this, _NAV);
 
     this.el = el;
+    this.pageNav = el.hasAttribute('data-page-nav');
     var current = this.current = el.getElementsByClassName('active')[0];
     this.init().open(current);
   }
@@ -1088,9 +1093,11 @@ var _NAV = function () {
   }, {
     key: 'open',
     value: function open(el) {
+      var targetId = el.getAttribute('data-target');
       el.classList.add('active');
-      document.getElementById(el.getAttribute('data-target')).classList.remove('none');
+      document.getElementById(targetId).classList.remove('none');
       this.current = el;
+      if (this.pageNav) window.document.title = 'Textmarker - ' + browser.i18n.getMessage(targetId);
     }
   }, {
     key: 'close',
@@ -1468,10 +1475,10 @@ exports.default = function () {
             if (all_marks_plus_meta_and_notes) {
               text += '---' + newLine;
             }
-            text += mark.text + newLines;
+            text += mark.text.replace(/\n/g, '\r\n') + newLines;
 
             if (all_marks_plus_meta_and_notes && mark.note) {
-              text += '  ' + note + ':' + newLine + '  ' + mark.note + newLines;
+              text += '  ' + note + ':' + newLine + '  ' + mark.note.replace(/\n/g, '\r\n  ') + newLines;
             }
           }
         }
@@ -1481,7 +1488,7 @@ exports.default = function () {
           for (j = 0; j < n; j++) {
             mark = lost[j];
 
-            text += mark.text + newLines;
+            text += mark.text.replace(/\n/g, '\r\n') + newLines;
           }
         }
         text += newLines + newLines + newLines;

@@ -10,36 +10,35 @@
 
   <div class="clearfix toggle-button" data-target="mainnav-list" data-toggle="remove">
 
-  	<nav id="mainnav" class="nav">
+  	<nav id="mainnav" class="nav" data-page-nav>
       <div class="menu-toggler toggle-button" data-target="mainnav-list" data-toggle="toggle"></div>
   		<ul id="mainnav-list">
-  			<li id="mainnav-news" data-target="news" class="nav-button" data-l10n-id="mainnav_news"></li>
-  			<li id="mainnav-manual" data-target="manual" class="nav-button active" data-l10n-id="mainnav_manual"></li>
-  			<li id="mainnav-settings" data-target="settings" class="nav-button" data-l10n-id="mainnav_settings"></li>
-        <li id="mainnav-history" data-target="history" class="nav-button" data-l10n-id="mainnav_history"></li>
-        <li id="mainnav-sync" data-target="sync" class="nav-button" data-l10n-id="mainnav_sync"></li>
-        <li id="mainnav-export" data-target="export-import" class="nav-button" data-l10n-id="mainnav_export"></li>
-  			<li id="mainnav-contact" data-target="contact" class="nav-button" data-l10n-id="mainnav_contact"></li>
-  			<li id="mainnav-logs" data-target="logs" class="nav-button" data-l10n-id="mainnav_logs"></li>
+  			<li id="mainnav-news" data-target="news" class="nav-button" data-l10n-id="news"></li>
+  			<li id="mainnav-manual" data-target="manual" class="nav-button active" data-l10n-id="manual"></li>
+  			<li id="mainnav-settings" data-target="settings" class="nav-button" data-l10n-id="settings"></li>
+        <li id="mainnav-history" data-target="history" class="nav-button" data-l10n-id="history"></li>
+        <li id="mainnav-sync" data-target="sync" class="nav-button" data-l10n-id="sync"></li>
+        <li id="mainnav-export" data-target="export" class="nav-button" data-l10n-id="export"></li>
+  			<li id="mainnav-contact" data-target="contact" class="nav-button" data-l10n-id="contact"></li>
+  			<li id="mainnav-logs" data-target="logs" class="nav-button" data-l10n-id="logs"></li>
   		</ul>
   	</nav>
 
     <section id="main">
       <h1>
-        <a class="moz-addon" href="">Textmarker 3.4.4</a>
+        <a class="moz-addon" href="">Textmarker 3.4.5</a>
         <span>by <a class="moz-developer" href="">underflyingbirches</a></span>
       </h1>
 
       <div id="news" class="content none">
         <h2 data-l10n-id="h10"></h2>
-        <h4 class="inline-block" data-l10n-id="h111"></h4>
+        <h4 class="inline-block" data-l10n-id="h111"></h4> <small>3.4.0</small>
         <p data-l10n-id="t111"></p>
         <small data-l10n-id="t112"></small>
-        <!--<br><br>
-        <h4 class="inline-block" data-l10n-id="h112"></h4>
+        <br><br>
+        <h4 class="inline-block" data-l10n-id="h112"></h4> <small>3.4.5</small>
         <p data-l10n-id="t113"></p>
         <p data-l10n-id="t114"></p>
-        <p data-l10n-id="t115"></p>-->
       </div>
 
       <div id="manual" class="content none">
@@ -810,26 +809,30 @@
         </section>
       </div>
 
-      <div id="export-import" class="content none">
+      <div id="export" class="content none">
         <h2 data-l10n-id="h60"></h2>
         <section class="block-spacing">
           <p><span data-l10n-id="t614"></span><br>
           <span data-l10n-id="t615"></span></p>
           <br>
-          <h3 data-l10n-id="h611"></h3>
-          <a class='export' id="export-local" download="textmarker-data.json" href="">
-            <button class="export-button" data-type="local" data-l10n-id="t616"></button>
-          </a>
-          <button class="import-button" data-l10n-id="t618" data-type="local"></button>
-          <input id="import--local" type="file" value="Import" class="import-file" data-type="local">
+          <div class="clearfix">
+            <h3 data-l10n-id="h611"></h3>
+            <a class='export' id="export-local" download="textmarker-data.json" href="">
+              <button class="export-button" data-type="local" data-l10n-id="t616"></button>
+            </a>
+            <button class="import-button" data-l10n-id="t618" data-type="local"></button>
+            <input id="import--local" type="file" value="Import" class="import-file" data-type="local">
+          </div>
           <br><br>
-          <h3 data-l10n-id="h612"></h3>
-          <a class='export' id="export-synced" download="textmarker-data.json" href="">
-            <button class="export-button" data-type="synced" data-l10n-id="t617"></button>
-          </a>
-          <button class="import-button" data-l10n-id="t619" data-type="sync"></button>
-          <input id="import--sync" type="file" value="Import" class="import-file" data-type="sync">
-          <br><br>
+          <div class="clearfix">
+            <h3 data-l10n-id="h612"></h3>
+            <a class='export' id="export-synced" download="textmarker-data.json" href="">
+              <button class="export-button" data-type="synced" data-l10n-id="t617"></button>
+            </a>
+            <button class="import-button" data-l10n-id="t619" data-type="sync"></button>
+            <input id="import--sync" type="file" value="Import" class="import-file" data-type="sync">
+          </div>
+          <br>
           <div id="import-error" class="red"></div>
         </section>
       </div>

@@ -1958,16 +1958,6 @@ exports.default = function () {
         }
         return marks;
       });
-    },
-    retrieveTexts: function retrieveTexts() {
-      var marks = this.done,
-          m = marks.length,
-          i = 0,
-          texts = [];
-
-      for (; i < m; i++) {
-        texts.push(marks[i].keyData.text);
-      }return texts.join('\r\n\r\n');
     }
   });
 };
@@ -2184,7 +2174,7 @@ var _MARK = function () {
 						    wrapper = void 0;
 
 						for (; i < number; i++) {
-								wrapper = window.document.createElement('tm');
+								wrapper = window.document.createElement('span');
 								wrapper.classList.add('textmarker-highlight');
 								wrapper.setAttribute('style', style);
 								wrapper.setAttribute('data-tm-id', this.id + '_' + i);
@@ -2212,13 +2202,14 @@ var _MARK = function () {
 
 						//parent = this.containers ? this.containers[0] : start.parentNode,
 						parent = this.wrappers[0].parentNode,
+						    parentIsTM = parent.hasAttribute('data-tm-id'),
 						    grampa = parent.parentNode,
 						    grandgrampa = grampa.parentNode || 0,
 						    fTNP = this.anchorNodePosition;
 
 						this.keyData.conds = {
 								o: this.startOffset,
-								n1: parent.nodeName,
+								n1: parentIsTM ? 'TM' : parent.nodeName,
 								p1: fTNP,
 								n2: grampa.nodeName,
 								p2: this.whichChild(grampa, parent),
@@ -2249,7 +2240,7 @@ var _MARK = function () {
 						extremes.forEach(function (node, i) {
 								parent = node.parentNode;
 
-								if (parent.nodeName === 'TM') containers[i] = parent.getAttribute('data-tm-id');else {
+								if (parent.hasAttribute('data-tm-id')) containers[i] = parent.getAttribute('data-tm-id');else {
 										parent = parent.parentNode;
 										node = node.parentNode;
 										containers[i] = M.whichChild(parent, node, 'DIV');
@@ -2846,7 +2837,7 @@ exports.default = function () {
 
       if (m <= l) textsMatch = this.squeeze(relevantNodeText).indexOf(this.squeeze(markText)) === 0;else textsMatch = this.squeeze(markText).indexOf(this.squeeze(relevantNodeText)) === 0;
 
-      return textsMatch && parentNode.nodeName === description.n1 && (!grampa || grampa.nodeName === description.n2) && this.whichChild(parentNode, node) === description.p1;
+      return textsMatch && (parentNode.nodeName === description.n1 || description.n1 === 'TM' && parentNode.hasAttribute('data-tm-id')) && (!grampa || grampa.nodeName === description.n2) && this.whichChild(parentNode, node) === description.p1;
     },
     findFocusOffset: function findFocusOffset(mark, node, n) {
       var nodeText = node.data,
@@ -3000,7 +2991,7 @@ exports.default = function () {
         }
         extremes.forEach(function (pos, i) {
           if (typeof pos === 'string') {
-            extremes[i] = currContainer.querySelector('tm[data-tm-id="' + pos + '"]');
+            extremes[i] = currContainer.querySelector('span[data-tm-id="' + pos + '"]');
           } else {
             divsOnPage = divsOnPage || currContainer.getElementsByClassName('textLayer')[0].querySelectorAll('div');
             d = d || divsOnPage.length;
@@ -3315,7 +3306,7 @@ exports.default = function (mark) {
           'textarea': 'bringUpFront'
         },
         keyup: {
-          'textarea': 'update'
+          'textarea': 'attemptUpdate'
         }
       }
     },
@@ -3333,6 +3324,8 @@ exports.default = function (mark) {
       this.addMarkListeners();
     },
     createNoteElement: function createNoteElement() {
+      var _this = this;
+
       var note = this.el = document.createElement('tmnote');
       var del = this.del = document.createElement('tmnotedelete');
       var min = this.min = document.createElement('tmnoteminimize');
@@ -3348,6 +3341,10 @@ exports.default = function (mark) {
       note.appendChild(min);
       note.appendChild(p);
       if (text) p.value = text;
+
+      p.addEventListener('blur', function (e) {
+        return _this.attemptUpdate(e, e.target, true);
+      }, false);
     },
     remove: function remove(e, el) {
       this.hide();
@@ -3355,35 +3352,40 @@ exports.default = function (mark) {
       this.removeMarkListeners();
       this.emit('removed:note', this.mark.id);
     },
-    update: function update(e, el) {
-      var _this = this;
+    attemptUpdate: function attemptUpdate(e, el, force) {
+      var _this2 = this;
 
-      if (!this.recentlyUpdated) {
+      if (force) {
+        this.update(el);
+      } else if (!this.recentlyUpdated) {
         this.recentlyUpdated = true;
         window.setTimeout(function () {
-          _this.mark.keyData.note = el.value;
-          _this.emit('updated:note');
-          _this.recentlyUpdated = false;
+          return _this2.update(el);
         }, 3000);
       }
+    },
+    update: function update(el) {
+      this.mark.keyData.note = el.value;
+      this.emit('updated:note');
+      this.recentlyUpdated = false;
     },
     show: function show() {
       var el = this.el;
       var pos = this.getPosition();
       var innerWindowWidth = window.innerWidth;
       var left = pos.left;
-      if (left + 360 > innerWindowWidth) {
-        left = innerWindowWidth - 360;
+      if (left + 340 > innerWindowWidth) {
+        left = innerWindowWidth - 340;
       }
       BODY.appendChild(el);
       el.setAttribute('style', 'display:block;top:' + (pos.top + pos.offset) + 'px;left:' + left + 'px;');
       this.visible = true;
     },
     bringUpFront: function bringUpFront() {
-      var _this2 = this;
+      var _this3 = this;
 
       Array.from(BODY.getElementsByTagName('tmnote')).forEach(function (note) {
-        if (note === _this2.el) note.style.zIndex = 2147483647;else note.style.zIndex = 2147483646;
+        if (note === _this3.el) note.style.zIndex = 2147483647;else note.style.zIndex = 2147483646;
       });
     },
     hide: function hide() {
@@ -3391,12 +3393,12 @@ exports.default = function (mark) {
       this.visible = false;
     },
     addMarkListeners: function addMarkListeners() {
-      var _this3 = this;
+      var _this4 = this;
 
       _store2.default.get('noteonclick').then(function (noteonclick) {
         if (noteonclick) {
-          var handler = _this3.markClickHandler = function () {
-            return _this3.show();
+          var handler = _this4.markClickHandler = function () {
+            return _this4.show();
           };
 
           var _iteratorNormalCompletion = true;
@@ -3404,7 +3406,7 @@ exports.default = function (mark) {
           var _iteratorError = undefined;
 
           try {
-            for (var _iterator = _this3.mark.wrappers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            for (var _iterator = _this4.mark.wrappers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var wrapper = _step.value;
 
               wrapper.addEventListener('click', handler, false);

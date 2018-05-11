@@ -14,7 +14,7 @@ export default function(mark) {
           'textarea': 'bringUpFront'
         },
         keyup: {
-          'textarea': 'update'
+          'textarea': 'attemptUpdate'
         }
       }
 		},
@@ -48,6 +48,8 @@ export default function(mark) {
       note.appendChild(min);
       note.appendChild(p);
       if (text) p.value = text;
+
+      p.addEventListener('blur', e => this.attemptUpdate(e, e.target, true), false);
     },
     remove(e, el) {
       this.hide();
@@ -55,23 +57,27 @@ export default function(mark) {
       this.removeMarkListeners();
       this.emit('removed:note', this.mark.id);
     },
-    update(e, el) {
-      if (!this.recentlyUpdated) {
-        this.recentlyUpdated = true;
-        window.setTimeout(() => {
-          this.mark.keyData.note = el.value;
-          this.emit('updated:note');
-          this.recentlyUpdated = false;
-        }, 3000);
+    attemptUpdate(e, el, force) {
+      if (force) {
+        this.update(el);
       }
+      else if (!this.recentlyUpdated) {
+        this.recentlyUpdated = true;
+        window.setTimeout(() => this.update(el), 3000);
+      }
+    },
+    update(el) {
+      this.mark.keyData.note = el.value;
+      this.emit('updated:note');
+      this.recentlyUpdated = false;
     },
     show() {
       const el = this.el;
       const pos = this.getPosition();
       const innerWindowWidth = window.innerWidth;
       let left = pos.left;
-      if (left + 360 > innerWindowWidth) {
-        left = innerWindowWidth - 360;
+      if (left + 340 > innerWindowWidth) {
+        left = innerWindowWidth - 340;
       }
       BODY.appendChild(el);
       el.setAttribute('style', 'display:block;top:' + (pos.top + pos.offset) + 'px;left:' + left + 'px;');

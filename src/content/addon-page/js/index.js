@@ -17,8 +17,11 @@ while(n--) new _NAV(navs[n]);
 let tab = window.location.hash.split('=')[1],
     allowedVals = ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'logs'];
 
-if (allowedVals.includes(tab))
+if (allowedVals.includes(tab)) {
     window.document.getElementById('mainnav-' + tab).click();
+    tab = tab[0].toUpperCase() + tab.substr(1);
+    window.document.title = 'Textmarker - ' + browser.i18n.getMessage(tab);
+  }
 /* end: configure navs */
 
 /* configure toggle elements */

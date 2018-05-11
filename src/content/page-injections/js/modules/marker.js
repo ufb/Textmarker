@@ -373,17 +373,6 @@ export default function() {
   			}
         return marks;
       });
-    },
-    retrieveTexts() {
-      let marks = this.done,
-          m = marks.length,
-          i = 0,
-          texts = [];
-
-      for (; i < m; i++)
-        texts.push(marks[i].keyData.text);
-
-      return texts.join('\r\n\r\n');
     }
 	});
 }

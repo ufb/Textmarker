@@ -155,7 +155,7 @@ export default class _MARK {
         wrapper;
 
 		for ( ; i < number; i++) {
-			wrapper = window.document.createElement('tm');
+			wrapper = window.document.createElement('span');
       wrapper.classList.add('textmarker-highlight');
 			wrapper.setAttribute('style', style);
 			wrapper.setAttribute('data-tm-id', this.id + '_' + i);
@@ -178,13 +178,14 @@ export default class _MARK {
 			singleNode = this.simple,
 			//parent = this.containers ? this.containers[0] : start.parentNode,
       parent = this.wrappers[0].parentNode,
+      parentIsTM = parent.hasAttribute('data-tm-id'),
 			grampa = parent.parentNode,
       grandgrampa = grampa.parentNode || 0,
 			fTNP = this.anchorNodePosition;
 
 		this.keyData.conds = {
 			o: this.startOffset,
-			n1: parent.nodeName,
+			n1: parentIsTM ? 'TM' : parent.nodeName,
 			p1: fTNP,
 			n2: grampa.nodeName,
 			p2: this.whichChild(grampa, parent),
@@ -211,7 +212,7 @@ export default class _MARK {
 		extremes.forEach(function(node, i) {
 			parent = node.parentNode;
 
-			if (parent.nodeName === 'TM')
+			if (parent.hasAttribute('data-tm-id'))
 				containers[i] = parent.getAttribute('data-tm-id');
 			else {
         parent = parent.parentNode;
