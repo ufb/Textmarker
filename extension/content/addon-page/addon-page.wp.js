@@ -2457,7 +2457,6 @@ exports.default = function () {
     },
 
     triggerFileInput: function triggerFileInput(e, el) {
-      console.log('triggerFileInput', document.getElementById('import--' + el.getAttribute('data-type')));
       document.getElementById('import--' + el.getAttribute('data-type')).click();
     },
     handleFile: function handleFile(e, el) {
