@@ -21,8 +21,8 @@ export default {
       m: 'background-color:#ffee66;'
     },
     history: {
-      autosave: false,
-      naming: 'custom',
+      autosave: true,
+      naming: 'title',
       download: 'text',
       copy: 'text',
       saveNote: true,
