@@ -729,7 +729,7 @@ button.clean {
 a.export {
 	text-decoration: none !important;
 }
-#export-import button {
+#export button {
 	float: none;
   margin: 0 0 10px;
 }
