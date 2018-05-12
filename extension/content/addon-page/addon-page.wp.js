@@ -2415,7 +2415,7 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.default = function () {
   return new _utils._DOMMODULE({
-    el: document.getElementById('export-import'),
+    el: document.getElementById('export'),
     events: {
       ENV: {
         'updated:settings': 'updateExportLinks',
@@ -2457,6 +2457,7 @@ exports.default = function () {
     },
 
     triggerFileInput: function triggerFileInput(e, el) {
+      console.log('triggerFileInput', document.getElementById('import--' + el.getAttribute('data-type')));
       document.getElementById('import--' + el.getAttribute('data-type')).click();
     },
     handleFile: function handleFile(e, el) {

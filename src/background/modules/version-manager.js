@@ -51,8 +51,8 @@ new _MODULE({
   },
   fixHistoryDates(entry) {
     const lang = browser.i18n.getMessage('lng');
-    if (typeof entry.first !== 'number') entry.first = new Date((entry.first[lang] || entry.first).replace(/\./g,' ')).getTime();
-    if (typeof entry.last !== 'number') entry.last = new Date((entry.last[lang] || entry.last).replace(/\./g,' ')).getTime();
+    if (typeof entry.first !== 'number') entry.first = new Date((entry.first[lang] || entry.first.en || entry.first.de || entry.first).replace(/\./g,' ')).getTime();
+    if (typeof entry.last !== 'number') entry.last = new Date((entry.last[lang] || entry.last.en || entry.last.de || entry.last).replace(/\./g,' ')).getTime();
     return entry;
   },
   fixHistory(history) {

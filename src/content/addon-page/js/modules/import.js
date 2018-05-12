@@ -3,7 +3,7 @@ import _STORE from './../_store'
 
 export default function() {
   return new _DOMMODULE({
-    el: document.getElementById('export-import'),
+    el: document.getElementById('export'),
     events: {
       ENV: {
         'updated:settings': 'updateExportLinks',
