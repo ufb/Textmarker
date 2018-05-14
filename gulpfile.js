@@ -3,8 +3,6 @@ const gulp = require('gulp'),
   webpack_config = require('./webpack.config.js'),
   named = require('vinyl-named');
 
-let dist;
-
 gulp.task('default', () => {
   gulp.watch(['src/**/*.js'], ['build']);
 });
