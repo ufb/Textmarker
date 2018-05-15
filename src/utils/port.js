@@ -54,7 +54,7 @@ export class _PORT extends _MODULE {
   }
   postMessage(e, ...args) {
     const msg = { ev: e, args: args };
-    if (this.port) this.port.postMessage(msg);
+    if (this.port) this.port.postMessage(msg).catch(() => {});
   }
   initPorting() {
     if (!this.postponeConnection) {

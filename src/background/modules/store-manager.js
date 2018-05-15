@@ -42,11 +42,11 @@ new _MODULE({
 
   toggleSync(field, val) {
     _STORAGE.update('sync', sync => { sync[field] = val; return sync; })
-      .then(() => this.emit('toggled:sync toggled:sync-' + field, field, val))
       .catch(() => {
         this.emit('error', 'error_toggle_sync');
         this.emit('failed:toggle-sync', field);
-      });
+      })
+      .then(() => this.emit('toggled:sync toggled:sync-' + field, field, val))
   },
 
   updateSettings(updater, setting, error) {
