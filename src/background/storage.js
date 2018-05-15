@@ -5,14 +5,14 @@ import { _COPY } from './utils'
 export default new _MODULE({
 
   initialized: false,
-  area_settings: 'sync',
-  area_history: 'sync',
+  area_settings: _DEFAULT_STORAGE.sync.settings ? 'sync' : 'local',
+  area_history: _DEFAULT_STORAGE.sync.history ? 'sync' : 'local',
 
   init() {
     browser.storage.sync.remove('logs');
 
     return browser.storage.local.get().then(localStorage => {
-      let sync = localStorage && localStorage.sync ? localStorage.sync : { settings: true, history: true };
+      let sync = localStorage && localStorage.sync ? localStorage.sync : _DEFAULT_STORAGE.sync;
       return this._set_sync(sync);
     });
   },

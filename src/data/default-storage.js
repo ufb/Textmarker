@@ -50,7 +50,7 @@ export default {
     order: []
   },
   sync: {
-    settings: true,
-    history: true
+    settings: false,
+    history: false
   }
 };
