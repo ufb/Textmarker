@@ -443,7 +443,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg);
+      if (this.port) this.port.postMessage(msg).catch(function () {});
     }
   }, {
     key: 'initPorting',
@@ -531,8 +531,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = new _utils._MODULE({
 
   initialized: false,
-  area_settings: 'sync',
-  area_history: 'sync',
+  area_settings: _defaultStorage2.default.sync.settings ? 'sync' : 'local',
+  area_history: _defaultStorage2.default.sync.history ? 'sync' : 'local',
 
   init: function init() {
     var _this = this;
@@ -540,7 +540,7 @@ exports.default = new _utils._MODULE({
     browser.storage.sync.remove('logs');
 
     return browser.storage.local.get().then(function (localStorage) {
-      var sync = localStorage && localStorage.sync ? localStorage.sync : { settings: true, history: true };
+      var sync = localStorage && localStorage.sync ? localStorage.sync : _defaultStorage2.default.sync;
       return _this._set_sync(sync);
     });
   },
@@ -904,8 +904,8 @@ exports.default = {
     order: []
   },
   sync: {
-    settings: true,
-    history: true
+    settings: false,
+    history: false
   }
 };
 
@@ -1841,11 +1841,11 @@ new _utils._MODULE({
 
     _storage2.default.update('sync', function (sync) {
       sync[field] = val;return sync;
-    }).then(function () {
-      return _this.emit('toggled:sync toggled:sync-' + field, field, val);
     }).catch(function () {
       _this.emit('error', 'error_toggle_sync');
       _this.emit('failed:toggle-sync', field);
+    }).then(function () {
+      return _this.emit('toggled:sync toggled:sync-' + field, field, val);
     });
   },
   updateSettings: function updateSettings(updater, setting, error) {

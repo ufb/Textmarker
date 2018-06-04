@@ -451,7 +451,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg);
+      if (this.port) this.port.postMessage(msg).catch(function () {});
     }
   }, {
     key: 'initPorting',
@@ -2281,7 +2281,7 @@ exports.default = _MARK;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2295,94 +2295,100 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _BOOKMARK = function () {
-  function _BOOKMARK() {
-    _classCallCheck(this, _BOOKMARK);
+    function _BOOKMARK() {
+        _classCallCheck(this, _BOOKMARK);
 
-    this.icon = null;
-    this.iconShown = false;
-    this.mark = null;
-    this.anchor = null;
-  }
-
-  _createClass(_BOOKMARK, [{
-    key: 'set',
-    value: function set(mark) {
-      var _this = this;
-
-      mark = mark || this.mark;
-
-      var wrappers = mark.wrappers,
-          w = wrappers.length,
-          anchor = wrappers[0];
-
-      mark.keyData.bookmark = true;
-      anchor.id = 'textmarker-bookmark-anchor';
-
-      while (w--) {
-        wrappers[w].classList.add('textmarker-bookmark');
-      }this.mark = mark;
-      this.anchor = anchor;
-
-      return _store2.default.get('bmicon').then(function (bmicon) {
-        if (bmicon) _this.insertIcon();
-        return _this;
-      });
+        this.icon = null;
+        this.iconShown = false;
+        this.mark = null;
+        this.anchor = null;
     }
-  }, {
-    key: 'remove',
-    value: function remove() {
-      var mark = this.mark,
-          anchor = this.anchor,
-          wrappers = mark.wrappers,
-          w = wrappers.length;
 
-      anchor.id = '';
-      mark.keyData.bookmark = false;
+    _createClass(_BOOKMARK, [{
+        key: 'set',
+        value: function set(mark) {
+            var _this = this;
 
-      while (w--) {
-        wrappers[w].classList.remove('textmarker-bookmark');
-      }if (this.iconShown) this.removeIcon();
-    }
-  }, {
-    key: 'insertIcon',
-    value: function insertIcon() {
-      var _this2 = this;
+            mark = mark || this.mark;
 
-      var bm = this.icon || function () {
-        var bm = window.document.createElement('tmbm');
-        if (_store2.default.pdf) bm.className = 'textmarker-bookmark-control';
+            var wrappers = mark.wrappers,
+                w = wrappers.length,
+                anchor = wrappers[0];
 
-        bm.addEventListener('click', function () {
-          return _this2.scrollIntoView();
-        }, false);
+            mark.keyData.bookmark = true;
+            anchor.id = 'textmarker-bookmark-anchor';
 
-        _this2.icon = bm;
+            while (w--) {
+                wrappers[w].classList.add('textmarker-bookmark');
+            }this.mark = mark;
+            this.anchor = anchor;
 
-        return bm;
-      }();
+            return _store2.default.get('bmicon').then(function (bmicon) {
+                if (bmicon) _this.insertIcon();
+                return _this;
+            });
+        }
+    }, {
+        key: 'remove',
+        value: function remove() {
+            var mark = this.mark,
+                anchor = this.anchor,
+                wrappers = mark.wrappers,
+                w = wrappers.length;
 
-      window.document.getElementsByTagName('tmui')[0].appendChild(bm);
-      bm.title = browser.i18n.getMessage('bm_scroll');
-      this.iconShown = true;
-    }
-  }, {
-    key: 'removeIcon',
-    value: function removeIcon() {
-      var icon = this.icon;
+            anchor.id = '';
+            mark.keyData.bookmark = false;
 
-      if (!icon) return;
+            while (w--) {
+                wrappers[w].classList.remove('textmarker-bookmark');
+            }if (this.iconShown) this.removeIcon();
+        }
+    }, {
+        key: 'insertIcon',
+        value: function insertIcon() {
+            var _this2 = this;
 
-      window.document.getElementsByTagName('tmui')[0].removeChild(icon);
-      this.iconShown = false;
-    }
-  }, {
-    key: 'scrollIntoView',
-    value: function scrollIntoView(bm) {
-      if (bm || (bm = window.document.getElementById('textmarker-bookmark-anchor'))) bm.scrollIntoView();
-    }
-  }]);
+            var tmui = window.document.getElementsByTagName('tmui')[0];
 
-  return _BOOKMARK;
+            var bm = this.icon || function () {
+                var bm = window.document.createElement('tmbm');
+                if (_store2.default.pdf) bm.className = 'textmarker-bookmark-control';
+
+                bm.addEventListener('click', function () {
+                    return _this2.scrollIntoView();
+                }, false);
+
+                _this2.icon = bm;
+
+                return bm;
+            }();
+
+            tmui.appendChild(bm);
+            tmui.classList.add('active');
+            bm.title = browser.i18n.getMessage('bm_scroll');
+            this.iconShown = true;
+        }
+    }, {
+        key: 'removeIcon',
+        value: function removeIcon() {
+            var icon = this.icon;
+
+            if (!icon) return;
+
+            var tmui = window.document.getElementsByTagName('tmui')[0];
+            tmui.removeChild(icon);
+            this.iconShown = false;
+
+            if (!tmui.children.length) tmui.classList.remove('active');
+        }
+    }, {
+        key: 'scrollIntoView',
+        value: function scrollIntoView(bm) {
+            if (bm || (bm = window.document.getElementById('textmarker-bookmark-anchor'))) bm.scrollIntoView();
+        }
+    }]);
+
+    return _BOOKMARK;
 }();
 
 exports.default = _BOOKMARK;
@@ -3253,6 +3259,7 @@ exports.default = function () {
             var toggle = _this.toggle = DOC.createElement('tmnotestoggle');
             toggle.title = browser.i18n.getMessage('toggle_notes');
             tmui.appendChild(toggle);
+            tmui.classList.add('active');
             toggle.onclick = function () {
               return _this.toggleAll();
             };
@@ -3261,6 +3268,7 @@ exports.default = function () {
       } else {
         if (!this.toggle) return;
         tmui.removeChild(this.toggle);
+        if (!tmui.children.length) tmui.classList.remove('active');
         this.toggle = null;
       }
     },

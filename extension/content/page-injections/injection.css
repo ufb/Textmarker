@@ -10,7 +10,7 @@ span.textmarker-highlight {
   float: none !important;
 }
 tmui {
-  display: block;
+  display: none;
   right: 1px;
   top: 1px;
   z-index: 2147483647;
@@ -19,6 +19,9 @@ tmui {
   border: 1px solid #eee;
   padding-top: 3px;
   box-sizing: border-box !important;
+}
+tmui.active {
+  display: block;
 }
 tmbm, tmnotestoggle {
   display: inline-block;
