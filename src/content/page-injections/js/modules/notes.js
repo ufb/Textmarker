@@ -54,12 +54,14 @@ export default function() {
             const toggle = this.toggle = DOC.createElement('tmnotestoggle');
             toggle.title = browser.i18n.getMessage('toggle_notes');
             tmui.appendChild(toggle);
+            tmui.classList.add('active');
             toggle.onclick = () => this.toggleAll();
           }
         });
       } else {
         if (!this.toggle) return;
         tmui.removeChild(this.toggle);
+        if (!tmui.children.length) tmui.classList.remove('active');
         this.toggle = null;
       }
     },

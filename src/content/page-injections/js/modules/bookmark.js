@@ -45,6 +45,8 @@ export default class _BOOKMARK {
     if (this.iconShown) this.removeIcon();
   }
   insertIcon() {
+    const tmui = window.document.getElementsByTagName('tmui')[0];
+
     let bm = this.icon ||
           (() => {
             var bm = window.document.createElement('tmbm');
@@ -57,17 +59,21 @@ export default class _BOOKMARK {
             return bm;
           })();
 
-    window.document.getElementsByTagName('tmui')[0].appendChild(bm);
+    tmui.appendChild(bm);
+    tmui.classList.add('active');
     bm.title = browser.i18n.getMessage('bm_scroll');
     this.iconShown = true;
   }
   removeIcon() {
-    let icon = this.icon;
+    const icon = this.icon;
 
     if (!icon) return;
 
-    window.document.getElementsByTagName('tmui')[0].removeChild(icon);
+    const tmui = window.document.getElementsByTagName('tmui')[0];
+    tmui.removeChild(icon);
     this.iconShown = false;
+
+    if (!tmui.children.length) tmui.classList.remove('active');
   }
   scrollIntoView(bm) {
     if (bm || (bm = window.document.getElementById('textmarker-bookmark-anchor')))

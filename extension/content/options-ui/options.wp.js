@@ -724,7 +724,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg);
+      if (this.port) this.port.postMessage(msg).catch(function () {});
     }
   }, {
     key: 'initPorting',
