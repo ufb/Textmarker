@@ -8,30 +8,37 @@
 </head>
 <body>
   <div id="textmarker-sidebar">
-    <div id="bg-colors">
-      <small>
-        <span data-l10n-id="sb_s1"></span><br>
-        <strong data-id="settings" class="send" data-l10n-id="sb_s2"></strong>
-      </small>
-      <br><br>
+    <section id="markers">
+      <h2>Markers</h2>
+      <div id="markers-container"></div>
+    </section>
+    <section id="mark-actions">
       <h2>
-        <span class="column-left" data-l10n-id="sb_h1a">Key</span>
-        <span data-l10n-id="sb_h1b">Color</span>
+        Actions on selected mark
+        <span>(click a textmark to select it)</span>
       </h2>
-      <div id="bg-inputs"></div>
-    </div>
-    <div id="links">
-      <h2>
-        <span data-l10n-id="sb_h2a"></span>
-      </h2>
-  		<div data-id="news" class="send" data-l10n-id="h10"></div>
-  		<div data-id="settings" class="send" data-l10n-id="sb_l1"></div>
-  		<div data-id="history" class="send" data-l10n-id="sb_l2"></div>
-  		<div data-id="sync" class="send" data-l10n-id="sb_l6"></div>
-  		<div data-id="help" class="send" data-l10n-id="sb_l3"></div>
-      <div data-id="contact" class="send" data-l10n-id="sb_l4"></div>
-  		<div data-id="logs" class="send" data-l10n-id="sb_l5"></div>
-  	</div>
+      <div>
+        <button data-action="delete-highlight" class="mark-action" disabled>Delete</button>
+        <button data-action="bookmark" class="mark-action" disabled>Bookmark</button>
+        <button data-action="delete-bookmark" class="mark-action" disabled>Delete Bookmark</button>
+        <button data-action="add-note" class="mark-action" disabled>Add Note</button>
+      </div>
+  	</section>
+    <section id="page-actions">
+      <h2>Page actions</h2>
+      <div>
+        <div id="autosave-switch" class="switch switch-toggle clearfix">
+          <span class="autosave switch-toggle">autosave enabled</span>
+          <span class="no-autosave switch-toggle">autosave disabled</span>
+          <div class="switch-toggle switch-indicator"></div>
+        </div>
+        <button id="page-action--save" data-action="save-changes" class="page-action" disabled>Save</button>
+        <button data-action="undo" class="page-action">Undo</button>
+        <button data-action="redo" class="page-action">Redo</button>
+        <button data-action="scroll-to-bookmark" class="page-action">Scroll To Bookmark</button>
+        <button data-action="toggle-notes" class="page-action">Toggle Notes</button>
+      </div>
+  	</section>
   </div>
   <script src="sidebar.wp.js"></script>
 </body>

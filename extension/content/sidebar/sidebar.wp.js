@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 53);
+/******/ 	return __webpack_require__(__webpack_require__.s = 54);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -74,9 +74,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
+exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
 var _copy = __webpack_require__(3);
+
+var _getActiveTab = __webpack_require__(11);
 
 var _extend = __webpack_require__(4);
 
@@ -84,11 +86,11 @@ var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _dommodule = __webpack_require__(11);
+var _dommodule = __webpack_require__(12);
 
 var _port = __webpack_require__(6);
 
-var _l10n = __webpack_require__(12);
+var _l10n = __webpack_require__(13);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
@@ -99,6 +101,7 @@ var _errorTracker2 = _interopRequireDefault(_errorTracker);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports._COPY = _copy._COPY;
+exports._GET_ACTIVE_TAB = _getActiveTab._GET_ACTIVE_TAB;
 exports._EXTEND = _extend2.default;
 exports._MODULE = _module._MODULE;
 exports._DOMMODULE = _dommodule._DOMMODULE;
@@ -163,6 +166,26 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 /***/ }),
 
 /***/ 11:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
+
+  return browser.tabs.query({ currentWindow: true, active: true }).then(function (tabs) {
+    return tabs[0];
+  });
+};
+
+exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
+
+/***/ }),
+
+/***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -297,7 +320,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 12:
+/***/ 13:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -543,7 +566,7 @@ exports.default = _class;
 
 /***/ }),
 
-/***/ 53:
+/***/ 54:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -553,32 +576,70 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _port = __webpack_require__(54);
+var _port = __webpack_require__(55);
 
 var _port2 = _interopRequireDefault(_port);
+
+__webpack_require__(56);
+
+__webpack_require__(57);
+
+__webpack_require__(58);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (0, _utils._L10N)();
 
+/***/ }),
+
+/***/ 55:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(0);
+
+exports.default = new _utils._PORT({
+  name: 'sidebar',
+  type: 'privileged',
+  events: {
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:add-note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes']
+  }
+});
+
+/***/ }),
+
+/***/ 56:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
 new _utils._DOMMODULE({
-  el: document.getElementById('textmarker-sidebar'),
+  el: document.getElementById('markers'),
   events: {
     ENV: {
       'started:app': 'render',
       'updated:settings': 'render',
-      'toggled:sync-settings': 'render'
+      'toggled:sync-settings': 'render',
+      'changed:selection': 'toggleMarkerButtons'
     },
     DOM: {
       change: {
-        '.css': 'change'
+        '.marker__color': 'change'
       },
       click: {
-        '.send': 'open'
+        '.marker__apply': 'applyColor'
       }
     }
   },
-  disabled: false,
 
   autoinit: function autoinit() {
     this.render();
@@ -598,12 +659,13 @@ new _utils._DOMMODULE({
       });
     }).then(function (markers) {
       if (!markers) return _this;
-      var inputs = document.getElementById('bg-inputs');
+      var inputs = document.getElementById('markers-container');
       var frag = document.createDocumentFragment(),
           m = void 0,
           box = void 0,
           label = void 0,
           input = void 0,
+          button = void 0,
           color = void 0;
 
       inputs.innerText = '';
@@ -612,19 +674,23 @@ new _utils._DOMMODULE({
         box = document.createElement('div');
         label = document.createElement('label');
         input = document.createElement('input');
+        button = document.createElement('span');
         color = _this.extractBgColor(markers[m]);
 
-        box.className = 'bg-color-box';
-        label.setAttribute('for', 'bg-color-' + m);
-        label.className = 'column-left';
-        input.className = 'css';
-        input.id = 'bg-color-' + m;
+        box.className = 'marker';
+        label.setAttribute('for', 'marker-' + m);
+        label.className = 'marker__label';
+        input.className = 'marker__color';
+        input.id = 'marker-' + m;
         input.name = m;
         input.type = 'color';
         input.value = color;
+        button.className = 'marker__apply disabled';
+        button.setAttribute('data-key', m);
 
         box.appendChild(label);
         box.appendChild(input);
+        box.appendChild(button);
         frag.appendChild(box);
 
         label.innerText = m.toUpperCase();
@@ -650,16 +716,144 @@ new _utils._DOMMODULE({
     return color;
   },
   change: function change(e, el) {
-    if (!this.disabled) this.emit('change:bg-setting', el.name, el.value);
+    this.emit('change:bg-setting', el.name, el.value);
   },
-  open: function open(e, el) {
-    this.emit('open:addon-page', el.getAttribute('data-id'));
+  applyColor: function applyColor(e, el) {
+    var _this2 = this;
+
+    if (el.classList.contains('disabled')) return;
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      console.log(tab.id);_this2.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id });
+    });
+  },
+  toggleMarkerButtons: function toggleMarkerButtons(show) {
+    var meth = show ? 'remove' : 'add';
+    Array.from(document.getElementsByClassName('marker__apply')).forEach(function (btn) {
+      return btn.classList[meth]('disabled');
+    });
   }
 });
 
 /***/ }),
 
-/***/ 54:
+/***/ 57:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+new _utils._DOMMODULE({
+  el: document.getElementById('mark-actions'),
+  events: {
+    ENV: {
+      'clicked:mark': 'activate'
+    },
+    DOM: {
+      click: {
+        '.mark-action': 'markAction'
+      }
+    }
+  },
+  buttons: [],
+
+  autoinit: function autoinit() {
+    this.buttons = Array.from(this.el.getElementsByTagName('button'));
+  },
+  markAction: function markAction(e, el) {
+    var _this = this;
+
+    if (el.hasAttribute('disabled')) return;
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      return _this.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id });
+    });
+    this.deactivate();
+  },
+  activate: function activate() {
+    this.buttons.forEach(function (btn) {
+      return btn.removeAttribute('disabled');
+    });
+  },
+  deactivate: function deactivate() {
+    this.buttons.forEach(function (btn) {
+      return btn.setAttribute('disabled', true);
+    });
+  }
+});
+
+/***/ }),
+
+/***/ 58:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+var _store = __webpack_require__(59);
+
+var _store2 = _interopRequireDefault(_store);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('page-actions'),
+  events: {
+    ENV: {
+      'started:app': 'update',
+      'updated:settings': 'update',
+      'toggled:sync-settings': 'update',
+      'updated:entry': 'deactivateSave',
+      'saved:entry': 'deactivateSave',
+      'unsaved-changes': 'activateSave'
+    },
+    DOM: {
+      click: {
+        '.switch-toggle': 'onAutosaveSwitch',
+        '.page-action': 'pageAction'
+      }
+    }
+  },
+
+  autoinit: function autoinit() {
+    var _this = this;
+
+    _store2.default.get('autosave').then(function (autosave) {
+      return _this.toggleAutosave(autosave);
+    });
+  },
+  update: function update() {},
+  onAutosaveSwitch: function onAutosaveSwitch(e, el) {
+    el = el.id === 'autosave-switch' ? el : el.parentNode;
+    var autosave = !el.classList.contains('active');
+    this.toggleAutosave(autosave);
+    this.emit('sidebar:toggle-autosave', autosave);
+  },
+  toggleAutosave: function toggleAutosave(on) {
+    var meth = on ? 'add' : 'remove';
+    document.getElementById('autosave-switch').classList[meth]('active');
+    document.getElementById('page-action--save').classList[meth]('none');
+  },
+  activateSave: function activateSave() {
+    document.getElementById('page-action--save').removeAttribute('disabled');
+  },
+  deactivateSave: function deactivateSave() {
+    document.getElementById('page-action--save').setAttribute('disabled', true);
+  },
+  pageAction: function pageAction(e, el) {
+    var _this2 = this;
+
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      return _this2.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id });
+    });
+  }
+});
+
+/***/ }),
+
+/***/ 59:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -671,11 +865,57 @@ Object.defineProperty(exports, "__esModule", {
 
 var _utils = __webpack_require__(0);
 
-exports.default = new _utils._PORT({
-  name: 'sidebar',
-  type: 'privileged',
+exports.default = new _utils._MODULE({
   events: {
-    CONNECTION: ['change:bg-setting', 'open:addon-page', 'error:browser-console']
+    ENV: {
+      'toggled:sync': 'setAreas'
+    }
+  },
+  initialized: false,
+  area_settings: 'sync',
+  area_history: 'sync',
+
+  setAreas: function setAreas() {
+    var _this = this;
+
+    return browser.storage.sync.get().then(function (storage) {
+      if (storage && storage.sync) {
+        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
+        _this.area_history = storage.sync.history ? 'sync' : 'local';
+      }
+    });
+  },
+  get: function get() {
+    var _this2 = this;
+
+    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
+
+    var meth = this['_get_' + field];
+    if (!meth) throw 'field ' + field + ' doesn\'t exist';
+
+    if (!this.initialized) {
+      this.initialized = true;
+      return this.setAreas().then(function () {
+        return _this2['_get_' + field]();
+      });
+    }
+    return this['_get_' + field]();
+  },
+  _get_autosave: function _get_autosave() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.history.autosave;
+    });
+  },
+  _get_settings: function _get_settings() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings;
+    });
+  },
+  _get_markers: function _get_markers() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings.markers;
+    });
   }
 });
 
@@ -785,7 +1025,8 @@ var _PORT = exports._PORT = function (_MODULE2) {
     key: 'passMessage',
     value: function passMessage(req, sender, sendResponse) {
       req.args = req.args || [];
-      var args = [].concat(req.ev, req.args, sender, sendResponse);
+      var args = [].concat(req.ev, req.args);
+      if (!sender || !sender.name) args = args.concat(sender, sendResponse);
       this.emit.apply(this, args);
       if (req.wait) return true; // this will keep the message channel open to the other end until `sendResponse` is called
       return false;
@@ -841,7 +1082,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg).catch(function () {});
+      if (this.port) this.port.postMessage(msg);
     }
   }, {
     key: 'initPorting',

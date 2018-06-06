@@ -29,11 +29,26 @@ new _PORT({
       'ctx:b',
       'ctx:-b',
       'ctx:n',
+      'sidebar:highlight',
+      'sidebar:delete-highlight',
+      'sidebar:bookmark',
+      'sidebar:delete-bookmark',
+      'sidebar:add-note',
+      'sidebar:save-changes',
+      'sidebar:undo',
+      'sidebar:redo',
+      'sidebar:scroll-to-bookmark',
+      'sidebar:toggle-notes'
     ],
     CONNECTION: [
       'started:app',
       'updated:settings',
-      'toggled:sync-settings'
+      'updated:entry',
+      'saved:entry',
+      'toggled:sync-settings',
+      'changed:selection',
+      'unsaved-changes',
+      'clicked:mark'
     ]
   }
 });
