@@ -31,14 +31,15 @@ export class _PORT extends _MODULE {
   }
   passMessage(req, sender, sendResponse) {
     req.args = req.args || [];
-    let args = [].concat(req.ev, req.args, sender, sendResponse);
+    let args = [].concat(req.ev, req.args);
+    if (!sender || !sender.name) args = args.concat(sender, sendResponse);
     this.emit.apply(this, args);
     if (req.wait) return true; // this will keep the message channel open to the other end until `sendResponse` is called
     return false;
   }
   sendMessage(e, ...args) {
     const type = this.type;
-    const msg = { ev: e, args: args };
+    let msg = { ev: e, args: args };
     if (type === 'content') browser.runtime.sendMessage(msg).catch(() => {});
     else if (type === 'background') {
       const lastArg = args[args.length - 1];

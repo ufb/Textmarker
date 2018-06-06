@@ -15,6 +15,9 @@ export default function() {
       DOM: {
         keydown: {
           '*': 'delegate'
+        },
+        selectionchange: {
+          '*': 'onSelectionChange'
         }
       }
     },
@@ -171,6 +174,9 @@ export default function() {
         //else
           this.emit('restore:marks', entry);
       }
+    },
+    onSelectionChange() {
+      this.emit('changed:selection', !window.getSelection().isCollapsed);
     }
   });
 }

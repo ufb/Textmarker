@@ -8,6 +8,7 @@ span.textmarker-highlight {
   border: 0 !important;
   outline: 0 !important;
   float: none !important;
+  cursor: pointer;
 }
 tmui {
   display: none;

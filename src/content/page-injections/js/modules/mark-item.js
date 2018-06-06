@@ -79,10 +79,19 @@ export default class _MARK {
     if (!this.keyData.conds)
       this.describe();
 
-		//NODES_CACHE.pop();
+		this.registerClickListeners();
 
 		return this;
 	}
+  registerClickListeners() {
+    const wrappers = this.wrappers;
+    for (let wrapper of wrappers) {
+      wrapper.addEventListener('click', e => {
+        _STORE.tmid = e.target.getAttribute('data-tm-id');
+        this.marker.emit('clicked:mark');
+      }, false);
+    }
+  }
   definePosition(n, includingOffsets) {
     let wrappers = this.wrappers;
     n = typeof n === 'number' ? n : wrappers.length - 1;

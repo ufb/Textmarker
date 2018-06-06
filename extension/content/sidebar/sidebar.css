@@ -1,20 +1,95 @@
+* {
+  box-sizing: border-box;
+}
 body {
   padding: 20px 20px;
   font-size: 14px;
 }
-#bg-colors {
-  margin-bottom: 56px;
+.clearfix:after {
+	content: "";
+	visibility: hidden;
+	display: block;
+	clear: both;
+	height: 0;
 }
-#links div {
-  margin-bottom: 5px;
+.none {
+  display: none;
+}
+.marker {
+  margin-bottom: 8px;
+}
+.marker__apply {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: url(../icons/highlight.png) no-repeat 0 0;
+  float: right;
   cursor: pointer;
+  margin-top: 5px;
 }
-.bg-color-box {
-  margin-bottom: 14px;
-}
-.column-left {
+.marker__label {
   width: 52px;
   display: inline-block;
+}
+.switch {
+  position: relative;
+  float: right;
+  border-radius: 2px;
+  box-shadow: 0 0 2px #aaa inset;
+  width: 100%;
+  margin-bottom: 8px;
+  height: 27px;
+  padding: 2px 4px;
+  float: left;
+  cursor: pointer;
+  color: #777;
+}
+.switch:hover {
+  box-shadow: 0 0 2px #777 inset;
+}
+.switch.active {
+  box-shadow: 0 0 2px #777 inset;
+  text-align: right;
+}
+.switch.active:hover {
+  box-shadow: 0 0 3px #555 inset;
+}
+.switch-indicator {
+  position: absolute;
+  border-radius: 2px;
+  width: 23px;
+  height: 23px;
+  background-color: rgb(210, 210, 210);
+  background-repeat: no-repeat;
+  display: inline-block;
+  top: 2px;
+  right: 2px;
+}
+.switch span {
+  padding: 0 4px;
+}
+.switch .autosave {
+  display: none;
+}
+.switch.active .autosave {
+  display: inline;
+}
+.switch.active .no-autosave {
+  display: none;
+}
+.switch.active .switch-indicator {
+  background-color: rgba(43, 165, 183, 0.75);
+  right: auto;
+  left: 2px;
+}
+.switch.active:hover .switch-indicator {
+  background-color: #2ba5b7;
+}
+.page-action {
+
+}
+section {
+  margin-bottom: 32px;
 }
 h2 {
   font-size: 110%;
@@ -22,11 +97,9 @@ h2 {
   font-weight: normal;
   color: #777;
 }
-small strong {
-  text-decoration: underline;
-  cursor: pointer;
+h2 span {
   display: inline-block;
-  margin-top: 5px;
+  font-size: 12px;
 }
 label {
   vertical-align: middle;
@@ -35,12 +108,26 @@ input {
   vertical-align: middle;
   padding: 0;
 }
-input[disabled] {
+[disabled], .disabled {
   opacity: 0.25;
+  cursor: default;
 }
-small {
-  color: #777;
-  font-size: 12px;
-  line-height: 1.275;
-  display: inline-block;
+button {
+  width: 100%;
+  border: 1px solid #c8c8c8;
+  background-image: linear-gradient(#fff 62.5%,#eee 37.5%);
+  color: #555;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 3px 7px 5px;
+  margin-bottom: 8px;
+  min-height: 22px;
+  transition: background 0.5s;
+}
+button:last-child {
+  margin: 0;
+}
+button:hover {
+  background-image: linear-gradient(#eee 62.5%,#fff 37.5%);
+  color: #40566b;
 }

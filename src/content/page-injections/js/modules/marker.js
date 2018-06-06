@@ -22,7 +22,16 @@ export default function() {
         'ctx:n': 'addNote',
         'updated:misc-settings': 'showBookmarkIcon',
         'updated:note': 'autosave',
-        'removed:note': 'autosave'
+        'removed:note': 'autosave',
+				'sidebar:highlight': 'onMarkerKey',
+        'sidebar:delete-highlight': 'remove',
+        'sidebar:bookmark': 'setBookmark',
+        'sidebar:delete-bookmark': 'removeBookmark',
+        'sidebar:add-note': 'addNote',
+        'sidebar:save-changes': 'save',
+        'sidebar:undo': 'undo',
+        'sidebar:redo': 'redo',
+        'sidebar:scroll-to-bookmark': 'scrollToBookmark'
 			}
 		},
 		selection: null,
@@ -184,6 +193,7 @@ export default function() {
     autosave() {
       _STORE.get('autosave').then(autosave => {
         if (autosave) this.save();
+        else this.emit('unsaved-changes');
       });
     },
 		store(mark, text, save) {
@@ -303,9 +313,12 @@ export default function() {
 
 			if (!selection.nodes) return false;
 
-      if (e) this.preventDefault(e)
-
-      key = key || 'm';
+      if (e) {
+				if (typeof e === 'string') key = e;
+				else this.preventDefault(e);
+			} else {
+				key = key || 'm';
+			}
 
       _STORE.get('markers').then(markers => {
         this.store(this.mark(key, { style: markers[key] }));

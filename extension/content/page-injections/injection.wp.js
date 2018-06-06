@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 42);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,9 +73,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
+exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
 var _copy = __webpack_require__(3);
+
+var _getActiveTab = __webpack_require__(11);
 
 var _extend = __webpack_require__(4);
 
@@ -83,11 +85,11 @@ var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _dommodule = __webpack_require__(11);
+var _dommodule = __webpack_require__(12);
 
 var _port = __webpack_require__(6);
 
-var _l10n = __webpack_require__(12);
+var _l10n = __webpack_require__(13);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
@@ -98,6 +100,7 @@ var _errorTracker2 = _interopRequireDefault(_errorTracker);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports._COPY = _copy._COPY;
+exports._GET_ACTIVE_TAB = _getActiveTab._GET_ACTIVE_TAB;
 exports._EXTEND = _extend2.default;
 exports._MODULE = _module._MODULE;
 exports._DOMMODULE = _dommodule._DOMMODULE;
@@ -395,7 +398,8 @@ var _PORT = exports._PORT = function (_MODULE2) {
     key: 'passMessage',
     value: function passMessage(req, sender, sendResponse) {
       req.args = req.args || [];
-      var args = [].concat(req.ev, req.args, sender, sendResponse);
+      var args = [].concat(req.ev, req.args);
+      if (!sender || !sender.name) args = args.concat(sender, sendResponse);
       this.emit.apply(this, args);
       if (req.wait) return true; // this will keep the message channel open to the other end until `sendResponse` is called
       return false;
@@ -451,7 +455,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg).catch(function () {});
+      if (this.port) this.port.postMessage(msg);
     }
   }, {
     key: 'initPorting',
@@ -653,6 +657,25 @@ exports.default = new _utils._MODULE({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
+
+  return browser.tabs.query({ currentWindow: true, active: true }).then(function (tabs) {
+    return tabs[0];
+  });
+};
+
+exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports._DOMMODULE = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -778,7 +801,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -889,10 +912,10 @@ function translateDocument() {
 }
 
 /***/ }),
-/* 13 */,
 /* 14 */,
 /* 15 */,
-/* 16 */
+/* 16 */,
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1196,7 +1219,6 @@ var _SELECTION = function () {
 exports.default = _SELECTION;
 
 /***/ }),
-/* 17 */,
 /* 18 */,
 /* 19 */,
 /* 20 */,
@@ -1221,7 +1243,8 @@ exports.default = _SELECTION;
 /* 39 */,
 /* 40 */,
 /* 41 */,
-/* 42 */
+/* 42 */,
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1231,16 +1254,16 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-__webpack_require__(43);
+__webpack_require__(44);
 
 __webpack_require__(9);
 
-__webpack_require__(44);
+__webpack_require__(45);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1256,12 +1279,12 @@ exports.default = new _utils._PORT({
   name: 'injection',
   type: 'content',
   events: {
-    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console']
+    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark']
   }
 });
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1269,23 +1292,23 @@ exports.default = new _utils._PORT({
 
 var _utils = __webpack_require__(0);
 
-var _page = __webpack_require__(45);
+var _page = __webpack_require__(46);
 
 var _page2 = _interopRequireDefault(_page);
 
-var _contextmenu = __webpack_require__(46);
+var _contextmenu = __webpack_require__(47);
 
 var _contextmenu2 = _interopRequireDefault(_contextmenu);
 
-var _marker = __webpack_require__(47);
+var _marker = __webpack_require__(48);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _restorer = __webpack_require__(50);
+var _restorer = __webpack_require__(51);
 
 var _restorer2 = _interopRequireDefault(_restorer);
 
-var _notes = __webpack_require__(51);
+var _notes = __webpack_require__(52);
 
 var _notes2 = _interopRequireDefault(_notes);
 
@@ -1326,7 +1349,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1350,6 +1373,9 @@ exports.default = function () {
       DOM: {
         keydown: {
           '*': 'delegate'
+        },
+        selectionchange: {
+          '*': 'onSelectionChange'
         }
       }
     },
@@ -1497,6 +1523,9 @@ exports.default = function () {
         //else
         this.emit('restore:marks', entry);
       }
+    },
+    onSelectionChange: function onSelectionChange() {
+      this.emit('changed:selection', !window.getSelection().isCollapsed);
     }
   });
 };
@@ -1510,7 +1539,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1562,7 +1591,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1590,7 +1619,16 @@ exports.default = function () {
         'ctx:n': 'addNote',
         'updated:misc-settings': 'showBookmarkIcon',
         'updated:note': 'autosave',
-        'removed:note': 'autosave'
+        'removed:note': 'autosave',
+        'sidebar:highlight': 'onMarkerKey',
+        'sidebar:delete-highlight': 'remove',
+        'sidebar:bookmark': 'setBookmark',
+        'sidebar:delete-bookmark': 'removeBookmark',
+        'sidebar:add-note': 'addNote',
+        'sidebar:save-changes': 'save',
+        'sidebar:undo': 'undo',
+        'sidebar:redo': 'redo',
+        'sidebar:scroll-to-bookmark': 'scrollToBookmark'
       }
     },
     selection: null,
@@ -1760,7 +1798,7 @@ exports.default = function () {
       var _this2 = this;
 
       _store2.default.get('autosave').then(function (autosave) {
-        if (autosave) _this2.save();
+        if (autosave) _this2.save();else _this2.emit('unsaved-changes');
       });
     },
     store: function store(mark, text, save) {
@@ -1881,9 +1919,11 @@ exports.default = function () {
 
       if (!selection.nodes) return false;
 
-      if (e) this.preventDefault(e);
-
-      key = key || 'm';
+      if (e) {
+        if (typeof e === 'string') key = e;else this.preventDefault(e);
+      } else {
+        key = key || 'm';
+      }
 
       _store2.default.get('markers').then(function (markers) {
         _this4.store(_this4.mark(key, { style: markers[key] }));
@@ -1968,22 +2008,22 @@ var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _markItem = __webpack_require__(48);
+var _markItem = __webpack_require__(49);
 
 var _markItem2 = _interopRequireDefault(_markItem);
 
-var _bookmark = __webpack_require__(49);
+var _bookmark = __webpack_require__(50);
 
 var _bookmark2 = _interopRequireDefault(_bookmark);
 
-var _selection = __webpack_require__(16);
+var _selection = __webpack_require__(17);
 
 var _selection2 = _interopRequireDefault(_selection);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2083,9 +2123,43 @@ var _MARK = function () {
 
 						if (!this.keyData.conds) this.describe();
 
-						//NODES_CACHE.pop();
+						this.registerClickListeners();
 
 						return this;
+				}
+		}, {
+				key: 'registerClickListeners',
+				value: function registerClickListeners() {
+						var _this = this;
+
+						var wrappers = this.wrappers;
+						var _iteratorNormalCompletion = true;
+						var _didIteratorError = false;
+						var _iteratorError = undefined;
+
+						try {
+								for (var _iterator = wrappers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+										var wrapper = _step.value;
+
+										wrapper.addEventListener('click', function (e) {
+												_store2.default.tmid = e.target.getAttribute('data-tm-id');
+												_this.marker.emit('clicked:mark');
+										}, false);
+								}
+						} catch (err) {
+								_didIteratorError = true;
+								_iteratorError = err;
+						} finally {
+								try {
+										if (!_iteratorNormalCompletion && _iterator.return) {
+												_iterator.return();
+										}
+								} finally {
+										if (_didIteratorError) {
+												throw _iteratorError;
+										}
+								}
+						}
 				}
 		}, {
 				key: 'definePosition',
@@ -2274,7 +2348,7 @@ var _MARK = function () {
 exports.default = _MARK;
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2394,7 +2468,7 @@ var _BOOKMARK = function () {
 exports.default = _BOOKMARK;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3073,7 +3147,7 @@ var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _selection = __webpack_require__(16);
+var _selection = __webpack_require__(17);
 
 var _selection2 = _interopRequireDefault(_selection);
 
@@ -3173,7 +3247,7 @@ var Restorer = function (_MODULE2) {
 }(_utils._MODULE);
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3192,7 +3266,8 @@ exports.default = function () {
       ENV: {
         'add:note': 'addAndShow',
         'removed:note': 'remove',
-        'restore:notes': 'restore'
+        'restore:notes': 'restore',
+        'sidebar:toggle-notes': 'toggleAll'
       }
     },
     notes: {},
@@ -3284,14 +3359,14 @@ var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _note = __webpack_require__(52);
+var _note = __webpack_require__(53);
 
 var _note2 = _interopRequireDefault(_note);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -11,7 +11,8 @@ export default function() {
       ENV: {
         'add:note': 'addAndShow',
         'removed:note': 'remove',
-        'restore:notes': 'restore'
+        'restore:notes': 'restore',
+        'sidebar:toggle-notes': 'toggleAll'
       }
     },
     notes: {},

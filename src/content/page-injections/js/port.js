@@ -12,7 +12,10 @@ export default new _PORT({
       'save:entry?',
       'update:entry?',
       'lookup:word',
-      'error:browser-console'
+      'error:browser-console',
+      'changed:selection',
+      'unsaved-changes',
+      'clicked:mark'
     ]
   }
 });

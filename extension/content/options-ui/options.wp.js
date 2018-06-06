@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 55);
+/******/ 	return __webpack_require__(__webpack_require__.s = 60);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -74,9 +74,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
+exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
 var _copy = __webpack_require__(3);
+
+var _getActiveTab = __webpack_require__(11);
 
 var _extend = __webpack_require__(4);
 
@@ -84,11 +86,11 @@ var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _dommodule = __webpack_require__(11);
+var _dommodule = __webpack_require__(12);
 
 var _port = __webpack_require__(6);
 
-var _l10n = __webpack_require__(12);
+var _l10n = __webpack_require__(13);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
@@ -99,6 +101,7 @@ var _errorTracker2 = _interopRequireDefault(_errorTracker);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports._COPY = _copy._COPY;
+exports._GET_ACTIVE_TAB = _getActiveTab._GET_ACTIVE_TAB;
 exports._EXTEND = _extend2.default;
 exports._MODULE = _module._MODULE;
 exports._DOMMODULE = _dommodule._DOMMODULE;
@@ -163,6 +166,26 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 /***/ }),
 
 /***/ 11:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
+
+  return browser.tabs.query({ currentWindow: true, active: true }).then(function (tabs) {
+    return tabs[0];
+  });
+};
+
+exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
+
+/***/ }),
+
+/***/ 12:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -297,7 +320,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 12:
+/***/ 13:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -543,27 +566,6 @@ exports.default = _class;
 
 /***/ }),
 
-/***/ 55:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-(0, _utils._L10N)();
-
-Array.from(document.getElementsByTagName('button')).forEach(function (button) {
-  button.addEventListener('click', function (e) {
-    browser.runtime.sendMessage({
-      ev: 'open:addon-page',
-      args: [e.target.getAttribute('data-id')]
-    });
-  }, false);
-});
-
-/***/ }),
-
 /***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -668,7 +670,8 @@ var _PORT = exports._PORT = function (_MODULE2) {
     key: 'passMessage',
     value: function passMessage(req, sender, sendResponse) {
       req.args = req.args || [];
-      var args = [].concat(req.ev, req.args, sender, sendResponse);
+      var args = [].concat(req.ev, req.args);
+      if (!sender || !sender.name) args = args.concat(sender, sendResponse);
       this.emit.apply(this, args);
       if (req.wait) return true; // this will keep the message channel open to the other end until `sendResponse` is called
       return false;
@@ -724,7 +727,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg).catch(function () {});
+      if (this.port) this.port.postMessage(msg);
     }
   }, {
     key: 'initPorting',
@@ -755,6 +758,27 @@ var _PORT = exports._PORT = function (_MODULE2) {
 
   return _PORT;
 }(_module._MODULE);
+
+/***/ }),
+
+/***/ 60:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+(0, _utils._L10N)();
+
+Array.from(document.getElementsByTagName('button')).forEach(function (button) {
+  button.addEventListener('click', function (e) {
+    browser.runtime.sendMessage({
+      ev: 'open:addon-page',
+      args: [e.target.getAttribute('data-id')]
+    });
+  }, false);
+});
 
 /***/ }),
 

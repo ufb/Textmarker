@@ -22,6 +22,7 @@ new _MODULE({
       'change:sort-setting': 'changeSortOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
+      'sidebar:toggle-autosave': 'changeSaveOpt',
 
       'remove:custom-marker': 'removeCustomMarker',
       'add:custom-marker': 'addCustomMarker',

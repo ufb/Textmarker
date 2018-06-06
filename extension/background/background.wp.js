@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 17);
+/******/ 	return __webpack_require__(__webpack_require__.s = 18);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -387,7 +387,8 @@ var _PORT = exports._PORT = function (_MODULE2) {
     key: 'passMessage',
     value: function passMessage(req, sender, sendResponse) {
       req.args = req.args || [];
-      var args = [].concat(req.ev, req.args, sender, sendResponse);
+      var args = [].concat(req.ev, req.args);
+      if (!sender || !sender.name) args = args.concat(sender, sendResponse);
       this.emit.apply(this, args);
       if (req.wait) return true; // this will keep the message channel open to the other end until `sendResponse` is called
       return false;
@@ -443,7 +444,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg).catch(function () {});
+      if (this.port) this.port.postMessage(msg);
     }
   }, {
     key: 'initPorting',
@@ -522,7 +523,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _utils = __webpack_require__(2);
 
-var _defaultStorage = __webpack_require__(15);
+var _defaultStorage = __webpack_require__(16);
 
 var _defaultStorage2 = _interopRequireDefault(_defaultStorage);
 
@@ -788,7 +789,8 @@ exports.default = new _utils._MODULE({
 /***/ }),
 /* 11 */,
 /* 12 */,
-/* 13 */
+/* 13 */,
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -842,8 +844,8 @@ exports.default = {
 };
 
 /***/ }),
-/* 14 */,
-/* 15 */
+/* 15 */,
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -910,8 +912,8 @@ exports.default = {
 };
 
 /***/ }),
-/* 16 */,
-/* 17 */
+/* 17 */,
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -925,31 +927,31 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-__webpack_require__(18);
-
 __webpack_require__(19);
 
 __webpack_require__(20);
 
-var _notifications = __webpack_require__(21);
+__webpack_require__(21);
+
+var _notifications = __webpack_require__(22);
 
 var _notifications2 = _interopRequireDefault(_notifications);
 
-var _tabs = __webpack_require__(22);
+var _tabs = __webpack_require__(23);
 
 var _tabs2 = _interopRequireDefault(_tabs);
 
-var _namer = __webpack_require__(23);
+var _namer = __webpack_require__(24);
 
 var _namer2 = _interopRequireDefault(_namer);
 
-var _contextMenu = __webpack_require__(24);
+var _contextMenu = __webpack_require__(25);
 
 var _contextMenu2 = _interopRequireDefault(_contextMenu);
 
-__webpack_require__(25);
-
 __webpack_require__(26);
+
+__webpack_require__(27);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1042,7 +1044,7 @@ new _utils._MODULE({
 //import _IDB from './modules/indexeddb'
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1055,13 +1057,13 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n'],
-    CONNECTION: ['started:app', 'updated:settings', 'toggled:sync-settings']
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:add-note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes'],
+    CONNECTION: ['started:app', 'updated:settings', 'updated:entry', 'saved:entry', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark']
   }
 });
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1073,7 +1075,7 @@ var _storage2 = _interopRequireDefault(_storage);
 
 var _utils = __webpack_require__(2);
 
-var _logKeys = __webpack_require__(13);
+var _logKeys = __webpack_require__(14);
 
 var _logKeys2 = _interopRequireDefault(_logKeys);
 
@@ -1128,7 +1130,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1196,7 +1198,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1312,7 +1314,7 @@ var _utils = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1385,7 +1387,7 @@ var _utils = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1469,7 +1471,7 @@ var _utils = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1559,7 +1561,7 @@ var _utils = __webpack_require__(2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1569,7 +1571,7 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _defaultStorage = __webpack_require__(15);
+var _defaultStorage = __webpack_require__(16);
 
 var _defaultStorage2 = _interopRequireDefault(_defaultStorage);
 
@@ -1782,7 +1784,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1817,6 +1819,7 @@ new _utils._MODULE({
       'change:sort-setting': 'changeSortOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
+      'sidebar:toggle-autosave': 'changeSaveOpt',
 
       'remove:custom-marker': 'removeCustomMarker',
       'add:custom-marker': 'addCustomMarker',
