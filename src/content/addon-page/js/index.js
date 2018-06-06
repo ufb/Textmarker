@@ -8,6 +8,10 @@ import './bootstrap'
 
 _L10N();
 
+/* auto-insert current version number */
+document.getElementById('version-number').innerText = browser.runtime.getManifest().version;
+/* end: auto-insert current version number */
+
 /* configure navs */
 let navs = document.getElementsByClassName('nav'),
     n = navs.length;

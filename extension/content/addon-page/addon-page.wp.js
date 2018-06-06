@@ -1020,6 +1020,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 (0, _utils._L10N)();
 
+/* auto-insert current version number */
+document.getElementById('version-number').innerText = browser.runtime.getManifest().version;
+/* end: auto-insert current version number */
+
 /* configure navs */
 var navs = document.getElementsByClassName('nav'),
     n = navs.length;
