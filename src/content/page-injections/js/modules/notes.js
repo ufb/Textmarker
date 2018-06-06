@@ -10,8 +10,9 @@ export default function() {
     events: {
       ENV: {
         'add:note': 'addAndShow',
-        'removed:note': 'remove',
-        'restore:notes': 'restore'
+        'removed:note': 'removeNoteStorage',
+        'restore:notes': 'restore',
+        'removed:mark': 'removeNote'
       }
     },
     notes: {},
@@ -29,9 +30,12 @@ export default function() {
       if (this.isEmpty(this.notes)) this.toggleToggler(true);
       this.add(mark).show();
     },
-    remove(id) {
+    removeNoteStorage(id) {
       delete this.notes[id];
       if (this.isEmpty(this.notes)) this.toggleToggler(false);
+    },
+    removeNote(id) {
+      if (this.notes[id]) this.notes[id].remove();
     },
     toggleAll() {
       if (!this.notes) return;

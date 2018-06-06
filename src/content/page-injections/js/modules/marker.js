@@ -65,10 +65,14 @@ export default function() {
 			let done = this.done;
 
 			if (done.length) {
-        this.undone.push(this.done.pop().undo());
+        const mark = this.done.pop();
+        const id = mark.id;
 
-        if (this.bookmark)
-          this.undoBookmark();
+        this.undone.push(mark.undo());
+
+        if (this.bookmark) this.undoBookmark();
+
+        this.emit('removed:mark', id);
       }
 
       noAutosave || this.autosave();
@@ -76,8 +80,13 @@ export default function() {
 		redo(noAutosave) {
       let undone = this.undone;
 
-			if (undone.length)
-        this.done.push(this.undone.pop().redo());
+			if (undone.length) {
+        const mark = this.undone.pop();
+
+        this.done.push(mark.redo());
+
+        this.emit('restore:notes', [mark]);
+      }
 
       noAutosave || this.autosave();
 		},
@@ -154,6 +163,7 @@ export default function() {
           this.autosave();
         }
       }
+      this.emit('removed:mark', id[0]);
     },
     save() {
       const iframe = _STORE.iframe;
