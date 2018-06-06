@@ -443,7 +443,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg).catch(function () {});
+      if (this.port) this.port.postMessage(msg);
     }
   }, {
     key: 'initPorting',

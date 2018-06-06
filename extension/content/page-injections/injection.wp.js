@@ -451,7 +451,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
 
       var msg = { ev: e, args: args };
-      if (this.port) this.port.postMessage(msg).catch(function () {});
+      if (this.port) this.port.postMessage(msg);
     }
   }, {
     key: 'initPorting',
@@ -1634,9 +1634,14 @@ exports.default = function () {
       var done = this.done;
 
       if (done.length) {
-        this.undone.push(this.done.pop().undo());
+        var mark = this.done.pop();
+        var id = mark.id;
+
+        this.undone.push(mark.undo());
 
         if (this.bookmark) this.undoBookmark();
+
+        this.emit('removed:mark', id);
       }
 
       noAutosave || this.autosave();
@@ -1644,7 +1649,13 @@ exports.default = function () {
     redo: function redo(noAutosave) {
       var undone = this.undone;
 
-      if (undone.length) this.done.push(this.undone.pop().redo());
+      if (undone.length) {
+        var mark = this.undone.pop();
+
+        this.done.push(mark.redo());
+
+        this.emit('restore:notes', [mark]);
+      }
 
       noAutosave || this.autosave();
     },
@@ -1721,6 +1732,7 @@ exports.default = function () {
           }this.autosave();
         }
       }
+      this.emit('removed:mark', id[0]);
     },
     save: function save() {
       var _this = this;
@@ -3191,8 +3203,9 @@ exports.default = function () {
     events: {
       ENV: {
         'add:note': 'addAndShow',
-        'removed:note': 'remove',
-        'restore:notes': 'restore'
+        'removed:note': 'removeNoteStorage',
+        'restore:notes': 'restore',
+        'removed:mark': 'removeNote'
       }
     },
     notes: {},
@@ -3232,9 +3245,12 @@ exports.default = function () {
       if (this.isEmpty(this.notes)) this.toggleToggler(true);
       this.add(mark).show();
     },
-    remove: function remove(id) {
+    removeNoteStorage: function removeNoteStorage(id) {
       delete this.notes[id];
       if (this.isEmpty(this.notes)) this.toggleToggler(false);
+    },
+    removeNote: function removeNote(id) {
+      if (this.notes[id]) this.notes[id].remove();
     },
     toggleAll: function toggleAll() {
       if (!this.notes) return;
@@ -3309,7 +3325,7 @@ exports.default = function (mark) {
     events: {
       DOM: {
         click: {
-          'tmnotedelete': 'remove',
+          'tmnotedelete': '_delete',
           'tmnoteminimize': 'hide',
           'textarea': 'bringUpFront'
         },
@@ -3354,9 +3370,12 @@ exports.default = function (mark) {
         return _this.attemptUpdate(e, e.target, true);
       }, false);
     },
-    remove: function remove(e, el) {
-      this.hide();
+    _delete: function _delete() {
+      this.remove();
       this.mark.keyData.note = '';
+    },
+    remove: function remove() {
+      this.hide();
       this.removeMarkListeners();
       this.emit('removed:note', this.mark.id);
     },
