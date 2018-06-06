@@ -979,7 +979,7 @@ new _utils._MODULE({
           var loadReason = _this.loadReason = details.reason;
           var prevVersion = details.previousVersion || '2';
           if (loadReason && (loadReason === 'update' || loadReason === 'install')) {
-            _this.emit(loadReason + ':app', prevVersion);
+            _this.emit(loadReason + ':app', prevVersion, loadReason);
           } else {
             _this.emit('check:storage');
           }
