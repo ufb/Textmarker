@@ -18,7 +18,8 @@ new _MODULE({
       'toggle:noteopt-setting': 'toggleNoteOpt',
       'toggle:quickbuttonopt-setting': 'toggleQuickbuttonOpt',
       'toggle:notification-setting': 'toggleNotificationOpt',
-      'toggle:misc-setting': 'toggleMiscSetting',
+      'toggle:misc-setting': 'changeMiscSetting',
+      'change:misc-setting': 'changeMiscSetting',
       'change:sort-setting': 'changeSortOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
@@ -176,7 +177,7 @@ new _MODULE({
       'error_save_notify'
     );
   },
-  toggleMiscSetting(prop, val) {
+  changeMiscSetting(prop, val) {
     this.updateSettings(
       settings => { settings.misc[prop] = val; return settings; },
       'misc',

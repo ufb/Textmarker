@@ -16,6 +16,7 @@ export default new _PORT({
       'toggle:quickbuttonopt-setting',
       'toggle:notification-setting',
       'toggle:misc-setting',
+      'change:misc-setting',
       'add:custom-marker',
       'remove:custom-marker',
       'delete:entries',

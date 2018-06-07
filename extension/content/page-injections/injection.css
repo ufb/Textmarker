@@ -11,8 +11,6 @@ span.textmarker-highlight {
 }
 tmui {
   display: none;
-  right: 1px;
-  top: 1px;
   z-index: 2147483647;
   position: fixed;
   background: #fff;
