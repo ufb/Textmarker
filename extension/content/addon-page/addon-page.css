@@ -55,7 +55,7 @@ h1 {
   margin: 0 -1px 15px 0;
   height: 38px;
 }
-h1 span {
+h1 > span {
   display: block;
   font-size: 0.65em;
   color: #c8c8c8;
@@ -141,6 +141,9 @@ select.small {
 select.big {
   width: 120px;
 }
+.cb-sub-select {
+  margin: 5px 0 0 35px;
+}
 input:disabled {
   opacity: 0.25;
 }
@@ -168,9 +171,13 @@ input[type="color"] {
   text-align: center;
 }
 input[type="text"] {
-  vertical-align: middle;
-  width: 180px;
+  border-radius: 2px;
+  border: 1px solid #c8c8c8;
   color: inherit;
+  padding: 0;
+  height: 22px;
+  width: 190px;
+  padding: 0 4px;
 }
 input[type="file"] {
   display: none;
@@ -212,7 +219,8 @@ input[type="number"] {
 /* BUTTONS */
 button {
   border: 1px solid #c8c8c8;
-  background-image: linear-gradient(#fff 62.5%,#eee 37.5%);
+  background-image: linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+	background-color: transparent;
   color: #555;
   cursor: pointer;
   font-size: 13px;
@@ -222,7 +230,7 @@ button {
   transition: background 0.5s;
 }
 button:hover {
-  background-image: linear-gradient(#eee 62.5%,#fff 37.5%);
+  background-image: linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
   color: #40566b;
 }
 /* HELPER CLASSES */
@@ -244,6 +252,11 @@ button:hover {
 }
 .width--full {
 	width: 100% !important;
+}
+.border-top {
+  border-bottom: 0;
+  border-left: 0;
+  border-right: 0;
 }
 .open {
   display: block !important;
@@ -302,8 +315,8 @@ small.ref {
   font-size: 0.8em;
   padding: 3px 5px;
   background-repeat: no-repeat;
-  background-position: 5px 5px;
-  background-size: 13px;
+  background-position: 5px 5px, 0 0;
+  background-size: 13px, 100%;
   border-radius: 2px;
   margin-left: 5px;
 }
@@ -528,6 +541,9 @@ small.ref {
   display: inline-block;
   margin-left: 9px;
 }
+#customize-shortcuts--left {
+  margin: 0 60px 30px 0;
+}
 /* history */
 #notification {
   margin: 0 3px 0 5px;
@@ -535,12 +551,19 @@ small.ref {
 #custom-name-row {
   display: none;
 }
+/* misc */
+.tmuipos {
+  display: none;
+}
+.misc-cb:checked + label + .tmuipos {
+  display: inline;
+}
 /* HISTORY */
 #history a {
   text-decoration: none;
 }
 #entries {
-  margin: 76px -20px 0;
+  margin: 61px -20px 0;
   clear: both;
 }
 #entry-template {
@@ -580,36 +603,31 @@ small.ref {
   position: relative;
   top: 9px;
 }
-.quick-buttons button {
-  background-color: rgba(55, 65, 75, 0.7);
-	background-image: none;
-  color: #fbfbfb;
-  border: none;
-}
-button.infos {
-  font-family: Georgia;
-}
-button.delete {
-  background-color: rgba(173, 58, 58, 0.7);
-}
-button.download {
-  background-image: url(../icons/download.png);
-}
-button.clean {
-  background-image: url(../icons/clean.png);
-}
-.quick-buttons button:hover {
-  background-color: rgb(55, 65, 75);
+.quick-buttons button.delete {
+  background-image: none, linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
 }
 .quick-buttons button.delete:hover {
-  background-color: #ad3a3a;
+  background-image: none, linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
+  color: rgb(173, 58, 58);
+}
+.quick-buttons button.download {
+  background-image: url(../icons/download.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+  background-position: 4px 4px, 0 0;
+}
+.quick-buttons button.download:hover {
+  background-image: url(../icons/download.png), linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
 }
 .page-actions {
   padding: 15px 0 20px;
-  margin-bottom: 15px;
 }
-#count {
-  float: left;
+.page-actions select,
+.history-actions select {
+  height: 27px;
+  background-position: right 10px;
+}
+.page-actions .small-button, .page-actions input,
+.history-actions .small-button {
+  height: 27px;
 }
 #search-count {
   font-size: 12px;
@@ -618,13 +636,20 @@ button.clean {
   top: 4px;
 }
 #search-toggle {
-  background-image: url(../icons/search.png);
-  background-position: 4px 4px;
+  background-image: url(../icons/search.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+  background-position: 4px 6px, 0 0;
   color: transparent;
+}
+#search-toggle:hover {
+	background-image: url(../icons/search.png), linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
 }
 #search-toggle.active {
   color: inherit;
-  background-image: none;
+  background-image: none, linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+	padding-top: 2px;
+}
+#search-toggle.active:hover {
+  background-image: none, linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
 }
 #sort label {
   width: auto;
@@ -648,8 +673,11 @@ button.clean {
   margin-left: 5px;
 }
 .history-actions button {
-  background-image: url(../icons/submit.png);
-  background-position: 4px 4px;
+  background-image: url(../icons/submit.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+  background-position: 4px 6px, 0 0;
+}
+.history-actions button:hover {
+  background-image: url(../icons/submit.png), linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
 }
 .history-actions .specification {
   display: none;

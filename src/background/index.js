@@ -36,7 +36,7 @@ new _MODULE({
           const loadReason = this.loadReason = details.reason;
           const prevVersion = details.previousVersion || '2';
           if (loadReason && (loadReason === 'update' || loadReason === 'install')) {
-            this.emit(loadReason + ':app', prevVersion);
+            this.emit(loadReason + ':app', prevVersion, loadReason);
           } else {
             this.emit('check:storage');
           }

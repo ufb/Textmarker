@@ -180,7 +180,9 @@ export default function() {
       const noEntriesHint = document.getElementById('no-entries');
       const search = document.getElementById('search');
       const actions = document.getElementById('history-actions');
+      const action = document.getElementById('action');
       const sort = document.getElementById('sort');
+      const sortEntries = document.getElementById('sort-entries');
       const count = document.getElementById('count');
       const ppSelect = document.getElementById('entries-per-page');
       const meth_0 = !l ? 'remove' : 'add';
@@ -193,6 +195,8 @@ export default function() {
       search.classList[meth_2]('none');
       sort.classList[meth_2]('none');
       count.classList[meth_3]('none');
+
+      sortEntries.style.width = action.clientWidth + 'px';
 
       document.getElementById('entries-count').innerText = l;
 

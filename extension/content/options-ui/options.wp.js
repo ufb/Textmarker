@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 60);
+/******/ 	return __webpack_require__(__webpack_require__.s = 61);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -76,11 +76,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
-var _copy = __webpack_require__(3);
+var _copy = __webpack_require__(4);
 
 var _getActiveTab = __webpack_require__(11);
 
-var _extend = __webpack_require__(4);
+var _extend = __webpack_require__(5);
 
 var _extend2 = _interopRequireDefault(_extend);
 
@@ -88,13 +88,13 @@ var _module = __webpack_require__(1);
 
 var _dommodule = __webpack_require__(12);
 
-var _port = __webpack_require__(6);
+var _port = __webpack_require__(7);
 
 var _l10n = __webpack_require__(13);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
-var _errorTracker = __webpack_require__(7);
+var _errorTracker = __webpack_require__(8);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -122,7 +122,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(5);
+var _mediator = __webpack_require__(6);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -432,7 +432,7 @@ function translateDocument() {
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -464,7 +464,7 @@ exports._COPY = _COPY;
 
 /***/ }),
 
-/***/ 4:
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -482,7 +482,7 @@ exports.default = function (obj1, obj2) {
 
 /***/ }),
 
-/***/ 5:
+/***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -566,7 +566,28 @@ exports.default = _class;
 
 /***/ }),
 
-/***/ 6:
+/***/ 61:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+(0, _utils._L10N)();
+
+Array.from(document.getElementsByTagName('button')).forEach(function (button) {
+  button.addEventListener('click', function (e) {
+    browser.runtime.sendMessage({
+      ev: 'open:addon-page',
+      args: [e.target.getAttribute('data-id')]
+    });
+  }, false);
+});
+
+/***/ }),
+
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -761,28 +782,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 60:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-(0, _utils._L10N)();
-
-Array.from(document.getElementsByTagName('button')).forEach(function (button) {
-  button.addEventListener('click', function (e) {
-    browser.runtime.sendMessage({
-      ev: 'open:addon-page',
-      args: [e.target.getAttribute('data-id')]
-    });
-  }, false);
-});
-
-/***/ }),
-
-/***/ 7:
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

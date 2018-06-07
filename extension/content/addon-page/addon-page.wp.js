@@ -75,11 +75,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
-var _copy = __webpack_require__(3);
+var _copy = __webpack_require__(4);
 
 var _getActiveTab = __webpack_require__(11);
 
-var _extend = __webpack_require__(4);
+var _extend = __webpack_require__(5);
 
 var _extend2 = _interopRequireDefault(_extend);
 
@@ -87,13 +87,13 @@ var _module = __webpack_require__(1);
 
 var _dommodule = __webpack_require__(12);
 
-var _port = __webpack_require__(6);
+var _port = __webpack_require__(7);
 
 var _l10n = __webpack_require__(13);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
-var _errorTracker = __webpack_require__(7);
+var _errorTracker = __webpack_require__(8);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -120,7 +120,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(5);
+var _mediator = __webpack_require__(6);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -163,7 +163,8 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 
 /***/ }),
 /* 2 */,
-/* 3 */
+/* 3 */,
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -194,7 +195,7 @@ var _COPY = function _COPY(original, clone) {
 exports._COPY = _COPY;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -211,7 +212,7 @@ exports.default = function (obj1, obj2) {
 };
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -294,7 +295,7 @@ var _class = function () {
 exports.default = _class;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -488,7 +489,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -520,7 +521,7 @@ var _ERRORTRACKER = new _module._MODULE({
 exports.default = _ERRORTRACKER;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -636,7 +637,6 @@ exports.default = new _utils._MODULE({
 });
 
 /***/ }),
-/* 9 */,
 /* 10 */,
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -1035,13 +1035,17 @@ var _toggler2 = _interopRequireDefault(_toggler);
 
 __webpack_require__(32);
 
-__webpack_require__(8);
+__webpack_require__(9);
 
 __webpack_require__(33);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (0, _utils._L10N)();
+
+/* auto-insert current version number */
+document.getElementById('version-number').innerText = browser.runtime.getManifest().version;
+/* end: auto-insert current version number */
 
 /* configure navs */
 var navs = document.getElementsByClassName('nav'),
@@ -1152,7 +1156,7 @@ exports.default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs']
+    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs']
   }
 });
 
@@ -1163,7 +1167,7 @@ exports.default = new _utils._PORT({
 "use strict";
 
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -1426,7 +1430,9 @@ exports.default = function () {
     var noEntriesHint = document.getElementById('no-entries');
     var search = document.getElementById('search');
     var actions = document.getElementById('history-actions');
+    var action = document.getElementById('action');
     var sort = document.getElementById('sort');
+    var sortEntries = document.getElementById('sort-entries');
     var count = document.getElementById('count');
     var ppSelect = document.getElementById('entries-per-page');
     var meth_0 = !l ? 'remove' : 'add';
@@ -1439,6 +1445,8 @@ exports.default = function () {
     search.classList[meth_2]('none');
     sort.classList[meth_2]('none');
     count.classList[meth_3]('none');
+
+    sortEntries.style.width = action.clientWidth + 'px';
 
     document.getElementById('entries-count').innerText = l;
 
@@ -1665,7 +1673,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -1759,7 +1767,8 @@ exports.default = function () {
           '.customize-quickbuttons': 'changeQuickbuttonOpt',
           '.ctm-cb': 'toggleCtm',
           '.notes-cb': 'toggleNotes',
-          '.misc-cb': 'toggleMisc'
+          '.misc-cb': 'toggleMisc',
+          '.tmuipos': 'changeTmuiPositionOpt'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -1915,6 +1924,8 @@ exports.default = function () {
       document.getElementById('notes-error').checked = miscSettings.errorNote;
       document.getElementById('custom-search--start').value = miscSettings.customSearch ? miscSettings.customSearch[0] : this.customSearch;
       document.getElementById('custom-search--end').value = miscSettings.customSearch ? miscSettings.customSearch[1] : '';
+      document.getElementById('tmuipos--noteicon').value = miscSettings.tmuipos;
+      document.getElementById('tmuipos--bmicon').value = miscSettings.tmuipos;
     },
     showCustomSearchSettingSuccess: function showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('none');
@@ -2005,6 +2016,12 @@ exports.default = function () {
     toggleMisc: function toggleMisc(e, el) {
       this.emit('toggle:misc-setting', el.name, el.checked);
     },
+    changeTmuiPositionOpt: function changeTmuiPositionOpt(e, el) {
+      this.emit('change:misc-setting', el.name, el.value);
+      Array.from(this.el.getElementsByClassName('tmuipos')).forEach(function (select) {
+        return select.value = el.value;
+      });
+    },
     changeCustomSearch: function changeCustomSearch(e, el) {
       this.hideCustomSearchSettingSuccess();
       var inp1 = document.getElementById('custom-search--start');
@@ -2027,7 +2044,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2050,7 +2067,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2367,7 +2384,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2419,7 +2436,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2526,7 +2543,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2601,7 +2618,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2741,7 +2758,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(8);
+var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 

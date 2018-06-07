@@ -73,11 +73,9 @@ export default class _MARK {
 
     this.definePosition(lastIndex);
 
-    if (this.keyData.bookmark)
-      this.marker.setBookmark(this);
+    if (this.keyData.bookmark) this.marker.setBookmark(this);
 
-    if (!this.keyData.conds)
-      this.describe();
+    if (!this.keyData.conds) this.describe();
 
 		this.registerClickListeners();
 

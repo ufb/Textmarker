@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 54);
+/******/ 	return __webpack_require__(__webpack_require__.s = 55);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -76,11 +76,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
-var _copy = __webpack_require__(3);
+var _copy = __webpack_require__(4);
 
 var _getActiveTab = __webpack_require__(11);
 
-var _extend = __webpack_require__(4);
+var _extend = __webpack_require__(5);
 
 var _extend2 = _interopRequireDefault(_extend);
 
@@ -88,13 +88,13 @@ var _module = __webpack_require__(1);
 
 var _dommodule = __webpack_require__(12);
 
-var _port = __webpack_require__(6);
+var _port = __webpack_require__(7);
 
 var _l10n = __webpack_require__(13);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
-var _errorTracker = __webpack_require__(7);
+var _errorTracker = __webpack_require__(8);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -122,7 +122,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(5);
+var _mediator = __webpack_require__(6);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -432,7 +432,7 @@ function translateDocument() {
 
 /***/ }),
 
-/***/ 3:
+/***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -464,7 +464,7 @@ exports._COPY = _COPY;
 
 /***/ }),
 
-/***/ 4:
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -482,91 +482,7 @@ exports.default = function (obj1, obj2) {
 
 /***/ }),
 
-/***/ 5:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var topics = {};
-
-var _class = function () {
-  function _class() {
-    _classCallCheck(this, _class);
-  }
-
-  _createClass(_class, [{
-    key: 'on',
-    value: function on(event, handler) {
-      if (!topics[event]) topics[event] = [];
-
-      topics[event].push(handler);
-    }
-  }, {
-    key: 'emit',
-    value: function emit(events) {
-      var _this = this;
-
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-
-      events = events.split(' ');
-
-      var i = 0,
-          l = events.length,
-          topic = void 0;
-
-      for (; i < l; i++) {
-        topic = topics[events[i]];
-
-        if (topic) topic.forEach(function (handler) {
-          return handler.apply(_this, args);
-        });
-      }
-    }
-  }, {
-    key: 'request',
-    value: function request(event) {
-      for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        args[_key2 - 1] = arguments[_key2];
-      }
-
-      return browser.runtime.sendMessage({ ev: event, args: args, wait: true }).catch(function () {});
-    }
-  }, {
-    key: 'proxy',
-    value: function proxy(context, func) {
-      for (var _len3 = arguments.length, args1 = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
-        args1[_key3 - 2] = arguments[_key3];
-      }
-
-      return function () {
-        for (var _len4 = arguments.length, args2 = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
-          args2[_key4] = arguments[_key4];
-        }
-
-        return func.apply(context, args1.concat(args2));
-      };
-    }
-  }]);
-
-  return _class;
-}();
-
-exports.default = _class;
-
-/***/ }),
-
-/***/ 54:
+/***/ 55:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -576,15 +492,15 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _port = __webpack_require__(55);
+var _port = __webpack_require__(56);
 
 var _port2 = _interopRequireDefault(_port);
-
-__webpack_require__(56);
 
 __webpack_require__(57);
 
 __webpack_require__(58);
+
+__webpack_require__(59);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -592,7 +508,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /***/ }),
 
-/***/ 55:
+/***/ 56:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -614,7 +530,7 @@ exports.default = new _utils._PORT({
 
 /***/ }),
 
-/***/ 56:
+/***/ 57:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -736,7 +652,7 @@ new _utils._DOMMODULE({
 
 /***/ }),
 
-/***/ 57:
+/***/ 58:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -784,7 +700,7 @@ new _utils._DOMMODULE({
 
 /***/ }),
 
-/***/ 58:
+/***/ 59:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -792,7 +708,7 @@ new _utils._DOMMODULE({
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(59);
+var _store = __webpack_require__(60);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -853,7 +769,91 @@ new _utils._DOMMODULE({
 
 /***/ }),
 
-/***/ 59:
+/***/ 6:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var topics = {};
+
+var _class = function () {
+  function _class() {
+    _classCallCheck(this, _class);
+  }
+
+  _createClass(_class, [{
+    key: 'on',
+    value: function on(event, handler) {
+      if (!topics[event]) topics[event] = [];
+
+      topics[event].push(handler);
+    }
+  }, {
+    key: 'emit',
+    value: function emit(events) {
+      var _this = this;
+
+      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      events = events.split(' ');
+
+      var i = 0,
+          l = events.length,
+          topic = void 0;
+
+      for (; i < l; i++) {
+        topic = topics[events[i]];
+
+        if (topic) topic.forEach(function (handler) {
+          return handler.apply(_this, args);
+        });
+      }
+    }
+  }, {
+    key: 'request',
+    value: function request(event) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        args[_key2 - 1] = arguments[_key2];
+      }
+
+      return browser.runtime.sendMessage({ ev: event, args: args, wait: true }).catch(function () {});
+    }
+  }, {
+    key: 'proxy',
+    value: function proxy(context, func) {
+      for (var _len3 = arguments.length, args1 = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+        args1[_key3 - 2] = arguments[_key3];
+      }
+
+      return function () {
+        for (var _len4 = arguments.length, args2 = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+          args2[_key4] = arguments[_key4];
+        }
+
+        return func.apply(context, args1.concat(args2));
+      };
+    }
+  }]);
+
+  return _class;
+}();
+
+exports.default = _class;
+
+/***/ }),
+
+/***/ 60:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -921,7 +921,7 @@ exports.default = new _utils._MODULE({
 
 /***/ }),
 
-/***/ 6:
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1116,7 +1116,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 7:
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
