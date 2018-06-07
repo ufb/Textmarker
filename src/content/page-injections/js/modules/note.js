@@ -9,7 +9,7 @@ export default function(mark) {
 		events: {
       DOM: {
         click: {
-          'tmnotedelete': 'remove',
+          'tmnotedelete': '_delete',
           'tmnoteminimize': 'hide',
           'textarea': 'bringUpFront'
         },
@@ -51,9 +51,12 @@ export default function(mark) {
 
       p.addEventListener('blur', e => this.attemptUpdate(e, e.target, true), false);
     },
-    remove(e, el) {
-      this.hide();
+    _delete() {
+      this.remove();
       this.mark.keyData.note = '';
+    },
+    remove() {
+      this.hide();
       this.removeMarkListeners();
       this.emit('removed:note', this.mark.id);
     },

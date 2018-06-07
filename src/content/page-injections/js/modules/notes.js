@@ -10,8 +10,10 @@ export default function() {
     events: {
       ENV: {
         'add:note': 'addAndShow',
-        'removed:note': 'remove',
+        'removed:note': 'removeNoteStorage',
         'restore:notes': 'restore',
+        'removed:mark': 'removeNote',
+        'toggle:notes': 'toggleAll',
         'sidebar:toggle-notes': 'toggleAll'
       }
     },
@@ -24,15 +26,18 @@ export default function() {
       for (let mark of marks) {
         if (mark.keyData.note) this.add(mark);
       }
-      if (!this.isEmpty(this.notes)) this.toggleToggler(true);
+      this.emit('added:note');
     },
     addAndShow(mark) {
-      if (this.isEmpty(this.notes)) this.toggleToggler(true);
       this.add(mark).show();
+      this.emit('added:note');
     },
-    remove(id) {
+    removeNoteStorage(id) {
       delete this.notes[id];
-      if (this.isEmpty(this.notes)) this.toggleToggler(false);
+      if (this.isEmpty(this.notes)) this.emit('removed:last-note');
+    },
+    removeNote(id) {
+      if (this.notes[id]) this.notes[id].remove();
     },
     toggleAll() {
       if (!this.notes) return;
@@ -45,25 +50,6 @@ export default function() {
         if (note.visible === condition) {
           note[meth]();
         }
-      }
-    },
-    toggleToggler(show) {
-      const tmui = DOC.getElementsByTagName('tmui')[0];
-      if (show) {
-        _STORE.get('noteicon').then(noteicon => {
-          if (noteicon) {
-            const toggle = this.toggle = DOC.createElement('tmnotestoggle');
-            toggle.title = browser.i18n.getMessage('toggle_notes');
-            tmui.appendChild(toggle);
-            tmui.classList.add('active');
-            toggle.onclick = () => this.toggleAll();
-          }
-        });
-      } else {
-        if (!this.toggle) return;
-        tmui.removeChild(this.toggle);
-        if (!tmui.children.length) tmui.classList.remove('active');
-        this.toggle = null;
       }
     },
     isEmpty(obj) {

@@ -42,7 +42,8 @@ export default {
       pbmNote: true,
       changedNote: false,
       errorNote: true,
-      customSearch: false
+      customSearch: false,
+      tmuipos: 'top-right'
     }
   },
   history: {

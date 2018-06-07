@@ -20,7 +20,6 @@ export default function() {
         'ctx:d': 'remove',
         'ctx:m': 'onMarkerKey',
         'ctx:n': 'addNote',
-        'updated:misc-settings': 'showBookmarkIcon',
         'updated:note': 'autosave',
         'removed:note': 'autosave',
 				'sidebar:highlight': 'onMarkerKey',
@@ -31,7 +30,8 @@ export default function() {
         'sidebar:save-changes': 'save',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
-        'sidebar:scroll-to-bookmark': 'scrollToBookmark'
+        'sidebar:scroll-to-bookmark': 'scrollToBookmark',
+        'scroll-to-bookmark': 'scrollToBookmark'
 			}
 		},
 		selection: null,
@@ -40,10 +40,6 @@ export default function() {
     bookmark: null,
     removedBookmark: null,
 		idcount: 0,
-
-    autoinit() {
-      this.showBookmarkIcon();
-    },
 
     updateID: function updateID() {
       const entry = _STORE.entry;
@@ -74,10 +70,14 @@ export default function() {
 			let done = this.done;
 
 			if (done.length) {
-        this.undone.push(this.done.pop().undo());
+        const mark = this.done.pop();
+        const id = mark.id;
 
-        if (this.bookmark)
-          this.undoBookmark();
+        this.undone.push(mark.undo());
+
+        if (this.bookmark) this.undoBookmark();
+
+        this.emit('removed:mark', id);
       }
 
       noAutosave || this.autosave();
@@ -85,8 +85,13 @@ export default function() {
 		redo(noAutosave) {
       let undone = this.undone;
 
-			if (undone.length)
-        this.done.push(this.undone.pop().redo());
+			if (undone.length) {
+        const mark = this.undone.pop();
+
+        this.done.push(mark.redo());
+
+        this.emit('restore:notes', [mark]);
+      }
 
       noAutosave || this.autosave();
 		},
@@ -163,6 +168,7 @@ export default function() {
           this.autosave();
         }
       }
+      this.emit('removed:mark', id[0]);
     },
     save() {
       const iframe = _STORE.iframe;
@@ -218,14 +224,19 @@ export default function() {
 
       if (!mark) return false;
 
-      if (bookmark) bookmark.remove();
+      if (bookmark) {
+        bookmark.remove();
+        this.emit('removed:bookmark');
+      }
 
-      this.bookmark = new _BOOKMARK();
-      this.bookmark.set(mark).then(() => this.autosave());
+      this.bookmark = new _BOOKMARK().set(mark);
+
+      this.emit('added:bookmark');
+      this.autosave();
     },
     undoBookmark() {
-      this.bookmark.removeIcon();
       this.bookmark = null;
+      this.emit('removed:bookmark');
     },
     removeBookmark() {
       let bookmark = this.bookmark;
@@ -235,26 +246,13 @@ export default function() {
       bookmark.remove();
       this.bookmark = null;
       this.removedBookmark = bookmark;
+      this.emit('removed:bookmark');
       this.autosave();
     },
     scrollToBookmark() {
       let bookmark = this.bookmark;
 
       if (bookmark) bookmark.scrollIntoView();
-    },
-    showBookmarkIcon() {
-			let bookmark = this.bookmark;
-
-      if (bookmark) {
-        _STORE.get('bmicon').then(showIcon => {
-          let iconShown = bookmark.iconShown;
-
-          if (iconShown !== showIcon) {
-            if (showIcon) bookmark.insertIcon();
-            else bookmark.removeIcon();
-          }
-        });
-      }
     },
     getById(id, pos) {
 			let done = this.done,

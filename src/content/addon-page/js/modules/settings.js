@@ -26,7 +26,8 @@ export default function() {
           '.customize-quickbuttons': 'changeQuickbuttonOpt',
           '.ctm-cb': 'toggleCtm',
           '.notes-cb': 'toggleNotes',
-          '.misc-cb': 'toggleMisc'
+          '.misc-cb': 'toggleMisc',
+          '.tmuipos': 'changeTmuiPositionOpt'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -177,6 +178,8 @@ export default function() {
       document.getElementById('notes-error').checked = miscSettings.errorNote;
       document.getElementById('custom-search--start').value = miscSettings.customSearch ? miscSettings.customSearch[0] : this.customSearch;
       document.getElementById('custom-search--end').value = miscSettings.customSearch ? miscSettings.customSearch[1] : '';
+      document.getElementById('tmuipos--noteicon').value = miscSettings.tmuipos;
+      document.getElementById('tmuipos--bmicon').value = miscSettings.tmuipos;
     },
     showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('none');
@@ -266,6 +269,10 @@ export default function() {
     },
     toggleMisc(e, el) {
       this.emit('toggle:misc-setting', el.name, el.checked);
+    },
+    changeTmuiPositionOpt(e, el) {
+      this.emit('change:misc-setting', el.name, el.value);
+      Array.from(this.el.getElementsByClassName('tmuipos')).forEach(select => select.value = el.value);
     },
     changeCustomSearch(e, el) {
       this.hideCustomSearchSettingSuccess();
