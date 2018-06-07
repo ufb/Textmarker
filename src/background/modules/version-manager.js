@@ -32,6 +32,9 @@ new _MODULE({
         settings.misc.noteicon = _DEFAULT_STORAGE.settings.misc.noteicon;
         settings.misc.noteonclick = _DEFAULT_STORAGE.settings.misc.noteonclick;
       }
+      if (!settings.misc.tmuipos) {
+        settings.misc.tmuipos = _DEFAULT_STORAGE.settings.misc.tmuipos;
+      }
     }
     return settings;
   },

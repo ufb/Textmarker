@@ -20,9 +20,9 @@ export default function() {
         'ctx:d': 'remove',
         'ctx:m': 'onMarkerKey',
         'ctx:n': 'addNote',
-        'updated:misc-settings': 'showBookmarkIcon',
         'updated:note': 'autosave',
-        'removed:note': 'autosave'
+        'removed:note': 'autosave',
+        'scroll-to-bookmark': 'scrollToBookmark'
 			}
 		},
 		selection: null,
@@ -31,10 +31,6 @@ export default function() {
     bookmark: null,
     removedBookmark: null,
 		idcount: 0,
-
-    autoinit() {
-      this.showBookmarkIcon();
-    },
 
     updateID: function updateID() {
       const entry = _STORE.entry;
@@ -218,14 +214,19 @@ export default function() {
 
       if (!mark) return false;
 
-      if (bookmark) bookmark.remove();
+      if (bookmark) {
+        bookmark.remove();
+        this.emit('removed:bookmark');
+      }
 
-      this.bookmark = new _BOOKMARK();
-      this.bookmark.set(mark).then(() => this.autosave());
+      this.bookmark = new _BOOKMARK().set(mark);
+
+      this.emit('added:bookmark');
+      this.autosave();
     },
     undoBookmark() {
-      this.bookmark.removeIcon();
       this.bookmark = null;
+      this.emit('removed:bookmark');
     },
     removeBookmark() {
       let bookmark = this.bookmark;
@@ -235,26 +236,13 @@ export default function() {
       bookmark.remove();
       this.bookmark = null;
       this.removedBookmark = bookmark;
+      this.emit('removed:bookmark');
       this.autosave();
     },
     scrollToBookmark() {
       let bookmark = this.bookmark;
 
       if (bookmark) bookmark.scrollIntoView();
-    },
-    showBookmarkIcon() {
-			let bookmark = this.bookmark;
-
-      if (bookmark) {
-        _STORE.get('bmicon').then(showIcon => {
-          let iconShown = bookmark.iconShown;
-
-          if (iconShown !== showIcon) {
-            if (showIcon) bookmark.insertIcon();
-            else bookmark.removeIcon();
-          }
-        });
-      }
     },
     getById(id, pos) {
 			let done = this.done,

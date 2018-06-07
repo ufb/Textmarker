@@ -76,7 +76,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(5);
+var _mediator = __webpack_require__(6);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -118,7 +118,8 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 }(_mediator2.default);
 
 /***/ }),
-/* 2 */
+/* 2 */,
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -129,17 +130,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._PORT = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
 
-var _copy = __webpack_require__(3);
+var _copy = __webpack_require__(4);
 
-var _extend = __webpack_require__(4);
+var _extend = __webpack_require__(5);
 
 var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _port = __webpack_require__(6);
+var _port = __webpack_require__(7);
 
-var _errorTracker = __webpack_require__(7);
+var _errorTracker = __webpack_require__(8);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -152,7 +153,7 @@ exports._PORT = _port._PORT;
 exports._ERRORTRACKER = _errorTracker2.default;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -183,7 +184,7 @@ var _COPY = function _COPY(original, clone) {
 exports._COPY = _COPY;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -200,7 +201,7 @@ exports.default = function (obj1, obj2) {
 };
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -283,7 +284,7 @@ var _class = function () {
 exports.default = _class;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -476,7 +477,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,7 +509,6 @@ var _ERRORTRACKER = new _module._MODULE({
 exports.default = _ERRORTRACKER;
 
 /***/ }),
-/* 8 */,
 /* 9 */,
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -520,7 +520,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 var _defaultStorage = __webpack_require__(15);
 
@@ -896,7 +896,8 @@ exports.default = {
       pbmNote: true,
       changedNote: false,
       errorNote: true,
-      customSearch: false
+      customSearch: false,
+      tmuipos: 'top-right'
     }
   },
   history: {
@@ -917,7 +918,7 @@ exports.default = {
 "use strict";
 
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -1048,7 +1049,7 @@ new _utils._MODULE({
 "use strict";
 
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 new _utils._PORT({
   name: 'background',
@@ -1071,7 +1072,7 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 var _logKeys = __webpack_require__(13);
 
@@ -1138,7 +1139,7 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1307,7 +1308,7 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1380,7 +1381,7 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1464,7 +1465,7 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1554,7 +1555,7 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1573,7 +1574,7 @@ var _defaultStorage = __webpack_require__(15);
 
 var _defaultStorage2 = _interopRequireDefault(_defaultStorage);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1605,6 +1606,9 @@ new _utils._MODULE({
         settings.shortcuts.n = _defaultStorage2.default.settings.shortcuts.n;
         settings.misc.noteicon = _defaultStorage2.default.settings.misc.noteicon;
         settings.misc.noteonclick = _defaultStorage2.default.settings.misc.noteonclick;
+      }
+      if (!settings.misc.tmuipos) {
+        settings.misc.tmuipos = _defaultStorage2.default.settings.misc.tmuipos;
       }
     }
     return settings;
@@ -1792,7 +1796,7 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-var _utils = __webpack_require__(2);
+var _utils = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1813,7 +1817,8 @@ new _utils._MODULE({
       'toggle:noteopt-setting': 'toggleNoteOpt',
       'toggle:quickbuttonopt-setting': 'toggleQuickbuttonOpt',
       'toggle:notification-setting': 'toggleNotificationOpt',
-      'toggle:misc-setting': 'toggleMiscSetting',
+      'toggle:misc-setting': 'changeMiscSetting',
+      'change:misc-setting': 'changeMiscSetting',
       'change:sort-setting': 'changeSortOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
@@ -1949,7 +1954,7 @@ new _utils._MODULE({
       settings.misc[prop] = val;return settings;
     }, 'notification', 'error_save_notify');
   },
-  toggleMiscSetting: function toggleMiscSetting(prop, val) {
+  changeMiscSetting: function changeMiscSetting(prop, val) {
     this.updateSettings(function (settings) {
       settings.misc[prop] = val;return settings;
     }, 'misc', 'error_save_bmicon');
