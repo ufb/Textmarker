@@ -36,7 +36,7 @@ new _DOMMODULE({
   toggleAutosave(on) {
     const meth = on ? 'add' : 'remove';
     document.getElementById('autosave-switch').classList[meth]('active');
-    document.getElementById('page-action--save').classList[meth]('none');
+    document.getElementById('page-action-box--save').classList[meth]('none');
   },
   activateSave() {
     document.getElementById('page-action--save').removeAttribute('disabled');

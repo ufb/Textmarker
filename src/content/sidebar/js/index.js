@@ -5,5 +5,6 @@ import _PORT from './port'
 import './modules/markers'
 import './modules/mark-actions'
 import './modules/page-actions'
+import './modules/links'
 
 _L10N();

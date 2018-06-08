@@ -47,7 +47,7 @@ new _DOMMODULE({
         box = document.createElement('div');
         label = document.createElement('label');
         input = document.createElement('input');
-        button = document.createElement('span');
+        button = document.createElement('button');
         color = this.extractBgColor(markers[m]);
 
         box.className = 'marker';
