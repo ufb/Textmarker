@@ -15,7 +15,11 @@ export default new _PORT({
       'error:browser-console',
       'changed:selection',
       'unsaved-changes',
-      'clicked:mark'
+      'clicked:mark',
+      'added:bookmark',
+      'removed:bookmark',
+      'added:note',
+      'removed:last-note'
     ]
   }
 });

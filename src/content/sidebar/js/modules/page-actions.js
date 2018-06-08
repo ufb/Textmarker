@@ -11,7 +11,11 @@ new _DOMMODULE({
       'toggled:sync-settings': 'update',
       'updated:entry': 'deactivateSave',
       'saved:entry': 'deactivateSave',
-      'unsaved-changes': 'activateSave'
+      'unsaved-changes': 'activateSave',
+      'added:bookmark': 'activateBookmark',
+      'removed:bookmark': 'deactivateBookmark',
+      'added:note': 'activateNotes',
+      'removed:last-note': 'deactivateNotes'
     },
     DOM: {
       click: {
@@ -39,10 +43,27 @@ new _DOMMODULE({
     document.getElementById('page-action-box--save').classList[meth]('none');
   },
   activateSave() {
-    document.getElementById('page-action--save').removeAttribute('disabled');
+    this.activate('save', true);
   },
   deactivateSave() {
-    document.getElementById('page-action--save').setAttribute('disabled', true);
+    this.activate('save', false);
+  },
+  activateBookmark() {
+    this.activate('scroll', true);
+  },
+  deactivateBookmark() {
+    this.activate('scroll', false);
+  },
+  activateNotes() {
+    this.activate('notes', true);
+  },
+  deactivateNotes() {
+    this.activate('notes', false);
+  },
+  activate(type, on) {
+    const btn = document.getElementById('page-action--' + type);
+    if (on) btn.removeAttribute('disabled');
+    else btn.setAttribute('disabled', true);
   },
   pageAction(e, el) {
     _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id }));

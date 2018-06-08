@@ -9,7 +9,8 @@ new _DOMMODULE({
     },
     DOM: {
       click: {
-        '.mark-action': 'markAction'
+        '.mark-action': 'markAction',
+        '.i': 'toggleInfo'
       }
     }
   },
@@ -20,13 +21,25 @@ new _DOMMODULE({
   },
   markAction(e, el) {
     if (el.hasAttribute('disabled')) return;
-    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id }));
+    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: tab.id }));
     this.deactivate();
   },
-  activate() {
-    this.buttons.forEach(btn => btn.removeAttribute('disabled'));
+  activate(markInfos) {
+    this.buttons.forEach(btn => {
+      let type = btn.getAttribute('data-action');
+      if (
+        type === 'delete-highlight' ||
+        (typeof markInfos[type] === 'boolean' && !markInfos[type]) ||
+        (type === 'delete-bookmark' && markInfos.bookmark)
+      ) {
+        btn.removeAttribute('disabled');
+      }
+    });
   },
   deactivate() {
     this.buttons.forEach(btn => btn.setAttribute('disabled', true));
+  },
+  toggleInfo(e, el) {
+    el.classList.toggle('active');
   }
 });

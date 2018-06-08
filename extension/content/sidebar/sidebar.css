@@ -15,12 +15,41 @@ section:last-child {
   border: 0;
 }
 h2 {
-  font-size: 110%;
+  font-size: 100%;
   margin: 0 0 25px;
   font-weight: normal;
+  position: relative;
+}
+h2 .i {
+  cursor: pointer;
+  color: #2ba5b7;
+  float: right;
+  text-decoration: underline;
+  border-radius: 50%;
+  display: inline-block;
+  line-height: 1;
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  font-size: 11px;
+  padding: 1px 2px 2px 1px;
+  font-family: Georgia, serif;
+  margin-top: 3px;
+}
+h2 .i:hover {
+  text-decoration: none;
+  color: #fff;
+  background: #2ba5b7;
+  border: 0;
+}
+h2 .i.active + small {
+  display: inline-block;
 }
 h2 small {
+  display: none;
   font-size: 12px;
+  margin-top: 5px;
+  color: #2ba5b7;
 }
 input {
   vertical-align: middle;
@@ -118,6 +147,9 @@ button:last-child {
 }
 .link {
   cursor: pointer;
+}
+.link:hover {
+  text-decoration: underline;
 }
 [disabled], .disabled {
   opacity: 0.2 !important;

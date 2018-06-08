@@ -1285,7 +1285,7 @@ exports.default = new _utils._PORT({
   name: 'injection',
   type: 'content',
   events: {
-    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark']
+    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note']
   }
 });
 
@@ -1636,7 +1636,7 @@ exports.default = function () {
         'sidebar:delete-highlight': 'remove',
         'sidebar:bookmark': 'setBookmark',
         'sidebar:delete-bookmark': 'removeBookmark',
-        'sidebar:add-note': 'addNote',
+        'sidebar:note': 'addNote',
         'sidebar:save-changes': 'save',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
@@ -2152,7 +2152,10 @@ var _MARK = function () {
 
 										wrapper.addEventListener('click', function (e) {
 												_store2.default.tmid = e.target.getAttribute('data-tm-id');
-												_this.marker.emit('clicked:mark');
+												_this.marker.emit('clicked:mark', {
+														bookmark: !!_this.keyData.bookmark,
+														note: !!_this.keyData.note
+												});
 										}, false);
 								}
 						} catch (err) {
@@ -3545,6 +3548,8 @@ exports.default = function (mark) {
     bmBtn: null,
     notesBtnActive: false,
     bmBtnActive: false,
+    bookmark: false,
+    notes: false,
 
     autoinit: function autoinit() {
       this.createEl();
@@ -3585,6 +3590,7 @@ exports.default = function (mark) {
     onNoteAdded: function onNoteAdded() {
       var _this2 = this;
 
+      this.notes = true;
       if (!this.notesBtnActive) {
         _store2.default.get('noteicon').then(function (noteicon) {
           if (noteicon) {
@@ -3595,6 +3601,7 @@ exports.default = function (mark) {
       }
     },
     onLastNoteRemoved: function onLastNoteRemoved() {
+      this.notes = false;
       if (this.notesBtnActive) {
         this.removeBtn(this.notesBtn);
         this.notesBtnActive = false;
@@ -3603,6 +3610,7 @@ exports.default = function (mark) {
     onBookmarkAdded: function onBookmarkAdded() {
       var _this3 = this;
 
+      this.bookmark = true;
       if (!this.bmBtnActive) {
         _store2.default.get('bmicon').then(function (bmicon) {
           if (bmicon) {
@@ -3613,6 +3621,7 @@ exports.default = function (mark) {
       }
     },
     onBookmarkRemoved: function onBookmarkRemoved() {
+      this.bookmark = false;
       if (this.bmBtnActive) {
         this.removeBtn(this.bmBtn);
         this.bmBtnActive = false;

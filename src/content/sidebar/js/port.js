@@ -11,7 +11,7 @@ export default new _PORT({
       'sidebar:delete-highlight',
       'sidebar:bookmark',
       'sidebar:delete-bookmark',
-      'sidebar:add-note',
+      'sidebar:note',
       'sidebar:toggle-autosave',
       'sidebar:save-changes',
       'sidebar:undo',
