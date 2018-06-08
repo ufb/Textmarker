@@ -502,6 +502,8 @@ __webpack_require__(58);
 
 __webpack_require__(59);
 
+__webpack_require__(61);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (0, _utils._L10N)();
@@ -524,7 +526,7 @@ exports.default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:add-note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:add-note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'open:addon-page']
   }
 });
 
@@ -590,7 +592,7 @@ new _utils._DOMMODULE({
         box = document.createElement('div');
         label = document.createElement('label');
         input = document.createElement('input');
-        button = document.createElement('span');
+        button = document.createElement('button');
         color = _this.extractBgColor(markers[m]);
 
         box.className = 'marker';
@@ -750,7 +752,7 @@ new _utils._DOMMODULE({
   toggleAutosave: function toggleAutosave(on) {
     var meth = on ? 'add' : 'remove';
     document.getElementById('autosave-switch').classList[meth]('active');
-    document.getElementById('page-action--save').classList[meth]('none');
+    document.getElementById('page-action-box--save').classList[meth]('none');
   },
   activateSave: function activateSave() {
     document.getElementById('page-action--save').removeAttribute('disabled');
@@ -916,6 +918,31 @@ exports.default = new _utils._MODULE({
     return browser.storage[this.area_settings].get().then(function (storage) {
       return storage.settings.markers;
     });
+  }
+});
+
+/***/ }),
+
+/***/ 61:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+new _utils._DOMMODULE({
+  el: document.getElementById('markers'),
+  events: {
+    DOM: {
+      click: {
+        '.link': 'link'
+      }
+    }
+  },
+
+  link: function link(e, el) {
+    this.emit('open:addon-page', el.getAttribute('data-id'));
   }
 });
 
