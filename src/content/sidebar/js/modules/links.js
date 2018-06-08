@@ -1,7 +1,7 @@
 import { _DOMMODULE } from './../../../utils'
 
 new _DOMMODULE({
-  el: document.getElementById('markers'),
+  el: document.getElementById('links'),
   events: {
     DOM: {
       click: {

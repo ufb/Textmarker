@@ -526,7 +526,7 @@ exports.default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:add-note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'open:addon-page']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'open:addon-page']
   }
 });
 
@@ -641,7 +641,7 @@ new _utils._DOMMODULE({
 
     if (el.classList.contains('disabled')) return;
     (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      console.log(tab.id);_this2.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id });
+      return _this2.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id });
     });
   },
   toggleMarkerButtons: function toggleMarkerButtons(show) {
@@ -670,7 +670,8 @@ new _utils._DOMMODULE({
     },
     DOM: {
       click: {
-        '.mark-action': 'markAction'
+        '.mark-action': 'markAction',
+        '.i': 'toggleInfo'
       }
     }
   },
@@ -684,19 +685,25 @@ new _utils._DOMMODULE({
 
     if (el.hasAttribute('disabled')) return;
     (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id });
+      return _this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: tab.id });
     });
     this.deactivate();
   },
-  activate: function activate() {
+  activate: function activate(markInfos) {
     this.buttons.forEach(function (btn) {
-      return btn.removeAttribute('disabled');
+      var type = btn.getAttribute('data-action');
+      if (type === 'delete-highlight' || typeof markInfos[type] === 'boolean' && !markInfos[type] || type === 'delete-bookmark' && markInfos.bookmark) {
+        btn.removeAttribute('disabled');
+      }
     });
   },
   deactivate: function deactivate() {
     this.buttons.forEach(function (btn) {
       return btn.setAttribute('disabled', true);
     });
+  },
+  toggleInfo: function toggleInfo(e, el) {
+    el.classList.toggle('active');
   }
 });
 
@@ -725,7 +732,11 @@ new _utils._DOMMODULE({
       'toggled:sync-settings': 'update',
       'updated:entry': 'deactivateSave',
       'saved:entry': 'deactivateSave',
-      'unsaved-changes': 'activateSave'
+      'unsaved-changes': 'activateSave',
+      'added:bookmark': 'activateBookmark',
+      'removed:bookmark': 'deactivateBookmark',
+      'added:note': 'activateNotes',
+      'removed:last-note': 'deactivateNotes'
     },
     DOM: {
       click: {
@@ -755,10 +766,26 @@ new _utils._DOMMODULE({
     document.getElementById('page-action-box--save').classList[meth]('none');
   },
   activateSave: function activateSave() {
-    document.getElementById('page-action--save').removeAttribute('disabled');
+    this.activate('save', true);
   },
   deactivateSave: function deactivateSave() {
-    document.getElementById('page-action--save').setAttribute('disabled', true);
+    this.activate('save', false);
+  },
+  activateBookmark: function activateBookmark() {
+    this.activate('scroll', true);
+  },
+  deactivateBookmark: function deactivateBookmark() {
+    this.activate('scroll', false);
+  },
+  activateNotes: function activateNotes() {
+    this.activate('notes', true);
+  },
+  deactivateNotes: function deactivateNotes() {
+    this.activate('notes', false);
+  },
+  activate: function activate(type, on) {
+    var btn = document.getElementById('page-action--' + type);
+    if (on) btn.removeAttribute('disabled');else btn.setAttribute('disabled', true);
   },
   pageAction: function pageAction(e, el) {
     var _this2 = this;
@@ -932,7 +959,7 @@ exports.default = new _utils._MODULE({
 var _utils = __webpack_require__(0);
 
 new _utils._DOMMODULE({
-  el: document.getElementById('markers'),
+  el: document.getElementById('links'),
   events: {
     DOM: {
       click: {

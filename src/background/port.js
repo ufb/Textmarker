@@ -33,7 +33,7 @@ new _PORT({
       'sidebar:delete-highlight',
       'sidebar:bookmark',
       'sidebar:delete-bookmark',
-      'sidebar:add-note',
+      'sidebar:note',
       'sidebar:save-changes',
       'sidebar:undo',
       'sidebar:redo',
@@ -48,7 +48,11 @@ new _PORT({
       'toggled:sync-settings',
       'changed:selection',
       'unsaved-changes',
-      'clicked:mark'
+      'clicked:mark',
+      'added:bookmark',
+      'removed:bookmark',
+      'added:note',
+      'removed:last-note'
     ]
   }
 });

@@ -26,7 +26,7 @@ export default function() {
         'sidebar:delete-highlight': 'remove',
         'sidebar:bookmark': 'setBookmark',
         'sidebar:delete-bookmark': 'removeBookmark',
-        'sidebar:add-note': 'addNote',
+        'sidebar:note': 'addNote',
         'sidebar:save-changes': 'save',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',

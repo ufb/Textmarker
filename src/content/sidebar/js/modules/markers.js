@@ -93,7 +93,7 @@ new _DOMMODULE({
   },
   applyColor(e, el) {
     if (el.classList.contains('disabled')) return;
-    _GET_ACTIVE_TAB().then(tab => {console.log(tab.id);this.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id })});
+    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id }));
   },
   toggleMarkerButtons(show) {
     const meth = show ? 'remove' : 'add';

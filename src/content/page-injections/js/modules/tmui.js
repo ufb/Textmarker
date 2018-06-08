@@ -27,6 +27,8 @@ export default function(mark) {
     bmBtn: null,
     notesBtnActive: false,
     bmBtnActive: false,
+    bookmark: false,
+    notes: false,
 
     autoinit() {
       this.createEl();
@@ -60,6 +62,7 @@ export default function(mark) {
       _STORE.get('tmuipos').then(pos => this.el.setAttribute('style', pos.split('-').map(p => p + ':1px;').join(' ')));
     },
     onNoteAdded() {
+      this.notes = true;
       if (!this.notesBtnActive) {
         _STORE.get('noteicon').then(noteicon => {
           if (noteicon) {
@@ -70,12 +73,14 @@ export default function(mark) {
       }
     },
     onLastNoteRemoved() {
+      this.notes = false;
       if (this.notesBtnActive) {
         this.removeBtn(this.notesBtn);
         this.notesBtnActive = false;
       }
     },
     onBookmarkAdded() {
+      this.bookmark = true;
       if (!this.bmBtnActive) {
         _STORE.get('bmicon').then(bmicon => {
           if (bmicon) {
@@ -86,6 +91,7 @@ export default function(mark) {
       }
     },
     onBookmarkRemoved() {
+      this.bookmark = false;
       if (this.bmBtnActive) {
         this.removeBtn(this.bmBtn);
         this.bmBtnActive = false;
