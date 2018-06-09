@@ -130,7 +130,6 @@ select {
   background: url(../icons/arrow-down.png) no-repeat right 7px;
   -moz-appearance: none;
   border: 1px solid #c8c8c8;
-  border-radius: 2px;
   height: 22px;
   min-width: 34px;
   padding-right: 20px;
@@ -142,14 +141,13 @@ select.big {
   width: 120px;
 }
 .cb-sub-select {
-  margin: 5px 0 0 35px;
+  margin: 10px 0 0 35px;
 }
 input:disabled {
   opacity: 0.25;
 }
 input[type="search"] {
   float:right;
-  border-radius: 2px;
   border: 1px solid #c8c8c8;
   color: inherit;
   text-align: center;
@@ -171,7 +169,6 @@ input[type="color"] {
   text-align: center;
 }
 input[type="text"] {
-  border-radius: 2px;
   border: 1px solid #c8c8c8;
   color: inherit;
   padding: 0;
@@ -270,7 +267,7 @@ button:hover {
   width: 40px;
   height: 40px;
   float: left;
-  border-radius: 2px;
+  border-radius: 5px;
   margin: 8px 8px 0 0;
 }
 .blue {
@@ -281,6 +278,9 @@ button:hover {
 }
 .green {
 	color: #3aad74 !important;
+}
+.light-grey {
+	color: #c8c8c8 !important;
 }
 .bold {
   font-weight: bold;
@@ -317,13 +317,11 @@ small.ref {
   background-repeat: no-repeat;
   background-position: 5px 5px, 0 0;
   background-size: 13px, 100%;
-  border-radius: 2px;
   margin-left: 5px;
 }
 .sync-switch {
   margin-right: 10px;
   float: left;
-  border-radius: 2px;
   box-shadow: 0 0 2px #aaa inset;
   width: 44px;
   height: 22px;
@@ -341,7 +339,6 @@ small.ref {
   box-shadow: 0 0 3px #555 inset;
 }
 .switch-indicator {
-  border-radius: 2px;
   width: 18px;
   height: 18px;
   background-color: rgb(210, 210, 210);
@@ -436,26 +433,6 @@ small.ref {
 .subnav li.disabled {
   color: #c8c8c8;
 }
-/* TOOLTIPS */
-.tooltip {
-	display: none;
-	border-radius: 2px;
-	position: absolute;
-	overflow: hidden;
-	background: #090707;
-	color: silver;
-	font-size: 1.1em;
-	text-align: center;
-	font-family: tahoma, Arial, sans-serif;
-	padding: 5px 10px;
-	z-index: 1111;
-	max-width: 222px;
-	box-shadow: 0 0 3px -1px #3399ff;
-}
-.tooltip-ghost {
-	left: 0;
-	top: -1000px;
-}
 /* MAIN CONTENT */
 #main {
   padding: 20px;
@@ -495,9 +472,6 @@ small.ref {
 }
 .function {
   width: 190px;
-}
-.shortcut select {
-  width: 120px;
 }
 .option-row button {
   float: right;
@@ -714,7 +688,6 @@ small.ref {
   min-width: 24px;
   height: 22px;
   border: 1px solid #c8c8c8;
-  border-radius: 2px;
   display: inline-block;
   margin: 0 3px 6px;
   padding: 0 3px;

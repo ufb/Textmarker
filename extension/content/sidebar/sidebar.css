@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 body {
-  font-size: 14px;
+  font-size: 13px;
   padding-top: 10px;
   color: #777;
 }
@@ -51,12 +51,10 @@ h2 small {
   margin-top: 5px;
   color: #2ba5b7;
 }
-input {
-  vertical-align: middle;
-  padding: 0;
-}
 label {
   float: left;
+  padding-top: 2px;
+  cursor: pointer;
 }
 button {
   border: 1px solid #c8c8c8;
@@ -91,19 +89,25 @@ button:last-child {
 }
 .marker__apply {
   background-image: url(../icons/highlight.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
-  margin: 5px 3px 0 0;
+  margin: 0 3px 0 10px;
 }
 .marker__apply:hover {
   opacity: 1;
 }
 .marker__label {
-  width: 52px;
   display: inline-block;
+}
+.marker__color {
+  padding: 0;
+  width: 44px;
+  border: 0;
+  -moz-appearance: none;
+  cursor: pointer;
+  float: right;
 }
 .switch {
   margin-bottom: 18px;
   float: right;
-  border-radius: 2px;
   box-shadow: 0 0 2px #aaa inset;
   width: 44px;
   height: 22px;
@@ -120,7 +124,6 @@ button:last-child {
   box-shadow: 0 0 3px #555 inset;
 }
 .switch-indicator {
-  border-radius: 2px;
   width: 18px;
   height: 18px;
   background-color: rgb(210, 210, 210);
@@ -145,15 +148,21 @@ button:last-child {
 .switch.active:hover .switch-indicator {
   background-color: #2ba5b7;
 }
+.autosave-label {
+  cursor: default;
+}
 .link {
   cursor: pointer;
 }
 .link:hover {
   text-decoration: underline;
 }
-[disabled], .disabled {
+[disabled] {
   opacity: 0.2 !important;
   cursor: default;
+}
+.disabled label {
+  color: #d7d9db;
 }
 .action-box {
   margin: 0 0 6px 0;

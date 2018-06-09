@@ -50,7 +50,7 @@ new _DOMMODULE({
         button = document.createElement('button');
         color = this.extractBgColor(markers[m]);
 
-        box.className = 'marker';
+        box.className = 'marker clearfix';
         label.setAttribute('for', 'marker-' + m);
         label.className = 'marker__label';
         input.className = 'marker__color';
@@ -58,15 +58,16 @@ new _DOMMODULE({
         input.name = m;
         input.type = 'color';
         input.value = color;
-        button.className = 'marker__apply disabled';
+        button.className = 'marker__apply';
+        button.setAttribute('disabled', true);
         button.setAttribute('data-key', m);
 
         box.appendChild(label);
-        box.appendChild(input);
         box.appendChild(button);
+        box.appendChild(input);
         frag.appendChild(box);
 
-        label.innerText = m.toUpperCase();
+        label.innerText = 'Marker ' + m.toUpperCase();
         if (!color) input.setAttribute('disabled', 'disabled');
       }
       inputs.appendChild(frag);
@@ -96,7 +97,7 @@ new _DOMMODULE({
     _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id }));
   },
   toggleMarkerButtons(show) {
-    const meth = show ? 'remove' : 'add';
-    Array.from(document.getElementsByClassName('marker__apply')).forEach(btn => btn.classList[meth]('disabled'));
+    const meth = show ? 'removeAttribute' : 'setAttribute';
+    Array.from(document.getElementsByClassName('marker__apply')).forEach(btn => btn[meth]('disabled', true));
   }
 });

@@ -62,8 +62,14 @@ new _DOMMODULE({
   },
   activate(type, on) {
     const btn = document.getElementById('page-action--' + type);
-    if (on) btn.removeAttribute('disabled');
-    else btn.setAttribute('disabled', true);
+    if (on) {
+      btn.removeAttribute('disabled');
+      btn.parentNode.classList.remove('disabled');
+    }
+    else {
+      btn.setAttribute('disabled', true);
+      btn.parentNode.classList.add('disabled');
+    }
   },
   pageAction(e, el) {
     _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id }));
