@@ -19,6 +19,7 @@ new _PORT({
       'updated:misc-settings',
       'updated:bg-color-settings',
       'updated:custom-search-settings',
+      'updated:saveopt-settings',
       'saved:entry',
       'deleted:entry',
       'deleted:entries',
@@ -42,6 +43,7 @@ new _PORT({
     ],
     CONNECTION: [
       'started:app',
+      'toggled:addon',
       'updated:settings',
       'updated:entry',
       'saved:entry',

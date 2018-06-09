@@ -26,10 +26,13 @@ new _DOMMODULE({
   },
 
   autoinit() {
-    _STORE.get('autosave').then(autosave => this.toggleAutosave(autosave));
+    this.update();
   },
   update() {
-
+    this.updateAutosave();
+  },
+  updateAutosave() {
+    _STORE.get('autosave').then(autosave => this.toggleAutosave(autosave));
   },
   onAutosaveSwitch(e, el) {
     el = el.id === 'autosave-switch' ? el : el.parentNode;

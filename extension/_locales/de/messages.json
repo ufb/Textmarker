@@ -346,6 +346,7 @@
 "tbb_mitem_8_tt":{"message":" Öffnet in neuem Reiter"},
 "tbb_mitem_9":{"message":"Syncing"},
 "tbb_mitem_9_tt":{"message":" Öffnet in neuem Reiter"},
+"sb_paused":{"message":"Textmarker wurde pausiert"},
 "sb_h1":{"message":"Ausgewählte Markierung"},
 "sb_h1b":{"message":"Klicke auf eine Markierung, um sie auszuwählen."},
 "sb_b1":{"message":"Autosave"},

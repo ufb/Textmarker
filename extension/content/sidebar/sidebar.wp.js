@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 55);
+/******/ 	return __webpack_require__(__webpack_require__.s = 56);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -432,6 +432,80 @@ function translateDocument() {
 
 /***/ }),
 
+/***/ 18:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(0);
+
+exports.default = new _utils._MODULE({
+  events: {
+    ENV: {
+      'toggled:sync': 'setAreas'
+    }
+  },
+  initialized: false,
+  area_settings: 'sync',
+  area_history: 'sync',
+
+  setAreas: function setAreas() {
+    var _this = this;
+
+    return browser.storage.sync.get().then(function (storage) {
+      if (storage && storage.sync) {
+        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
+        _this.area_history = storage.sync.history ? 'sync' : 'local';
+      }
+    });
+  },
+  get: function get() {
+    var _this2 = this;
+
+    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
+
+    var meth = this['_get_' + field];
+    if (!meth) throw 'field ' + field + ' doesn\'t exist';
+
+    if (!this.initialized) {
+      this.initialized = true;
+      return this.setAreas().then(function () {
+        return _this2['_get_' + field]();
+      });
+    }
+    return this['_get_' + field]();
+  },
+  _get_mode: function _get_mode() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings || storage.settings.addon.active) return true;
+      return false;
+    });
+  },
+  _get_autosave: function _get_autosave() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.history.autosave;
+    });
+  },
+  _get_settings: function _get_settings() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings;
+    });
+  },
+  _get_markers: function _get_markers() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings.markers;
+    });
+  }
+});
+
+/***/ }),
+
 /***/ 4:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -482,7 +556,7 @@ exports.default = function (obj1, obj2) {
 
 /***/ }),
 
-/***/ 55:
+/***/ 56:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -492,15 +566,19 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _port = __webpack_require__(56);
+var _port = __webpack_require__(57);
 
 var _port2 = _interopRequireDefault(_port);
 
-__webpack_require__(57);
+var _store = __webpack_require__(18);
+
+var _store2 = _interopRequireDefault(_store);
 
 __webpack_require__(58);
 
 __webpack_require__(59);
+
+__webpack_require__(60);
 
 __webpack_require__(61);
 
@@ -508,9 +586,38 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 (0, _utils._L10N)();
 
+new _utils._MODULE({
+  events: {
+    ENV: {
+      'started:app': 'onStart',
+      'toggled:addon': 'power'
+    }
+  },
+
+  power: function power(on) {
+    var placeholder = document.getElementById('textmarker-sidebar--paused');
+    var content = document.getElementById('textmarker-sidebar');
+
+    if (on) {
+      placeholder.classList.add('none');
+      content.classList.remove('none');
+    } else {
+      placeholder.classList.remove('none');
+      content.classList.add('none');
+    }
+  },
+  onStart: function onStart() {
+    var _this = this;
+
+    _store2.default.get('mode').then(function (mode) {
+      return _this.power(mode);
+    });
+  }
+});
+
 /***/ }),
 
-/***/ 56:
+/***/ 57:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -532,7 +639,7 @@ exports.default = new _utils._PORT({
 
 /***/ }),
 
-/***/ 57:
+/***/ 58:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -655,7 +762,7 @@ new _utils._DOMMODULE({
 
 /***/ }),
 
-/***/ 58:
+/***/ 59:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -707,101 +814,6 @@ new _utils._DOMMODULE({
   },
   toggleInfo: function toggleInfo(e, el) {
     el.classList.toggle('active');
-  }
-});
-
-/***/ }),
-
-/***/ 59:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-var _store = __webpack_require__(60);
-
-var _store2 = _interopRequireDefault(_store);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-new _utils._DOMMODULE({
-  el: document.getElementById('page-actions'),
-  events: {
-    ENV: {
-      'started:app': 'update',
-      'updated:settings': 'update',
-      'toggled:sync-settings': 'update',
-      'updated:entry': 'deactivateSave',
-      'saved:entry': 'deactivateSave',
-      'unsaved-changes': 'activateSave',
-      'added:bookmark': 'activateBookmark',
-      'removed:bookmark': 'deactivateBookmark',
-      'added:note': 'activateNotes',
-      'removed:last-note': 'deactivateNotes'
-    },
-    DOM: {
-      click: {
-        '.switch-toggle': 'onAutosaveSwitch',
-        '.page-action': 'pageAction'
-      }
-    }
-  },
-
-  autoinit: function autoinit() {
-    var _this = this;
-
-    _store2.default.get('autosave').then(function (autosave) {
-      return _this.toggleAutosave(autosave);
-    });
-  },
-  update: function update() {},
-  onAutosaveSwitch: function onAutosaveSwitch(e, el) {
-    el = el.id === 'autosave-switch' ? el : el.parentNode;
-    var autosave = !el.classList.contains('active');
-    this.toggleAutosave(autosave);
-    this.emit('sidebar:toggle-autosave', autosave);
-  },
-  toggleAutosave: function toggleAutosave(on) {
-    var meth = on ? 'add' : 'remove';
-    document.getElementById('autosave-switch').classList[meth]('active');
-    document.getElementById('page-action-box--save').classList[meth]('none');
-  },
-  activateSave: function activateSave() {
-    this.activate('save', true);
-  },
-  deactivateSave: function deactivateSave() {
-    this.activate('save', false);
-  },
-  activateBookmark: function activateBookmark() {
-    this.activate('scroll', true);
-  },
-  deactivateBookmark: function deactivateBookmark() {
-    this.activate('scroll', false);
-  },
-  activateNotes: function activateNotes() {
-    this.activate('notes', true);
-  },
-  deactivateNotes: function deactivateNotes() {
-    this.activate('notes', false);
-  },
-  activate: function activate(type, on) {
-    var btn = document.getElementById('page-action--' + type);
-    if (on) {
-      btn.removeAttribute('disabled');
-      btn.parentNode.classList.remove('disabled');
-    } else {
-      btn.setAttribute('disabled', true);
-      btn.parentNode.classList.add('disabled');
-    }
-  },
-  pageAction: function pageAction(e, el) {
-    var _this2 = this;
-
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this2.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id });
-    });
   }
 });
 
@@ -897,62 +909,94 @@ exports.default = _class;
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _utils = __webpack_require__(0);
 
-exports.default = new _utils._MODULE({
+var _store = __webpack_require__(18);
+
+var _store2 = _interopRequireDefault(_store);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('page-actions'),
   events: {
     ENV: {
-      'toggled:sync': 'setAreas'
+      'started:app': 'update',
+      'updated:settings': 'update',
+      'toggled:sync-settings': 'update',
+      'updated:entry': 'deactivateSave',
+      'saved:entry': 'deactivateSave',
+      'unsaved-changes': 'activateSave',
+      'added:bookmark': 'activateBookmark',
+      'removed:bookmark': 'deactivateBookmark',
+      'added:note': 'activateNotes',
+      'removed:last-note': 'deactivateNotes'
+    },
+    DOM: {
+      click: {
+        '.switch-toggle': 'onAutosaveSwitch',
+        '.page-action': 'pageAction'
+      }
     }
   },
-  initialized: false,
-  area_settings: 'sync',
-  area_history: 'sync',
 
-  setAreas: function setAreas() {
+  autoinit: function autoinit() {
+    this.update();
+  },
+  update: function update() {
+    this.updateAutosave();
+  },
+  updateAutosave: function updateAutosave() {
     var _this = this;
 
-    return browser.storage.sync.get().then(function (storage) {
-      if (storage && storage.sync) {
-        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
-        _this.area_history = storage.sync.history ? 'sync' : 'local';
-      }
+    _store2.default.get('autosave').then(function (autosave) {
+      return _this.toggleAutosave(autosave);
     });
   },
-  get: function get() {
+  onAutosaveSwitch: function onAutosaveSwitch(e, el) {
+    el = el.id === 'autosave-switch' ? el : el.parentNode;
+    var autosave = !el.classList.contains('active');
+    this.toggleAutosave(autosave);
+    this.emit('sidebar:toggle-autosave', autosave);
+  },
+  toggleAutosave: function toggleAutosave(on) {
+    var meth = on ? 'add' : 'remove';
+    document.getElementById('autosave-switch').classList[meth]('active');
+    document.getElementById('page-action-box--save').classList[meth]('none');
+  },
+  activateSave: function activateSave() {
+    this.activate('save', true);
+  },
+  deactivateSave: function deactivateSave() {
+    this.activate('save', false);
+  },
+  activateBookmark: function activateBookmark() {
+    this.activate('scroll', true);
+  },
+  deactivateBookmark: function deactivateBookmark() {
+    this.activate('scroll', false);
+  },
+  activateNotes: function activateNotes() {
+    this.activate('notes', true);
+  },
+  deactivateNotes: function deactivateNotes() {
+    this.activate('notes', false);
+  },
+  activate: function activate(type, on) {
+    var btn = document.getElementById('page-action--' + type);
+    if (on) {
+      btn.removeAttribute('disabled');
+      btn.parentNode.classList.remove('disabled');
+    } else {
+      btn.setAttribute('disabled', true);
+      btn.parentNode.classList.add('disabled');
+    }
+  },
+  pageAction: function pageAction(e, el) {
     var _this2 = this;
 
-    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
-
-    var meth = this['_get_' + field];
-    if (!meth) throw 'field ' + field + ' doesn\'t exist';
-
-    if (!this.initialized) {
-      this.initialized = true;
-      return this.setAreas().then(function () {
-        return _this2['_get_' + field]();
-      });
-    }
-    return this['_get_' + field]();
-  },
-  _get_autosave: function _get_autosave() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return false;
-      return storage.settings.history.autosave;
-    });
-  },
-  _get_settings: function _get_settings() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings;
-    });
-  },
-  _get_markers: function _get_markers() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings.markers;
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      return _this2.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id });
     });
   }
 });
@@ -1160,15 +1204,20 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      this.port = this.port || browser.runtime.connect({ name: this.name });
+      var _this2 = this;
+
+      var port = this.port = this.port || browser.runtime.connect({ name: this.name });
+      port.onDisconnect.addListener(function () {
+        return _this2.port = null;
+      });
     }
   }, {
     key: 'addConnectionListeners',
     value: function addConnectionListeners(cb) {
-      var _this2 = this;
+      var _this3 = this;
 
       browser.runtime.onConnect.addListener(function (port) {
-        port.onMessage.addListener(_this2.proxy(_this2, _this2.passMessage));
+        port.onMessage.addListener(_this3.proxy(_this3, _this3.passMessage));
         !cb || cb();
       });
     }

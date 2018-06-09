@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 30);
+/******/ 	return __webpack_require__(__webpack_require__.s = 31);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -471,15 +471,20 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      this.port = this.port || browser.runtime.connect({ name: this.name });
+      var _this2 = this;
+
+      var port = this.port = this.port || browser.runtime.connect({ name: this.name });
+      port.onDisconnect.addListener(function () {
+        return _this2.port = null;
+      });
     }
   }, {
     key: 'addConnectionListeners',
     value: function addConnectionListeners(cb) {
-      var _this2 = this;
+      var _this3 = this;
 
       browser.runtime.onConnect.addListener(function (port) {
-        port.onMessage.addListener(_this2.proxy(_this2, _this2.passMessage));
+        port.onMessage.addListener(_this3.proxy(_this3, _this3.passMessage));
         !cb || cb();
       });
     }
@@ -1015,7 +1020,8 @@ exports.default = _TOGGLER;
 /* 27 */,
 /* 28 */,
 /* 29 */,
-/* 30 */
+/* 30 */,
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1025,7 +1031,7 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _nav = __webpack_require__(31);
+var _nav = __webpack_require__(32);
 
 var _nav2 = _interopRequireDefault(_nav);
 
@@ -1033,11 +1039,11 @@ var _toggler = __webpack_require__(15);
 
 var _toggler2 = _interopRequireDefault(_toggler);
 
-__webpack_require__(32);
+__webpack_require__(33);
 
 __webpack_require__(9);
 
-__webpack_require__(33);
+__webpack_require__(34);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1072,7 +1078,7 @@ while (t--) {
 } /* end: configure toggle elements */
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1140,7 +1146,7 @@ var _NAV = function () {
 exports.default = _NAV;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1161,7 +1167,7 @@ exports.default = new _utils._PORT({
 });
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1173,31 +1179,31 @@ var _store2 = _interopRequireDefault(_store);
 
 var _utils = __webpack_require__(0);
 
-var _history = __webpack_require__(34);
+var _history = __webpack_require__(35);
 
 var _history2 = _interopRequireDefault(_history);
 
-var _settings = __webpack_require__(36);
+var _settings = __webpack_require__(37);
 
 var _settings2 = _interopRequireDefault(_settings);
 
-var _logs = __webpack_require__(38);
+var _logs = __webpack_require__(39);
 
 var _logs2 = _interopRequireDefault(_logs);
 
-var _syncing = __webpack_require__(39);
+var _syncing = __webpack_require__(40);
 
 var _syncing2 = _interopRequireDefault(_syncing);
 
-var _import = __webpack_require__(40);
+var _import = __webpack_require__(41);
 
 var _import2 = _interopRequireDefault(_import);
 
-var _contact = __webpack_require__(41);
+var _contact = __webpack_require__(42);
 
 var _contact2 = _interopRequireDefault(_contact);
 
-var _historyPagination = __webpack_require__(42);
+var _historyPagination = __webpack_require__(43);
 
 var _historyPagination2 = _interopRequireDefault(_historyPagination);
 
@@ -1234,7 +1240,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1681,7 +1687,7 @@ var _toggler = __webpack_require__(15);
 
 var _toggler2 = _interopRequireDefault(_toggler);
 
-var _historySort = __webpack_require__(35);
+var _historySort = __webpack_require__(36);
 
 var _historySort2 = _interopRequireDefault(_historySort);
 
@@ -1690,7 +1696,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1733,7 +1739,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1750,6 +1756,7 @@ exports.default = function () {
       ENV: {
         'imported:settings': 'update',
         'updated:bg-color-settings': 'update',
+        'updated:saveopt-settings': 'update',
         'updated:custom-search-settings': 'showCustomSearchSettingSuccess',
         'toggled:sync-settings': 'update'
       },
@@ -2048,14 +2055,14 @@ var _store = __webpack_require__(9);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _marker = __webpack_require__(37);
+var _marker = __webpack_require__(38);
 
 var _marker2 = _interopRequireDefault(_marker);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2292,7 +2299,7 @@ var _MARKER = function () {
 exports.default = _MARKER;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2395,7 +2402,7 @@ var _logKeys2 = _interopRequireDefault(_logKeys);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2443,7 +2450,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2550,7 +2557,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2625,7 +2632,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
