@@ -346,6 +346,7 @@
 "tbb_mitem_8_tt":{"message":"Ouvrir dans un nouvel onglet"},
 "tbb_mitem_9":{"message":"Synchronisation"},
 "tbb_mitem_9_tt":{"message":"Ouvrir dans un nouvel onglet"},
+"sb_paused":{"message":"Textmarker est en pause"},
 "sb_h1":{"message":"Actions on selected mark"},
 "sb_h1b":{"message":"click a textmark to select it"},
 "sb_b1":{"message":"Autosave"},

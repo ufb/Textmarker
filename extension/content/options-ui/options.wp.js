@@ -763,15 +763,20 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      this.port = this.port || browser.runtime.connect({ name: this.name });
+      var _this2 = this;
+
+      var port = this.port = this.port || browser.runtime.connect({ name: this.name });
+      port.onDisconnect.addListener(function () {
+        return _this2.port = null;
+      });
     }
   }, {
     key: 'addConnectionListeners',
     value: function addConnectionListeners(cb) {
-      var _this2 = this;
+      var _this3 = this;
 
       browser.runtime.onConnect.addListener(function (port) {
-        port.onMessage.addListener(_this2.proxy(_this2, _this2.passMessage));
+        port.onMessage.addListener(_this3.proxy(_this3, _this3.passMessage));
         !cb || cb();
       });
     }

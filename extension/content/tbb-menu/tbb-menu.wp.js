@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ 	return __webpack_require__(__webpack_require__.s = 29);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -471,15 +471,20 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      this.port = this.port || browser.runtime.connect({ name: this.name });
+      var _this2 = this;
+
+      var port = this.port = this.port || browser.runtime.connect({ name: this.name });
+      port.onDisconnect.addListener(function () {
+        return _this2.port = null;
+      });
     }
   }, {
     key: 'addConnectionListeners',
     value: function addConnectionListeners(cb) {
-      var _this2 = this;
+      var _this3 = this;
 
       browser.runtime.onConnect.addListener(function (port) {
-        port.onMessage.addListener(_this2.proxy(_this2, _this2.passMessage));
+        port.onMessage.addListener(_this3.proxy(_this3, _this3.passMessage));
         !cb || cb();
       });
     }
@@ -801,7 +806,8 @@ function translateDocument() {
 /* 25 */,
 /* 26 */,
 /* 27 */,
-/* 28 */
+/* 28 */,
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -811,7 +817,7 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _port = __webpack_require__(29);
+var _port = __webpack_require__(30);
 
 var _port2 = _interopRequireDefault(_port);
 
@@ -861,7 +867,7 @@ new _utils._DOMMODULE({
 });
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 43);
+/******/ 	return __webpack_require__(__webpack_require__.s = 44);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -602,15 +602,20 @@ var _PORT = exports._PORT = function (_MODULE2) {
   }, {
     key: 'connect',
     value: function connect() {
-      this.port = this.port || browser.runtime.connect({ name: this.name });
+      var _this2 = this;
+
+      var port = this.port = this.port || browser.runtime.connect({ name: this.name });
+      port.onDisconnect.addListener(function () {
+        return _this2.port = null;
+      });
     }
   }, {
     key: 'addConnectionListeners',
     value: function addConnectionListeners(cb) {
-      var _this2 = this;
+      var _this3 = this;
 
       browser.runtime.onConnect.addListener(function (port) {
-        port.onMessage.addListener(_this2.proxy(_this2, _this2.passMessage));
+        port.onMessage.addListener(_this3.proxy(_this3, _this3.passMessage));
         !cb || cb();
       });
     }
@@ -1250,7 +1255,8 @@ exports.default = _SELECTION;
 /* 40 */,
 /* 41 */,
 /* 42 */,
-/* 43 */
+/* 43 */,
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1260,16 +1266,16 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-__webpack_require__(44);
+__webpack_require__(45);
 
 __webpack_require__(2);
 
-__webpack_require__(45);
+__webpack_require__(46);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1290,7 +1296,7 @@ exports.default = new _utils._PORT({
 });
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1302,27 +1308,27 @@ var _store = __webpack_require__(2);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _page = __webpack_require__(46);
+var _page = __webpack_require__(47);
 
 var _page2 = _interopRequireDefault(_page);
 
-var _contextmenu = __webpack_require__(47);
+var _contextmenu = __webpack_require__(48);
 
 var _contextmenu2 = _interopRequireDefault(_contextmenu);
 
-var _marker = __webpack_require__(48);
+var _marker = __webpack_require__(49);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _restorer = __webpack_require__(51);
+var _restorer = __webpack_require__(52);
 
 var _restorer2 = _interopRequireDefault(_restorer);
 
-var _notes = __webpack_require__(52);
+var _notes = __webpack_require__(53);
 
 var _notes2 = _interopRequireDefault(_notes);
 
-var _tmui = __webpack_require__(54);
+var _tmui = __webpack_require__(55);
 
 var _tmui2 = _interopRequireDefault(_tmui);
 
@@ -1362,7 +1368,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1552,7 +1558,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1604,7 +1610,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2017,11 +2023,11 @@ var _store = __webpack_require__(2);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _markItem = __webpack_require__(49);
+var _markItem = __webpack_require__(50);
 
 var _markItem2 = _interopRequireDefault(_markItem);
 
-var _bookmark = __webpack_require__(50);
+var _bookmark = __webpack_require__(51);
 
 var _bookmark2 = _interopRequireDefault(_bookmark);
 
@@ -2032,7 +2038,7 @@ var _selection2 = _interopRequireDefault(_selection);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2360,7 +2366,7 @@ var _MARK = function () {
 exports.default = _MARK;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2435,7 +2441,7 @@ var _BOOKMARK = function () {
 exports.default = _BOOKMARK;
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3214,7 +3220,7 @@ var Restorer = function (_MODULE2) {
 }(_utils._MODULE);
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3308,14 +3314,14 @@ var _store = __webpack_require__(2);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _note = __webpack_require__(53);
+var _note = __webpack_require__(54);
 
 var _note2 = _interopRequireDefault(_note);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3512,7 +3518,7 @@ var _store2 = _interopRequireDefault(_store);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

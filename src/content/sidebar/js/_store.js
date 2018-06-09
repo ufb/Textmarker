@@ -29,6 +29,12 @@ export default new _MODULE({
     }
     return this['_get_' + field]();
   },
+  _get_mode() {
+    return browser.storage[this.area_settings].get().then(storage => {
+      if (!storage || !storage.settings || storage.settings.addon.active) return true;
+      return false;
+    });
+  },
   _get_autosave() {
     return browser.storage[this.area_settings].get().then(storage => {
       if (!storage || !storage.settings) return false;

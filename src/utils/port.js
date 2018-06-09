@@ -66,7 +66,8 @@ export class _PORT extends _MODULE {
     }
   }
   connect() {
-    this.port = this.port || browser.runtime.connect({ name: this.name });
+    const port = this.port = this.port || browser.runtime.connect({ name: this.name });
+    port.onDisconnect.addListener(() => this.port = null);
   }
   addConnectionListeners(cb) {
     browser.runtime.onConnect.addListener(port => {

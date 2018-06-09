@@ -9,6 +9,7 @@ export default function() {
       ENV: {
         'imported:settings': 'update',
         'updated:bg-color-settings': 'update',
+        'updated:saveopt-settings': 'update',
         'updated:custom-search-settings': 'showCustomSearchSettingSuccess',
         'toggled:sync-settings': 'update'
       },

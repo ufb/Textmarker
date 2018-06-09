@@ -194,3 +194,7 @@ button:last-child {
 #page-action--notes {
   background-image: url(../icons/note2.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
 }
+#textmarker-sidebar--paused {
+  padding: 10px 20px;
+  color: #ad3a3a;
+}
