@@ -33,11 +33,15 @@ new _DOMMODULE({
         (type === 'delete-bookmark' && markInfos.bookmark)
       ) {
         btn.removeAttribute('disabled');
+        btn.parentNode.classList.remove('disabled');
       }
     });
   },
   deactivate() {
-    this.buttons.forEach(btn => btn.setAttribute('disabled', true));
+    this.buttons.forEach(btn => {
+      btn.setAttribute('disabled', true);
+      btn.parentNode.classList.add('disabled');
+    });
   },
   toggleInfo(e, el) {
     el.classList.toggle('active');

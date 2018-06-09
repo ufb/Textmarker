@@ -595,7 +595,7 @@ new _utils._DOMMODULE({
         button = document.createElement('button');
         color = _this.extractBgColor(markers[m]);
 
-        box.className = 'marker';
+        box.className = 'marker clearfix';
         label.setAttribute('for', 'marker-' + m);
         label.className = 'marker__label';
         input.className = 'marker__color';
@@ -603,15 +603,16 @@ new _utils._DOMMODULE({
         input.name = m;
         input.type = 'color';
         input.value = color;
-        button.className = 'marker__apply disabled';
+        button.className = 'marker__apply';
+        button.setAttribute('disabled', true);
         button.setAttribute('data-key', m);
 
         box.appendChild(label);
-        box.appendChild(input);
         box.appendChild(button);
+        box.appendChild(input);
         frag.appendChild(box);
 
-        label.innerText = m.toUpperCase();
+        label.innerText = 'Marker ' + m.toUpperCase();
         if (!color) input.setAttribute('disabled', 'disabled');
       }
       inputs.appendChild(frag);
@@ -645,9 +646,9 @@ new _utils._DOMMODULE({
     });
   },
   toggleMarkerButtons: function toggleMarkerButtons(show) {
-    var meth = show ? 'remove' : 'add';
+    var meth = show ? 'removeAttribute' : 'setAttribute';
     Array.from(document.getElementsByClassName('marker__apply')).forEach(function (btn) {
-      return btn.classList[meth]('disabled');
+      return btn[meth]('disabled', true);
     });
   }
 });
@@ -694,12 +695,14 @@ new _utils._DOMMODULE({
       var type = btn.getAttribute('data-action');
       if (type === 'delete-highlight' || typeof markInfos[type] === 'boolean' && !markInfos[type] || type === 'delete-bookmark' && markInfos.bookmark) {
         btn.removeAttribute('disabled');
+        btn.parentNode.classList.remove('disabled');
       }
     });
   },
   deactivate: function deactivate() {
     this.buttons.forEach(function (btn) {
-      return btn.setAttribute('disabled', true);
+      btn.setAttribute('disabled', true);
+      btn.parentNode.classList.add('disabled');
     });
   },
   toggleInfo: function toggleInfo(e, el) {
@@ -785,7 +788,13 @@ new _utils._DOMMODULE({
   },
   activate: function activate(type, on) {
     var btn = document.getElementById('page-action--' + type);
-    if (on) btn.removeAttribute('disabled');else btn.setAttribute('disabled', true);
+    if (on) {
+      btn.removeAttribute('disabled');
+      btn.parentNode.classList.remove('disabled');
+    } else {
+      btn.setAttribute('disabled', true);
+      btn.parentNode.classList.add('disabled');
+    }
   },
   pageAction: function pageAction(e, el) {
     var _this2 = this;
