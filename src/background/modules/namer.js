@@ -8,6 +8,7 @@ export default function() {
         'granted:save-entry': 'name'
       }
     },
+    maxChars: 70,
 
     name(entry) {
       if (entry.name) return this.adjustName(entry.name, entry);
@@ -20,7 +21,7 @@ export default function() {
              method === 'title' ? entry.title :
              method === 'date' ? (new Date(entry.first).toLocaleString()) : '';
 
-      name = name.substring(0, 35);
+      name = name.substring(0, this.maxChars - 1);
 
       _STORAGE.get('history').then(history => {
         let counter = this.getDoubleNameCount(history);

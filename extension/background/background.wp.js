@@ -1405,6 +1405,7 @@ exports.default = function () {
         'granted:save-entry': 'name'
       }
     },
+    maxChars: 70,
 
     name: function name(entry) {
       var _this = this;
@@ -1422,7 +1423,7 @@ exports.default = function () {
 
       name = name ? name : method === 'title' ? entry.title : method === 'date' ? new Date(entry.first).toLocaleString() : '';
 
-      name = name.substring(0, 35);
+      name = name.substring(0, this.maxChars - 1);
 
       _storage2.default.get('history').then(function (history) {
         var counter = _this2.getDoubleNameCount(history);
