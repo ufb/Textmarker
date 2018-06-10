@@ -9,6 +9,7 @@ import _NAMER from './modules/namer'
 import _CTM from './modules/context-menu'
 //import _IDB from './modules/indexeddb'
 import { _MODULE } from './utils'
+import './modules/webdav'
 import './modules/version-manager'
 import './modules/store-manager'
 

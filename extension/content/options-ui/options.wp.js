@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 62);
+/******/ 	return __webpack_require__(__webpack_require__.s = 150);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -76,25 +76,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
-var _copy = __webpack_require__(4);
+var _copy = __webpack_require__(5);
 
-var _getActiveTab = __webpack_require__(11);
+var _getActiveTab = __webpack_require__(15);
 
-var _extend = __webpack_require__(5);
+var _extend = __webpack_require__(6);
 
 var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _dommodule = __webpack_require__(12);
+var _dommodule = __webpack_require__(16);
 
-var _port = __webpack_require__(7);
+var _port = __webpack_require__(8);
 
-var _l10n = __webpack_require__(13);
+var _l10n = __webpack_require__(17);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
-var _errorTracker = __webpack_require__(8);
+var _errorTracker = __webpack_require__(9);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -122,7 +122,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(6);
+var _mediator = __webpack_require__(7);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -165,7 +165,7 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 
 /***/ }),
 
-/***/ 11:
+/***/ 15:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -185,7 +185,28 @@ exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
 
 /***/ }),
 
-/***/ 12:
+/***/ 150:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+(0, _utils._L10N)();
+
+Array.from(document.getElementsByTagName('button')).forEach(function (button) {
+  button.addEventListener('click', function (e) {
+    browser.runtime.sendMessage({
+      ev: 'open:addon-page',
+      args: [e.target.getAttribute('data-id')]
+    });
+  }, false);
+});
+
+/***/ }),
+
+/***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -320,7 +341,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 13:
+/***/ 17:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -432,7 +453,7 @@ function translateDocument() {
 
 /***/ }),
 
-/***/ 4:
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -464,7 +485,7 @@ exports._COPY = _COPY;
 
 /***/ }),
 
-/***/ 5:
+/***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -482,7 +503,7 @@ exports.default = function (obj1, obj2) {
 
 /***/ }),
 
-/***/ 6:
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -566,28 +587,7 @@ exports.default = _class;
 
 /***/ }),
 
-/***/ 62:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-(0, _utils._L10N)();
-
-Array.from(document.getElementsByTagName('button')).forEach(function (button) {
-  button.addEventListener('click', function (e) {
-    browser.runtime.sendMessage({
-      ev: 'open:addon-page',
-      args: [e.target.getAttribute('data-id')]
-    });
-  }, false);
-});
-
-/***/ }),
-
-/***/ 7:
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -787,7 +787,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 8:
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

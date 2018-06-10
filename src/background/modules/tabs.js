@@ -19,8 +19,7 @@ export default function() {
       help: 'content/addon-page/addon-page.html#page=manual',
       contact: 'content/addon-page/addon-page.html#page=contact',
       logs: 'content/addon-page/addon-page.html#page=logs',
-      export: 'content/addon-page/addon-page.html#page=export',
-      sync: 'content/addon-page/addon-page.html#page=sync'
+      data: 'content/addon-page/addon-page.html#page=data'
     },
 
     open(urls) {

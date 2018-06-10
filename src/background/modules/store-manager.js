@@ -7,6 +7,8 @@ new _MODULE({
       'started:app': 'registerStorageChangedHandler',
       'toggled:addon': 'saveActivationState',
       'toggle:sync': 'toggleSync',
+      'change:sync-type': 'changeSyncType',
+      'change:webdav-credentials': 'setWebDavCreds',
 
       'change:style-setting': 'changeStyle',
       'change:bg-setting': 'changeBgColor',
@@ -49,6 +51,19 @@ new _MODULE({
         this.emit('failed:toggle-sync', field);
       })
       .then(() => this.emit('toggled:sync toggled:sync-' + field, field, val))
+  },
+
+  changeSyncType(type) {
+    _STORAGE.update('sync', sync => { sync.type = type; return sync; });
+  },
+
+  setWebDavCreds(db, user, pw) {
+    _STORAGE.update('sync', sync => {
+      sync.server = db;
+      sync.user = user;
+      sync.pw = pw;
+      return sync;
+    });
   },
 
   updateSettings(updater, setting, error) {

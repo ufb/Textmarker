@@ -27,10 +27,14 @@ export default new _PORT({
       'sync:settings',
       'import:storage',
       'toggle:sync',
+      'change:sync-type',
+      'change:webdav-credentials',
       'change:custom-search-setting',
       'changed:per-page-count',
       'error:browser-console',
-      'clear:logs'
+      'clear:logs',
+'set-webdav',
+'get-webdav'
     ]
   }
 })

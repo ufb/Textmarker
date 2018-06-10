@@ -4,6 +4,7 @@
   "description": "webextensions-addon-textmarker",
   "main": "src/main.js",
   "dependencies": {
+    "webdav": "^1.5.2",
     "webpack": "3.7.1"
   },
   "devDependencies": {

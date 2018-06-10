@@ -19,7 +19,7 @@ let navs = document.getElementsByClassName('nav'),
 while(n--) new _NAV(navs[n]);
 
 let tab = window.location.hash.split('=')[1],
-    allowedVals = ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'logs'];
+    allowedVals = ['news', 'manual', 'settings', 'history', 'contact', 'data', 'logs'];
 
 if (allowedVals.includes(tab)) {
     window.document.getElementById('mainnav-' + tab).click();

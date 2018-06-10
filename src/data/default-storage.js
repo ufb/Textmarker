@@ -52,6 +52,7 @@ export default {
   },
   sync: {
     settings: false,
-    history: false
+    history: false,
+    type: 'default'
   }
 };

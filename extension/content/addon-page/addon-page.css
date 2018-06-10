@@ -389,11 +389,8 @@ small.ref {
 #mainnav-history {
   background-image: url(../icons/clock.png);
 }
-#mainnav-sync {
-  background-image: url(../icons/sync2.png);
-}
-#mainnav-export {
-  background-image: url(../icons/export.png);
+#mainnav-data {
+  background-image: url(../icons/data.png);
 }
 #mainnav-contact {
   background-image: url(../icons/ghost.png);
@@ -406,8 +403,6 @@ small.ref {
   background-color: #2ba5b7;
   background-position: 0 6px;
   color: rgb(55, 65, 75);
-  font-weight: bold;
-	filter: unset;
 	background-image: none;
 }
 #mainnav li.deactivated {

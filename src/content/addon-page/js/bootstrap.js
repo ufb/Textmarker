@@ -5,7 +5,8 @@ import _HISTORY from './modules/history'
 import _SETTINGS from './modules/settings'
 import _LOGGING from './modules/logs'
 import _SYNCING from './modules/syncing'
-import _IMPORT from './modules/import'
+import _IMPORT from './modules/export-import'
+import _WEBDAV from './modules/webdav'
 import _CONTACT from './modules/contact'
 import _PAGINATOR from './modules/history-pagination'
 
@@ -31,6 +32,7 @@ new _MODULE({
       _LOGGING();
       _SYNCING();
       _IMPORT();
+      _WEBDAV();
       _CONTACT();
       _PAGINATOR();
     }

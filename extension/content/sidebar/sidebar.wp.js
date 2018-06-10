@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 56);
+/******/ 	return __webpack_require__(__webpack_require__.s = 144);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -76,25 +76,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
-var _copy = __webpack_require__(4);
+var _copy = __webpack_require__(5);
 
-var _getActiveTab = __webpack_require__(11);
+var _getActiveTab = __webpack_require__(15);
 
-var _extend = __webpack_require__(5);
+var _extend = __webpack_require__(6);
 
 var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _dommodule = __webpack_require__(12);
+var _dommodule = __webpack_require__(16);
 
-var _port = __webpack_require__(7);
+var _port = __webpack_require__(8);
 
-var _l10n = __webpack_require__(13);
+var _l10n = __webpack_require__(17);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
-var _errorTracker = __webpack_require__(8);
+var _errorTracker = __webpack_require__(9);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -122,7 +122,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(6);
+var _mediator = __webpack_require__(7);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -165,7 +165,395 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 
 /***/ }),
 
-/***/ 11:
+/***/ 144:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _port = __webpack_require__(145);
+
+var _port2 = _interopRequireDefault(_port);
+
+var _store = __webpack_require__(64);
+
+var _store2 = _interopRequireDefault(_store);
+
+__webpack_require__(146);
+
+__webpack_require__(147);
+
+__webpack_require__(148);
+
+__webpack_require__(149);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _utils._L10N)();
+
+new _utils._MODULE({
+  events: {
+    ENV: {
+      'started:app': 'onStart',
+      'toggled:addon': 'power'
+    }
+  },
+
+  power: function power(on) {
+    var placeholder = document.getElementById('textmarker-sidebar--paused');
+    var content = document.getElementById('textmarker-sidebar');
+
+    if (on) {
+      placeholder.classList.add('none');
+      content.classList.remove('none');
+    } else {
+      placeholder.classList.remove('none');
+      content.classList.add('none');
+    }
+  },
+  onStart: function onStart() {
+    var _this = this;
+
+    _store2.default.get('mode').then(function (mode) {
+      return _this.power(mode);
+    });
+  }
+});
+
+/***/ }),
+
+/***/ 145:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(0);
+
+exports.default = new _utils._PORT({
+  name: 'sidebar',
+  type: 'privileged',
+  events: {
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'open:addon-page']
+  }
+});
+
+/***/ }),
+
+/***/ 146:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+new _utils._DOMMODULE({
+  el: document.getElementById('markers'),
+  events: {
+    ENV: {
+      'started:app': 'render',
+      'updated:settings': 'render',
+      'toggled:sync-settings': 'render',
+      'changed:selection': 'toggleMarkerButtons'
+    },
+    DOM: {
+      change: {
+        '.marker__color': 'change'
+      },
+      click: {
+        '.marker__apply': 'applyColor'
+      }
+    }
+  },
+
+  autoinit: function autoinit() {
+    this.render();
+  },
+  render: function render() {
+    var _this = this;
+
+    browser.storage.sync.get().then(function (storage) {
+      if (storage && storage.settings && (!storage.sync || storage.sync.settings)) {
+        return storage.settings.markers;
+      }
+      return browser.storage.local.get().then(function (storage) {
+        if (storage && storage.settings && storage.sync && !storage.sync.settings) {
+          return storage.settings.markers;
+        }
+        return null;
+      });
+    }).then(function (markers) {
+      if (!markers) return _this;
+      var inputs = document.getElementById('markers-container');
+      var frag = document.createDocumentFragment(),
+          m = void 0,
+          box = void 0,
+          label = void 0,
+          input = void 0,
+          button = void 0,
+          color = void 0;
+
+      inputs.innerText = '';
+
+      for (m in markers) {
+        box = document.createElement('div');
+        label = document.createElement('label');
+        input = document.createElement('input');
+        button = document.createElement('button');
+        color = _this.extractBgColor(markers[m]);
+
+        box.className = 'marker clearfix';
+        label.setAttribute('for', 'marker-' + m);
+        label.className = 'marker__label';
+        input.className = 'marker__color';
+        input.id = 'marker-' + m;
+        input.name = m;
+        input.type = 'color';
+        input.value = color;
+        button.className = 'marker__apply';
+        button.setAttribute('disabled', true);
+        button.setAttribute('data-key', m);
+
+        box.appendChild(label);
+        box.appendChild(button);
+        box.appendChild(input);
+        frag.appendChild(box);
+
+        label.innerText = 'Marker ' + m.toUpperCase();
+        if (!color) input.setAttribute('disabled', 'disabled');
+      }
+      inputs.appendChild(frag);
+    });
+  },
+  extractBgColor: function extractBgColor(styles) {
+    var split = styles.split(';'),
+        l = split.length,
+        color = '',
+        i = 0,
+        style = void 0;
+
+    for (; i < l; i++) {
+      style = split[i];
+      if (style.includes('background-color')) {
+        color = style.split(':')[1];
+        break;
+      }
+    }
+    return color;
+  },
+  change: function change(e, el) {
+    this.emit('change:bg-setting', el.name, el.value);
+  },
+  applyColor: function applyColor(e, el) {
+    var _this2 = this;
+
+    if (el.classList.contains('disabled')) return;
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      return _this2.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id });
+    });
+  },
+  toggleMarkerButtons: function toggleMarkerButtons(show) {
+    var meth = show ? 'removeAttribute' : 'setAttribute';
+    Array.from(document.getElementsByClassName('marker__apply')).forEach(function (btn) {
+      return btn[meth]('disabled', true);
+    });
+  }
+});
+
+/***/ }),
+
+/***/ 147:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+new _utils._DOMMODULE({
+  el: document.getElementById('mark-actions'),
+  events: {
+    ENV: {
+      'clicked:mark': 'activate'
+    },
+    DOM: {
+      click: {
+        '.mark-action': 'markAction',
+        '.i': 'toggleInfo'
+      }
+    }
+  },
+  buttons: [],
+
+  autoinit: function autoinit() {
+    this.buttons = Array.from(this.el.getElementsByTagName('button'));
+  },
+  markAction: function markAction(e, el) {
+    var _this = this;
+
+    if (el.hasAttribute('disabled')) return;
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      return _this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: tab.id });
+    });
+    this.deactivate();
+  },
+  activate: function activate(markInfos) {
+    this.buttons.forEach(function (btn) {
+      var type = btn.getAttribute('data-action');
+      if (type === 'delete-highlight' || typeof markInfos[type] === 'boolean' && !markInfos[type] || type === 'delete-bookmark' && markInfos.bookmark) {
+        btn.removeAttribute('disabled');
+        btn.parentNode.classList.remove('disabled');
+      }
+    });
+  },
+  deactivate: function deactivate() {
+    this.buttons.forEach(function (btn) {
+      btn.setAttribute('disabled', true);
+      btn.parentNode.classList.add('disabled');
+    });
+  },
+  toggleInfo: function toggleInfo(e, el) {
+    el.classList.toggle('active');
+  }
+});
+
+/***/ }),
+
+/***/ 148:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+var _store = __webpack_require__(64);
+
+var _store2 = _interopRequireDefault(_store);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('page-actions'),
+  events: {
+    ENV: {
+      'started:app': 'update',
+      'updated:settings': 'update',
+      'toggled:sync-settings': 'update',
+      'updated:entry': 'deactivateSave',
+      'saved:entry': 'deactivateSave',
+      'unsaved-changes': 'activateSave',
+      'added:bookmark': 'activateBookmark',
+      'removed:bookmark': 'deactivateBookmark',
+      'added:note': 'activateNotes',
+      'removed:last-note': 'deactivateNotes'
+    },
+    DOM: {
+      click: {
+        '.switch-toggle': 'onAutosaveSwitch',
+        '.page-action': 'pageAction'
+      }
+    }
+  },
+
+  autoinit: function autoinit() {
+    this.update();
+  },
+  update: function update() {
+    this.updateAutosave();
+  },
+  updateAutosave: function updateAutosave() {
+    var _this = this;
+
+    _store2.default.get('autosave').then(function (autosave) {
+      return _this.toggleAutosave(autosave);
+    });
+  },
+  onAutosaveSwitch: function onAutosaveSwitch(e, el) {
+    el = el.id === 'autosave-switch' ? el : el.parentNode;
+    var autosave = !el.classList.contains('active');
+    this.toggleAutosave(autosave);
+    this.emit('sidebar:toggle-autosave', autosave);
+  },
+  toggleAutosave: function toggleAutosave(on) {
+    var meth = on ? 'add' : 'remove';
+    document.getElementById('autosave-switch').classList[meth]('active');
+    document.getElementById('page-action-box--save').classList[meth]('none');
+  },
+  activateSave: function activateSave() {
+    this.activate('save', true);
+  },
+  deactivateSave: function deactivateSave() {
+    this.activate('save', false);
+  },
+  activateBookmark: function activateBookmark() {
+    this.activate('scroll', true);
+  },
+  deactivateBookmark: function deactivateBookmark() {
+    this.activate('scroll', false);
+  },
+  activateNotes: function activateNotes() {
+    this.activate('notes', true);
+  },
+  deactivateNotes: function deactivateNotes() {
+    this.activate('notes', false);
+  },
+  activate: function activate(type, on) {
+    var btn = document.getElementById('page-action--' + type);
+    if (on) {
+      btn.removeAttribute('disabled');
+      btn.parentNode.classList.remove('disabled');
+    } else {
+      btn.setAttribute('disabled', true);
+      btn.parentNode.classList.add('disabled');
+    }
+  },
+  pageAction: function pageAction(e, el) {
+    var _this2 = this;
+
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      return _this2.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id });
+    });
+  }
+});
+
+/***/ }),
+
+/***/ 149:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+new _utils._DOMMODULE({
+  el: document.getElementById('links'),
+  events: {
+    DOM: {
+      click: {
+        '.link': 'link'
+      }
+    }
+  },
+
+  link: function link(e, el) {
+    this.emit('open:addon-page', el.getAttribute('data-id'));
+  }
+});
+
+/***/ }),
+
+/***/ 15:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -185,7 +573,7 @@ exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
 
 /***/ }),
 
-/***/ 12:
+/***/ 16:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -320,7 +708,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 13:
+/***/ 17:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -432,7 +820,57 @@ function translateDocument() {
 
 /***/ }),
 
-/***/ 18:
+/***/ 5:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _COPY = function _COPY(original, clone) {
+  clone = clone || {};
+
+  for (var i in original) {
+    if (original.hasOwnProperty(i)) {
+      if (_typeof(original[i]) === 'object') {
+        clone[i] = Array.isArray(original[i]) ? [] : {};
+        _COPY(original[i], clone[i]);
+      } else {
+        clone[i] = original[i];
+      }
+    }
+  }
+  return clone;
+};
+
+exports._COPY = _COPY;
+
+/***/ }),
+
+/***/ 6:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (obj1, obj2) {
+  for (var i in obj2) {
+    if (!obj1[i]) obj1[i] = obj2[i];
+  }return obj1;
+};
+
+/***/ }),
+
+/***/ 64:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -506,320 +944,7 @@ exports.default = new _utils._MODULE({
 
 /***/ }),
 
-/***/ 4:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _COPY = function _COPY(original, clone) {
-  clone = clone || {};
-
-  for (var i in original) {
-    if (original.hasOwnProperty(i)) {
-      if (_typeof(original[i]) === 'object') {
-        clone[i] = Array.isArray(original[i]) ? [] : {};
-        _COPY(original[i], clone[i]);
-      } else {
-        clone[i] = original[i];
-      }
-    }
-  }
-  return clone;
-};
-
-exports._COPY = _COPY;
-
-/***/ }),
-
-/***/ 5:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function (obj1, obj2) {
-  for (var i in obj2) {
-    if (!obj1[i]) obj1[i] = obj2[i];
-  }return obj1;
-};
-
-/***/ }),
-
-/***/ 56:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _port = __webpack_require__(57);
-
-var _port2 = _interopRequireDefault(_port);
-
-var _store = __webpack_require__(18);
-
-var _store2 = _interopRequireDefault(_store);
-
-__webpack_require__(58);
-
-__webpack_require__(59);
-
-__webpack_require__(60);
-
-__webpack_require__(61);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _utils._L10N)();
-
-new _utils._MODULE({
-  events: {
-    ENV: {
-      'started:app': 'onStart',
-      'toggled:addon': 'power'
-    }
-  },
-
-  power: function power(on) {
-    var placeholder = document.getElementById('textmarker-sidebar--paused');
-    var content = document.getElementById('textmarker-sidebar');
-
-    if (on) {
-      placeholder.classList.add('none');
-      content.classList.remove('none');
-    } else {
-      placeholder.classList.remove('none');
-      content.classList.add('none');
-    }
-  },
-  onStart: function onStart() {
-    var _this = this;
-
-    _store2.default.get('mode').then(function (mode) {
-      return _this.power(mode);
-    });
-  }
-});
-
-/***/ }),
-
-/***/ 57:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _utils = __webpack_require__(0);
-
-exports.default = new _utils._PORT({
-  name: 'sidebar',
-  type: 'privileged',
-  events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'open:addon-page']
-  }
-});
-
-/***/ }),
-
-/***/ 58:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-new _utils._DOMMODULE({
-  el: document.getElementById('markers'),
-  events: {
-    ENV: {
-      'started:app': 'render',
-      'updated:settings': 'render',
-      'toggled:sync-settings': 'render',
-      'changed:selection': 'toggleMarkerButtons'
-    },
-    DOM: {
-      change: {
-        '.marker__color': 'change'
-      },
-      click: {
-        '.marker__apply': 'applyColor'
-      }
-    }
-  },
-
-  autoinit: function autoinit() {
-    this.render();
-  },
-  render: function render() {
-    var _this = this;
-
-    browser.storage.sync.get().then(function (storage) {
-      if (storage && storage.settings && (!storage.sync || storage.sync.settings)) {
-        return storage.settings.markers;
-      }
-      return browser.storage.local.get().then(function (storage) {
-        if (storage && storage.settings && storage.sync && !storage.sync.settings) {
-          return storage.settings.markers;
-        }
-        return null;
-      });
-    }).then(function (markers) {
-      if (!markers) return _this;
-      var inputs = document.getElementById('markers-container');
-      var frag = document.createDocumentFragment(),
-          m = void 0,
-          box = void 0,
-          label = void 0,
-          input = void 0,
-          button = void 0,
-          color = void 0;
-
-      inputs.innerText = '';
-
-      for (m in markers) {
-        box = document.createElement('div');
-        label = document.createElement('label');
-        input = document.createElement('input');
-        button = document.createElement('button');
-        color = _this.extractBgColor(markers[m]);
-
-        box.className = 'marker clearfix';
-        label.setAttribute('for', 'marker-' + m);
-        label.className = 'marker__label';
-        input.className = 'marker__color';
-        input.id = 'marker-' + m;
-        input.name = m;
-        input.type = 'color';
-        input.value = color;
-        button.className = 'marker__apply';
-        button.setAttribute('disabled', true);
-        button.setAttribute('data-key', m);
-
-        box.appendChild(label);
-        box.appendChild(button);
-        box.appendChild(input);
-        frag.appendChild(box);
-
-        label.innerText = 'Marker ' + m.toUpperCase();
-        if (!color) input.setAttribute('disabled', 'disabled');
-      }
-      inputs.appendChild(frag);
-    });
-  },
-  extractBgColor: function extractBgColor(styles) {
-    var split = styles.split(';'),
-        l = split.length,
-        color = '',
-        i = 0,
-        style = void 0;
-
-    for (; i < l; i++) {
-      style = split[i];
-      if (style.includes('background-color')) {
-        color = style.split(':')[1];
-        break;
-      }
-    }
-    return color;
-  },
-  change: function change(e, el) {
-    this.emit('change:bg-setting', el.name, el.value);
-  },
-  applyColor: function applyColor(e, el) {
-    var _this2 = this;
-
-    if (el.classList.contains('disabled')) return;
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this2.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id });
-    });
-  },
-  toggleMarkerButtons: function toggleMarkerButtons(show) {
-    var meth = show ? 'removeAttribute' : 'setAttribute';
-    Array.from(document.getElementsByClassName('marker__apply')).forEach(function (btn) {
-      return btn[meth]('disabled', true);
-    });
-  }
-});
-
-/***/ }),
-
-/***/ 59:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-new _utils._DOMMODULE({
-  el: document.getElementById('mark-actions'),
-  events: {
-    ENV: {
-      'clicked:mark': 'activate'
-    },
-    DOM: {
-      click: {
-        '.mark-action': 'markAction',
-        '.i': 'toggleInfo'
-      }
-    }
-  },
-  buttons: [],
-
-  autoinit: function autoinit() {
-    this.buttons = Array.from(this.el.getElementsByTagName('button'));
-  },
-  markAction: function markAction(e, el) {
-    var _this = this;
-
-    if (el.hasAttribute('disabled')) return;
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: tab.id });
-    });
-    this.deactivate();
-  },
-  activate: function activate(markInfos) {
-    this.buttons.forEach(function (btn) {
-      var type = btn.getAttribute('data-action');
-      if (type === 'delete-highlight' || typeof markInfos[type] === 'boolean' && !markInfos[type] || type === 'delete-bookmark' && markInfos.bookmark) {
-        btn.removeAttribute('disabled');
-        btn.parentNode.classList.remove('disabled');
-      }
-    });
-  },
-  deactivate: function deactivate() {
-    this.buttons.forEach(function (btn) {
-      btn.setAttribute('disabled', true);
-      btn.parentNode.classList.add('disabled');
-    });
-  },
-  toggleInfo: function toggleInfo(e, el) {
-    el.classList.toggle('active');
-  }
-});
-
-/***/ }),
-
-/***/ 6:
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -903,132 +1028,7 @@ exports.default = _class;
 
 /***/ }),
 
-/***/ 60:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-var _store = __webpack_require__(18);
-
-var _store2 = _interopRequireDefault(_store);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-new _utils._DOMMODULE({
-  el: document.getElementById('page-actions'),
-  events: {
-    ENV: {
-      'started:app': 'update',
-      'updated:settings': 'update',
-      'toggled:sync-settings': 'update',
-      'updated:entry': 'deactivateSave',
-      'saved:entry': 'deactivateSave',
-      'unsaved-changes': 'activateSave',
-      'added:bookmark': 'activateBookmark',
-      'removed:bookmark': 'deactivateBookmark',
-      'added:note': 'activateNotes',
-      'removed:last-note': 'deactivateNotes'
-    },
-    DOM: {
-      click: {
-        '.switch-toggle': 'onAutosaveSwitch',
-        '.page-action': 'pageAction'
-      }
-    }
-  },
-
-  autoinit: function autoinit() {
-    this.update();
-  },
-  update: function update() {
-    this.updateAutosave();
-  },
-  updateAutosave: function updateAutosave() {
-    var _this = this;
-
-    _store2.default.get('autosave').then(function (autosave) {
-      return _this.toggleAutosave(autosave);
-    });
-  },
-  onAutosaveSwitch: function onAutosaveSwitch(e, el) {
-    el = el.id === 'autosave-switch' ? el : el.parentNode;
-    var autosave = !el.classList.contains('active');
-    this.toggleAutosave(autosave);
-    this.emit('sidebar:toggle-autosave', autosave);
-  },
-  toggleAutosave: function toggleAutosave(on) {
-    var meth = on ? 'add' : 'remove';
-    document.getElementById('autosave-switch').classList[meth]('active');
-    document.getElementById('page-action-box--save').classList[meth]('none');
-  },
-  activateSave: function activateSave() {
-    this.activate('save', true);
-  },
-  deactivateSave: function deactivateSave() {
-    this.activate('save', false);
-  },
-  activateBookmark: function activateBookmark() {
-    this.activate('scroll', true);
-  },
-  deactivateBookmark: function deactivateBookmark() {
-    this.activate('scroll', false);
-  },
-  activateNotes: function activateNotes() {
-    this.activate('notes', true);
-  },
-  deactivateNotes: function deactivateNotes() {
-    this.activate('notes', false);
-  },
-  activate: function activate(type, on) {
-    var btn = document.getElementById('page-action--' + type);
-    if (on) {
-      btn.removeAttribute('disabled');
-      btn.parentNode.classList.remove('disabled');
-    } else {
-      btn.setAttribute('disabled', true);
-      btn.parentNode.classList.add('disabled');
-    }
-  },
-  pageAction: function pageAction(e, el) {
-    var _this2 = this;
-
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this2.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id });
-    });
-  }
-});
-
-/***/ }),
-
-/***/ 61:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-new _utils._DOMMODULE({
-  el: document.getElementById('links'),
-  events: {
-    DOM: {
-      click: {
-        '.link': 'link'
-      }
-    }
-  },
-
-  link: function link(e, el) {
-    this.emit('open:addon-page', el.getAttribute('data-id'));
-  }
-});
-
-/***/ }),
-
-/***/ 7:
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1228,7 +1228,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 8:
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

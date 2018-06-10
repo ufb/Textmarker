@@ -17,8 +17,7 @@
   			<li id="mainnav-manual" data-target="manual" class="nav-button active" data-l10n-id="manual"></li>
   			<li id="mainnav-settings" data-target="settings" class="nav-button" data-l10n-id="settings"></li>
         <li id="mainnav-history" data-target="history" class="nav-button" data-l10n-id="history"></li>
-        <li id="mainnav-sync" data-target="sync" class="nav-button" data-l10n-id="sync"></li>
-        <li id="mainnav-export" data-target="export" class="nav-button" data-l10n-id="export"></li>
+        <li id="mainnav-data" data-target="data" class="nav-button" data-l10n-id="data"></li>
   			<li id="mainnav-contact" data-target="contact" class="nav-button" data-l10n-id="contact"></li>
   			<li id="mainnav-logs" data-target="logs" class="nav-button" data-l10n-id="logs"></li>
   		</ul>
@@ -37,7 +36,7 @@
 
         <h4 class="inline-block" data-l10n-id="h112"></h4>
         <p data-l10n-id="t112"></p>
-        
+
         <h4 class="inline-block" data-l10n-id="h113"></h4>
         <p data-l10n-id="t113"></p>
       </div>
@@ -806,9 +805,10 @@
         </section>
       </div>
 
-      <div id="sync" class="content none">
-        <h2 data-l10n-id="h90"></h2>
-        <section class="block-spacing">
+      <div id="data" class="content none">
+        <h2 data-l10n-id="data"></h2>
+        <section id="sync" class="block-spacing">
+          <h3 data-l10n-id="h90"></h3>
           <div class="clearfix">
             <div id="sync-switch-settings" class="switch sync-switch clearfix active" data-type="settings">
               <div class="switch switch-indicator"></div>
@@ -825,25 +825,40 @@
           <p data-l10n-id="t913"></p>
           <p data-l10n-id="t914"></p>
         </section>
-      </div>
-
-      <div id="export" class="content none">
-        <h2 data-l10n-id="h60"></h2>
-        <section class="block-spacing">
+        <section id="webdav" class="block-spacing">
+          <!--<h3>WebDav</h3>-->
+          <div class="option-row">
+            <input type="radio" id="ff-sync" name="sync-opt" class="sync-opt" data-type="default">
+            <label for="ff-sync" class="fake-rb"><span>&#149;</span> <sup>Firefox Sync</sup></label>
+          </div>
+          <div class="option-row">
+            <input type="radio" id="webdav-sync" name="sync-opt" class="sync-opt" data-type="webdav">
+            <label for="webdav-sync" class="fake-rb"><span>&#149;</span> <sup>WebDav</sup></label>
+          </div>
+          <input type="text" class="inp-db" placeholder="Database address"><br>
+          <input type="text" class="inp-name" placeholder="Username"><br>
+          <input type="text" class="inp-pw" placeholder="Password"><br>
+          <button class="submit">SUBMIT</button>
+          <br><br>
+          <button id="test-webdav-set">TEST: Set WebDav Storage</button>
+          <br><br>
+          <button id="test-webdav-get">TEST: Get WebDav Storage</button>
+        </section>
+        <section id="export" class="block-spacing">
+          <h3 data-l10n-id="h60"></h2>
           <p><span data-l10n-id="t614"></span><br>
           <span data-l10n-id="t615"></span></p>
           <br>
           <div class="clearfix">
-            <h3 data-l10n-id="h611"></h3>
+            <h4 data-l10n-id="h611"></h4>
             <a class='export' id="export-local" download="textmarker-data.json" href="">
               <button class="export-button" data-type="local" data-l10n-id="t616"></button>
             </a>
             <button class="import-button" data-l10n-id="t618" data-type="local"></button>
             <input id="import--local" type="file" value="Import" class="import-file" data-type="local">
           </div>
-          <br><br>
           <div class="clearfix">
-            <h3 data-l10n-id="h612"></h3>
+            <h4 data-l10n-id="h612"></h4>
             <a class='export' id="export-synced" download="textmarker-data.json" href="">
               <button class="export-button" data-type="synced" data-l10n-id="t617"></button>
             </a>

@@ -60,11 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 29);
+/******/ 	return __webpack_require__(__webpack_require__.s = 116);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75,25 +76,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
-var _copy = __webpack_require__(4);
+var _copy = __webpack_require__(5);
 
-var _getActiveTab = __webpack_require__(11);
+var _getActiveTab = __webpack_require__(15);
 
-var _extend = __webpack_require__(5);
+var _extend = __webpack_require__(6);
 
 var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _dommodule = __webpack_require__(12);
+var _dommodule = __webpack_require__(16);
 
-var _port = __webpack_require__(7);
+var _port = __webpack_require__(8);
 
-var _l10n = __webpack_require__(13);
+var _l10n = __webpack_require__(17);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
-var _errorTracker = __webpack_require__(8);
+var _errorTracker = __webpack_require__(9);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -109,7 +110,8 @@ exports._L10N = _l10n2.default;
 exports._ERRORTRACKER = _errorTracker2.default;
 
 /***/ }),
-/* 1 */
+
+/***/ 1:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -120,7 +122,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(6);
+var _mediator = __webpack_require__(7);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -162,9 +164,358 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 }(_mediator2.default);
 
 /***/ }),
-/* 2 */,
-/* 3 */,
-/* 4 */
+
+/***/ 116:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _port = __webpack_require__(117);
+
+var _port2 = _interopRequireDefault(_port);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _utils._L10N)();
+
+new _utils._DOMMODULE({
+  el: document.getElementById('menu'),
+  events: {
+    DOM: {
+      click: {
+        '#activate': 'toggle',
+        '.send': 'open'
+      }
+    }
+  },
+  port: null,
+  disabled: false,
+
+  autoinit: function autoinit() {
+    var _this = this;
+
+    browser.storage.sync.get().then(function (storage) {
+      if (storage.settings) {
+        if (!storage || !storage.sync || storage.sync.settings) return storage.settings.addon.active;
+        return browser.storage.local.get().then(function (storage) {
+          return storage.settings.addon.active;
+        });
+      }
+      return true;
+    }).then(function (active) {
+      return _this.setActivateText(active);
+    });
+  },
+  toggle: function toggle() {
+    this.emit('toggle:addon');
+    window.close();
+  },
+  open: function open(e, el) {
+    this.emit('open:addon-page', el.id);
+    window.close();
+  },
+  setActivateText: function setActivateText(active) {
+    document.getElementById('activate').innerText = browser.i18n.getMessage('tbb_mitem_1_' + active);
+  }
+});
+
+/***/ }),
+
+/***/ 117:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(0);
+
+exports.default = new _utils._PORT({
+  name: 'tbb-menu',
+  type: 'privileged',
+  events: {
+    CONNECTION: ['toggle:addon', 'open:addon-page', 'error:browser-console']
+  }
+});
+
+/***/ }),
+
+/***/ 15:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
+
+  return browser.tabs.query({ currentWindow: true, active: true }).then(function (tabs) {
+    return tabs[0];
+  });
+};
+
+exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
+
+/***/ }),
+
+/***/ 16:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._DOMMODULE = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _module = __webpack_require__(1);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
+  _inherits(_DOMMODULE, _MODULE2);
+
+  function _DOMMODULE(obj) {
+    _classCallCheck(this, _DOMMODULE);
+
+    obj._bound = {};
+    obj._extraBound = [];
+
+    var _this = _possibleConstructorReturn(this, (_DOMMODULE.__proto__ || Object.getPrototypeOf(_DOMMODULE)).call(this, obj));
+
+    _this.addListenersManually || _this.addListeners();
+    return _this;
+  }
+
+  _createClass(_DOMMODULE, [{
+    key: 'generalHandler',
+    value: function generalHandler(subMap, type, e) {
+      var el = e.target,
+          selector = void 0,
+          _sel = void 0,
+          meth = void 0,
+          f = void 0,
+          isId = void 0,
+          isClass = void 0,
+          isDoc = void 0;
+
+      for (selector in subMap) {
+        f = selector[0];
+        _sel = selector;
+        isId = f === '#';
+        isClass = f === '.';
+        isDoc = f === '*';
+
+        if (isId || isClass) selector = selector.substr(1);
+
+        if (isDoc || isClass && el.classList.contains(selector) || isId && el.id === selector || el.nodeName.toLowerCase() === selector) {
+
+          meth = subMap[_sel];
+
+          if (typeof meth === 'function') meth(e, el);else if (this[meth]) this[meth](e, el);
+
+          break;
+        }
+      }
+    }
+  }, {
+    key: 'addListener',
+    value: function addListener(type, meth, el) {
+      el = el || this.el;
+      var handler = typeof meth === 'function' ? meth : this[meth];
+
+      el.addEventListener(type, handler, false);
+
+      if (el === this.el) {
+        if (!this._bound[type]) this._bound[type] = [];
+        this._bound[type].push(handler);
+      } else {
+        this._extraBound.push([el, type, handler]);
+      }
+    }
+  }, {
+    key: 'addListeners',
+    value: function addListeners() {
+      var events = this.events,
+          domEvents = void 0,
+          el = void 0,
+          subMap = void 0,
+          type = void 0,
+          handler = void 0;
+
+      if (!events || !(domEvents = events.DOM) || !(el = this.el)) return false;
+
+      for (type in domEvents) {
+        subMap = domEvents[type];
+        handler = this.proxy(this, this.generalHandler, subMap, type);
+        el.addEventListener(type, handler, false);
+        if (!this._bound[type]) this._bound[type] = [];
+        this._bound[type].push(handler);
+      }
+    }
+  }, {
+    key: 'removeListeners',
+    value: function removeListeners() {
+      var type = void 0,
+          _bound = void 0,
+          l = void 0;
+
+      for (type in this._bound) {
+        _bound = this._bound[type];
+        l = _bound.length;
+        while (l--) {
+          this.el.removeEventListener(type, _bound[l], false);
+          _bound.splice(l, 1);
+        }
+      }
+
+      var _extra = this._extraBound,
+          i = 0,
+          set = void 0;
+      l = _extra.length;
+
+      for (; i < l; i++) {
+        set = _extra[i];
+        set[0].removeEventListener(set[1], set[2], false);
+      }
+    }
+  }]);
+
+  return _DOMMODULE;
+}(_module._MODULE);
+
+/***/ }),
+
+/***/ 17:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function () {
+  document.addEventListener('DOMContentLoaded', function () {
+    return translateDocument();
+  }, {
+    capture: false,
+    passive: true,
+    once: true
+  });
+};
+
+/*
+* Translates a HTMl page in the web l10n style from the Add-on SDK with WebExtensions strings.
+* Modified by underflyingbirches
+*
+* @author Martin Giger
+* @see {@link https://gist.github.com/freaktechnik/4a72bc0711d9bc82cf3b075bcc292953}
+* @license MPL-2.0
+*/
+function translateDocument() {
+  var el = void 0,
+      data = void 0,
+      dataset = void 0;
+  // Set the language attribute of the document.
+  document.documentElement.setAttribute('lang', browser.i18n.getUILanguage().replace('_', '-'));
+  // Get all elements that are marked as being translateable.
+  var textElements = document.querySelectorAll('*[data-l10n-id]');
+  var attrElements = document.querySelectorAll('*[data-l10n-attr]');
+
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = textElements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      el = _step.value;
+
+      dataset = el.dataset;
+      var l10nId = dataset.l10nId;
+
+      if (l10nId) {
+        data = browser.i18n.getMessage(l10nId);
+
+        if (data && data != '??') {
+          el.textContent = data;
+        }
+      }
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  var _iteratorNormalCompletion2 = true;
+  var _didIteratorError2 = false;
+  var _iteratorError2 = undefined;
+
+  try {
+    for (var _iterator2 = attrElements[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      el = _step2.value;
+
+      dataset = el.dataset;
+
+      ['Title', 'Placeholder'].forEach(function (attr) {
+        var l10nAttr = dataset['l10n' + attr];
+
+        if (l10nAttr) {
+          data = browser.i18n.getMessage(l10nAttr);
+
+          if (data && data != '??') {
+            el.setAttribute(attr.toLowerCase(), data);
+          }
+        }
+      });
+    }
+  } catch (err) {
+    _didIteratorError2 = true;
+    _iteratorError2 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion2 && _iterator2.return) {
+        _iterator2.return();
+      }
+    } finally {
+      if (_didIteratorError2) {
+        throw _iteratorError2;
+      }
+    }
+  }
+}
+
+/***/ }),
+
+/***/ 5:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -195,7 +546,8 @@ var _COPY = function _COPY(original, clone) {
 exports._COPY = _COPY;
 
 /***/ }),
-/* 5 */
+
+/***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -212,7 +564,8 @@ exports.default = function (obj1, obj2) {
 };
 
 /***/ }),
-/* 6 */
+
+/***/ 7:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -295,7 +648,8 @@ var _class = function () {
 exports.default = _class;
 
 /***/ }),
-/* 7 */
+
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -494,7 +848,8 @@ var _PORT = exports._PORT = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 8 */
+
+/***/ 9:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -525,367 +880,6 @@ var _ERRORTRACKER = new _module._MODULE({
 
 exports.default = _ERRORTRACKER;
 
-/***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
-
-  return browser.tabs.query({ currentWindow: true, active: true }).then(function (tabs) {
-    return tabs[0];
-  });
-};
-
-exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports._DOMMODULE = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _module = __webpack_require__(1);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
-  _inherits(_DOMMODULE, _MODULE2);
-
-  function _DOMMODULE(obj) {
-    _classCallCheck(this, _DOMMODULE);
-
-    obj._bound = {};
-    obj._extraBound = [];
-
-    var _this = _possibleConstructorReturn(this, (_DOMMODULE.__proto__ || Object.getPrototypeOf(_DOMMODULE)).call(this, obj));
-
-    _this.addListenersManually || _this.addListeners();
-    return _this;
-  }
-
-  _createClass(_DOMMODULE, [{
-    key: 'generalHandler',
-    value: function generalHandler(subMap, type, e) {
-      var el = e.target,
-          selector = void 0,
-          _sel = void 0,
-          meth = void 0,
-          f = void 0,
-          isId = void 0,
-          isClass = void 0,
-          isDoc = void 0;
-
-      for (selector in subMap) {
-        f = selector[0];
-        _sel = selector;
-        isId = f === '#';
-        isClass = f === '.';
-        isDoc = f === '*';
-
-        if (isId || isClass) selector = selector.substr(1);
-
-        if (isDoc || isClass && el.classList.contains(selector) || isId && el.id === selector || el.nodeName.toLowerCase() === selector) {
-
-          meth = subMap[_sel];
-
-          if (typeof meth === 'function') meth(e, el);else if (this[meth]) this[meth](e, el);
-
-          break;
-        }
-      }
-    }
-  }, {
-    key: 'addListener',
-    value: function addListener(type, meth, el) {
-      el = el || this.el;
-      var handler = typeof meth === 'function' ? meth : this[meth];
-
-      el.addEventListener(type, handler, false);
-
-      if (el === this.el) {
-        if (!this._bound[type]) this._bound[type] = [];
-        this._bound[type].push(handler);
-      } else {
-        this._extraBound.push([el, type, handler]);
-      }
-    }
-  }, {
-    key: 'addListeners',
-    value: function addListeners() {
-      var events = this.events,
-          domEvents = void 0,
-          el = void 0,
-          subMap = void 0,
-          type = void 0,
-          handler = void 0;
-
-      if (!events || !(domEvents = events.DOM) || !(el = this.el)) return false;
-
-      for (type in domEvents) {
-        subMap = domEvents[type];
-        handler = this.proxy(this, this.generalHandler, subMap, type);
-        el.addEventListener(type, handler, false);
-        if (!this._bound[type]) this._bound[type] = [];
-        this._bound[type].push(handler);
-      }
-    }
-  }, {
-    key: 'removeListeners',
-    value: function removeListeners() {
-      var type = void 0,
-          _bound = void 0,
-          l = void 0;
-
-      for (type in this._bound) {
-        _bound = this._bound[type];
-        l = _bound.length;
-        while (l--) {
-          this.el.removeEventListener(type, _bound[l], false);
-          _bound.splice(l, 1);
-        }
-      }
-
-      var _extra = this._extraBound,
-          i = 0,
-          set = void 0;
-      l = _extra.length;
-
-      for (; i < l; i++) {
-        set = _extra[i];
-        set[0].removeEventListener(set[1], set[2], false);
-      }
-    }
-  }]);
-
-  return _DOMMODULE;
-}(_module._MODULE);
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-exports.default = function () {
-  document.addEventListener('DOMContentLoaded', function () {
-    return translateDocument();
-  }, {
-    capture: false,
-    passive: true,
-    once: true
-  });
-};
-
-/*
-* Translates a HTMl page in the web l10n style from the Add-on SDK with WebExtensions strings.
-* Modified by underflyingbirches
-*
-* @author Martin Giger
-* @see {@link https://gist.github.com/freaktechnik/4a72bc0711d9bc82cf3b075bcc292953}
-* @license MPL-2.0
-*/
-function translateDocument() {
-  var el = void 0,
-      data = void 0,
-      dataset = void 0;
-  // Set the language attribute of the document.
-  document.documentElement.setAttribute('lang', browser.i18n.getUILanguage().replace('_', '-'));
-  // Get all elements that are marked as being translateable.
-  var textElements = document.querySelectorAll('*[data-l10n-id]');
-  var attrElements = document.querySelectorAll('*[data-l10n-attr]');
-
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
-
-  try {
-    for (var _iterator = textElements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      el = _step.value;
-
-      dataset = el.dataset;
-      var l10nId = dataset.l10nId;
-
-      if (l10nId) {
-        data = browser.i18n.getMessage(l10nId);
-
-        if (data && data != '??') {
-          el.textContent = data;
-        }
-      }
-    }
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
-
-  var _iteratorNormalCompletion2 = true;
-  var _didIteratorError2 = false;
-  var _iteratorError2 = undefined;
-
-  try {
-    for (var _iterator2 = attrElements[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-      el = _step2.value;
-
-      dataset = el.dataset;
-
-      ['Title', 'Placeholder'].forEach(function (attr) {
-        var l10nAttr = dataset['l10n' + attr];
-
-        if (l10nAttr) {
-          data = browser.i18n.getMessage(l10nAttr);
-
-          if (data && data != '??') {
-            el.setAttribute(attr.toLowerCase(), data);
-          }
-        }
-      });
-    }
-  } catch (err) {
-    _didIteratorError2 = true;
-    _iteratorError2 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion2 && _iterator2.return) {
-        _iterator2.return();
-      }
-    } finally {
-      if (_didIteratorError2) {
-        throw _iteratorError2;
-      }
-    }
-  }
-}
-
-/***/ }),
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _port = __webpack_require__(30);
-
-var _port2 = _interopRequireDefault(_port);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _utils._L10N)();
-
-new _utils._DOMMODULE({
-  el: document.getElementById('menu'),
-  events: {
-    DOM: {
-      click: {
-        '#activate': 'toggle',
-        '.send': 'open'
-      }
-    }
-  },
-  port: null,
-  disabled: false,
-
-  autoinit: function autoinit() {
-    var _this = this;
-
-    browser.storage.sync.get().then(function (storage) {
-      if (storage.settings) {
-        if (!storage || !storage.sync || storage.sync.settings) return storage.settings.addon.active;
-        return browser.storage.local.get().then(function (storage) {
-          return storage.settings.addon.active;
-        });
-      }
-      return true;
-    }).then(function (active) {
-      return _this.setActivateText(active);
-    });
-  },
-  toggle: function toggle() {
-    this.emit('toggle:addon');
-    window.close();
-  },
-  open: function open(e, el) {
-    this.emit('open:addon-page', el.id);
-    window.close();
-  },
-  setActivateText: function setActivateText(active) {
-    document.getElementById('activate').innerText = browser.i18n.getMessage('tbb_mitem_1_' + active);
-  }
-});
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _utils = __webpack_require__(0);
-
-exports.default = new _utils._PORT({
-  name: 'tbb-menu',
-  type: 'privileged',
-  events: {
-    CONNECTION: ['toggle:addon', 'open:addon-page', 'error:browser-console']
-  }
-});
-
 /***/ })
-/******/ ]);
+
+/******/ });
