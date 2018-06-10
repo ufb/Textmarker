@@ -89,7 +89,7 @@ button:last-child {
 }
 .marker__apply {
   background-image: url(../icons/highlight.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
-  margin: 0 3px 0 10px;
+  margin: 0 0 0 10px;
 }
 .marker__apply:hover {
   opacity: 1;
