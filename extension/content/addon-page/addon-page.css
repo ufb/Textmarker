@@ -664,7 +664,7 @@ small.ref {
 .name {
 	cursor: pointer;
   display: inline-block;
-  max-width: calc(100% - 160px);
+  max-width: calc(100% - 144px);
 }
 .name:hover {
 	text-decoration: underline;
