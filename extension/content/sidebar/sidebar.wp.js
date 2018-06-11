@@ -432,7 +432,7 @@ function translateDocument() {
 
 /***/ }),
 
-/***/ 18:
+/***/ 19:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -570,7 +570,7 @@ var _port = __webpack_require__(57);
 
 var _port2 = _interopRequireDefault(_port);
 
-var _store = __webpack_require__(18);
+var _store = __webpack_require__(19);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -911,7 +911,7 @@ exports.default = _class;
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(18);
+var _store = __webpack_require__(19);
 
 var _store2 = _interopRequireDefault(_store);
 

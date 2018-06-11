@@ -8,6 +8,7 @@ export default function() {
     el: document.getElementById('history'),
     events: {
       ENV: {
+        'opened:tab': 'init',
         'updated:history': 'render',
         'failed:sync-entry': 'undoSyncToggle',
         'paginate:history': 'paginate'
@@ -30,6 +31,8 @@ export default function() {
       }
     },
 
+    initialized: false,
+
     names: [],
     entries: {},
     entryTmpl: document.getElementById('entry-template'),
@@ -40,9 +43,12 @@ export default function() {
     searchTerm: '',
     searched: [],
 
-    autoinit() {
-      this.render();
+    init() {
+      if (!this.initialized) this.render();
+      else this.setSortSelectWidth();
+      this.initialized = true;
     },
+
     ['delete'](names) {
       let confirmed = window.confirm(browser.i18n.getMessage('del_confirm'));
       if (confirmed) this.emit('delete:entries', names);
@@ -180,9 +186,7 @@ export default function() {
       const noEntriesHint = document.getElementById('no-entries');
       const search = document.getElementById('search');
       const actions = document.getElementById('history-actions');
-      const action = document.getElementById('action');
       const sort = document.getElementById('sort');
-      const sortEntries = document.getElementById('sort-entries');
       const count = document.getElementById('count');
       const ppSelect = document.getElementById('entries-per-page');
       const meth_0 = !l ? 'remove' : 'add';
@@ -196,7 +200,7 @@ export default function() {
       sort.classList[meth_2]('none');
       count.classList[meth_3]('none');
 
-      sortEntries.style.width = action.clientWidth + 'px';
+      this.setSortSelectWidth();
 
       document.getElementById('entries-count').innerText = l;
 
@@ -204,6 +208,9 @@ export default function() {
         const pp = this.perPage = settings.history.pp || 10;
         ppSelect.value = pp;
       });
+    },
+    setSortSelectWidth() {
+      document.getElementById('sort-entries').style.width = document.getElementById('action').clientWidth + 'px';
     },
     getText(names, spec) {
       let all_marks_plus_meta = spec === '+meta',

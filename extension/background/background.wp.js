@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 20);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -920,7 +920,8 @@ exports.default = {
 /***/ }),
 /* 17 */,
 /* 18 */,
-/* 19 */
+/* 19 */,
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -934,31 +935,31 @@ var _storage = __webpack_require__(10);
 
 var _storage2 = _interopRequireDefault(_storage);
 
-__webpack_require__(20);
-
 __webpack_require__(21);
 
 __webpack_require__(22);
 
-var _notifications = __webpack_require__(23);
+__webpack_require__(23);
+
+var _notifications = __webpack_require__(24);
 
 var _notifications2 = _interopRequireDefault(_notifications);
 
-var _tabs = __webpack_require__(24);
+var _tabs = __webpack_require__(25);
 
 var _tabs2 = _interopRequireDefault(_tabs);
 
-var _namer = __webpack_require__(25);
+var _namer = __webpack_require__(26);
 
 var _namer2 = _interopRequireDefault(_namer);
 
-var _contextMenu = __webpack_require__(26);
+var _contextMenu = __webpack_require__(27);
 
 var _contextMenu2 = _interopRequireDefault(_contextMenu);
 
-__webpack_require__(27);
-
 __webpack_require__(28);
+
+__webpack_require__(29);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1051,7 +1052,7 @@ new _utils._MODULE({
 //import _IDB from './modules/indexeddb'
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1070,7 +1071,7 @@ new _utils._PORT({
 });
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1137,7 +1138,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1205,7 +1206,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1321,7 +1322,7 @@ var _utils = __webpack_require__(3);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1394,7 +1395,7 @@ var _utils = __webpack_require__(3);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1479,7 +1480,7 @@ var _utils = __webpack_require__(3);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1569,7 +1570,7 @@ var _utils = __webpack_require__(3);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1795,7 +1796,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
