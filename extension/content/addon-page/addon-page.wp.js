@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 31);
+/******/ 	return __webpack_require__(__webpack_require__.s = 32);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1007,7 +1007,60 @@ exports.default = _TOGGLER;
 
 /***/ }),
 /* 16 */,
-/* 17 */,
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (el) {
+
+  return new _utils._DOMMODULE({
+    el: el,
+    events: {
+      DOM: {
+        click: {
+          'li': 'toggle'
+        }
+      }
+    },
+    pageNav: null,
+    current: null,
+
+    autoinit: function autoinit() {
+      this.pageNav = el.hasAttribute('data-page-nav');
+      var current = this.current = el.getElementsByClassName('active')[0];
+      this.open(current);
+    },
+    toggle: function toggle(e, el) {
+      if (el.classList.contains('disabled') || this.current == el) return false;
+
+      if (this.current) this.close(this.current);
+
+      this.open(el);
+    },
+    open: function open(el) {
+      var targetId = el.getAttribute('data-target');
+      el.classList.add('active');
+      document.getElementById(targetId).classList.remove('none');
+      this.emit('opened:tab', targetId);
+      this.current = el;
+      if (this.pageNav) window.document.title = 'Textmarker - ' + browser.i18n.getMessage(targetId);
+    },
+    close: function close(el) {
+      el.classList.remove('active');
+      document.getElementById(el.getAttribute('data-target')).classList.add('none');
+    }
+  });
+};
+
+var _utils = __webpack_require__(0);
+
+/***/ }),
 /* 18 */,
 /* 19 */,
 /* 20 */,
@@ -1021,7 +1074,8 @@ exports.default = _TOGGLER;
 /* 28 */,
 /* 29 */,
 /* 30 */,
-/* 31 */
+/* 31 */,
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1031,7 +1085,7 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _nav = __webpack_require__(32);
+var _nav = __webpack_require__(17);
 
 var _nav2 = _interopRequireDefault(_nav);
 
@@ -1053,21 +1107,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 document.getElementById('version-number').innerText = browser.runtime.getManifest().version;
 /* end: auto-insert current version number */
 
-/* configure navs */
-var navs = document.getElementsByClassName('nav'),
-    n = navs.length;
+/* configure subnavs */
+var subnavs = document.getElementsByClassName('subnav');
+var n = subnavs.length;
 
 while (n--) {
-    new _nav2.default(navs[n]);
-}var tab = window.location.hash.split('=')[1],
-    allowedVals = ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'logs'];
-
-if (allowedVals.includes(tab)) {
-    window.document.getElementById('mainnav-' + tab).click();
-    tab = tab[0].toUpperCase() + tab.substr(1);
-    window.document.title = 'Textmarker - ' + browser.i18n.getMessage(tab);
-}
-/* end: configure navs */
+    new _nav2.default(subnavs[n]);
+} /* end: configure navs */
 
 /* configure toggle elements */
 var toggleButtons = document.getElementsByClassName('toggle-button'),
@@ -1076,74 +1122,6 @@ var toggleButtons = document.getElementsByClassName('toggle-button'),
 while (t--) {
     new _toggler2.default(toggleButtons[t]);
 } /* end: configure toggle elements */
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _NAV = function () {
-  function _NAV(el) {
-    _classCallCheck(this, _NAV);
-
-    this.el = el;
-    this.pageNav = el.hasAttribute('data-page-nav');
-    var current = this.current = el.getElementsByClassName('active')[0];
-    this.init().open(current);
-  }
-
-  _createClass(_NAV, [{
-    key: 'init',
-    value: function init() {
-      var _this = this;
-
-      this.el.addEventListener('click', function (e) {
-        var clicked = e.target;
-        if (clicked.nodeName !== 'LI' || clicked.classList.contains('disabled')) return false;
-        _this.toggle(clicked);
-      }, false);
-      return this;
-    }
-  }, {
-    key: 'toggle',
-    value: function toggle(el) {
-      if (this.current == el) return;
-
-      if (this.current) this.close(this.current);
-
-      this.open(el);
-    }
-  }, {
-    key: 'open',
-    value: function open(el) {
-      var targetId = el.getAttribute('data-target');
-      el.classList.add('active');
-      document.getElementById(targetId).classList.remove('none');
-      this.current = el;
-      if (this.pageNav) window.document.title = 'Textmarker - ' + browser.i18n.getMessage(targetId);
-    }
-  }, {
-    key: 'close',
-    value: function close(el) {
-      el.classList.remove('active');
-      document.getElementById(el.getAttribute('data-target')).classList.add('none');
-    }
-  }]);
-
-  return _NAV;
-}();
-
-exports.default = _NAV;
 
 /***/ }),
 /* 33 */
@@ -1207,6 +1185,10 @@ var _historyPagination = __webpack_require__(43);
 
 var _historyPagination2 = _interopRequireDefault(_historyPagination);
 
+var _nav = __webpack_require__(17);
+
+var _nav2 = _interopRequireDefault(_nav);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 new _utils._MODULE({
@@ -1217,6 +1199,7 @@ new _utils._MODULE({
       'updated:history': 'start'
     }
   },
+  allowedHashes: ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'logs'],
   bootstrapped: false,
   autoinit: function autoinit() {
     var _this = this;
@@ -1235,7 +1218,16 @@ new _utils._MODULE({
       (0, _import2.default)();
       (0, _contact2.default)();
       (0, _historyPagination2.default)();
+      this.initMainNav();
     }
+  },
+  initMainNav: function initMainNav() {
+    var tab = window.location.hash.split('=')[1];
+
+    if (this.allowedHashes.includes(tab)) {
+      window.document.getElementById('mainnav-' + tab).classList.add('active');
+    }
+    new _nav2.default(window.document.getElementById('mainnav'));
   }
 });
 
@@ -1257,6 +1249,7 @@ exports.default = function () {
     el: document.getElementById('history'),
     events: {
       ENV: {
+        'opened:tab': 'init',
         'updated:history': 'render',
         'failed:sync-entry': 'undoSyncToggle',
         'paginate:history': 'paginate'
@@ -1279,6 +1272,8 @@ exports.default = function () {
       }
     },
 
+    initialized: false,
+
     names: [],
     entries: {},
     entryTmpl: document.getElementById('entry-template'),
@@ -1289,8 +1284,9 @@ exports.default = function () {
     searchTerm: '',
     searched: [],
 
-    autoinit: function autoinit() {
-      this.render();
+    init: function init() {
+      if (!this.initialized) this.render();else this.setSortSelectWidth();
+      this.initialized = true;
     }
   }, _defineProperty(_ref, 'delete', function _delete(names) {
     var confirmed = window.confirm(browser.i18n.getMessage('del_confirm'));
@@ -1436,9 +1432,7 @@ exports.default = function () {
     var noEntriesHint = document.getElementById('no-entries');
     var search = document.getElementById('search');
     var actions = document.getElementById('history-actions');
-    var action = document.getElementById('action');
     var sort = document.getElementById('sort');
-    var sortEntries = document.getElementById('sort-entries');
     var count = document.getElementById('count');
     var ppSelect = document.getElementById('entries-per-page');
     var meth_0 = !l ? 'remove' : 'add';
@@ -1452,7 +1446,7 @@ exports.default = function () {
     sort.classList[meth_2]('none');
     count.classList[meth_3]('none');
 
-    sortEntries.style.width = action.clientWidth + 'px';
+    this.setSortSelectWidth();
 
     document.getElementById('entries-count').innerText = l;
 
@@ -1460,6 +1454,8 @@ exports.default = function () {
       var pp = _this4.perPage = settings.history.pp || 10;
       ppSelect.value = pp;
     });
+  }), _defineProperty(_ref, 'setSortSelectWidth', function setSortSelectWidth() {
+    document.getElementById('sort-entries').style.width = document.getElementById('action').clientWidth + 'px';
   }), _defineProperty(_ref, 'getText', function getText(names, spec) {
     var _this5 = this;
 

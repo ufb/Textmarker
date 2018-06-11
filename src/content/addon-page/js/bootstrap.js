@@ -9,6 +9,8 @@ import _IMPORT from './modules/import'
 import _CONTACT from './modules/contact'
 import _PAGINATOR from './modules/history-pagination'
 
+import _NAV from './modules/nav'
+
 new _MODULE({
   events: {
     ENV: {
@@ -17,6 +19,7 @@ new _MODULE({
       'updated:history': 'start'
     }
   },
+  allowedHashes: ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'logs'],
   bootstrapped: false,
   autoinit() {
     _STORE.get().then(storage => {
@@ -33,6 +36,15 @@ new _MODULE({
       _IMPORT();
       _CONTACT();
       _PAGINATOR();
+      this.initMainNav();
     }
+  },
+  initMainNav() {
+    const tab = window.location.hash.split('=')[1];
+
+    if (this.allowedHashes.includes(tab)) {
+      window.document.getElementById('mainnav-' + tab).classList.add('active');
+    }
+    new _NAV(window.document.getElementById('mainnav'));
   }
 });

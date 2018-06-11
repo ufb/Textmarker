@@ -926,7 +926,8 @@ function translateDocument() {
 /* 14 */,
 /* 15 */,
 /* 16 */,
-/* 17 */
+/* 17 */,
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1230,7 +1231,6 @@ var _SELECTION = function () {
 exports.default = _SELECTION;
 
 /***/ }),
-/* 18 */,
 /* 19 */,
 /* 20 */,
 /* 21 */,
@@ -2031,7 +2031,7 @@ var _bookmark = __webpack_require__(51);
 
 var _bookmark2 = _interopRequireDefault(_bookmark);
 
-var _selection = __webpack_require__(17);
+var _selection = __webpack_require__(18);
 
 var _selection2 = _interopRequireDefault(_selection);
 
@@ -3120,7 +3120,7 @@ var _store = __webpack_require__(2);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _selection = __webpack_require__(17);
+var _selection = __webpack_require__(18);
 
 var _selection2 = _interopRequireDefault(_selection);
 
