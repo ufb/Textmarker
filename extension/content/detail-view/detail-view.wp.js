@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 57);
+/******/ 	return __webpack_require__(__webpack_require__.s = 64);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -412,80 +412,6 @@ function translateDocument() {
 
 /***/ }),
 
-/***/ 19:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _utils = __webpack_require__(0);
-
-exports.default = new _utils._MODULE({
-  events: {
-    ENV: {
-      'toggled:sync': 'setAreas'
-    }
-  },
-  initialized: false,
-  area_settings: 'sync',
-  area_history: 'sync',
-
-  setAreas: function setAreas() {
-    var _this = this;
-
-    return browser.storage.sync.get().then(function (storage) {
-      if (storage && storage.sync) {
-        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
-        _this.area_history = storage.sync.history ? 'sync' : 'local';
-      }
-    });
-  },
-  get: function get() {
-    var _this2 = this;
-
-    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
-
-    var meth = this['_get_' + field];
-    if (!meth) throw 'field ' + field + ' doesn\'t exist';
-
-    if (!this.initialized) {
-      this.initialized = true;
-      return this.setAreas().then(function () {
-        return _this2['_get_' + field]();
-      });
-    }
-    return this['_get_' + field]();
-  },
-  _get_mode: function _get_mode() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings || storage.settings.addon.active) return true;
-      return false;
-    });
-  },
-  _get_autosave: function _get_autosave() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return false;
-      return storage.settings.history.autosave;
-    });
-  },
-  _get_settings: function _get_settings() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings;
-    });
-  },
-  _get_markers: function _get_markers() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings.markers;
-    });
-  }
-});
-
-/***/ }),
-
 /***/ 2:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -820,212 +746,6 @@ var _PORT = exports._PORT = function (_MODULE2) {
 
 /***/ }),
 
-/***/ 57:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _port = __webpack_require__(58);
-
-var _port2 = _interopRequireDefault(_port);
-
-var _store = __webpack_require__(19);
-
-var _store2 = _interopRequireDefault(_store);
-
-__webpack_require__(59);
-
-__webpack_require__(60);
-
-__webpack_require__(61);
-
-__webpack_require__(62);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _utils._L10N)();
-
-new _utils._MODULE({
-  events: {
-    ENV: {
-      'started:app': 'onStart',
-      'toggled:addon': 'power'
-    }
-  },
-
-  power: function power(on) {
-    var placeholder = document.getElementById('textmarker-sidebar--paused');
-    var content = document.getElementById('textmarker-sidebar');
-
-    if (on) {
-      placeholder.classList.add('none');
-      content.classList.remove('none');
-    } else {
-      placeholder.classList.remove('none');
-      content.classList.add('none');
-    }
-  },
-  onStart: function onStart() {
-    var _this = this;
-
-    _store2.default.get('mode').then(function (mode) {
-      return _this.power(mode);
-    });
-  }
-});
-
-/***/ }),
-
-/***/ 58:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _utils = __webpack_require__(0);
-
-exports.default = new _utils._PORT({
-  name: 'sidebar',
-  type: 'privileged',
-  events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'open:addon-page']
-  }
-});
-
-/***/ }),
-
-/***/ 59:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-new _utils._DOMMODULE({
-  el: document.getElementById('markers'),
-  events: {
-    ENV: {
-      'started:app': 'render',
-      'updated:settings': 'render',
-      'toggled:sync-settings': 'render',
-      'changed:selection': 'toggleMarkerButtons'
-    },
-    DOM: {
-      change: {
-        '.marker__color': 'change'
-      },
-      click: {
-        '.marker__apply': 'applyColor'
-      }
-    }
-  },
-
-  autoinit: function autoinit() {
-    this.render();
-  },
-  render: function render() {
-    var _this = this;
-
-    browser.storage.sync.get().then(function (storage) {
-      if (storage && storage.settings && (!storage.sync || storage.sync.settings)) {
-        return storage.settings.markers;
-      }
-      return browser.storage.local.get().then(function (storage) {
-        if (storage && storage.settings && storage.sync && !storage.sync.settings) {
-          return storage.settings.markers;
-        }
-        return null;
-      });
-    }).then(function (markers) {
-      if (!markers) return _this;
-      var inputs = document.getElementById('markers-container');
-      var frag = document.createDocumentFragment(),
-          m = void 0,
-          box = void 0,
-          label = void 0,
-          input = void 0,
-          button = void 0,
-          color = void 0;
-
-      inputs.innerText = '';
-
-      for (m in markers) {
-        box = document.createElement('div');
-        label = document.createElement('label');
-        input = document.createElement('input');
-        button = document.createElement('button');
-        color = _this.extractBgColor(markers[m]);
-
-        box.className = 'marker clearfix';
-        label.setAttribute('for', 'marker-' + m);
-        label.className = 'marker__label';
-        input.className = 'marker__color';
-        input.id = 'marker-' + m;
-        input.name = m;
-        input.type = 'color';
-        input.value = color;
-        button.className = 'marker__apply';
-        button.setAttribute('disabled', true);
-        button.setAttribute('data-key', m);
-
-        box.appendChild(label);
-        box.appendChild(button);
-        box.appendChild(input);
-        frag.appendChild(box);
-
-        label.innerText = 'Marker ' + m.toUpperCase();
-        if (!color) input.setAttribute('disabled', 'disabled');
-      }
-      inputs.appendChild(frag);
-    });
-  },
-  extractBgColor: function extractBgColor(styles) {
-    var split = styles.split(';'),
-        l = split.length,
-        color = '',
-        i = 0,
-        style = void 0;
-
-    for (; i < l; i++) {
-      style = split[i];
-      if (style.includes('background-color')) {
-        color = style.split(':')[1];
-        break;
-      }
-    }
-    return color;
-  },
-  change: function change(e, el) {
-    this.emit('change:bg-setting', el.name, el.value);
-  },
-  applyColor: function applyColor(e, el) {
-    var _this2 = this;
-
-    if (el.classList.contains('disabled')) return;
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this2.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id });
-    });
-  },
-  toggleMarkerButtons: function toggleMarkerButtons(show) {
-    var meth = show ? 'removeAttribute' : 'setAttribute';
-    Array.from(document.getElementsByClassName('marker__apply')).forEach(function (btn) {
-      return btn[meth]('disabled', true);
-    });
-  }
-});
-
-/***/ }),
-
 /***/ 6:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1059,7 +779,7 @@ exports.default = _ERRORTRACKER;
 
 /***/ }),
 
-/***/ 60:
+/***/ 64:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1067,56 +787,33 @@ exports.default = _ERRORTRACKER;
 
 var _utils = __webpack_require__(0);
 
-new _utils._DOMMODULE({
-  el: document.getElementById('mark-actions'),
-  events: {
-    ENV: {
-      'clicked:mark': 'activate'
-    },
-    DOM: {
-      click: {
-        '.mark-action': 'markAction',
-        '.i': 'toggleInfo'
-      }
-    }
-  },
-  buttons: [],
+__webpack_require__(65);
 
+__webpack_require__(66);
+
+__webpack_require__(67);
+
+new _utils._MODULE({
   autoinit: function autoinit() {
-    this.buttons = Array.from(this.el.getElementsByTagName('button'));
-  },
-  markAction: function markAction(e, el) {
     var _this = this;
 
-    if (el.hasAttribute('disabled')) return;
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: tab.id });
+    var name = decodeURIComponent(window.location.hash).slice(1);
+
+    browser.storage.sync.get().then(function (storage) {
+      if (storage.history.order.includes(name)) return storage.history.entries[name];
+      return browser.storage.local.get().then(function (storage) {
+        if (storage.history.order.includes(name)) return storage.history.entries[name];
+      });
+    }).then(function (entry) {
+      _this.emit('entry', entry);
+      document.title = entry.name;
     });
-    this.deactivate();
-  },
-  activate: function activate(markInfos) {
-    this.buttons.forEach(function (btn) {
-      var type = btn.getAttribute('data-action');
-      if (type === 'delete-highlight' || typeof markInfos[type] === 'boolean' && !markInfos[type] || type === 'delete-bookmark' && markInfos.bookmark) {
-        btn.removeAttribute('disabled');
-        btn.parentNode.classList.remove('disabled');
-      }
-    });
-  },
-  deactivate: function deactivate() {
-    this.buttons.forEach(function (btn) {
-      btn.setAttribute('disabled', true);
-      btn.parentNode.classList.add('disabled');
-    });
-  },
-  toggleInfo: function toggleInfo(e, el) {
-    el.classList.toggle('active');
   }
 });
 
 /***/ }),
 
-/***/ 61:
+/***/ 65:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1124,118 +821,169 @@ new _utils._DOMMODULE({
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(19);
-
-var _store2 = _interopRequireDefault(_store);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 new _utils._DOMMODULE({
-  el: document.getElementById('page-actions'),
+  el: document.getElementById('header'),
   events: {
     ENV: {
-      'started:app': 'update',
-      'updated:settings': 'update',
-      'toggled:sync-settings': 'update',
-      'updated:entry': 'deactivateSave',
-      'saved:entry': 'deactivateSave',
-      'unsaved-changes': 'activateSave',
-      'added:bookmark': 'activateBookmark',
-      'removed:bookmark': 'deactivateBookmark',
-      'added:note': 'activateNotes',
-      'removed:last-note': 'deactivateNotes'
+      'entry': 'render'
+    }
+  },
+  entry: null,
+
+  setTitle: function setTitle(entry) {
+    this.el.innerText = entry.name;
+  },
+  setTag: function setTag(entry) {
+    var tag = entry.tag || 'Kein Tag zugeordnet';
+    document.getElementById('tag').innerText = tag;
+  },
+  render: function render(entry) {
+    this.entry = entry;
+    this.setTitle(entry);
+    this.setTag(entry);
+  }
+});
+
+/***/ }),
+
+/***/ 66:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+new _utils._DOMMODULE({
+  el: document.getElementById('meta'),
+  events: {
+    ENV: {
+      'entry': 'render'
+    }
+  },
+  entry: null,
+
+  setDates: function setDates(entry) {
+    document.getElementById('created').innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
+    document.getElementById('last_modified').innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
+  },
+  setTitle: function setTitle(entry) {
+    document.getElementById('title').innerText = entry.title;
+  },
+  setLink: function setLink(entry) {
+    var link = document.getElementById('url');
+    var url = entry.url;
+    link.href = url;
+    link.innerText = url;
+  },
+  setSyncMode: function setSyncMode(entry) {
+    document.getElementById('synced').innerText = entry.synced ? 'Ja' : 'Nein';
+  },
+  adjustWidths: function adjustWidths() {
+    var widths = [];
+    var maxWidth = void 0;
+    var fields = Array.from(document.getElementsByClassName('meta__field'));
+    fields.forEach(function (field) {
+      return widths.push(field.offsetWidth);
+    });
+    maxWidth = Math.max.apply(null, widths) + 'px';
+    fields.forEach(function (field) {
+      return field.style.width = maxWidth;
+    });
+  },
+  render: function render(entry) {
+    this.entry = entry;
+    this.setDates(entry);
+    this.setTitle(entry);
+    this.setLink(entry);
+    this.setSyncMode(entry);
+    this.adjustWidths();
+  },
+  optimizeDateString: function optimizeDateString(date) {
+    return date.replace(/^(\d{1})(\D{1})/, function (m, p, q) {
+      return '0' + p + q;
+    }).replace(/(\D{1})(\d{1}\D{1})/g, function (m, p, q) {
+      return p + '0' + q;
+    });
+  }
+});
+
+/***/ }),
+
+/***/ 67:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(0);
+
+new _utils._DOMMODULE({
+  el: document.getElementById('marks'),
+  events: {
+    ENV: {
+      'entry': 'render'
     },
     DOM: {
       click: {
-        '.switch-toggle': 'onAutosaveSwitch',
-        '.page-action': 'pageAction'
+        '.col-toggle': 'toggleNotes'
       }
     }
   },
+  entry: null,
+  tmpl: null,
+  tbody: null,
+  marks: [],
+  notes: false,
+  notesShown: true,
 
-  autoinit: function autoinit() {
-    this.update();
-  },
-  update: function update() {
-    this.updateAutosave();
-  },
-  updateAutosave: function updateAutosave() {
+  render: function render(entry) {
     var _this = this;
 
-    _store2.default.get('autosave').then(function (autosave) {
-      return _this.toggleAutosave(autosave);
+    this.entry = entry;
+    var tmpl = this.tmpl = document.getElementById('mark-template');
+    var tbody = this.tbody = document.getElementById('marks-content');
+    var marks = this.marks = this.sortById(entry.marks);
+
+    this.renderCount(entry);
+    marks.forEach(function (mark) {
+      return _this.renderMark(mark);
+    });
+    tbody.removeChild(tmpl);
+    if (!this.notes) this.el.classList.add('no-notes');
+  },
+  renderCount: function renderCount(entry) {
+    document.getElementById('marks-count').innerText = '(' + entry.marks.length + ')';
+  },
+  renderMark: function renderMark(mark) {
+    var markEl = this.tmpl.cloneNode(true);
+    var td_text = markEl.getElementsByClassName('mark-text')[0];
+    var td_note = markEl.getElementsByClassName('mark-note')[0];
+    var text = document.createElement('p');
+    td_text.innerText = mark.text;
+    td_text.setAttribute('style', mark.style);
+    if (mark.note) {
+      this.notes = true;
+      td_note.innerText = mark.note;
+    }
+    markEl.id = 'mark-' + mark.id;
+    this.tbody.appendChild(markEl);
+  },
+  sortById: function sortById(marks) {
+    return marks.sort(function (mark1, mark2) {
+      var id1 = mark1.id;
+      var id2 = mark2.id;
+      if (id1 === id2) return 0;
+      return id1 < id2 ? -1 : 1;
     });
   },
-  onAutosaveSwitch: function onAutosaveSwitch(e, el) {
-    el = el.id === 'autosave-switch' ? el : el.parentNode;
-    var autosave = !el.classList.contains('active');
-    this.toggleAutosave(autosave);
-    this.emit('sidebar:toggle-autosave', autosave);
-  },
-  toggleAutosave: function toggleAutosave(on) {
-    var meth = on ? 'add' : 'remove';
-    document.getElementById('autosave-switch').classList[meth]('active');
-    document.getElementById('page-action-box--save').classList[meth]('none');
-  },
-  activateSave: function activateSave() {
-    this.activate('save', true);
-  },
-  deactivateSave: function deactivateSave() {
-    this.activate('save', false);
-  },
-  activateBookmark: function activateBookmark() {
-    this.activate('scroll', true);
-  },
-  deactivateBookmark: function deactivateBookmark() {
-    this.activate('scroll', false);
-  },
-  activateNotes: function activateNotes() {
-    this.activate('notes', true);
-  },
-  deactivateNotes: function deactivateNotes() {
-    this.activate('notes', false);
-  },
-  activate: function activate(type, on) {
-    var btn = document.getElementById('page-action--' + type);
-    if (on) {
-      btn.removeAttribute('disabled');
-      btn.parentNode.classList.remove('disabled');
+  toggleNotes: function toggleNotes() {
+    if (this.notesShown) {
+      this.el.classList.add('hide-notes');
     } else {
-      btn.setAttribute('disabled', true);
-      btn.parentNode.classList.add('disabled');
+      this.el.classList.remove('hide-notes');
     }
-  },
-  pageAction: function pageAction(e, el) {
-    var _this2 = this;
-
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this2.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id });
-    });
-  }
-});
-
-/***/ }),
-
-/***/ 62:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _utils = __webpack_require__(0);
-
-new _utils._DOMMODULE({
-  el: document.getElementById('links'),
-  events: {
-    DOM: {
-      click: {
-        '.link': 'link'
-      }
-    }
-  },
-
-  link: function link(e, el) {
-    this.emit('open:addon-page', el.getAttribute('data-id'));
+    this.notesShown = !this.notesShown;
   }
 });
 

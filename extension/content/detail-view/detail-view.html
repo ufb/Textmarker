@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta content="utf-8" http-equiv="encoding">
+  <title>Detail-Ansicht</title>
+	<link rel="stylesheet" type="text/css" href="detail-view.css">
+</head>
+<body>
+  <header>
+    <h1 id="header"></h1>
+    <p>Tag: <span id="tag"></span></p>
+  </header>
+  <div id="main">
+    <section id="meta">
+      <h2>Metadaten</h2>
+      <p><span class="meta__field">Created:</span><span id="created"></span></p>
+      <p><span class="meta__field">Last modified:</span><span id="last_modified"></span></p>
+      <p><span class="meta__field">Title of page:</span><span id="title"></span></p>
+      <p><span class="meta__field">URL:</span><a id="url" target="_blank"></a></p>
+      <p><span class="meta__field">Synced:</span><span id="synced"></span></p>
+    </section>
+    <section id="marks">
+      <h2>Markierungen <span id="marks-count"></span></h2>
+      <table>
+        <colgroup><col></col><col></col></colgroup>
+        <thead>
+          <tr><th>Text</th><th>Notiz<span class="col-toggle"></span></th></tr>
+        </thead>
+        <tbody id="marks-content">
+          <tr id="mark-template" class="mark"><td><span class="mark-text"></span></td><td><span class="mark-note"></span></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="detail-view.wp.js"></script>
+</body>
+</html>

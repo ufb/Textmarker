@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -75,25 +75,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
-var _copy = __webpack_require__(4);
+var _copy = __webpack_require__(2);
 
-var _getActiveTab = __webpack_require__(11);
+var _getActiveTab = __webpack_require__(9);
 
-var _extend = __webpack_require__(5);
+var _extend = __webpack_require__(3);
 
 var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _dommodule = __webpack_require__(12);
+var _dommodule = __webpack_require__(10);
 
-var _port = __webpack_require__(7);
+var _port = __webpack_require__(5);
 
-var _l10n = __webpack_require__(13);
+var _l10n = __webpack_require__(11);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
-var _errorTracker = __webpack_require__(8);
+var _errorTracker = __webpack_require__(6);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -120,7 +120,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(6);
+var _mediator = __webpack_require__(4);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -162,9 +162,7 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 }(_mediator2.default);
 
 /***/ }),
-/* 2 */,
-/* 3 */,
-/* 4 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -195,7 +193,7 @@ var _COPY = function _COPY(original, clone) {
 exports._COPY = _COPY;
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -212,7 +210,7 @@ exports.default = function (obj1, obj2) {
 };
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -295,7 +293,7 @@ var _class = function () {
 exports.default = _class;
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -494,7 +492,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -526,124 +524,9 @@ var _ERRORTRACKER = new _module._MODULE({
 exports.default = _ERRORTRACKER;
 
 /***/ }),
+/* 7 */,
+/* 8 */,
 /* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _utils = __webpack_require__(0);
-
-exports.default = new _utils._MODULE({
-  events: {
-    ENV: {
-      'toggled:sync': 'setAreas'
-    }
-  },
-  initialized: false,
-  area_settings: 'sync',
-  area_history: 'sync',
-
-  setAreas: function setAreas() {
-    var _this = this;
-
-    return browser.storage.sync.get().then(function (storage) {
-      if (storage && storage.sync) {
-        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
-        _this.area_history = storage.sync.history ? 'sync' : 'local';
-      }
-    });
-  },
-  get: function get() {
-    var _this2 = this;
-
-    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
-
-    var meth = this['_get_' + field];
-    if (!meth) throw 'field ' + field + ' doesn\'t exist';
-
-    if (!this.initialized) {
-      this.initialized = true;
-      return this.setAreas().then(function () {
-        return _this2['_get_' + field]();
-      });
-    }
-    return this['_get_' + field]();
-  },
-  _get_storage: function _get_storage() {
-    var _this3 = this;
-
-    return browser.storage.local.get().then(function (localStorage) {
-      return browser.storage.sync.get().then(function (syncedStorage) {
-        ['version', 'logs'].forEach(function (field) {
-          localStorage[field] = localStorage[field] || syncedStorage[field];
-        });
-        if (_this3.area_settings === 'sync') localStorage.settings = syncedStorage.settings;
-        return _this3._get_history().then(function (history) {
-          localStorage.history = history;
-          return localStorage;
-        });
-      });
-    });
-  },
-  _get_local_storage: function _get_local_storage() {
-    return browser.storage.local.get();
-  },
-  _get_synced_storage: function _get_synced_storage() {
-    return browser.storage.sync.get();
-  },
-  _get_history: function _get_history() {
-    return browser.storage.sync.get().then(function (syncedStorage) {
-      var syncedHistory = syncedStorage.history;
-
-      return browser.storage.local.get().then(function (localStorage) {
-        var localHistory = localStorage.history;
-        if (!syncedHistory) return localHistory;
-        if (!localHistory) return syncedHistory;
-
-        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
-        for (var e in localHistory.entries) {
-          syncedHistory.entries[e] = localHistory.entries[e];
-        }return syncedHistory;
-      });
-    });
-  },
-  _get_settings: function _get_settings() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings;
-    });
-  },
-  _get_logs: function _get_logs() {
-    return browser.storage.local.get().then(function (localStorage) {
-      if (!localStorage || !localStorage.logs) return [];
-      return localStorage.logs;
-    });
-  },
-  _get_download_option: function _get_download_option() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return 'text';
-      return storage.settings.history.download;
-    });
-  },
-  _get_markers: function _get_markers() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings.markers;
-    });
-  },
-  _get_shortcuts: function _get_shortcuts() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings.shortcuts;
-    });
-  }
-});
-
-/***/ }),
-/* 10 */,
-/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -662,7 +545,7 @@ var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
 exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -796,7 +679,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 13 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -905,6 +788,123 @@ function translateDocument() {
     }
   }
 }
+
+/***/ }),
+/* 12 */,
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(0);
+
+exports.default = new _utils._MODULE({
+  events: {
+    ENV: {
+      'toggled:sync': 'setAreas'
+    }
+  },
+  initialized: false,
+  area_settings: 'sync',
+  area_history: 'sync',
+
+  setAreas: function setAreas() {
+    var _this = this;
+
+    return browser.storage.sync.get().then(function (storage) {
+      if (storage && storage.sync) {
+        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
+        _this.area_history = storage.sync.history ? 'sync' : 'local';
+      }
+    });
+  },
+  get: function get() {
+    var _this2 = this;
+
+    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
+
+    var meth = this['_get_' + field];
+    if (!meth) throw 'field ' + field + ' doesn\'t exist';
+
+    if (!this.initialized) {
+      this.initialized = true;
+      return this.setAreas().then(function () {
+        return _this2['_get_' + field]();
+      });
+    }
+    return this['_get_' + field]();
+  },
+  _get_storage: function _get_storage() {
+    var _this3 = this;
+
+    return browser.storage.local.get().then(function (localStorage) {
+      return browser.storage.sync.get().then(function (syncedStorage) {
+        ['version', 'logs'].forEach(function (field) {
+          localStorage[field] = localStorage[field] || syncedStorage[field];
+        });
+        if (_this3.area_settings === 'sync') localStorage.settings = syncedStorage.settings;
+        return _this3._get_history().then(function (history) {
+          localStorage.history = history;
+          return localStorage;
+        });
+      });
+    });
+  },
+  _get_local_storage: function _get_local_storage() {
+    return browser.storage.local.get();
+  },
+  _get_synced_storage: function _get_synced_storage() {
+    return browser.storage.sync.get();
+  },
+  _get_history: function _get_history() {
+    return browser.storage.sync.get().then(function (syncedStorage) {
+      var syncedHistory = syncedStorage.history;
+
+      return browser.storage.local.get().then(function (localStorage) {
+        var localHistory = localStorage.history;
+        if (!syncedHistory) return localHistory;
+        if (!localHistory) return syncedHistory;
+
+        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
+        for (var e in localHistory.entries) {
+          syncedHistory.entries[e] = localHistory.entries[e];
+        }return syncedHistory;
+      });
+    });
+  },
+  _get_settings: function _get_settings() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings;
+    });
+  },
+  _get_logs: function _get_logs() {
+    return browser.storage.local.get().then(function (localStorage) {
+      if (!localStorage || !localStorage.logs) return [];
+      return localStorage.logs;
+    });
+  },
+  _get_download_option: function _get_download_option() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return 'text';
+      return storage.settings.history.download;
+    });
+  },
+  _get_markers: function _get_markers() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings.markers;
+    });
+  },
+  _get_shortcuts: function _get_shortcuts() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings.shortcuts;
+    });
+  }
+});
 
 /***/ }),
 /* 14 */
@@ -1075,7 +1075,8 @@ var _utils = __webpack_require__(0);
 /* 29 */,
 /* 30 */,
 /* 31 */,
-/* 32 */
+/* 32 */,
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1093,11 +1094,11 @@ var _toggler = __webpack_require__(15);
 
 var _toggler2 = _interopRequireDefault(_toggler);
 
-__webpack_require__(33);
-
-__webpack_require__(9);
-
 __webpack_require__(34);
+
+__webpack_require__(13);
+
+__webpack_require__(35);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1124,7 +1125,7 @@ while (t--) {
 } /* end: configure toggle elements */
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1140,48 +1141,48 @@ exports.default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs']
+    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs']
   }
 });
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 
 var _utils = __webpack_require__(0);
 
-var _history = __webpack_require__(35);
+var _history = __webpack_require__(36);
 
 var _history2 = _interopRequireDefault(_history);
 
-var _settings = __webpack_require__(37);
+var _settings = __webpack_require__(38);
 
 var _settings2 = _interopRequireDefault(_settings);
 
-var _logs = __webpack_require__(39);
+var _logs = __webpack_require__(40);
 
 var _logs2 = _interopRequireDefault(_logs);
 
-var _syncing = __webpack_require__(40);
+var _syncing = __webpack_require__(41);
 
 var _syncing2 = _interopRequireDefault(_syncing);
 
-var _import = __webpack_require__(41);
+var _import = __webpack_require__(42);
 
 var _import2 = _interopRequireDefault(_import);
 
-var _contact = __webpack_require__(42);
+var _contact = __webpack_require__(43);
 
 var _contact2 = _interopRequireDefault(_contact);
 
-var _historyPagination = __webpack_require__(43);
+var _historyPagination = __webpack_require__(44);
 
 var _historyPagination2 = _interopRequireDefault(_historyPagination);
 
@@ -1232,7 +1233,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1259,12 +1260,14 @@ exports.default = function () {
           '.action-button': 'delegateButtonAction',
           '.switch': 'toggleSwitch',
           '.name': 'open',
+          '.view': 'view',
           '#search-toggle': 'toggleSearch'
         },
         change: {
           '.checkmark-all': 'checkmarkAll',
           '#sort-entries': 'sort',
-          '#entries-per-page': 'changeCountPerPage'
+          '#entries-per-page': 'changeCountPerPage',
+          '#set-view': 'setView'
         },
         keyup: {
           '#search-entries': 'search'
@@ -1285,7 +1288,7 @@ exports.default = function () {
     searched: [],
 
     init: function init() {
-      if (!this.initialized) this.render();else this.setSortSelectWidth();
+      if (!this.initialized) this.render();else this.adjustSelectWidths();
       this.initialized = true;
     }
   }, _defineProperty(_ref, 'delete', function _delete(names) {
@@ -1346,6 +1349,8 @@ exports.default = function () {
     });
   }), _defineProperty(_ref, 'open', function open(e, el) {
     this.emit('open:entries', el.getAttribute('data-url'));
+  }), _defineProperty(_ref, 'view', function view(e, el) {
+    this.emit('view:entry', el.getAttribute('data-name'));
   }), _defineProperty(_ref, 'processSelection', function processSelection() {
     var checked = document.querySelectorAll('.entry-cb:checked');
     if (!checked.length) return false;
@@ -1379,6 +1384,7 @@ exports.default = function () {
         infoButton = void 0,
         details = void 0,
         buttons = void 0,
+        view = void 0,
         b = void 0,
         j = void 0;
 
@@ -1397,12 +1403,14 @@ exports.default = function () {
         clone = template.cloneNode(true);
         container.appendChild(clone);
         clone.id = 'entry-' + j;
+        clone.classList.remove('none');
         clone.setAttribute('data-name', name);
         nameField = clone.getElementsByClassName('name')[0];
         input = clone.getElementsByTagName('input')[0];
         label = clone.getElementsByTagName('label')[0];
         details = clone.getElementsByClassName('details')[0];
         buttons = clone.getElementsByClassName('quick-action');
+        view = clone.getElementsByClassName('view')[0];
         b = buttons.length;
 
         while (b--) {
@@ -1413,6 +1421,7 @@ exports.default = function () {
         input.className = 'entry-cb';
         input.id = 'entry-cb-' + j;
         input.setAttribute('data-name', name);
+        view.setAttribute('data-name', name);
         label.setAttribute('for', 'entry-cb-' + j);
 
         clone.getElementsByClassName('created')[0].innerText = _this3.optimizeDateString(new Date(entry.first).toLocaleString());
@@ -1446,7 +1455,7 @@ exports.default = function () {
     sort.classList[meth_2]('none');
     count.classList[meth_3]('none');
 
-    this.setSortSelectWidth();
+    this.adjustSelectWidths();
 
     document.getElementById('entries-count').innerText = l;
 
@@ -1454,8 +1463,14 @@ exports.default = function () {
       var pp = _this4.perPage = settings.history.pp || 10;
       ppSelect.value = pp;
     });
-  }), _defineProperty(_ref, 'setSortSelectWidth', function setSortSelectWidth() {
-    document.getElementById('sort-entries').style.width = document.getElementById('action').clientWidth + 'px';
+  }), _defineProperty(_ref, 'adjustSelectWidths', function adjustSelectWidths() {
+    var width = document.getElementById('action').clientWidth + 27;
+    var expandedWidth = width + 27;
+    Array.from(document.getElementById('page-actions').getElementsByTagName('select')).forEach(function (select) {
+      var w = select.id === 'specification' || select.id === 'action' ? width : expandedWidth;
+      select.style.width = w + 'px';
+    });
+    document.getElementById('search-entries').style.width = width + 'px';
   }), _defineProperty(_ref, 'getText', function getText(names, spec) {
     var _this5 = this;
 
@@ -1566,11 +1581,13 @@ exports.default = function () {
     var term = el.value.toLowerCase();
     var countSelect = document.getElementById('count');
     var classMeth = term ? 'add' : 'remove';
+    var toggle = document.getElementById('search-toggle');
     this.setupSearch(term).renderEntries();
     countSelect.classList[classMeth]('none');
+    toggle.classList[classMeth]('active');
   }), _defineProperty(_ref, 'setupSearch', function setupSearch(term) {
     term = typeof term === 'string' ? term : this.searchTerm;
-    var history = document.getElementById('history');
+    var history = this.el;
     var searchCount = document.getElementById('search-count');
     this.searched = [];
     this.searchTerm = term;
@@ -1595,16 +1612,18 @@ exports.default = function () {
     searchCount.innerText = this.searched.length || '';
     return this;
   }), _defineProperty(_ref, 'toggleSearch', function toggleSearch(e, el) {
-    var search = document.getElementById('search-entries');
-    el.classList.toggle('active');
-    search.value = '';
-    if (this.searchTerm) this.search(null, { value: '' });
-    search.classList.toggle('none');
+    if (el.classList.contains('active')) {
+      document.getElementById('search-entries').value = '';
+      if (this.searchTerm) this.search(null, { value: '' });
+    }
   }), _defineProperty(_ref, 'changeCountPerPage', function changeCountPerPage(e, el) {
     var p = this.perPage = el.value * 1;
     this.page = 1;
     this.emit('changed:per-page-count', p);
     this.renderEntries();
+  }), _defineProperty(_ref, 'setView', function setView(e, el) {
+    var table = document.getElementById('entries');
+    if (el.value === 'list') table.classList.remove('detailed-list');else table.classList.add('detailed-list');
   }), _defineProperty(_ref, 'sort', function sort(e, el) {
     var sorted = this.sorted = el.value;
     this.emit('change:sort-setting', sorted);
@@ -1675,7 +1694,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -1683,7 +1702,7 @@ var _toggler = __webpack_require__(15);
 
 var _toggler2 = _interopRequireDefault(_toggler);
 
-var _historySort = __webpack_require__(36);
+var _historySort = __webpack_require__(37);
 
 var _historySort2 = _interopRequireDefault(_historySort);
 
@@ -1692,7 +1711,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1735,7 +1754,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2047,18 +2066,18 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _marker = __webpack_require__(38);
+var _marker = __webpack_require__(39);
 
 var _marker2 = _interopRequireDefault(_marker);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2070,7 +2089,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2295,7 +2314,7 @@ var _MARKER = function () {
 exports.default = _MARKER;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2387,7 +2406,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2398,7 +2417,7 @@ var _logKeys2 = _interopRequireDefault(_logKeys);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2439,14 +2458,14 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2546,14 +2565,14 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2621,14 +2640,14 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2761,7 +2780,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(9);
+var _store = __webpack_require__(13);
 
 var _store2 = _interopRequireDefault(_store);
 

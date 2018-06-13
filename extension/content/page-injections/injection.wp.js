@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 45);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -75,25 +75,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
 
-var _copy = __webpack_require__(4);
+var _copy = __webpack_require__(2);
 
-var _getActiveTab = __webpack_require__(11);
+var _getActiveTab = __webpack_require__(9);
 
-var _extend = __webpack_require__(5);
+var _extend = __webpack_require__(3);
 
 var _extend2 = _interopRequireDefault(_extend);
 
 var _module = __webpack_require__(1);
 
-var _dommodule = __webpack_require__(12);
+var _dommodule = __webpack_require__(10);
 
-var _port = __webpack_require__(7);
+var _port = __webpack_require__(5);
 
-var _l10n = __webpack_require__(13);
+var _l10n = __webpack_require__(11);
 
 var _l10n2 = _interopRequireDefault(_l10n);
 
-var _errorTracker = __webpack_require__(8);
+var _errorTracker = __webpack_require__(6);
 
 var _errorTracker2 = _interopRequireDefault(_errorTracker);
 
@@ -120,7 +120,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports._MODULE = undefined;
 
-var _mediator = __webpack_require__(6);
+var _mediator = __webpack_require__(4);
 
 var _mediator2 = _interopRequireDefault(_mediator);
 
@@ -172,139 +172,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _utils = __webpack_require__(0);
-
-exports.default = new _utils._MODULE({
-  events: {
-    ENV: {
-      'toggled:sync': 'setAreas'
-    }
-  },
-  initialized: false,
-  area_settings: 'sync',
-  area_history: 'sync',
-  area_entry: 'sync',
-
-  pdf: false,
-  iframe: false,
-  name: undefined,
-  isNew: true,
-  entry: null,
-  tmid: '',
-
-  setAreas: function setAreas() {
-    var _this = this;
-
-    return browser.storage.sync.get().then(function (storage) {
-      if (storage && storage.sync) {
-        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
-        _this.area_history = storage.sync.history ? 'sync' : 'local';
-      }
-    });
-  },
-  get: function get() {
-    var _this2 = this;
-
-    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
-
-    var meth = this['_get_' + field];
-    if (!meth) throw 'field ' + field + ' doesn\'t exist';
-
-    if (!this.initialized) {
-      this.initialized = true;
-      return this.setAreas().then(function () {
-        return _this2['_get_' + field]();
-      });
-    }
-    return this['_get_' + field]();
-  },
-  _get_history: function _get_history() {
-    return browser.storage.sync.get().then(function (syncedStorage) {
-      var syncedHistory = syncedStorage.history;
-
-      return browser.storage.local.get().then(function (localStorage) {
-        var localHistory = localStorage.history;
-        if (!syncedHistory) return localHistory;
-        if (!localHistory) return syncedHistory;
-
-        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
-        for (var e in localHistory.entries) {
-          syncedHistory.entries[e] = localHistory.entries[e];
-        }return syncedHistory;
-      });
-    });
-  },
-  _get_settings: function _get_settings() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings;
-    });
-  },
-  _get_bmicon: function _get_bmicon() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return true;
-      return storage.settings.misc.bmicon;
-    });
-  },
-  _get_noteicon: function _get_noteicon() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return true;
-      return storage.settings.misc.noteicon;
-    });
-  },
-  _get_noteonclick: function _get_noteonclick() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return true;
-      return storage.settings.misc.noteonclick;
-    });
-  },
-  _get_tmuipos: function _get_tmuipos() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return true;
-      return storage.settings.misc.tmuipos;
-    });
-  },
-  _get_autosave: function _get_autosave() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return false;
-      return storage.settings.history.autosave;
-    });
-  },
-  _get_markers: function _get_markers() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings.markers;
-    });
-  },
-  _get_shortcuts: function _get_shortcuts() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.settings.shortcuts;
-    });
-  },
-  _get_mode: function _get_mode() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings || storage.settings.addon.active) return true;
-      return false;
-    });
-  },
-  _get_naming: function _get_naming() {
-    return browser.storage[this.area_settings].get().then(function (storage) {
-      if (!storage || !storage.settings) return 'custom';
-      return storage.settings.history.naming;
-    });
-  }
-});
-
-/***/ }),
-/* 3 */,
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _COPY = function _COPY(original, clone) {
@@ -326,7 +193,7 @@ var _COPY = function _COPY(original, clone) {
 exports._COPY = _COPY;
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -343,7 +210,7 @@ exports.default = function (obj1, obj2) {
 };
 
 /***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -426,7 +293,7 @@ var _class = function () {
 exports.default = _class;
 
 /***/ }),
-/* 7 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -625,7 +492,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 8 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -657,9 +524,140 @@ var _ERRORTRACKER = new _module._MODULE({
 exports.default = _ERRORTRACKER;
 
 /***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */
+/* 7 */,
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _utils = __webpack_require__(0);
+
+exports.default = new _utils._MODULE({
+  events: {
+    ENV: {
+      'toggled:sync': 'setAreas'
+    }
+  },
+  initialized: false,
+  area_settings: 'sync',
+  area_history: 'sync',
+  area_entry: 'sync',
+
+  pdf: false,
+  iframe: false,
+  name: undefined,
+  isNew: true,
+  entry: null,
+  tmid: '',
+
+  setAreas: function setAreas() {
+    var _this = this;
+
+    return browser.storage.sync.get().then(function (storage) {
+      if (storage && storage.sync) {
+        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
+        _this.area_history = storage.sync.history ? 'sync' : 'local';
+      }
+    });
+  },
+  get: function get() {
+    var _this2 = this;
+
+    var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
+
+    var meth = this['_get_' + field];
+    if (!meth) throw 'field ' + field + ' doesn\'t exist';
+
+    if (!this.initialized) {
+      this.initialized = true;
+      return this.setAreas().then(function () {
+        return _this2['_get_' + field]();
+      });
+    }
+    return this['_get_' + field]();
+  },
+  _get_history: function _get_history() {
+    return browser.storage.sync.get().then(function (syncedStorage) {
+      var syncedHistory = syncedStorage.history;
+
+      return browser.storage.local.get().then(function (localStorage) {
+        var localHistory = localStorage.history;
+        if (!syncedHistory) return localHistory;
+        if (!localHistory) return syncedHistory;
+
+        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
+        for (var e in localHistory.entries) {
+          syncedHistory.entries[e] = localHistory.entries[e];
+        }return syncedHistory;
+      });
+    });
+  },
+  _get_settings: function _get_settings() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings;
+    });
+  },
+  _get_bmicon: function _get_bmicon() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.bmicon;
+    });
+  },
+  _get_noteicon: function _get_noteicon() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.noteicon;
+    });
+  },
+  _get_noteonclick: function _get_noteonclick() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.noteonclick;
+    });
+  },
+  _get_tmuipos: function _get_tmuipos() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.tmuipos;
+    });
+  },
+  _get_autosave: function _get_autosave() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.history.autosave;
+    });
+  },
+  _get_markers: function _get_markers() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings.markers;
+    });
+  },
+  _get_shortcuts: function _get_shortcuts() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.settings.shortcuts;
+    });
+  },
+  _get_mode: function _get_mode() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings || storage.settings.addon.active) return true;
+      return false;
+    });
+  },
+  _get_naming: function _get_naming() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return 'custom';
+      return storage.settings.history.naming;
+    });
+  }
+});
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -678,7 +676,7 @@ var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
 exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -812,7 +810,7 @@ var _DOMMODULE = exports._DOMMODULE = function (_MODULE2) {
 }(_module._MODULE);
 
 /***/ }),
-/* 13 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -923,6 +921,8 @@ function translateDocument() {
 }
 
 /***/ }),
+/* 12 */,
+/* 13 */,
 /* 14 */,
 /* 15 */,
 /* 16 */,
@@ -939,7 +939,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -1256,7 +1256,8 @@ exports.default = _SELECTION;
 /* 41 */,
 /* 42 */,
 /* 43 */,
-/* 44 */
+/* 44 */,
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1266,16 +1267,16 @@ var _utils = __webpack_require__(0);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-__webpack_require__(45);
-
-__webpack_require__(2);
-
 __webpack_require__(46);
+
+__webpack_require__(8);
+
+__webpack_require__(47);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1296,7 +1297,7 @@ exports.default = new _utils._PORT({
 });
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1304,31 +1305,31 @@ exports.default = new _utils._PORT({
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _page = __webpack_require__(47);
+var _page = __webpack_require__(48);
 
 var _page2 = _interopRequireDefault(_page);
 
-var _contextmenu = __webpack_require__(48);
+var _contextmenu = __webpack_require__(49);
 
 var _contextmenu2 = _interopRequireDefault(_contextmenu);
 
-var _marker = __webpack_require__(49);
+var _marker = __webpack_require__(50);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _restorer = __webpack_require__(52);
+var _restorer = __webpack_require__(53);
 
 var _restorer2 = _interopRequireDefault(_restorer);
 
-var _notes = __webpack_require__(53);
+var _notes = __webpack_require__(54);
 
 var _notes2 = _interopRequireDefault(_notes);
 
-var _tmui = __webpack_require__(55);
+var _tmui = __webpack_require__(56);
 
 var _tmui2 = _interopRequireDefault(_tmui);
 
@@ -1368,7 +1369,7 @@ new _utils._MODULE({
 });
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1551,14 +1552,14 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1603,14 +1604,14 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2019,15 +2020,15 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _markItem = __webpack_require__(50);
+var _markItem = __webpack_require__(51);
 
 var _markItem2 = _interopRequireDefault(_markItem);
 
-var _bookmark = __webpack_require__(51);
+var _bookmark = __webpack_require__(52);
 
 var _bookmark2 = _interopRequireDefault(_bookmark);
 
@@ -2038,7 +2039,7 @@ var _selection2 = _interopRequireDefault(_selection);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2050,7 +2051,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2366,7 +2367,7 @@ var _MARK = function () {
 exports.default = _MARK;
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2378,7 +2379,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -2441,7 +2442,7 @@ var _BOOKMARK = function () {
 exports.default = _BOOKMARK;
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3116,7 +3117,7 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -3220,7 +3221,7 @@ var Restorer = function (_MODULE2) {
 }(_utils._MODULE);
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3310,18 +3311,18 @@ exports.default = function () {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _note = __webpack_require__(54);
+var _note = __webpack_require__(55);
 
 var _note2 = _interopRequireDefault(_note);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3511,14 +3512,14 @@ exports.default = function (mark) {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3644,7 +3645,7 @@ exports.default = function (mark) {
 
 var _utils = __webpack_require__(0);
 
-var _store = __webpack_require__(2);
+var _store = __webpack_require__(8);
 
 var _store2 = _interopRequireDefault(_store);
 

@@ -723,7 +723,7 @@
         <div class="block-spacing none" id="no-entries">
           <p data-l10n-id="t5122"></p>
         </div>
-        <div class="page-actions clearfix">
+        <section class="clearfix">
           <div id="count" class="float-left">
             <select id="entries-per-page" class="blue border-top">
               <option value="10">10</option>
@@ -733,58 +733,65 @@
             </select>
             <span data-l10n-id="t5119" class="light-grey"></span>
             <span id="entries-count" class="blue"></span>
-              <!-- &ndash; <span id="entries-quota" class="blue"> </span> <span data-l10n-id="t512"></span>-->
           </div>
-          <div id="search" class="none">
-            <button type="button" id="search-toggle" class="small-button pull-right">&#10005;</button>
-            <input id="search-entries" class="none pull-right" data-l10n-attr data-l10n-placeholder="attr_1" type="search">
-            <span id="search-count" class="blue pull-right"></span>
+          <div id="page-actions" class="float-right clearfix">
+            <div id="sort" class="clear">
+              <select id="sort-entries" class="blue border-top">
+                <option data-l10n-id="t5118" selected hidden></option>
+                <option value="date-last" data-l10n-id="t5114"></option>
+                <option value="date-created" data-l10n-id="t5115"></option>
+                <option value="name-az" data-l10n-id="t5116"></option>
+                <option value="name-za" data-l10n-id="t5117"></option>
+              </select>
+            </div>
+            <div id="view" class="clear">
+              <select id="set-view" class="blue border-top">
+                <option selected hidden>Ansicht</option>
+                <option value="list">Liste</option>
+                <option value="detail-list">Detail-Liste</option>
+              </select>
+            </div>
+            <div id="history-actions" class="pull-right clear">
+              <select id="action" class="action blue border-top">
+                <option data-l10n-id="t5121" selected hidden></option>
+                <option class="toggle-button" data-target="specification" data-toggle="remove" value="export" data-l10n-id="t5113"></option>
+                <option class="toggle-button" data-target="specification" data-toggle="add" value="download" data-l10n-id="t513"></option>
+                <option class="toggle-button" data-target="specification" data-toggle="remove" value="delete" data-l10n-id="t515"></option>
+                <option class="toggle-button" data-target="specification" data-toggle="remove" value="clean" data-l10n-id="t516"></option>
+                <option class="toggle-button" data-target="specification" data-toggle="remove" value="visit" data-l10n-id="t517"></option>
+              </select>
+              <select id="specification" class="specification blue border-top none">
+                <option value="text" data-l10n-id="t439"></option>
+                <option value="text +meta" selected data-l10n-id="t438"></option>
+                <option value="text +notes" data-l10n-id="t4317"></option>
+                <option value="text +lost" data-l10n-id="x423"></option>
+                <option value="text m" data-l10n-id="t4310"></option>
+                <option value="text 2" data-l10n-id="t4311"></option>
+                <option value="text 3" data-l10n-id="t4312"></option>
+                <option value="text c" data-l10n-id="t4313"></option>
+                <option value="text lost" data-l10n-id="x424"></option>
+                <option value="title" data-l10n-id="t4314"></option>
+                <option value="url" data-l10n-id="t4315"></option>
+              </select>
+              <button type="button" class="action-button small-button" data-action="processSelection"></button>
+            </div>
+            <div id="search" class="none pull-right clear">
+              <span id="search-count" class="blue"></span>
+              <button type="button" id="search-toggle" class="small-button pull-right">&#10005;</button>
+              <input id="search-entries" class="pull-right border-top" data-l10n-attr data-l10n-placeholder="attr_1" type="search">
+            </div>
           </div>
-          <div id="sort" class="pull-right">
-            <select id="sort-entries" class="blue border-top">
-              <option data-l10n-id="t5118" selected hidden></option>
-              <option value="date-last" data-l10n-id="t5114"></option>
-              <option value="date-created" data-l10n-id="t5115"></option>
-              <option value="name-az" data-l10n-id="t5116"></option>
-              <option value="name-za" data-l10n-id="t5117"></option>
-            </select>
-          </div>
-        </div>
-        <section id="history-actions" class="history-actions clearfix none">
-          <div class="pull-right">
-            <select id="action" class="action blue border-top">
-              <option data-l10n-id="t5121" selected hidden></option>
-              <option class="toggle-button" data-target="specification" data-toggle="remove" value="export" data-l10n-id="t5113"></option>
-              <option class="toggle-button" data-target="specification" data-toggle="add" value="download" data-l10n-id="t513"></option>
-              <option class="toggle-button" data-target="specification" data-toggle="remove" value="delete" data-l10n-id="t515"></option>
-              <option class="toggle-button" data-target="specification" data-toggle="remove" value="clean" data-l10n-id="t516"></option>
-              <option class="toggle-button" data-target="specification" data-toggle="remove" value="visit" data-l10n-id="t517"></option>
-            </select>
-            <select id="specification" class="specification blue border-top">
-              <option value="text" data-l10n-id="t439"></option>
-              <option value="text +meta" selected data-l10n-id="t438"></option>
-              <option value="text +notes" data-l10n-id="t4317"></option>
-              <option value="text +lost" data-l10n-id="x423"></option>
-              <option value="text m" data-l10n-id="t4310"></option>
-              <option value="text 2" data-l10n-id="t4311"></option>
-              <option value="text 3" data-l10n-id="t4312"></option>
-              <option value="text c" data-l10n-id="t4313"></option>
-              <option value="text lost" data-l10n-id="x424"></option>
-              <option value="title" data-l10n-id="t4314"></option>
-              <option value="url" data-l10n-id="t4315"></option>
-            </select>
-            <button type="button" class="action-button small-button" data-action="processSelection"></button>
-          </div>
-          <div class="pull-left">
+          <div class="clear">
             <input class="checkmark-all" id="checkmark-all" type="checkbox">
             <label for="checkmark-all" class="fake-cb nowrap blue"><span>&#10003;</span> <sup data-l10n-id="t518"></sup></label>
           </div>
         </section>
         <section id="entries">
-          <div id="entry-template" class="entry">
+          <div id="entry-template" class="entry none">
             <input type="checkbox">
             <label class="fake-cb"><span>&#10003;</span></label>
             <span class="name"></span>
+            <span class="view"></span>
             <div class="quick-buttons">
               <div class="switch sync-switch clearfix quick-action" data-action="sync" data-l10n-attr data-l10n-title="quickbutton_sync">
                 <div class="switch switch-indicator quick-action" data-action="sync"></div>
