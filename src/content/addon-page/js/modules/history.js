@@ -18,12 +18,14 @@ export default function() {
           '.action-button': 'delegateButtonAction',
           '.switch': 'toggleSwitch',
           '.name': 'open',
+          '.view': 'view',
           '#search-toggle': 'toggleSearch'
         },
         change: {
           '.checkmark-all': 'checkmarkAll',
           '#sort-entries': 'sort',
-          '#entries-per-page': 'changeCountPerPage'
+          '#entries-per-page': 'changeCountPerPage',
+          '#set-view': 'setView'
         },
         keyup: {
           '#search-entries': 'search'
@@ -45,7 +47,7 @@ export default function() {
 
     init() {
       if (!this.initialized) this.render();
-      else this.setSortSelectWidth();
+      else this.adjustSelectWidths();
       this.initialized = true;
     },
 
@@ -112,6 +114,9 @@ export default function() {
     open(e, el) {
       this.emit('open:entries', el.getAttribute('data-url'));
     },
+    view(e, el) {
+      this.emit('view:entry', el.getAttribute('data-name'));
+    },
     processSelection() {
       let checked = document.querySelectorAll('.entry-cb:checked');
       if (!checked.length) return false;
@@ -135,7 +140,7 @@ export default function() {
           names = searched ? this.searched : this.names,
           l = searched ? names.length : this.page * this.perPage,
           i = searched ? 0 : l - this.perPage,
-          clone, entry, name, nameField, input, label, infoButton, details, buttons, b, j;
+          clone, entry, name, nameField, input, label, infoButton, details, buttons, view, b, j;
 
       l = Math.min(l, names.length);
 
@@ -152,12 +157,14 @@ export default function() {
           clone = template.cloneNode(true);
           container.appendChild(clone);
           clone.id = 'entry-' + j;
+          clone.classList.remove('none');
           clone.setAttribute('data-name', name);
           nameField = clone.getElementsByClassName('name')[0];
           input = clone.getElementsByTagName('input')[0];
           label = clone.getElementsByTagName('label')[0];
           details = clone.getElementsByClassName('details')[0];
           buttons = clone.getElementsByClassName('quick-action');
+          view = clone.getElementsByClassName('view')[0];
           b = buttons.length;
 
           while(b--) {
@@ -168,6 +175,7 @@ export default function() {
           input.className = 'entry-cb';
           input.id = 'entry-cb-' + j;
           input.setAttribute('data-name', name);
+          view.setAttribute('data-name', name);
           label.setAttribute('for', 'entry-cb-' + j);
 
           clone.getElementsByClassName('created')[0].innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
@@ -200,7 +208,7 @@ export default function() {
       sort.classList[meth_2]('none');
       count.classList[meth_3]('none');
 
-      this.setSortSelectWidth();
+      this.adjustSelectWidths();
 
       document.getElementById('entries-count').innerText = l;
 
@@ -209,8 +217,14 @@ export default function() {
         ppSelect.value = pp;
       });
     },
-    setSortSelectWidth() {
-      document.getElementById('sort-entries').style.width = document.getElementById('action').clientWidth + 'px';
+    adjustSelectWidths() {
+      const width = document.getElementById('action').clientWidth + 27;
+      const expandedWidth = width + 27;
+      Array.from(document.getElementById('page-actions').getElementsByTagName('select')).forEach(select => {
+        const w = select.id === 'specification' || select.id === 'action' ? width : expandedWidth;
+        select.style.width = w + 'px';
+      });
+      document.getElementById('search-entries').style.width = width + 'px';
     },
     getText(names, spec) {
       let all_marks_plus_meta = spec === '+meta',
@@ -323,12 +337,14 @@ export default function() {
       const term = el.value.toLowerCase();
       const countSelect = document.getElementById('count');
       const classMeth = term ? 'add' : 'remove';
+      const toggle = document.getElementById('search-toggle');
       this.setupSearch(term).renderEntries();
       countSelect.classList[classMeth]('none');
+      toggle.classList[classMeth]('active');
     },
     setupSearch(term) {
       term = typeof term === 'string' ? term : this.searchTerm;
-      const history = document.getElementById('history');
+      const history = this.el;
       const searchCount = document.getElementById('search-count');
       this.searched = [];
       this.searchTerm = term;
@@ -352,17 +368,21 @@ export default function() {
       return this;
     },
     toggleSearch(e, el) {
-      const search = document.getElementById('search-entries');
-      el.classList.toggle('active');
-      search.value = '';
-      if (this.searchTerm) this.search(null, { value: '' });
-      search.classList.toggle('none');
+      if (el.classList.contains('active')) {
+        document.getElementById('search-entries').value = '';
+        if (this.searchTerm) this.search(null, { value: '' });
+      }
     },
     changeCountPerPage(e, el) {
       let p = this.perPage = el.value * 1;
       this.page = 1;
       this.emit('changed:per-page-count', p);
       this.renderEntries();
+    },
+    setView(e, el) {
+      const table = document.getElementById('entries');
+      if (el.value === 'list') table.classList.remove('detailed-list');
+      else table.classList.add('detailed-list');
     },
     sort(e, el) {
       let sorted = this.sorted = el.value;

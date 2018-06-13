@@ -15,7 +15,8 @@ gulp.task('build', () => {
       'src/content/sidebar/sidebar.js',
       'src/content/options-ui/options.js',
       'src/content/addon-page/addon-page.js',
-      'src/content/page-injections/injection.js'
+      'src/content/page-injections/injection.js',
+      'src/content/detail-view/detail-view.js'
 
     ]).pipe(named())
       .pipe(webpack(webpack_config))

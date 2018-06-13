@@ -150,15 +150,10 @@ input[type="search"] {
   float:right;
   border: 1px solid #c8c8c8;
   color: inherit;
-  text-align: center;
-  padding: 0;
+  text-align: left;
+  padding: 0 0 0 5px;
   height: 22px;
-  width: 131px;
   margin-left: 5px;
-  transition: width 0.5s;
-}
-input[type="search"]:focus {
-  width: 220px;
 }
 input[type="color"] {
   padding: 0;
@@ -251,9 +246,9 @@ button:hover {
 	width: 100% !important;
 }
 .border-top {
-  border-bottom: 0;
-  border-left: 0;
-  border-right: 0;
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
 }
 .open {
   display: block !important;
@@ -289,6 +284,10 @@ button:hover {
   float: right;
   margin-right: 0 !important;
 }
+.pull-left {
+  float: left;
+  margin-left: 0 !important;
+}
 .float-left {
   float: left;
 }
@@ -297,6 +296,9 @@ button:hover {
 }
 .float-none {
   float: none !important;
+}
+.clear {
+  clear: both;
 }
 .accordion {
   max-height: 0;
@@ -406,8 +408,6 @@ small.ref {
   background-color: #2ba5b7;
   background-position: 0 6px;
   color: rgb(55, 65, 75);
-  font-weight: bold;
-	filter: unset;
 	background-image: none;
 }
 #mainnav li.deactivated {
@@ -536,30 +536,31 @@ small.ref {
   text-decoration: none;
 }
 #entries {
-  margin: 61px -20px 0;
+  margin: 7px -20px 0;
   clear: both;
 }
-#entry-template {
-  display: none;
-}
-#specification {
-  display: none;
+#entries.detailed-list {
+  margin-top: 23px;
 }
 .entry {
   padding: 8px 20px;
-}
-.entry:hover {
-  border: 1px solid #c8c8c8;
-  border-left: 0;
-  border-right: 0;
-  padding: 7px 20px;
 }
 .entry input {
   float: right;
 }
 .details {
+  display: none;
 	margin-left: 34px;
 	width: calc(100% - 130px);
+}
+.detailed-list .details {
+  display: block;
+}
+.detailed-list .entry:hover {
+  border: 1px solid #c8c8c8;
+  border-left: 0;
+  border-right: 0;
+  padding: 7px 20px;
 }
 .details li {
   list-style-type: none;
@@ -574,6 +575,8 @@ small.ref {
 .quick-buttons {
   float: right;
   position: relative;
+}
+.detailed-list .quick-buttons {
   top: 9px;
 }
 .quick-buttons button.delete {
@@ -590,27 +593,26 @@ small.ref {
 .quick-buttons button.download:hover {
   background-image: url(../icons/download.png), linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
 }
-.page-actions {
-  padding: 15px 0 20px;
+#page-actions > div {
+  padding-bottom: 3px;
+  float: right;
 }
-.page-actions select,
-.history-actions select {
+#page-actions select {
   height: 27px;
   background-position: right 10px;
 }
-.page-actions .small-button, .page-actions input,
-.history-actions .small-button {
-  height: 27px;
+#search {
+  margin-top: 10px;
 }
 #search-count {
   font-size: 12px;
   margin: 0 5px 0 15px !important;
   position: relative;
-  top: 4px;
+  top: 2px;
 }
 #search-toggle {
   background-image: url(../icons/search.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
-  background-position: 4px 6px, 0 0;
+  background-position: 4px 4px, 0 0;
   color: transparent;
 }
 #search-toggle:hover {
@@ -632,27 +634,18 @@ small.ref {
   content: '|';
   color: red;
 }
-.history-actions {
-  background: rgba(251, 251, 251, 0.9);
-  position: fixed;
-  width: calc(100% - 220px);
-  max-width: 760px;
-  left: 220px;
-  padding: 15px 20px;
-	z-index: 1;
-}
-.history-actions select {
+#history-actions select {
   float: left;
   margin-left: 5px;
 }
-.history-actions button {
+#history-actions button {
   background-image: url(../icons/submit.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
-  background-position: 4px 6px, 0 0;
+  background-position: 4px 4px, 0 0;
 }
-.history-actions button:hover {
+#history-actions button:hover {
   background-image: url(../icons/submit.png), linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
 }
-.history-actions .specification {
+#history-actions .specification {
   display: none;
 }
 .checkmark-all {
@@ -665,12 +658,25 @@ small.ref {
 	cursor: pointer;
   display: inline-block;
   max-width: calc(100% - 144px);
+  padding-right: 10px;
 }
 .name:hover {
 	text-decoration: underline;
 }
 .entry:hover .name {
   color: #2ba5b7;
+}
+.view {
+  cursor: pointer;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: url(../icons/view.png) no-repeat 0 0;
+  background-size: 12px;
+  opacity: .5;
+}
+.view:hover {
+  opacity: 1;
 }
 .nowrap {
   white-space: nowrap;
