@@ -42,10 +42,12 @@ export default function() {
     page: 1,
     perPage: 10,
     sorted: 'date-last',
+    viewMode: 'list',
     searchTerm: '',
     searched: [],
 
-    init() {
+    init(tab) {
+      if (tab !== 'history') return;
       if (!this.initialized) this.render();
       else this.adjustSelectWidths();
       this.initialized = true;
@@ -196,6 +198,7 @@ export default function() {
       const actions = document.getElementById('history-actions');
       const sort = document.getElementById('sort');
       const count = document.getElementById('count');
+      const view = document.getElementById('view');
       const ppSelect = document.getElementById('entries-per-page');
       const meth_0 = !l ? 'remove' : 'add';
       const meth_1 = l > 0 ? 'remove' : 'add';
@@ -207,6 +210,7 @@ export default function() {
       search.classList[meth_2]('none');
       sort.classList[meth_2]('none');
       count.classList[meth_3]('none');
+      view.classList[meth_1]('none');
 
       this.adjustSelectWidths();
 
@@ -218,7 +222,7 @@ export default function() {
       });
     },
     adjustSelectWidths() {
-      const width = document.getElementById('action').clientWidth + 27;
+      const width = document.getElementById('action').offsetWidth;
       const expandedWidth = width + 27;
       Array.from(document.getElementById('page-actions').getElementsByTagName('select')).forEach(select => {
         const w = select.id === 'specification' || select.id === 'action' ? width : expandedWidth;
@@ -381,8 +385,14 @@ export default function() {
     },
     setView(e, el) {
       const table = document.getElementById('entries');
-      if (el.value === 'list') table.classList.remove('detailed-list');
+      const val = el.value;
+      if (val === 'list') table.classList.remove('detailed-list');
       else table.classList.add('detailed-list');
+      this.emit('change:view-setting', val);
+    },
+    setupView(view) {
+      document.getElementById('set-view').value = view;
+      this.setView(null, { value: view });
     },
     sort(e, el) {
       let sorted = this.sorted = el.value;
@@ -435,9 +445,11 @@ export default function() {
       _STORE.get().then(storage => {
         let entries = this.entries = storage.history.entries,
             sorted = storage.settings.history.sorted || this.sorted,
+            view = storage.settings.history.view || this.viewMode,
             l;
         this.sorted = sorted;
         this.setupSort(sorted);
+        this.setupView(view);
         l = this.names.length;
 
         this.setupSearch().toggleHeaderFields(l).then(() => this.renderEntries());

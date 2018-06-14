@@ -1141,7 +1141,7 @@ exports.default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs']
+    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs']
   }
 });
 
@@ -1284,10 +1284,12 @@ exports.default = function () {
     page: 1,
     perPage: 10,
     sorted: 'date-last',
+    viewMode: 'list',
     searchTerm: '',
     searched: [],
 
-    init: function init() {
+    init: function init(tab) {
+      if (tab !== 'history') return;
       if (!this.initialized) this.render();else this.adjustSelectWidths();
       this.initialized = true;
     }
@@ -1443,6 +1445,7 @@ exports.default = function () {
     var actions = document.getElementById('history-actions');
     var sort = document.getElementById('sort');
     var count = document.getElementById('count');
+    var view = document.getElementById('view');
     var ppSelect = document.getElementById('entries-per-page');
     var meth_0 = !l ? 'remove' : 'add';
     var meth_1 = l > 0 ? 'remove' : 'add';
@@ -1454,6 +1457,7 @@ exports.default = function () {
     search.classList[meth_2]('none');
     sort.classList[meth_2]('none');
     count.classList[meth_3]('none');
+    view.classList[meth_1]('none');
 
     this.adjustSelectWidths();
 
@@ -1464,7 +1468,7 @@ exports.default = function () {
       ppSelect.value = pp;
     });
   }), _defineProperty(_ref, 'adjustSelectWidths', function adjustSelectWidths() {
-    var width = document.getElementById('action').clientWidth + 27;
+    var width = document.getElementById('action').offsetWidth;
     var expandedWidth = width + 27;
     Array.from(document.getElementById('page-actions').getElementsByTagName('select')).forEach(function (select) {
       var w = select.id === 'specification' || select.id === 'action' ? width : expandedWidth;
@@ -1623,7 +1627,12 @@ exports.default = function () {
     this.renderEntries();
   }), _defineProperty(_ref, 'setView', function setView(e, el) {
     var table = document.getElementById('entries');
-    if (el.value === 'list') table.classList.remove('detailed-list');else table.classList.add('detailed-list');
+    var val = el.value;
+    if (val === 'list') table.classList.remove('detailed-list');else table.classList.add('detailed-list');
+    this.emit('change:view-setting', val);
+  }), _defineProperty(_ref, 'setupView', function setupView(view) {
+    document.getElementById('set-view').value = view;
+    this.setView(null, { value: view });
   }), _defineProperty(_ref, 'sort', function sort(e, el) {
     var sorted = this.sorted = el.value;
     this.emit('change:sort-setting', sorted);
@@ -1670,9 +1679,11 @@ exports.default = function () {
     _store2.default.get().then(function (storage) {
       var entries = _this7.entries = storage.history.entries,
           sorted = storage.settings.history.sorted || _this7.sorted,
+          view = storage.settings.history.view || _this7.viewMode,
           l = void 0;
       _this7.sorted = sorted;
       _this7.setupSort(sorted);
+      _this7.setupView(view);
       l = _this7.names.length;
 
       _this7.setupSearch().toggleHeaderFields(l).then(function () {

@@ -21,6 +21,7 @@ new _MODULE({
       'toggle:misc-setting': 'changeMiscSetting',
       'change:misc-setting': 'changeMiscSetting',
       'change:sort-setting': 'changeSortOpt',
+      'change:view-setting': 'changeViewOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
       'sidebar:toggle-autosave': 'changeSaveOpt',
@@ -121,6 +122,12 @@ new _MODULE({
     this.updateSettings(
       settings => { settings.history.sorted = value; return settings; },
       'sort'
+    );
+  },
+  changeViewOpt(value) {
+    this.updateSettings(
+      settings => { settings.history.view = value; return settings; },
+      'view'
     );
   },
   changeCustomSearch(values) {
