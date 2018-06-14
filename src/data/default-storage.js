@@ -27,6 +27,7 @@ export default {
       copy: 'text',
       saveNote: true,
       sorted: 'date-last',
+      view: 'list',
       pp: 10
     },
     addon: {

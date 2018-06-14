@@ -1,7 +1,10 @@
 import { _MODULE } from './../../utils'
+import { _L10N } from './../../utils'
 import './modules/header'
 import './modules/meta'
 import './modules/marks'
+
+_L10N();
 
 new _MODULE({
   autoinit() {

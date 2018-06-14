@@ -725,7 +725,7 @@
         </div>
         <section class="clearfix">
           <div id="count" class="float-left">
-            <select id="entries-per-page" class="blue border-top">
+            <select id="entries-per-page" class="border-top">
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
@@ -736,7 +736,7 @@
           </div>
           <div id="page-actions" class="float-right clearfix">
             <div id="sort" class="clear">
-              <select id="sort-entries" class="blue border-top">
+              <select id="sort-entries" class="border-top">
                 <option data-l10n-id="t5118" selected hidden></option>
                 <option value="date-last" data-l10n-id="t5114"></option>
                 <option value="date-created" data-l10n-id="t5115"></option>
@@ -745,14 +745,14 @@
               </select>
             </div>
             <div id="view" class="clear">
-              <select id="set-view" class="blue border-top">
+              <select id="set-view" class="border-top">
                 <option selected hidden>Ansicht</option>
                 <option value="list">Liste</option>
                 <option value="detail-list">Detail-Liste</option>
               </select>
             </div>
             <div id="history-actions" class="pull-right clear">
-              <select id="action" class="action blue border-top">
+              <select id="action" class="action border-top">
                 <option data-l10n-id="t5121" selected hidden></option>
                 <option class="toggle-button" data-target="specification" data-toggle="remove" value="export" data-l10n-id="t5113"></option>
                 <option class="toggle-button" data-target="specification" data-toggle="add" value="download" data-l10n-id="t513"></option>
@@ -760,7 +760,7 @@
                 <option class="toggle-button" data-target="specification" data-toggle="remove" value="clean" data-l10n-id="t516"></option>
                 <option class="toggle-button" data-target="specification" data-toggle="remove" value="visit" data-l10n-id="t517"></option>
               </select>
-              <select id="specification" class="specification blue border-top none">
+              <select id="specification" class="specification border-top none">
                 <option value="text" data-l10n-id="t439"></option>
                 <option value="text +meta" selected data-l10n-id="t438"></option>
                 <option value="text +notes" data-l10n-id="t4317"></option>
@@ -773,7 +773,7 @@
                 <option value="title" data-l10n-id="t4314"></option>
                 <option value="url" data-l10n-id="t4315"></option>
               </select>
-              <button type="button" class="action-button small-button" data-action="processSelection"></button>
+              <button type="button" class="action-button small-button" data-action="processSelection" data-l10n-attr data-l10n-title="title_submit_action"></button>
             </div>
             <div id="search" class="none pull-right clear">
               <span id="search-count" class="blue"></span>
@@ -790,8 +790,8 @@
           <div id="entry-template" class="entry none">
             <input type="checkbox">
             <label class="fake-cb"><span>&#10003;</span></label>
-            <span class="name"></span>
-            <span class="view"></span>
+            <span class="name" data-l10n-attr data-l10n-title="title_name"></span>
+            <span class="view" data-l10n-attr data-l10n-title="title_view"></span>
             <div class="quick-buttons">
               <div class="switch sync-switch clearfix quick-action" data-action="sync" data-l10n-attr data-l10n-title="quickbutton_sync">
                 <div class="switch switch-indicator quick-action" data-action="sync"></div>

@@ -888,6 +888,7 @@ exports.default = {
       copy: 'text',
       saveNote: true,
       sorted: 'date-last',
+      view: 'list',
       pp: 10
     },
     addon: {
@@ -1661,6 +1662,9 @@ new _utils._MODULE({
       if (!settings.history.sorted) {
         settings.history.sorted = _defaultStorage2.default.settings.history.sorted;
       }
+      if (!settings.history.view) {
+        settings.history.view = _defaultStorage2.default.settings.history.view;
+      }
       if (!settings.shortcuts.n) {
         settings.shortcuts.n = _defaultStorage2.default.settings.shortcuts.n;
         settings.misc.noteicon = _defaultStorage2.default.settings.misc.noteicon;
@@ -1879,6 +1883,7 @@ new _utils._MODULE({
       'toggle:misc-setting': 'changeMiscSetting',
       'change:misc-setting': 'changeMiscSetting',
       'change:sort-setting': 'changeSortOpt',
+      'change:view-setting': 'changeViewOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
       'sidebar:toggle-autosave': 'changeSaveOpt',
@@ -1973,6 +1978,11 @@ new _utils._MODULE({
     this.updateSettings(function (settings) {
       settings.history.sorted = value;return settings;
     }, 'sort');
+  },
+  changeViewOpt: function changeViewOpt(value) {
+    this.updateSettings(function (settings) {
+      settings.history.view = value;return settings;
+    }, 'view');
   },
   changeCustomSearch: function changeCustomSearch(values) {
     this.updateSettings(function (settings) {

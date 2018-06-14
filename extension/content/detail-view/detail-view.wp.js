@@ -793,6 +793,8 @@ __webpack_require__(66);
 
 __webpack_require__(67);
 
+(0, _utils._L10N)();
+
 new _utils._MODULE({
   autoinit: function autoinit() {
     var _this = this;
@@ -834,7 +836,7 @@ new _utils._DOMMODULE({
     this.el.innerText = entry.name;
   },
   setTag: function setTag(entry) {
-    var tag = entry.tag || 'Kein Tag zugeordnet';
+    var tag = entry.tag || browser.i18n.getMessage('detail_notag');
     document.getElementById('tag').innerText = tag;
   },
   render: function render(entry) {

@@ -69,9 +69,6 @@ h2 {
   font-size: 17px;
   margin-bottom: 15px;
 }
-h2 span {
-  color: #c8c8c8;
-}
 table {
   border-collapse: collapse;
 }
@@ -133,4 +130,7 @@ td {
 }
 .hide-notes .col-toggle {
   transform: rotate(180deg);
+}
+#marks-count {
+  color: #c8c8c8;
 }

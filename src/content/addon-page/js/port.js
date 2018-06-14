@@ -12,6 +12,7 @@ export default new _PORT({
       'change:saveopt-setting',
       'change:namingopt-setting',
       'change:sort-setting',
+      'change:view-setting',
       'toggle:noteopt-setting',
       'toggle:quickbuttonopt-setting',
       'toggle:notification-setting',

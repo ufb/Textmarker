@@ -13,7 +13,7 @@ new _DOMMODULE({
     this.el.innerText = entry.name;
   },
   setTag(entry) {
-    const tag = entry.tag || 'Kein Tag zugeordnet';
+    const tag = entry.tag || browser.i18n.getMessage('detail_notag');
     document.getElementById('tag').innerText = tag;
   },
   render(entry) {

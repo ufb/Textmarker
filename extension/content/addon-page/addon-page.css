@@ -147,12 +147,12 @@ input:disabled {
   opacity: 0.25;
 }
 input[type="search"] {
-  float:right;
-  border: 1px solid #c8c8c8;
+  float: right;
+  border: 1px solid #e1e2e3;
   color: inherit;
   text-align: left;
   padding: 0 0 0 5px;
-  height: 22px;
+  height: 27px;
   margin-left: 5px;
 }
 input[type="color"] {
@@ -597,53 +597,44 @@ small.ref {
   padding-bottom: 3px;
   float: right;
 }
-#page-actions select {
+#history select {
+  margin-bottom: 4px;
+  border-color: #e1e2e3;
+  color: #2ba5b7;
   height: 27px;
   background-position: right 10px;
-}
-#search {
-  margin-top: 10px;
 }
 #search-count {
   font-size: 12px;
   margin: 0 5px 0 15px !important;
   position: relative;
-  top: 2px;
+  top: 4px;
 }
 #search-toggle {
-  background-image: url(../icons/search.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
-  background-position: 4px 4px, 0 0;
+  background-image: url(../icons/search.png);
+  background-position: 5px 6px;
+  background-size: 12px;
   color: transparent;
-}
-#search-toggle:hover {
-	background-image: url(../icons/search.png), linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
+  border: 0;
 }
 #search-toggle.active {
   color: inherit;
-  background-image: none, linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+  background-image: none;
 	padding-top: 2px;
-}
-#search-toggle.active:hover {
-  background-image: none, linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
 }
 #sort label {
   width: auto;
   padding-right: 10px;
-}
-#sort-entries option::before {
-  content: '|';
-  color: red;
 }
 #history-actions select {
   float: left;
   margin-left: 5px;
 }
 #history-actions button {
-  background-image: url(../icons/submit.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
-  background-position: 4px 4px, 0 0;
-}
-#history-actions button:hover {
-  background-image: url(../icons/submit.png), linear-gradient(rgba(43, 165, 183, .1) 50%, transparent 50%);
+  background-image: url(../icons/submit.png);
+  background-position: 7px 7px;
+  background-size: 11px;
+  border: 0;
 }
 #history-actions .specification {
   display: none;
@@ -655,10 +646,15 @@ small.ref {
   width: auto;
 }
 .name {
-	cursor: pointer;
+  cursor: pointer;
   display: inline-block;
-  max-width: calc(100% - 144px);
-  padding-right: 10px;
+  max-width: calc(100% - 180px);
+  padding-right: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  white-space: nowrap;
+  top: 4px;
 }
 .name:hover {
 	text-decoration: underline;
@@ -786,25 +782,6 @@ a .at {
     color: #2ba5b7;
     border: 0;
     text-decoration: underline;
-  }
-  #entries {
-    margin: 130px -20px 0;
-  }
-  #history-actions {
-    height: 111px;
-  }
-  #history-actions select,
-  #history-actions button {
-    float: none;
-    margin-bottom: 5px;
-    vertical-align: top;
-  }
-  #history-actions div.pull-left {
-    position: absolute;
-    bottom: 20px;
-  }
-  #history-actions div.pull-right {
-    text-align: right;
   }
   #action,
   #specification {
