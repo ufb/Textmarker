@@ -3260,7 +3260,10 @@ exports.default = function () {
         for (var _iterator = marks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var mark = _step.value;
 
-          if (mark.keyData.note) this.add(mark);
+          if (mark.keyData.note) {
+            this.add(mark);
+            this.emit('added:note');
+          }
         }
       } catch (err) {
         _didIteratorError = true;
@@ -3276,8 +3279,6 @@ exports.default = function () {
           }
         }
       }
-
-      this.emit('added:note');
     },
     addAndShow: function addAndShow(mark) {
       this.add(mark).show();

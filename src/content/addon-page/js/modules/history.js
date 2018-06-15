@@ -27,7 +27,8 @@ export default function() {
           '#sort-entries': 'sort',
           '#filter-entries': 'filter',
           '#entries-per-page': 'changeCountPerPage',
-          '#set-view': 'setView'
+          '#set-view': 'setView',
+          '#action': 'onChangeAction'
         },
         keyup: {
           '#search-entries': 'search'
@@ -130,6 +131,7 @@ export default function() {
         else o.local.push(name);
       });
       this.emit('tag:entries', o, tag);
+      this.addFilterOpt(tag, tag);
     },
     processSelection() {
       let checked = document.querySelectorAll('.entry-cb:checked'),
@@ -255,35 +257,31 @@ export default function() {
     setFilterOptions() {
       if (this.filterOptionsSet) return this;
 
-      const select = document.getElementById('filter-entries');
-      const tags = this.tags;
+      const tags = [];
       const entries = this.origEntries;
       let tag;
 
       for (let name in entries) {
         tag = entries[name].tag || null;
-        if (tag && !this.tags.includes(tag)) this.tags.push(tag);
+        if (tag && !tags.includes(tag)) tags.push(tag);
       }
-
       if (!tags.length) {
-        let opt = document.createElement('option');
-        opt.innerText = browser.i18n.getMessage('detail_notag');
-        opt.setAttribute('disabled', true);
+        this.addFilterOpt('', browser.i18n.getMessage('detail_notag'), 'disabled');
       } else {
-        const frag = document.createDocumentFragment();
-        tags.forEach(tag => {
-          let opt = document.createElement('option');
-          frag.appendChild(opt);
-          opt.value = tag;
-          opt.innerText = tag;
-        });
-        let opt = document.createElement('option');
-        frag.appendChild(opt);
-        opt.value = '';
-        opt.innerText = browser.i18n.getMessage('t5125');
-        select.appendChild(frag);
+        tags.forEach(tag => this.addFilterOpt(tag, tag));
+        this.addFilterOpt('', browser.i18n.getMessage('t5125'));
       }
       this.filterOptionsSet = true;
+    },
+    addFilterOpt(tag, text, attr) {
+      if (this.tags.includes(tag)) return this;
+      this.tags.push(tag);
+      const select = document.getElementById('filter-entries');
+      const opt = document.createElement('option');
+      select.appendChild(opt);
+      opt.value = tag;
+      opt.innerText = text;
+      if (attr) opt.setAttribute(attr, true);
     },
     getText(names, spec) {
       let all_marks_plus_meta = spec === '+meta',
@@ -448,6 +446,9 @@ export default function() {
     setupView(view) {
       document.getElementById('set-view').value = view;
       this.setView(null, { value: view });
+    },
+    onChangeAction(e, el) {
+      if (el.value === 'tag') setTimeout(() => document.getElementById('tag').focus(), 0);
     },
     sort(e, el) {
       let sorted = this.sorted = el.value;

@@ -1275,7 +1275,8 @@ exports.default = function () {
           '#sort-entries': 'sort',
           '#filter-entries': 'filter',
           '#entries-per-page': 'changeCountPerPage',
-          '#set-view': 'setView'
+          '#set-view': 'setView',
+          '#action': 'onChangeAction'
         },
         keyup: {
           '#search-entries': 'search'
@@ -1372,6 +1373,7 @@ exports.default = function () {
       if (_this3.origEntries[name].synced) o.sync.push(name);else o.local.push(name);
     });
     this.emit('tag:entries', o, _tag);
+    this.addFilterOpt(_tag, _tag);
   }), _defineProperty(_ref, 'processSelection', function processSelection() {
     var checked = document.querySelectorAll('.entry-cb:checked'),
         i = checked.length;
@@ -1510,39 +1512,38 @@ exports.default = function () {
       ppSelect.value = pp;
     });
   }), _defineProperty(_ref, 'setFilterOptions', function setFilterOptions() {
+    var _this6 = this;
+
     if (this.filterOptionsSet) return this;
 
-    var select = document.getElementById('filter-entries');
-    var tags = this.tags;
+    var tags = [];
     var entries = this.origEntries;
     var tag = void 0;
 
     for (var name in entries) {
       tag = entries[name].tag || null;
-      if (tag && !this.tags.includes(tag)) this.tags.push(tag);
+      if (tag && !tags.includes(tag)) tags.push(tag);
     }
-
     if (!tags.length) {
-      var opt = document.createElement('option');
-      opt.innerText = browser.i18n.getMessage('detail_notag');
-      opt.setAttribute('disabled', true);
+      this.addFilterOpt('', browser.i18n.getMessage('detail_notag'), 'disabled');
     } else {
-      var frag = document.createDocumentFragment();
       tags.forEach(function (tag) {
-        var opt = document.createElement('option');
-        frag.appendChild(opt);
-        opt.value = tag;
-        opt.innerText = tag;
+        return _this6.addFilterOpt(tag, tag);
       });
-      var _opt = document.createElement('option');
-      frag.appendChild(_opt);
-      _opt.value = '';
-      _opt.innerText = browser.i18n.getMessage('t5125');
-      select.appendChild(frag);
+      this.addFilterOpt('', browser.i18n.getMessage('t5125'));
     }
     this.filterOptionsSet = true;
+  }), _defineProperty(_ref, 'addFilterOpt', function addFilterOpt(tag, text, attr) {
+    if (this.tags.includes(tag)) return this;
+    this.tags.push(tag);
+    var select = document.getElementById('filter-entries');
+    var opt = document.createElement('option');
+    select.appendChild(opt);
+    opt.value = tag;
+    opt.innerText = text;
+    if (attr) opt.setAttribute(attr, true);
   }), _defineProperty(_ref, 'getText', function getText(names, spec) {
-    var _this6 = this;
+    var _this7 = this;
 
     var all_marks_plus_meta = spec === '+meta',
         all_marks_plus_lost = spec === '+lost',
@@ -1582,7 +1583,7 @@ exports.default = function () {
 
         if (!all_marks_lost) {
           if (all_marks_plus_meta || all_marks_plus_meta_and_notes) {
-            text += name + newLine + 'URL: ' + entry.url + newLine + browser.i18n.getMessage('page_title') + ': ' + entry.title + newLine + browser.i18n.getMessage('created') + ': ' + _this6.optimizeDateString(new Date(entry.first).toLocaleString()) + newLine + browser.i18n.getMessage('last_modified') + ': ' + _this6.optimizeDateString(new Date(entry.last).toLocaleString()) + newLine + newLines;
+            text += name + newLine + 'URL: ' + entry.url + newLine + browser.i18n.getMessage('page_title') + ': ' + entry.title + newLine + browser.i18n.getMessage('created') + ': ' + _this7.optimizeDateString(new Date(entry.first).toLocaleString()) + newLine + browser.i18n.getMessage('last_modified') + ': ' + _this7.optimizeDateString(new Date(entry.last).toLocaleString()) + newLine + newLines;
           }
 
           for (j = 0; j < m; j++) {
@@ -1615,12 +1616,12 @@ exports.default = function () {
       return text.trim();
     });
   }), _defineProperty(_ref, 'getData', function getData(names, type, spec) {
-    var _this7 = this;
+    var _this8 = this;
 
     if (type === 'text') return this.getText(names, spec);
 
     return _store2.default.get('history').then(function (history) {
-      var entries = _this7.origEntries = history.entries,
+      var entries = _this8.origEntries = history.entries,
           l = names.length,
           data = '',
           newLines = '\r\n\r\n',
@@ -1699,6 +1700,10 @@ exports.default = function () {
   }), _defineProperty(_ref, 'setupView', function setupView(view) {
     document.getElementById('set-view').value = view;
     this.setView(null, { value: view });
+  }), _defineProperty(_ref, 'onChangeAction', function onChangeAction(e, el) {
+    if (el.value === 'tag') setTimeout(function () {
+      return document.getElementById('tag').focus();
+    }, 0);
   }), _defineProperty(_ref, 'sort', function sort(e, el) {
     var sorted = this.sorted = el.value;
     this.emit('change:sort-setting', sorted);
@@ -1767,20 +1772,20 @@ exports.default = function () {
   }), _defineProperty(_ref, 'undoSyncToggle', function undoSyncToggle(name) {
     document.querySelector('.sync-switch[data-name="' + name + '"]').classList.toggle('active');
   }), _defineProperty(_ref, 'render', function render() {
-    var _this8 = this;
+    var _this9 = this;
 
     _store2.default.get().then(function (storage) {
-      var entries = _this8.entries = _this8.origEntries = storage.history.entries,
-          sorted = storage.settings.history.sorted || _this8.sorted,
-          view = storage.settings.history.view || _this8.viewMode,
+      var entries = _this9.entries = _this9.origEntries = storage.history.entries,
+          sorted = storage.settings.history.sorted || _this9.sorted,
+          view = storage.settings.history.view || _this9.viewMode,
           l = void 0;
-      _this8.sorted = sorted;
-      _this8.setupSort(sorted);
-      _this8.setupView(view);
-      l = _this8.names.length;
+      _this9.sorted = sorted;
+      _this9.setupSort(sorted);
+      _this9.setupView(view);
+      l = _this9.names.length;
 
-      _this8.setupSearch().toggleHeaderFields(l).then(function () {
-        return _this8.renderEntries().setFilterOptions();
+      _this9.setupSearch().toggleHeaderFields(l).then(function () {
+        return _this9.renderEntries().setFilterOptions();
       });
     });
   }), _defineProperty(_ref, 'paginate', function paginate(page) {

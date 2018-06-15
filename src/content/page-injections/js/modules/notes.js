@@ -24,9 +24,11 @@ export default function() {
     },
     restore(marks) {
       for (let mark of marks) {
-        if (mark.keyData.note) this.add(mark);
+        if (mark.keyData.note) {
+          this.add(mark);
+          this.emit('added:note');
+        }
       }
-      this.emit('added:note');
     },
     addAndShow(mark) {
       this.add(mark).show();
