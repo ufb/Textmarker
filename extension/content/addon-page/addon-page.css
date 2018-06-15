@@ -683,6 +683,7 @@ small.ref {
 #checkmark-all-container {
 	position: relative;
 	top: -27px;
+	float: left;
 }
 .checkmark-all {
   float: right;
