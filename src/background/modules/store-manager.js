@@ -34,7 +34,8 @@ new _MODULE({
       'delete:entries': 'deleteEntries',
       'finished:restoration': 'updateEntryOnRestoration',
       'clean:entries': 'cleanEntries',
-      'sync:entry': 'syncEntry'
+      'sync:entry': 'syncEntry',
+      'tag:entries': 'tagEntries'
     }
   },
   updateOnChangedSync: false,
@@ -271,6 +272,21 @@ new _MODULE({
     _STORAGE.sync(name, val)
       .then(() => this.emit('synced:entry'))
       .catch(() => this.emit('failed:sync-entry', name));
+  },
+  tagEntries(names, tag) {
+    _STORAGE.update('history', history => {
+      const entries = history.entries;
+      names.sync.forEach(name => entries[name].tag = tag);
+      return history;
+    }, 'sync')
+      .then(() => {
+        return _STORAGE.update('history', history => {
+          const entries = history.entries;
+          names.local.forEach(name => entries[name].tag = tag);
+          return history;
+        }, 'local');
+      })
+      .then(() => this.emit('tagged:entries'));
   },
   registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));

@@ -19,11 +19,13 @@ export default function() {
           '.switch': 'toggleSwitch',
           '.name': 'open',
           '.view': 'view',
-          '#search-toggle': 'toggleSearch'
+          '#search-toggle': 'toggleSearch',
+          '#remove-filter': 'removeFilter'
         },
         change: {
           '.checkmark-all': 'checkmarkAll',
           '#sort-entries': 'sort',
+          '#filter-entries': 'filter',
           '#entries-per-page': 'changeCountPerPage',
           '#set-view': 'setView'
         },
@@ -45,11 +47,13 @@ export default function() {
     viewMode: 'list',
     searchTerm: '',
     searched: [],
+    tags: [],
+    filtered: false,
+    filterOptionsSet: false,
 
     init(tab) {
       if (tab !== 'history') return;
       if (!this.initialized) this.render();
-      else this.adjustSelectWidths();
       this.initialized = true;
     },
 
@@ -119,20 +123,35 @@ export default function() {
     view(e, el) {
       this.emit('view:entry', el.getAttribute('data-name'));
     },
+    tag(names, tag) {
+      const o = { sync: [], local: [] };
+      names.forEach(name => {
+        if (this.origEntries[name].synced) o.sync.push(name);
+        else o.local.push(name);
+      });
+      this.emit('tag:entries', o, tag);
+    },
     processSelection() {
-      let checked = document.querySelectorAll('.entry-cb:checked');
-      if (!checked.length) return false;
+      let checked = document.querySelectorAll('.entry-cb:checked'),
+          i = checked.length;
+
+      if (!i) return false;
 
       let action = document.getElementById('action').value,
-          split = document.getElementById('specification').value.split(' '),
-          type = split[0],
-          spec = split[1],
-          i = checked.length,
           names = [];
 
       while(i--) names.push(checked[i].getAttribute('data-name'));
 
-      !this[action] || this[action](names, type, spec);
+      if (action === 'tag') {
+        let val = document.getElementById('tag').value;
+        if (val) this.tag(names, val);
+      } else {
+        let split = document.getElementById('specification').value.split(' '),
+            type = split[0],
+            spec = split[1];
+
+        !this[action] || this[action](names, type, spec);
+      }
     },
     renderEntries() {
       let template = this.entryTmpl,
@@ -142,7 +161,11 @@ export default function() {
           names = searched ? this.searched : this.names,
           l = searched ? names.length : this.page * this.perPage,
           i = searched ? 0 : l - this.perPage,
-          clone, entry, name, nameField, input, label, infoButton, details, buttons, view, b, j;
+          clone, entry, name, nameField, input, label, infoButton, details, buttons, view, tag, tagEl, b, j;
+
+      if (this.filtered) {
+        names = names.filter(n => !!entries[n]);
+      }
 
       l = Math.min(l, names.length);
 
@@ -156,37 +179,43 @@ export default function() {
         ((i, j) => {
           name = names[i];
           entry = entries[name];
-          clone = template.cloneNode(true);
-          container.appendChild(clone);
-          clone.id = 'entry-' + j;
-          clone.classList.remove('none');
-          clone.setAttribute('data-name', name);
-          nameField = clone.getElementsByClassName('name')[0];
-          input = clone.getElementsByTagName('input')[0];
-          label = clone.getElementsByTagName('label')[0];
-          details = clone.getElementsByClassName('details')[0];
-          buttons = clone.getElementsByClassName('quick-action');
-          view = clone.getElementsByClassName('view')[0];
-          b = buttons.length;
+          if (entry) {
+            tag = entry.tag || '';
+            clone = template.cloneNode(true);
+            container.appendChild(clone);
+            clone.id = 'entry-' + j;
+            clone.classList.remove('none');
+            clone.setAttribute('data-name', name);
+            nameField = clone.getElementsByClassName('name')[0];
+            input = clone.getElementsByTagName('input')[0];
+            label = clone.getElementsByTagName('label')[0];
+            details = clone.getElementsByClassName('details')[0];
+            buttons = clone.getElementsByClassName('quick-action');
+            view = clone.getElementsByClassName('view')[0];
+            tagEl = clone.getElementsByClassName('tag')[0];
+            b = buttons.length;
 
-          while(b--) {
-              buttons[b].setAttribute('data-name', name);
-          }
-          nameField.innerText = name;
-          nameField.setAttribute('data-url', entry.url);
-          input.className = 'entry-cb';
-          input.id = 'entry-cb-' + j;
-          input.setAttribute('data-name', name);
-          view.setAttribute('data-name', name);
-          label.setAttribute('for', 'entry-cb-' + j);
+            while(b--) {
+                buttons[b].setAttribute('data-name', name);
+            }
+            nameField.innerText = name;
+            nameField.setAttribute('data-url', entry.url);
+            input.className = 'entry-cb';
+            input.id = 'entry-cb-' + j;
+            input.setAttribute('data-name', name);
+            view.setAttribute('data-name', name);
+            label.setAttribute('for', 'entry-cb-' + j);
 
-          clone.getElementsByClassName('created')[0].innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
-          clone.getElementsByClassName('last')[0].innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
-          clone.getElementsByClassName('count')[0].innerText = entry.marks.length;
-          //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
+            tagEl.innerText = tag ? tag : browser.i18n.getMessage('detail_notag');
 
-          if (entry.synced === undefined || entry.synced) {
-            clone.getElementsByClassName('sync-switch')[0].classList.add('active');
+            clone.getElementsByClassName('created')[0].innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
+            clone.getElementsByClassName('last')[0].innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
+            clone.getElementsByClassName('count')[0].innerText = entry.marks.length;
+            //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
+
+            if (entry.synced === undefined || entry.synced) {
+              clone.getElementsByClassName('sync-switch')[0].classList.add('active');
+            }
           }
         })(i, l-i-1);
       }
@@ -197,9 +226,11 @@ export default function() {
       const search = document.getElementById('search');
       const actions = document.getElementById('history-actions');
       const sort = document.getElementById('sort');
+      const filter = document.getElementById('filter');
       const count = document.getElementById('count');
       const view = document.getElementById('view');
       const ppSelect = document.getElementById('entries-per-page');
+      const checkall = document.getElementById('checkmark-all-container');
       const meth_0 = !l ? 'remove' : 'add';
       const meth_1 = l > 0 ? 'remove' : 'add';
       const meth_2 = l > 2 ? 'remove' : 'add';
@@ -209,10 +240,10 @@ export default function() {
       actions.classList[meth_1]('none');
       search.classList[meth_2]('none');
       sort.classList[meth_2]('none');
+      filter.classList[meth_2]('none');
       count.classList[meth_3]('none');
       view.classList[meth_1]('none');
-
-      this.adjustSelectWidths();
+      checkall.classList[meth_2]('none');
 
       document.getElementById('entries-count').innerText = l;
 
@@ -221,14 +252,38 @@ export default function() {
         ppSelect.value = pp;
       });
     },
-    adjustSelectWidths() {
-      const width = document.getElementById('action').offsetWidth;
-      const expandedWidth = width + 27;
-      Array.from(document.getElementById('page-actions').getElementsByTagName('select')).forEach(select => {
-        const w = select.id === 'specification' || select.id === 'action' ? width : expandedWidth;
-        select.style.width = w + 'px';
-      });
-      document.getElementById('search-entries').style.width = width + 'px';
+    setFilterOptions() {
+      if (this.filterOptionsSet) return this;
+
+      const select = document.getElementById('filter-entries');
+      const tags = this.tags;
+      const entries = this.origEntries;
+      let tag;
+
+      for (let name in entries) {
+        tag = entries[name].tag || null;
+        if (tag && !this.tags.includes(tag)) this.tags.push(tag);
+      }
+
+      if (!tags.length) {
+        let opt = document.createElement('option');
+        opt.innerText = browser.i18n.getMessage('detail_notag');
+        opt.setAttribute('disabled', true);
+      } else {
+        const frag = document.createDocumentFragment();
+        tags.forEach(tag => {
+          let opt = document.createElement('option');
+          frag.appendChild(opt);
+          opt.value = tag;
+          opt.innerText = tag;
+        });
+        let opt = document.createElement('option');
+        frag.appendChild(opt);
+        opt.value = '';
+        opt.innerText = browser.i18n.getMessage('t5125');
+        select.appendChild(frag);
+      }
+      this.filterOptionsSet = true;
     },
     getText(names, spec) {
       let all_marks_plus_meta = spec === '+meta',
@@ -308,7 +363,7 @@ export default function() {
       if (type === 'text') return this.getText(names, spec);
 
       return _STORE.get('history').then(history => {
-        let entries = this.entries = history.entries,
+        let entries = this.origEntries = history.entries,
             l = names.length,
             data = '',
             newLines = '\r\n\r\n',
@@ -401,9 +456,37 @@ export default function() {
     },
     setupSort(sorted) {
       sorted = sorted.split('-');
-      this.names = _SORT.by[sorted[0]][sorted[1]](this.entries);
+      this.names = _SORT.by[sorted[0]][sorted[1]](this.origEntries);
       this.sortSearchResults();
       return this;
+    },
+    filter(e, el) {
+      const filter = el.value;
+      const entries = this.origEntries;
+      const filteredEntries = {};
+      let entry, c = 0;
+      el.parentNode.classList.add('active');
+      for (let name in entries) {
+        entry = entries[name];
+        if ((entry.tag && entry.tag === filter) || (!entry.tag && filter == '')) {
+          filteredEntries[name] = entry;
+          c++;
+        }
+      }
+      this.entries = filteredEntries;
+      this.filtered = true;
+      this.page = 1;
+      this.renderEntries();
+      this.emit('filtered:history', c);
+    },
+    removeFilter(e, el) {
+      el.parentNode.classList.remove('active');
+      document.getElementById('filter-entries').selectedIndex = 0;
+      this.entries = this.origEntries;
+      this.filtered = false;
+      this.page = 1;
+      this.renderEntries();
+      this.emit('filtered:history', this.names.length);
     },
     sortSearchResults() {
       if (!this.searched.length) return;
@@ -443,7 +526,7 @@ export default function() {
     },
     render() {
       _STORE.get().then(storage => {
-        let entries = this.entries = storage.history.entries,
+        let entries = this.entries = this.origEntries = storage.history.entries,
             sorted = storage.settings.history.sorted || this.sorted,
             view = storage.settings.history.view || this.viewMode,
             l;
@@ -452,12 +535,12 @@ export default function() {
         this.setupView(view);
         l = this.names.length;
 
-        this.setupSearch().toggleHeaderFields(l).then(() => this.renderEntries());
+        this.setupSearch().toggleHeaderFields(l).then(() => this.renderEntries().setFilterOptions());
       });
     },
     paginate(page) {
       this.page = page;
-      this.render();
+      this.renderEntries();
     },
     updateEntry(entry) {
       const el = document.querySelector('.entry[data-name="' + entry.name + '"]');

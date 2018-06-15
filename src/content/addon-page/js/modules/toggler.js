@@ -11,10 +11,14 @@ export default class _TOGGLER {
   toggle(e) {
     e.stopPropagation();
 
-    let target = document.getElementById(this.getAttribute('data-target')),
-        role = this.getAttribute('data-toggle');
+    let dataTarget = this.getAttribute('data-target'),
+        targets = dataTarget ? dataTarget.split(' ') : null,
+        dataToggle = this.getAttribute('data-toggle'),
+        roles = dataToggle ? dataToggle.split(' ') : null;
 
-    if (role) target.classList[role]('open');
+    if (roles) {
+      roles.forEach((role, i) => document.getElementById(targets[i]).classList[role]('open'));
+    }
     else target.disabled = !this.checked;
   }
 }

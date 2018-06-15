@@ -744,6 +744,12 @@
                 <option value="name-za" data-l10n-id="t5117"></option>
               </select>
             </div>
+            <div id="filter" class="clear">
+              <select id="filter-entries" class="border-top">
+                <option data-l10n-id="t5124" selected hidden></option>
+              </select>
+              <button type="button" id="remove-filter" class="small-button pull-right">&#10005;</button>
+            </div>
             <div id="view" class="clear">
               <select id="set-view" class="border-top">
                 <option selected hidden>Ansicht</option>
@@ -751,14 +757,15 @@
                 <option value="detail-list">Detail-Liste</option>
               </select>
             </div>
-            <div id="history-actions" class="pull-right clear">
+            <div id="history-actions" class="clear">
               <select id="action" class="action border-top">
                 <option data-l10n-id="t5121" selected hidden></option>
-                <option class="toggle-button" data-target="specification" data-toggle="remove" value="export" data-l10n-id="t5113"></option>
-                <option class="toggle-button" data-target="specification" data-toggle="add" value="download" data-l10n-id="t513"></option>
-                <option class="toggle-button" data-target="specification" data-toggle="remove" value="delete" data-l10n-id="t515"></option>
-                <option class="toggle-button" data-target="specification" data-toggle="remove" value="clean" data-l10n-id="t516"></option>
-                <option class="toggle-button" data-target="specification" data-toggle="remove" value="visit" data-l10n-id="t517"></option>
+                <option class="toggle-button" data-target="specification tag" data-toggle="remove add" value="tag" data-l10n-id="t5123"></option>
+                <option class="toggle-button" data-target="specification tag" data-toggle="remove remove" value="export" data-l10n-id="t5113"></option>
+                <option class="toggle-button" data-target="specification tag" data-toggle="add remove" value="download" data-l10n-id="t513"></option>
+                <option class="toggle-button" data-target="specification tag" data-toggle="remove remove" value="delete" data-l10n-id="t515"></option>
+                <option class="toggle-button" data-target="specification tag" data-toggle="remove remove" value="clean" data-l10n-id="t516"></option>
+                <option class="toggle-button" data-target="specification tag" data-toggle="remove remove" value="visit" data-l10n-id="t517"></option>
               </select>
               <select id="specification" class="specification border-top none">
                 <option value="text" data-l10n-id="t439"></option>
@@ -773,15 +780,16 @@
                 <option value="title" data-l10n-id="t4314"></option>
                 <option value="url" data-l10n-id="t4315"></option>
               </select>
+              <input type="text" id="tag" class="border-top float-left none" data-l10n-attr data-l10n-placeholder="attr_4">
               <button type="button" class="action-button small-button" data-action="processSelection" data-l10n-attr data-l10n-title="title_submit_action"></button>
             </div>
-            <div id="search" class="none pull-right clear">
+            <div id="search" class="none clear">
               <span id="search-count" class="blue"></span>
               <button type="button" id="search-toggle" class="small-button pull-right">&#10005;</button>
               <input id="search-entries" class="pull-right border-top" data-l10n-attr data-l10n-placeholder="attr_1" type="search">
             </div>
           </div>
-          <div class="clear">
+          <div id="checkmark-all-container" class="clear">
             <input class="checkmark-all" id="checkmark-all" type="checkbox">
             <label for="checkmark-all" class="fake-cb nowrap blue"><span>&#10003;</span> <sup data-l10n-id="t518"></sup></label>
           </div>
@@ -800,10 +808,10 @@
               <button type="button" class="delete action-button quick-action small-button" data-action="delete" data-l10n-attr data-l10n-title="quickbutton_delete">&#10005;</button>
             </div>
             <div class="details">
+              <div class="tag"></div>
               <ul class="clearfix">
                 <li><span class="created"></span> &ndash; <span class="last"></span></li>
                 <li><span data-l10n-id="t5111"></span> <span class="count"></span></li>
-                <!--<li><span data-l10n-id="t5112"></span> <span class="lost"></span></li>-->
               </ul>
             </div>
           </div>

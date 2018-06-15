@@ -993,10 +993,16 @@ var _TOGGLER = function () {
     value: function toggle(e) {
       e.stopPropagation();
 
-      var target = document.getElementById(this.getAttribute('data-target')),
-          role = this.getAttribute('data-toggle');
+      var dataTarget = this.getAttribute('data-target'),
+          targets = dataTarget ? dataTarget.split(' ') : null,
+          dataToggle = this.getAttribute('data-toggle'),
+          roles = dataToggle ? dataToggle.split(' ') : null;
 
-      if (role) target.classList[role]('open');else target.disabled = !this.checked;
+      if (roles) {
+        roles.forEach(function (role, i) {
+          return document.getElementById(targets[i]).classList[role]('open');
+        });
+      } else target.disabled = !this.checked;
     }
   }]);
 
@@ -1141,7 +1147,7 @@ exports.default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs']
+    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 
@@ -1261,11 +1267,13 @@ exports.default = function () {
           '.switch': 'toggleSwitch',
           '.name': 'open',
           '.view': 'view',
-          '#search-toggle': 'toggleSearch'
+          '#search-toggle': 'toggleSearch',
+          '#remove-filter': 'removeFilter'
         },
         change: {
           '.checkmark-all': 'checkmarkAll',
           '#sort-entries': 'sort',
+          '#filter-entries': 'filter',
           '#entries-per-page': 'changeCountPerPage',
           '#set-view': 'setView'
         },
@@ -1287,10 +1295,13 @@ exports.default = function () {
     viewMode: 'list',
     searchTerm: '',
     searched: [],
+    tags: [],
+    filtered: false,
+    filterOptionsSet: false,
 
     init: function init(tab) {
       if (tab !== 'history') return;
-      if (!this.initialized) this.render();else this.adjustSelectWidths();
+      if (!this.initialized) this.render();
       this.initialized = true;
     }
   }, _defineProperty(_ref, 'delete', function _delete(names) {
@@ -1353,22 +1364,37 @@ exports.default = function () {
     this.emit('open:entries', el.getAttribute('data-url'));
   }), _defineProperty(_ref, 'view', function view(e, el) {
     this.emit('view:entry', el.getAttribute('data-name'));
+  }), _defineProperty(_ref, 'tag', function tag(names, _tag) {
+    var _this3 = this;
+
+    var o = { sync: [], local: [] };
+    names.forEach(function (name) {
+      if (_this3.origEntries[name].synced) o.sync.push(name);else o.local.push(name);
+    });
+    this.emit('tag:entries', o, _tag);
   }), _defineProperty(_ref, 'processSelection', function processSelection() {
-    var checked = document.querySelectorAll('.entry-cb:checked');
-    if (!checked.length) return false;
+    var checked = document.querySelectorAll('.entry-cb:checked'),
+        i = checked.length;
+
+    if (!i) return false;
 
     var action = document.getElementById('action').value,
-        split = document.getElementById('specification').value.split(' '),
-        type = split[0],
-        spec = split[1],
-        i = checked.length,
         names = [];
 
     while (i--) {
       names.push(checked[i].getAttribute('data-name'));
-    }!this[action] || this[action](names, type, spec);
+    }if (action === 'tag') {
+      var val = document.getElementById('tag').value;
+      if (val) this.tag(names, val);
+    } else {
+      var split = document.getElementById('specification').value.split(' '),
+          type = split[0],
+          spec = split[1];
+
+      !this[action] || this[action](names, type, spec);
+    }
   }), _defineProperty(_ref, 'renderEntries', function renderEntries() {
-    var _this3 = this;
+    var _this4 = this;
 
     var template = this.entryTmpl,
         container = this.entriesContainer,
@@ -1387,8 +1413,16 @@ exports.default = function () {
         details = void 0,
         buttons = void 0,
         view = void 0,
+        tag = void 0,
+        tagEl = void 0,
         b = void 0,
         j = void 0;
+
+    if (this.filtered) {
+      names = names.filter(function (n) {
+        return !!entries[n];
+      });
+    }
 
     l = Math.min(l, names.length);
 
@@ -1402,51 +1436,59 @@ exports.default = function () {
       (function (i, j) {
         name = names[i];
         entry = entries[name];
-        clone = template.cloneNode(true);
-        container.appendChild(clone);
-        clone.id = 'entry-' + j;
-        clone.classList.remove('none');
-        clone.setAttribute('data-name', name);
-        nameField = clone.getElementsByClassName('name')[0];
-        input = clone.getElementsByTagName('input')[0];
-        label = clone.getElementsByTagName('label')[0];
-        details = clone.getElementsByClassName('details')[0];
-        buttons = clone.getElementsByClassName('quick-action');
-        view = clone.getElementsByClassName('view')[0];
-        b = buttons.length;
+        if (entry) {
+          tag = entry.tag || '';
+          clone = template.cloneNode(true);
+          container.appendChild(clone);
+          clone.id = 'entry-' + j;
+          clone.classList.remove('none');
+          clone.setAttribute('data-name', name);
+          nameField = clone.getElementsByClassName('name')[0];
+          input = clone.getElementsByTagName('input')[0];
+          label = clone.getElementsByTagName('label')[0];
+          details = clone.getElementsByClassName('details')[0];
+          buttons = clone.getElementsByClassName('quick-action');
+          view = clone.getElementsByClassName('view')[0];
+          tagEl = clone.getElementsByClassName('tag')[0];
+          b = buttons.length;
 
-        while (b--) {
-          buttons[b].setAttribute('data-name', name);
-        }
-        nameField.innerText = name;
-        nameField.setAttribute('data-url', entry.url);
-        input.className = 'entry-cb';
-        input.id = 'entry-cb-' + j;
-        input.setAttribute('data-name', name);
-        view.setAttribute('data-name', name);
-        label.setAttribute('for', 'entry-cb-' + j);
+          while (b--) {
+            buttons[b].setAttribute('data-name', name);
+          }
+          nameField.innerText = name;
+          nameField.setAttribute('data-url', entry.url);
+          input.className = 'entry-cb';
+          input.id = 'entry-cb-' + j;
+          input.setAttribute('data-name', name);
+          view.setAttribute('data-name', name);
+          label.setAttribute('for', 'entry-cb-' + j);
 
-        clone.getElementsByClassName('created')[0].innerText = _this3.optimizeDateString(new Date(entry.first).toLocaleString());
-        clone.getElementsByClassName('last')[0].innerText = _this3.optimizeDateString(new Date(entry.last).toLocaleString());
-        clone.getElementsByClassName('count')[0].innerText = entry.marks.length;
-        //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
+          tagEl.innerText = tag ? tag : browser.i18n.getMessage('detail_notag');
 
-        if (entry.synced === undefined || entry.synced) {
-          clone.getElementsByClassName('sync-switch')[0].classList.add('active');
+          clone.getElementsByClassName('created')[0].innerText = _this4.optimizeDateString(new Date(entry.first).toLocaleString());
+          clone.getElementsByClassName('last')[0].innerText = _this4.optimizeDateString(new Date(entry.last).toLocaleString());
+          clone.getElementsByClassName('count')[0].innerText = entry.marks.length;
+          //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
+
+          if (entry.synced === undefined || entry.synced) {
+            clone.getElementsByClassName('sync-switch')[0].classList.add('active');
+          }
         }
       })(i, l - i - 1);
     }
     return this;
   }), _defineProperty(_ref, 'toggleHeaderFields', function toggleHeaderFields(l) {
-    var _this4 = this;
+    var _this5 = this;
 
     var noEntriesHint = document.getElementById('no-entries');
     var search = document.getElementById('search');
     var actions = document.getElementById('history-actions');
     var sort = document.getElementById('sort');
+    var filter = document.getElementById('filter');
     var count = document.getElementById('count');
     var view = document.getElementById('view');
     var ppSelect = document.getElementById('entries-per-page');
+    var checkall = document.getElementById('checkmark-all-container');
     var meth_0 = !l ? 'remove' : 'add';
     var meth_1 = l > 0 ? 'remove' : 'add';
     var meth_2 = l > 2 ? 'remove' : 'add';
@@ -1456,27 +1498,51 @@ exports.default = function () {
     actions.classList[meth_1]('none');
     search.classList[meth_2]('none');
     sort.classList[meth_2]('none');
+    filter.classList[meth_2]('none');
     count.classList[meth_3]('none');
     view.classList[meth_1]('none');
-
-    this.adjustSelectWidths();
+    checkall.classList[meth_2]('none');
 
     document.getElementById('entries-count').innerText = l;
 
     return _store2.default.get('settings').then(function (settings) {
-      var pp = _this4.perPage = settings.history.pp || 10;
+      var pp = _this5.perPage = settings.history.pp || 10;
       ppSelect.value = pp;
     });
-  }), _defineProperty(_ref, 'adjustSelectWidths', function adjustSelectWidths() {
-    var width = document.getElementById('action').offsetWidth;
-    var expandedWidth = width + 27;
-    Array.from(document.getElementById('page-actions').getElementsByTagName('select')).forEach(function (select) {
-      var w = select.id === 'specification' || select.id === 'action' ? width : expandedWidth;
-      select.style.width = w + 'px';
-    });
-    document.getElementById('search-entries').style.width = width + 'px';
+  }), _defineProperty(_ref, 'setFilterOptions', function setFilterOptions() {
+    if (this.filterOptionsSet) return this;
+
+    var select = document.getElementById('filter-entries');
+    var tags = this.tags;
+    var entries = this.origEntries;
+    var tag = void 0;
+
+    for (var name in entries) {
+      tag = entries[name].tag || null;
+      if (tag && !this.tags.includes(tag)) this.tags.push(tag);
+    }
+
+    if (!tags.length) {
+      var opt = document.createElement('option');
+      opt.innerText = browser.i18n.getMessage('detail_notag');
+      opt.setAttribute('disabled', true);
+    } else {
+      var frag = document.createDocumentFragment();
+      tags.forEach(function (tag) {
+        var opt = document.createElement('option');
+        frag.appendChild(opt);
+        opt.value = tag;
+        opt.innerText = tag;
+      });
+      var _opt = document.createElement('option');
+      frag.appendChild(_opt);
+      _opt.value = '';
+      _opt.innerText = browser.i18n.getMessage('t5125');
+      select.appendChild(frag);
+    }
+    this.filterOptionsSet = true;
   }), _defineProperty(_ref, 'getText', function getText(names, spec) {
-    var _this5 = this;
+    var _this6 = this;
 
     var all_marks_plus_meta = spec === '+meta',
         all_marks_plus_lost = spec === '+lost',
@@ -1516,7 +1582,7 @@ exports.default = function () {
 
         if (!all_marks_lost) {
           if (all_marks_plus_meta || all_marks_plus_meta_and_notes) {
-            text += name + newLine + 'URL: ' + entry.url + newLine + browser.i18n.getMessage('page_title') + ': ' + entry.title + newLine + browser.i18n.getMessage('created') + ': ' + _this5.optimizeDateString(new Date(entry.first).toLocaleString()) + newLine + browser.i18n.getMessage('last_modified') + ': ' + _this5.optimizeDateString(new Date(entry.last).toLocaleString()) + newLine + newLines;
+            text += name + newLine + 'URL: ' + entry.url + newLine + browser.i18n.getMessage('page_title') + ': ' + entry.title + newLine + browser.i18n.getMessage('created') + ': ' + _this6.optimizeDateString(new Date(entry.first).toLocaleString()) + newLine + browser.i18n.getMessage('last_modified') + ': ' + _this6.optimizeDateString(new Date(entry.last).toLocaleString()) + newLine + newLines;
           }
 
           for (j = 0; j < m; j++) {
@@ -1549,12 +1615,12 @@ exports.default = function () {
       return text.trim();
     });
   }), _defineProperty(_ref, 'getData', function getData(names, type, spec) {
-    var _this6 = this;
+    var _this7 = this;
 
     if (type === 'text') return this.getText(names, spec);
 
     return _store2.default.get('history').then(function (history) {
-      var entries = _this6.entries = history.entries,
+      var entries = _this7.origEntries = history.entries,
           l = names.length,
           data = '',
           newLines = '\r\n\r\n',
@@ -1639,9 +1705,36 @@ exports.default = function () {
     this.setupSort(sorted).renderEntries();
   }), _defineProperty(_ref, 'setupSort', function setupSort(sorted) {
     sorted = sorted.split('-');
-    this.names = _historySort2.default.by[sorted[0]][sorted[1]](this.entries);
+    this.names = _historySort2.default.by[sorted[0]][sorted[1]](this.origEntries);
     this.sortSearchResults();
     return this;
+  }), _defineProperty(_ref, 'filter', function filter(e, el) {
+    var filter = el.value;
+    var entries = this.origEntries;
+    var filteredEntries = {};
+    var entry = void 0,
+        c = 0;
+    el.parentNode.classList.add('active');
+    for (var name in entries) {
+      entry = entries[name];
+      if (entry.tag && entry.tag === filter || !entry.tag && filter == '') {
+        filteredEntries[name] = entry;
+        c++;
+      }
+    }
+    this.entries = filteredEntries;
+    this.filtered = true;
+    this.page = 1;
+    this.renderEntries();
+    this.emit('filtered:history', c);
+  }), _defineProperty(_ref, 'removeFilter', function removeFilter(e, el) {
+    el.parentNode.classList.remove('active');
+    document.getElementById('filter-entries').selectedIndex = 0;
+    this.entries = this.origEntries;
+    this.filtered = false;
+    this.page = 1;
+    this.renderEntries();
+    this.emit('filtered:history', this.names.length);
   }), _defineProperty(_ref, 'sortSearchResults', function sortSearchResults() {
     if (!this.searched.length) return;
     var names = this.names;
@@ -1674,25 +1767,25 @@ exports.default = function () {
   }), _defineProperty(_ref, 'undoSyncToggle', function undoSyncToggle(name) {
     document.querySelector('.sync-switch[data-name="' + name + '"]').classList.toggle('active');
   }), _defineProperty(_ref, 'render', function render() {
-    var _this7 = this;
+    var _this8 = this;
 
     _store2.default.get().then(function (storage) {
-      var entries = _this7.entries = storage.history.entries,
-          sorted = storage.settings.history.sorted || _this7.sorted,
-          view = storage.settings.history.view || _this7.viewMode,
+      var entries = _this8.entries = _this8.origEntries = storage.history.entries,
+          sorted = storage.settings.history.sorted || _this8.sorted,
+          view = storage.settings.history.view || _this8.viewMode,
           l = void 0;
-      _this7.sorted = sorted;
-      _this7.setupSort(sorted);
-      _this7.setupView(view);
-      l = _this7.names.length;
+      _this8.sorted = sorted;
+      _this8.setupSort(sorted);
+      _this8.setupView(view);
+      l = _this8.names.length;
 
-      _this7.setupSearch().toggleHeaderFields(l).then(function () {
-        return _this7.renderEntries();
+      _this8.setupSearch().toggleHeaderFields(l).then(function () {
+        return _this8.renderEntries().setFilterOptions();
       });
     });
   }), _defineProperty(_ref, 'paginate', function paginate(page) {
     this.page = page;
-    this.render();
+    this.renderEntries();
   }), _defineProperty(_ref, 'updateEntry', function updateEntry(entry) {
     var el = document.querySelector('.entry[data-name="' + entry.name + '"]');
 
@@ -2675,8 +2768,7 @@ exports.default = function () {
       ENV: {
         'saved:entry': 'add',
         'deleted:entries': 'updateFromStorage',
-        'sorted:history': 'reset',
-        'searched:history': 'reset',
+        'filtered:history': 'reset',
         'imported:history': 'updateFromStorage',
         'changed:per-page-count': 'changeCountPerPage'
       },
@@ -2740,9 +2832,9 @@ exports.default = function () {
       }
       this.render();
     },
-    reset: function reset() {
+    reset: function reset(l) {
       this.currentPage = 1;
-      this.render();
+      this.update(l);
     },
     render: function render() {
       var ul = document.getElementById('paginator-list');

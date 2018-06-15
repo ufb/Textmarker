@@ -9,8 +9,7 @@ export default function() {
       ENV: {
         'saved:entry': 'add',
         'deleted:entries': 'updateFromStorage',
-        'sorted:history': 'reset',
-        'searched:history': 'reset',
+        'filtered:history': 'reset',
         'imported:history': 'updateFromStorage',
         'changed:per-page-count': 'changeCountPerPage'
       },
@@ -67,9 +66,9 @@ export default function() {
       }
       this.render();
     },
-    reset() {
+    reset(l) {
       this.currentPage = 1;
-      this.render();
+      this.update(l);
     },
     render() {
       const ul = document.getElementById('paginator-list');
