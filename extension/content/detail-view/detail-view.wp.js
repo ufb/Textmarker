@@ -879,7 +879,8 @@ new _utils._DOMMODULE({
     link.innerText = url;
   },
   setSyncMode: function setSyncMode(entry) {
-    document.getElementById('synced').innerText = entry.synced ? 'Ja' : 'Nein';
+    var val = entry.synced ? browser.i18n.getMessage('yes') : browser.i18n.getMessage('no');
+    document.getElementById('synced').innerText = val;
   },
   adjustWidths: function adjustWidths() {
     var widths = [];

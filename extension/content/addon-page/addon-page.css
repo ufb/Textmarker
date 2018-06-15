@@ -153,7 +153,6 @@ input[type="search"] {
   text-align: left;
   padding: 0 0 0 5px;
   height: 27px;
-  margin-left: 5px;
 }
 input[type="color"] {
   padding: 0;
@@ -552,6 +551,10 @@ small.ref {
   display: none;
 	margin-left: 34px;
 	width: calc(100% - 130px);
+  color: #c8c8c8;
+}
+.entry:hover .details {
+  color: #777;
 }
 .detailed-list .details {
   display: block;
@@ -562,19 +565,22 @@ small.ref {
   border-right: 0;
   padding: 7px 20px;
 }
+.details .tag {
+  background: url(../icons/folder.png) no-repeat 0 4px;
+  padding-left: 17px;
+  background-size: 12px;
+  margin: 3px 0;
+}
 .details li {
   list-style-type: none;
   float: left;
-  color: #c8c8c8;
   font-size: 0.8em;
   margin-right: 20px;
-}
-.entry:hover .details li {
-  color: #777;
 }
 .quick-buttons {
   float: right;
   position: relative;
+	top: 3px;
 }
 .detailed-list .quick-buttons {
   top: 9px;
@@ -595,7 +601,9 @@ small.ref {
 }
 #page-actions > div {
   padding-bottom: 3px;
-  float: right;
+}
+#page-actions select {
+  width: 100%;
 }
 #history select {
   margin-bottom: 4px;
@@ -604,11 +612,32 @@ small.ref {
   height: 27px;
   background-position: right 10px;
 }
-#search-count {
-  font-size: 12px;
-  margin: 0 5px 0 15px !important;
+#history input[type="text"] {
+  border-color: #e1e2e3;
+  height: 27px;
+}
+#search-entries {
+  width: calc(100% - 27px);
+}
+#filter.active #filter-entries {
+  width: calc(100% - 27px);
+}
+#remove-filter {
+  border: 0;
+  background: none;
+  display: none;
+}
+#filter.active #remove-filter {
+  display: inline-block;
+}
+#search {
   position: relative;
-  top: 4px;
+}
+#search-count {
+  position: absolute;
+  top: 7px;
+  left: -25px;
+  font-size: 12px;
 }
 #search-toggle {
   background-image: url(../icons/search.png);
@@ -626,18 +655,34 @@ small.ref {
   width: auto;
   padding-right: 10px;
 }
-#history-actions select {
-  float: left;
-  margin-left: 5px;
+#history-actions {
+  position: relative;
 }
 #history-actions button {
   background-image: url(../icons/submit.png);
-  background-position: 7px 7px;
+  background-position: 6px 7px;
   background-size: 11px;
   border: 0;
+  float: right;
 }
-#history-actions .specification {
-  display: none;
+#action {
+  width: calc(100% - 27px) !important;
+}
+#specification,
+#tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#tag {
+	width: calc(100% - 50px);
+}
+#specification {
+  left: calc(-100% - 10px);
+}
+#checkmark-all-container {
+	position: relative;
+	top: -27px;
 }
 .checkmark-all {
   float: right;

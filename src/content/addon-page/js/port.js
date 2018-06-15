@@ -32,7 +32,8 @@ export default new _PORT({
       'change:custom-search-setting',
       'changed:per-page-count',
       'error:browser-console',
-      'clear:logs'
+      'clear:logs',
+      'tag:entries'
     ]
   }
 })

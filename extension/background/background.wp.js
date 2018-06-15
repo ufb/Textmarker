@@ -1896,7 +1896,8 @@ new _utils._MODULE({
       'delete:entries': 'deleteEntries',
       'finished:restoration': 'updateEntryOnRestoration',
       'clean:entries': 'cleanEntries',
-      'sync:entry': 'syncEntry'
+      'sync:entry': 'syncEntry',
+      'tag:entries': 'tagEntries'
     }
   },
   updateOnChangedSync: false,
@@ -2135,6 +2136,27 @@ new _utils._MODULE({
       return _this7.emit('synced:entry');
     }).catch(function () {
       return _this7.emit('failed:sync-entry', name);
+    });
+  },
+  tagEntries: function tagEntries(names, tag) {
+    var _this8 = this;
+
+    _storage2.default.update('history', function (history) {
+      var entries = history.entries;
+      names.sync.forEach(function (name) {
+        return entries[name].tag = tag;
+      });
+      return history;
+    }, 'sync').then(function () {
+      return _storage2.default.update('history', function (history) {
+        var entries = history.entries;
+        names.local.forEach(function (name) {
+          return entries[name].tag = tag;
+        });
+        return history;
+      }, 'local');
+    }).then(function () {
+      return _this8.emit('tagged:entries');
     });
   },
   registerStorageChangedHandler: function registerStorageChangedHandler() {

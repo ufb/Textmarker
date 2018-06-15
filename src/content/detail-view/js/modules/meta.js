@@ -23,7 +23,8 @@ new _DOMMODULE({
     link.innerText = url;
   },
   setSyncMode(entry) {
-    document.getElementById('synced').innerText = entry.synced ? 'Ja' : 'Nein';
+    const val = entry.synced ? browser.i18n.getMessage('yes') : browser.i18n.getMessage('no');
+    document.getElementById('synced').innerText = val;
   },
   adjustWidths() {
     const widths = [];
