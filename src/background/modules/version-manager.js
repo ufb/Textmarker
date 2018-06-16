@@ -15,28 +15,32 @@ new _MODULE({
 
   updateSettings(settings) {
     const noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
+    const defaultSettings = _DEFAULT_STORAGE.settings;
 
     if (!settings.shortcuts) {
-      settings = _DEFAULT_STORAGE.settings;
+      settings = defaultSettings;
     } else {
       noteTypes.forEach(noteType => {
         if (!settings.misc[noteType]) {
-          settings.misc[noteType] = _DEFAULT_STORAGE.settings.misc[noteType];
+          settings.misc[noteType] = defaultSettings.misc[noteType];
         }
       });
       if (!settings.history.sorted) {
-        settings.history.sorted = _DEFAULT_STORAGE.settings.history.sorted;
+        settings.history.sorted = defaultSettings.history.sorted;
       }
       if (!settings.history.view) {
-        settings.history.view = _DEFAULT_STORAGE.settings.history.view;
+        settings.history.view = defaultSettings.history.view;
+      }
+      if (typeof settings.history.saveInPriv !== 'boolean') {
+        settings.history.saveInPriv = defaultSettings.history.saveInPriv;
       }
       if (!settings.shortcuts.n) {
-        settings.shortcuts.n = _DEFAULT_STORAGE.settings.shortcuts.n;
-        settings.misc.noteicon = _DEFAULT_STORAGE.settings.misc.noteicon;
-        settings.misc.noteonclick = _DEFAULT_STORAGE.settings.misc.noteonclick;
+        settings.shortcuts.n = defaultSettings.shortcuts.n;
+        settings.misc.noteicon = defaultSettings.misc.noteicon;
+        settings.misc.noteonclick = defaultSettings.misc.noteonclick;
       }
       if (!settings.misc.tmuipos) {
-        settings.misc.tmuipos = _DEFAULT_STORAGE.settings.misc.tmuipos;
+        settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }
     }
     return settings;

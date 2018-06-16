@@ -14,6 +14,7 @@ new _MODULE({
       'change:shortcut-setting': 'changeShortcutSetting',
       'toggle:ctm-setting': 'toggleCtmSetting',
       'change:saveopt-setting': 'changeSaveOpt',
+      'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
       'toggle:quickbuttonopt-setting': 'toggleQuickbuttonOpt',
@@ -156,6 +157,13 @@ new _MODULE({
       settings => { settings.history.autosave = val; return settings; },
       'saveopt',
       'error_save_autosave'
+    );
+  },
+  togglePrivSaveOpt(val) {
+    this.updateSettings(
+      settings => { settings.history.saveInPriv = val; return settings; },
+      'privsaveopt',
+      'error_save_priv'
     );
   },
   changeNamingOpt(val) {

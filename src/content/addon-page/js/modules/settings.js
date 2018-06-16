@@ -28,7 +28,8 @@ export default function() {
           '.ctm-cb': 'toggleCtm',
           '.notes-cb': 'toggleNotes',
           '.misc-cb': 'toggleMisc',
-          '.tmuipos': 'changeTmuiPositionOpt'
+          '.tmuipos': 'changeTmuiPositionOpt',
+          '#private-save': 'togglePrivSave'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -164,6 +165,7 @@ export default function() {
       else saveOpts[1].checked = true;
 
       document.getElementById('name-' + historySettings.naming).checked = true;
+      document.getElementById('private-save').checked = historySettings.saveInPriv;
       document.getElementById('notes-new').checked = historySettings.saveNote;
       document.getElementById('quickbutton-download-select').value = historySettings.download;
 
@@ -253,6 +255,9 @@ export default function() {
     },
     changeSaveOpt(e, el) {
       this.emit('change:saveopt-setting', !!el.getAttribute('data-id'));
+    },
+    togglePrivSave(e, el) {
+      this.emit('toggle:priv-setting', el.checked);
     },
     changeNamingOpt(e, el) {
       this.emit('change:namingopt-setting', el.getAttribute('data-id'));

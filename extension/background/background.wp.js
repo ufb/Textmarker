@@ -684,6 +684,12 @@ exports.default = new _utils._MODULE({
       return false;
     });
   },
+  _get_privsave: function _get_privsave() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.history.saveInPriv;
+    });
+  },
   _get_naming: function _get_naming() {
     return browser.storage[this.area_settings].get().then(function (storage) {
       if (!storage || !storage.settings) return 'custom';
@@ -836,6 +842,7 @@ exports.default = {
   error_storage_migration: 29,
   error_empty_local_storage_onupdate: 30,
   error_toggle_sync: 31,
+  error_save_priv: 32,
 
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
@@ -883,6 +890,7 @@ exports.default = {
     },
     history: {
       autosave: true,
+      saveInPriv: false,
       naming: 'title',
       download: 'text',
       copy: 'text',
@@ -1188,21 +1196,33 @@ new _utils._MODULE({
     return browser.windows.getLastFocused().then(function (windowInfo) {
       var priv = windowInfo.incognito;
       if (priv) _this2.emit('failed:pbm');
-      sendResponse(!priv);
+      if (!priv) sendResponse(!priv);else {
+        _storage2.default.get('privsave').then(function (saveInPriv) {
+          if (!saveInPriv) _this2.emit('failed:pbm');else sendResponse(saveInPriv);
+        });
+      }
     });
   },
   onSaveNewRequest: function onSaveNewRequest(entry) {
     var _this3 = this;
 
     return browser.windows.getLastFocused().then(function (windowInfo) {
-      if (windowInfo.incognito) _this3.emit('failed:pbm');else _this3.emit('granted:save-entry', entry);
+      if (!windowInfo.incognito) _this3.emit('granted:save-entry', entry);else {
+        _storage2.default.get('privsave').then(function (saveInPriv) {
+          if (!saveInPriv) _this3.emit('failed:pbm');else _this3.emit('granted:save-entry', entry);
+        });
+      }
     });
   },
   onUpdateRequest: function onUpdateRequest(entry) {
     var _this4 = this;
 
     return browser.windows.getLastFocused().then(function (windowInfo) {
-      if (windowInfo.incognito) _this4.emit('failed:pbm');else _this4.emit('granted:update-entry', entry);
+      if (!windowInfo.incognito) _this4.emit('granted:update-entry', entry);else {
+        _storage2.default.get('privsave').then(function (saveInPriv) {
+          if (!saveInPriv) _this4.emit('failed:pbm');else _this4.emit('granted:update-entry', entry);
+        });
+      }
     });
   },
   getHashlessURL: function getHashlessURL(url) {
@@ -1650,28 +1670,32 @@ new _utils._MODULE({
 
   updateSettings: function updateSettings(settings) {
     var noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
+    var defaultSettings = _defaultStorage2.default.settings;
 
     if (!settings.shortcuts) {
-      settings = _defaultStorage2.default.settings;
+      settings = defaultSettings;
     } else {
       noteTypes.forEach(function (noteType) {
         if (!settings.misc[noteType]) {
-          settings.misc[noteType] = _defaultStorage2.default.settings.misc[noteType];
+          settings.misc[noteType] = defaultSettings.misc[noteType];
         }
       });
       if (!settings.history.sorted) {
-        settings.history.sorted = _defaultStorage2.default.settings.history.sorted;
+        settings.history.sorted = defaultSettings.history.sorted;
       }
       if (!settings.history.view) {
-        settings.history.view = _defaultStorage2.default.settings.history.view;
+        settings.history.view = defaultSettings.history.view;
+      }
+      if (typeof settings.history.saveInPriv !== 'boolean') {
+        settings.history.saveInPriv = defaultSettings.history.saveInPriv;
       }
       if (!settings.shortcuts.n) {
-        settings.shortcuts.n = _defaultStorage2.default.settings.shortcuts.n;
-        settings.misc.noteicon = _defaultStorage2.default.settings.misc.noteicon;
-        settings.misc.noteonclick = _defaultStorage2.default.settings.misc.noteonclick;
+        settings.shortcuts.n = defaultSettings.shortcuts.n;
+        settings.misc.noteicon = defaultSettings.misc.noteicon;
+        settings.misc.noteonclick = defaultSettings.misc.noteonclick;
       }
       if (!settings.misc.tmuipos) {
-        settings.misc.tmuipos = _defaultStorage2.default.settings.misc.tmuipos;
+        settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }
     }
     return settings;
@@ -1876,6 +1900,7 @@ new _utils._MODULE({
       'change:shortcut-setting': 'changeShortcutSetting',
       'toggle:ctm-setting': 'toggleCtmSetting',
       'change:saveopt-setting': 'changeSaveOpt',
+      'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
       'toggle:quickbuttonopt-setting': 'toggleQuickbuttonOpt',
@@ -2004,6 +2029,11 @@ new _utils._MODULE({
     this.updateSettings(function (settings) {
       settings.history.autosave = val;return settings;
     }, 'saveopt', 'error_save_autosave');
+  },
+  togglePrivSaveOpt: function togglePrivSaveOpt(val) {
+    this.updateSettings(function (settings) {
+      settings.history.saveInPriv = val;return settings;
+    }, 'privsaveopt', 'error_save_priv');
   },
   changeNamingOpt: function changeNamingOpt(val) {
     this.updateSettings(function (settings) {

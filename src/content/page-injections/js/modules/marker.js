@@ -218,7 +218,7 @@ export default function() {
     addNote(id) {
       this.emit('add:note', this.findMark(id));
     },
-    setBookmark(m) {
+    setBookmark(m, save) {
       let bookmark = this.bookmark,
           mark = this.findMark(m);
 
@@ -232,7 +232,7 @@ export default function() {
       this.bookmark = new _BOOKMARK().set(mark);
 
       this.emit('added:bookmark');
-      this.autosave();
+      if (save !== false) this.autosave();
     },
     undoBookmark() {
       this.bookmark = null;

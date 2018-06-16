@@ -948,6 +948,7 @@ exports.default = {
   error_storage_migration: 29,
   error_empty_local_storage_onupdate: 30,
   error_toggle_sync: 31,
+  error_save_priv: 32,
 
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
@@ -1147,7 +1148,7 @@ exports.default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 
@@ -1387,7 +1388,7 @@ exports.default = function () {
       names.push(checked[i].getAttribute('data-name'));
     }if (action === 'tag') {
       var val = document.getElementById('tag').value;
-      if (val) this.tag(names, val);
+      this.tag(names, val);
     } else {
       var split = document.getElementById('specification').value.split(' '),
           type = split[0],
@@ -1914,7 +1915,8 @@ exports.default = function () {
           '.ctm-cb': 'toggleCtm',
           '.notes-cb': 'toggleNotes',
           '.misc-cb': 'toggleMisc',
-          '.tmuipos': 'changeTmuiPositionOpt'
+          '.tmuipos': 'changeTmuiPositionOpt',
+          '#private-save': 'togglePrivSave'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -2055,6 +2057,7 @@ exports.default = function () {
       if (historySettings.autosave) saveOpts[0].checked = true;else saveOpts[1].checked = true;
 
       document.getElementById('name-' + historySettings.naming).checked = true;
+      document.getElementById('private-save').checked = historySettings.saveInPriv;
       document.getElementById('notes-new').checked = historySettings.saveNote;
       document.getElementById('quickbutton-download-select').value = historySettings.download;
 
@@ -2144,6 +2147,9 @@ exports.default = function () {
     },
     changeSaveOpt: function changeSaveOpt(e, el) {
       this.emit('change:saveopt-setting', !!el.getAttribute('data-id'));
+    },
+    togglePrivSave: function togglePrivSave(e, el) {
+      this.emit('toggle:priv-setting', el.checked);
     },
     changeNamingOpt: function changeNamingOpt(e, el) {
       this.emit('change:namingopt-setting', el.getAttribute('data-id'));
