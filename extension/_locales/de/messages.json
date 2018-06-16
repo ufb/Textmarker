@@ -64,6 +64,8 @@
 "t114":{"message":"In der Chronik gibt es eine neue Aktion: Ausgewählten Einträgen kann ein Freitext-Tag zugeordnet werden. Die Chronik kann nach bereits zugeordneten Tags gefiltert werden."},
 "h115":{"message":"Detailansicht für Chronikeinträge"},
 "t115":{"message":"Per Klick auf das kleine Icon neben den Eintragsnamen öffnet sich eine Detailansicht in einem neuen Fenster."},
+"h116":{"message":"Speichern trotz privatem Modus"},
+"t116":{"message":"In Einstellungen > Chronik kannst du einstellen, dass Textmarker auch im privaten Browser-Modus Markierungen speichert."},
 "h20":{"message":"Anleitung"},
 "h211":{"message":"Textmarker: Kurzanleitung"},
 "t211":{"message":"Rufe eine Website auf und selektiere zunächst Text mit der Maus."},
