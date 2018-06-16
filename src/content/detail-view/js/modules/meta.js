@@ -26,21 +26,12 @@ new _DOMMODULE({
     const val = entry.synced ? browser.i18n.getMessage('yes') : browser.i18n.getMessage('no');
     document.getElementById('synced').innerText = val;
   },
-  adjustWidths() {
-    const widths = [];
-    let maxWidth;
-    const fields = Array.from(document.getElementsByClassName('meta__field'));
-    fields.forEach(field => widths.push(field.offsetWidth));
-    maxWidth = Math.max.apply(null, widths) + 'px';
-    fields.forEach(field => field.style.width = maxWidth);
-  },
   render(entry) {
     this.entry = entry;
     this.setDates(entry);
     this.setTitle(entry);
     this.setLink(entry);
     this.setSyncMode(entry);
-    this.adjustWidths();
   },
   optimizeDateString(date) {
     return (date

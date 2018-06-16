@@ -882,25 +882,12 @@ new _utils._DOMMODULE({
     var val = entry.synced ? browser.i18n.getMessage('yes') : browser.i18n.getMessage('no');
     document.getElementById('synced').innerText = val;
   },
-  adjustWidths: function adjustWidths() {
-    var widths = [];
-    var maxWidth = void 0;
-    var fields = Array.from(document.getElementsByClassName('meta__field'));
-    fields.forEach(function (field) {
-      return widths.push(field.offsetWidth);
-    });
-    maxWidth = Math.max.apply(null, widths) + 'px';
-    fields.forEach(function (field) {
-      return field.style.width = maxWidth;
-    });
-  },
   render: function render(entry) {
     this.entry = entry;
     this.setDates(entry);
     this.setTitle(entry);
     this.setLink(entry);
     this.setSyncMode(entry);
-    this.adjustWidths();
   },
   optimizeDateString: function optimizeDateString(date) {
     return date.replace(/^(\d{1})(\D{1})/, function (m, p, q) {

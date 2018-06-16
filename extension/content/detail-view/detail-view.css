@@ -75,15 +75,18 @@ table {
 col {
   width: 50%;
 }
-td, th {
+#table--marks td, #table--marks th {
   border: 1px solid #c8c8c8;
 }
-th {
+#table--marks th {
   padding: 5px 10px;
   text-align: left;
 }
-td {
+#table--marks td {
   padding: 10px;
+}
+#table--meta td {
+  padding: 2px 15px 2px 0;
 }
 .no-notes col:first-child {
   width: 100%;
@@ -115,10 +118,6 @@ td {
 }
 #main {
   padding: 20px;
-}
-.meta__field {
-  padding-right: 10px;
-  display: inline-block;
 }
 .col-toggle {
   width: 18px;
