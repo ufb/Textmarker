@@ -142,6 +142,12 @@ export default new _MODULE({
       return false;
     });
   },
+  _get_privsave() {
+    return browser.storage[this.area_settings].get().then(storage => {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.history.saveInPriv;
+    });
+  },
   _get_naming() {
     return browser.storage[this.area_settings].get().then(storage => {
       if (!storage || !storage.settings) return 'custom';

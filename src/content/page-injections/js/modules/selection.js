@@ -167,18 +167,18 @@ export default class _SELECTION {
 
     l -= 1;
 
-    if (this.simple)
-      //nodeTexts[0] = nodeTexts[0].substring(selection.anchorOffset, selection.focusOffset);
-      nodeTexts[0] = nodeTexts[0].substring(range.startOffset, range.endOffset);
-    else {
-      //nodeTexts[0] = nodeTexts[0].substring(selection.anchorOffset);
-      //nodeTexts[l] = nodeTexts[l].substring(0, this.defined ? undefined : selection.focusOffset);
-      nodeTexts[0] = nodeTexts[0].substring(range.startOffset);
-      nodeTexts[l] = nodeTexts[l].substring(0, this.defined ? undefined : range.endOffset);
+    if (nodeTexts.length) {
+      if (this.simple) {
+        //nodeTexts[0] = nodeTexts[0].substring(selection.anchorOffset, selection.focusOffset);
+        nodeTexts[0] = nodeTexts[0].substring(range.startOffset, range.endOffset);
+      } else {
+        //nodeTexts[0] = nodeTexts[0].substring(selection.anchorOffset);
+        //nodeTexts[l] = nodeTexts[l].substring(0, this.defined ? undefined : selection.focusOffset);
+        nodeTexts[0] = nodeTexts[0].substring(range.startOffset);
+        nodeTexts[l] = nodeTexts[l].substring(0, this.defined ? undefined : range.endOffset);
+      }
+      text = this.text = nodeTexts.join('');
     }
-
-    text = this.text = nodeTexts.join('');
-
     return this;
   }
   getCommonAncestorContainer() {

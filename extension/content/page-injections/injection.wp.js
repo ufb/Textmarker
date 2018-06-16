@@ -934,7 +934,7 @@ function translateDocument() {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -948,284 +948,285 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _SELECTION = function () {
-    function _SELECTION(node) {
-        _classCallCheck(this, _SELECTION);
+  function _SELECTION(node) {
+    _classCallCheck(this, _SELECTION);
 
-        var selection = this.self = window.getSelection();
+    var selection = this.self = window.getSelection();
 
-        if (selection.rangeCount) this.range = selection.getRangeAt(0);
+    if (selection.rangeCount) this.range = selection.getRangeAt(0);
 
-        if (node || !selection.isCollapsed) {
-            if (node) {
-                this.defined = node;
+    if (node || !selection.isCollapsed) {
+      if (node) {
+        this.defined = node;
 
-                this.create(node).reduceToOneRange().update().collectNodes(true).retrieveText();
-            } else {
-                if (_store2.default.pdf) this.adjust_PDF();
+        this.create(node).reduceToOneRange().update().collectNodes(true).retrieveText();
+      } else {
+        if (_store2.default.pdf) this.adjust_PDF();
 
-                this.collectNodes().reduceToOneRange().update().adjust().update().retrieveText();
-            }
-            selection.collapseToStart();
-        }
+        this.collectNodes().reduceToOneRange().update().adjust().update().retrieveText();
+      }
+      selection.collapseToStart();
     }
+  }
 
-    _createClass(_SELECTION, [{
-        key: 'create',
-        value: function create(node) {
-            this.self.selectAllChildren(node);
+  _createClass(_SELECTION, [{
+    key: 'create',
+    value: function create(node) {
+      this.self.selectAllChildren(node);
 
-            return this;
+      return this;
+    }
+  }, {
+    key: 'resume',
+    value: function resume(range) {
+      var selection = this.self;
+
+      selection.removeAllRanges();
+      selection.addRange(range);
+      this.reduceToOneRange().update().collectNodes().retrieveText();
+      selection.collapseToStart();
+    }
+  }, {
+    key: 'update',
+    value: function update(selection) {
+      if (selection) this.self = selection;else selection = this.self;
+
+      var props = ['focusNode', 'anchorNode', 'focusOffset', 'anchorOffset'],
+          i = props.length;
+
+      while (i--) {
+        this[props[i]] = selection[props[i]];
+      }this.range = selection.getRangeAt(0);
+      this.simple = this.isSimple();
+
+      return this;
+    }
+  }, {
+    key: 'adjust',
+    value: function adjust() {
+      var selection = this.self,
+          anchor = this.anchorNode,
+          focus = this.focusNode;
+
+      if (this.isBackwards(anchor, focus)) this.reverse(anchor, focus);else this.normalize(anchor, focus);
+
+      return this;
+    }
+  }, {
+    key: 'adjust_PDF',
+    value: function adjust_PDF() {
+      var selection = this.self,
+          range = this.range,
+          anchor = range.startContainer;
+
+      while (anchor = anchor.parentNode) {
+        if (anchor.id && anchor.id === 'viewer') return this;
+      }
+
+      try {
+        anchor = window.document.getElementsByClassName('textLayer')[0].children[0].children[0];
+      } finally {
+        try {
+          anchor = window.document.getElementsByClassName('textLayer')[0].children[0];
+        } finally {
+          anchor = window.document.getElementsByClassName('textLayer')[0];
         }
-    }, {
-        key: 'resume',
-        value: function resume(range) {
-            var selection = this.self;
+      }
 
-            selection.removeAllRanges();
-            selection.addRange(range);
-            this.reduceToOneRange().update().collectNodes().retrieveText();
-            selection.collapseToStart();
+      selection.getRangeAt(0).setStart(anchor, 0);
+
+      return this;
+    }
+  }, {
+    key: 'normalize',
+    value: function normalize(anchor, focus) {
+      var selection = this.self,
+          range = this.range,
+          firstTextNode = this.nodes[0],
+          lastTextNode = this.nodes[this.nodes.length - 1];
+
+      if (firstTextNode !== anchor) range.setStart(firstTextNode, firstTextNode.data.length - firstTextNode.data.trimLeft().length);
+
+      if (lastTextNode !== focus) range.setEnd(lastTextNode, lastTextNode.data.length - (lastTextNode.data.length - lastTextNode.data.trimRight().length));
+    }
+  }, {
+    key: 'collectNodes',
+    value: function collectNodes(wholeDocument) {
+      var self = this,
+          selection = this.self,
+          range = this.range,
+          container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
+          iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {
+        acceptNode: function acceptNode(node) {
+          var parent = node.parentNode;
+          return selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(parent);
         }
-    }, {
-        key: 'update',
-        value: function update(selection) {
-            if (selection) this.self = selection;else selection = this.self;
+      }, false),
+          tempRange = document.createRange(),
+          nodes = [],
+          parentNodes = [],
+          textNode,
+          parent,
+          firstNode,
+          lastNode;
 
-            var props = ['focusNode', 'anchorNode', 'focusOffset', 'anchorOffset'],
-                i = props.length;
+      while (textNode = iterator.nextNode()) {
+        nodes.push(textNode);
+      }
+      this.nodes = this.getReducedNodeCollection(nodes);
+      this.parentNodes = this.collectParentNodes(this.nodes);
 
-            while (i--) {
-                this[props[i]] = selection[props[i]];
-            }this.range = selection.getRangeAt(0);
-            this.simple = this.isSimple();
+      return this;
+    }
+  }, {
+    key: 'getReducedNodeCollection',
+    value: function getReducedNodeCollection(nodes) {
+      var selection = this.self;
+      var firstNode = void 0,
+          lastNode = void 0;
 
-            return this;
+      if (nodes.length > 1) {
+        firstNode = nodes[0];
+        if (selection.anchorNode === firstNode && firstNode.data.trimRight().length <= selection.anchorOffset) {
+          nodes.shift();
         }
-    }, {
-        key: 'adjust',
-        value: function adjust() {
-            var selection = this.self,
-                anchor = this.anchorNode,
-                focus = this.focusNode;
-
-            if (this.isBackwards(anchor, focus)) this.reverse(anchor, focus);else this.normalize(anchor, focus);
-
-            return this;
+        lastNode = nodes[nodes.length - 1];
+        if (selection.focusNode === lastNode && this.isBlank(lastNode.data.substr(0, selection.focusOffset))) {
+          nodes.pop();
         }
-    }, {
-        key: 'adjust_PDF',
-        value: function adjust_PDF() {
-            var selection = this.self,
-                range = this.range,
-                anchor = range.startContainer;
+      }
+      return nodes;
+    }
+  }, {
+    key: 'collectParentNodes',
+    value: function collectParentNodes(nodes) {
+      var l = nodes.length,
+          parents = [],
+          i = 0;
 
-            while (anchor = anchor.parentNode) {
-                if (anchor.id && anchor.id === 'viewer') return this;
-            }
+      for (; i < l; i++) {
+        parents.push(nodes[i].parentNode);
+      }return parents;
+    }
+  }, {
+    key: 'retrieveText',
+    value: function retrieveText() {
+      var range = this.range,
+          nodes = this.nodes,
+          l = nodes.length,
+          i = 0,
+          nodeTexts = [],
+          text = void 0;
 
-            try {
-                anchor = window.document.getElementsByClassName('textLayer')[0].children[0].children[0];
-            } finally {
-                try {
-                    anchor = window.document.getElementsByClassName('textLayer')[0].children[0];
-                } finally {
-                    anchor = window.document.getElementsByClassName('textLayer')[0];
-                }
-            }
+      for (; i < l; i++) {
+        nodeTexts.push(nodes[i].data);
+      }l -= 1;
 
-            selection.getRangeAt(0).setStart(anchor, 0);
-
-            return this;
+      if (nodeTexts.length) {
+        if (this.simple) {
+          //nodeTexts[0] = nodeTexts[0].substring(selection.anchorOffset, selection.focusOffset);
+          nodeTexts[0] = nodeTexts[0].substring(range.startOffset, range.endOffset);
+        } else {
+          //nodeTexts[0] = nodeTexts[0].substring(selection.anchorOffset);
+          //nodeTexts[l] = nodeTexts[l].substring(0, this.defined ? undefined : selection.focusOffset);
+          nodeTexts[0] = nodeTexts[0].substring(range.startOffset);
+          nodeTexts[l] = nodeTexts[l].substring(0, this.defined ? undefined : range.endOffset);
         }
-    }, {
-        key: 'normalize',
-        value: function normalize(anchor, focus) {
-            var selection = this.self,
-                range = this.range,
-                firstTextNode = this.nodes[0],
-                lastTextNode = this.nodes[this.nodes.length - 1];
+        text = this.text = nodeTexts.join('');
+      }
+      return this;
+    }
+  }, {
+    key: 'getCommonAncestorContainer',
+    value: function getCommonAncestorContainer() {
+      var selection = this.self,
+          node1 = selection.anchorNode,
+          node2 = selection.focusNode;
 
-            if (firstTextNode !== anchor) range.setStart(firstTextNode, firstTextNode.data.length - firstTextNode.data.trimLeft().length);
+      while (node1 = node1.parentNode) {
+        if ((node1.compareDocumentPosition(node2) & 0x10) === 0x10) return node1;
+      }
+      return window.document.body;
+    }
+  }, {
+    key: 'reverse',
+    value: function reverse(anchor, focus) {
+      var range = window.document.createRange(),
+          selection = this.self;
 
-            if (lastTextNode !== focus) range.setEnd(lastTextNode, lastTextNode.data.length - (lastTextNode.data.length - lastTextNode.data.trimRight().length));
-        }
-    }, {
-        key: 'collectNodes',
-        value: function collectNodes(wholeDocument) {
-            var self = this,
-                selection = this.self,
-                range = this.range,
-                container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
-                iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {
-                acceptNode: function acceptNode(node) {
-                    var parent = node.parentNode;
-                    return selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(parent);
-                }
-            }, false),
-                tempRange = document.createRange(),
-                nodes = [],
-                parentNodes = [],
-                textNode,
-                parent,
-                firstNode,
-                lastNode;
+      range.setStart(focus, selection.focusOffset);
+      range.setEnd(anchor, selection.anchorOffset);
 
-            while (textNode = iterator.nextNode()) {
-                nodes.push(textNode);
-            }
-            this.nodes = this.getReducedNodeCollection(nodes);
-            this.parentNodes = this.collectParentNodes(this.nodes);
+      selection.removeAllRanges();
+      selection.addRange(range);
 
-            return this;
-        }
-    }, {
-        key: 'getReducedNodeCollection',
-        value: function getReducedNodeCollection(nodes) {
-            var selection = this.self;
-            var firstNode = void 0,
-                lastNode = void 0;
+      this.update(selection).adjust(selection.anchorNode, selection.focusNode);
+    }
+  }, {
+    key: 'reduceToOneRange',
+    value: function reduceToOneRange() {
+      var selection = this.self,
+          rangeCount = selection.rangeCount,
+          range0 = this.range,
+          lastRange = void 0;
 
-            if (nodes.length > 1) {
-                firstNode = nodes[0];
-                if (selection.anchorNode === firstNode && firstNode.data.trimRight().length <= selection.anchorOffset) {
-                    nodes.shift();
-                }
-                lastNode = nodes[nodes.length - 1];
-                if (selection.focusNode === lastNode && this.isBlank(lastNode.data.substr(0, selection.focusOffset))) {
-                    nodes.pop();
-                }
-            }
-            return nodes;
-        }
-    }, {
-        key: 'collectParentNodes',
-        value: function collectParentNodes(nodes) {
-            var l = nodes.length,
-                parents = [],
-                i = 0;
+      if (rangeCount < 2) return this;
 
-            for (; i < l; i++) {
-                parents.push(nodes[i].parentNode);
-            }return parents;
-        }
-    }, {
-        key: 'retrieveText',
-        value: function retrieveText() {
-            var range = this.range,
-                nodes = this.nodes,
-                l = nodes.length,
-                i = 0,
-                nodeTexts = [],
-                text = void 0;
+      lastRange = selection.getRangeAt(rangeCount - 1);
 
-            for (; i < l; i++) {
-                nodeTexts.push(nodes[i].data);
-            }l -= 1;
+      range0.setStart(range0.startContainer, range0.startOffset);
+      range0.setEnd(lastRange.endContainer, lastRange.endOffset);
 
-            if (this.simple)
-                //nodeTexts[0] = nodeTexts[0].substring(selection.anchorOffset, selection.focusOffset);
-                nodeTexts[0] = nodeTexts[0].substring(range.startOffset, range.endOffset);else {
-                //nodeTexts[0] = nodeTexts[0].substring(selection.anchorOffset);
-                //nodeTexts[l] = nodeTexts[l].substring(0, this.defined ? undefined : selection.focusOffset);
-                nodeTexts[0] = nodeTexts[0].substring(range.startOffset);
-                nodeTexts[l] = nodeTexts[l].substring(0, this.defined ? undefined : range.endOffset);
-            }
+      selection.removeAllRanges();
+      selection.addRange(range0);
 
-            text = this.text = nodeTexts.join('');
+      return this;
+    }
+  }, {
+    key: 'hasNormalParent',
+    value: function hasNormalParent(node) {
+      var tag = node.tagName.toUpperCase();
 
-            return this;
-        }
-    }, {
-        key: 'getCommonAncestorContainer',
-        value: function getCommonAncestorContainer() {
-            var selection = this.self,
-                node1 = selection.anchorNode,
-                node2 = selection.focusNode;
+      return tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' && tag !== 'BASE' && tag !== 'TITLE' && tag !== 'NOSCRIPT' && tag !== 'IMG' && tag !== 'IFRAME' && tag !== 'EMBED' && tag !== 'PARAM' && tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' && tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' && tag !== 'MATH' && tag !== 'OBJECT' && !this.isInsideSVG(node);
+    }
+  }, {
+    key: 'isInsideSVG',
+    value: function isInsideSVG(node) {
+      while (node) {
+        if (node.nodeName === 'svg') return true;
+        node = node.parentNode;
+      }
+      return false;
+    }
+  }, {
+    key: 'isBlank',
+    value: function isBlank(node) {
+      var text = void 0;
+      if (typeof node === 'string') text = node;else {
+        if (node && typeof node.data === 'string') text = node.data;else text = this.text;
+      }
+      return text.search(/[^\s\n\r\t]/g) === -1;
+    }
+  }, {
+    key: 'isBackwards',
+    value: function isBackwards(anchor, focus) {
+      var selection = this.self,
+          position = anchor.compareDocumentPosition(focus);
 
-            while (node1 = node1.parentNode) {
-                if ((node1.compareDocumentPosition(node2) & 0x10) === 0x10) return node1;
-            }
-            return window.document.body;
-        }
-    }, {
-        key: 'reverse',
-        value: function reverse(anchor, focus) {
-            var range = window.document.createRange(),
-                selection = this.self;
+      return position === 2 || position === 10 || !position && selection.anchorOffset > selection.focusOffset;
+    }
+  }, {
+    key: 'isSimple',
+    value: function isSimple() {
+      var selection = this.self,
+          anchorNode = selection.anchorNode,
+          focusNode = selection.focusNode;
 
-            range.setStart(focus, selection.focusOffset);
-            range.setEnd(anchor, selection.anchorOffset);
+      return anchorNode === focusNode && anchorNode.nodeType === 3 && (!anchorNode.nextSibling || anchorNode.nextSibling.compareDocumentPosition(focusNode) !== 4);
+    }
+  }]);
 
-            selection.removeAllRanges();
-            selection.addRange(range);
-
-            this.update(selection).adjust(selection.anchorNode, selection.focusNode);
-        }
-    }, {
-        key: 'reduceToOneRange',
-        value: function reduceToOneRange() {
-            var selection = this.self,
-                rangeCount = selection.rangeCount,
-                range0 = this.range,
-                lastRange = void 0;
-
-            if (rangeCount < 2) return this;
-
-            lastRange = selection.getRangeAt(rangeCount - 1);
-
-            range0.setStart(range0.startContainer, range0.startOffset);
-            range0.setEnd(lastRange.endContainer, lastRange.endOffset);
-
-            selection.removeAllRanges();
-            selection.addRange(range0);
-
-            return this;
-        }
-    }, {
-        key: 'hasNormalParent',
-        value: function hasNormalParent(node) {
-            var tag = node.tagName.toUpperCase();
-
-            return tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' && tag !== 'BASE' && tag !== 'TITLE' && tag !== 'NOSCRIPT' && tag !== 'IMG' && tag !== 'IFRAME' && tag !== 'EMBED' && tag !== 'PARAM' && tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' && tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' && tag !== 'MATH' && tag !== 'OBJECT' && !this.isInsideSVG(node);
-        }
-    }, {
-        key: 'isInsideSVG',
-        value: function isInsideSVG(node) {
-            while (node) {
-                if (node.nodeName === 'svg') return true;
-                node = node.parentNode;
-            }
-            return false;
-        }
-    }, {
-        key: 'isBlank',
-        value: function isBlank(node) {
-            var text = void 0;
-            if (typeof node === 'string') text = node;else {
-                if (node && typeof node.data === 'string') text = node.data;else text = this.text;
-            }
-            return text.search(/[^\s\n\r\t]/g) === -1;
-        }
-    }, {
-        key: 'isBackwards',
-        value: function isBackwards(anchor, focus) {
-            var selection = this.self,
-                position = anchor.compareDocumentPosition(focus);
-
-            return position === 2 || position === 10 || !position && selection.anchorOffset > selection.focusOffset;
-        }
-    }, {
-        key: 'isSimple',
-        value: function isSimple() {
-            var selection = this.self,
-                anchorNode = selection.anchorNode,
-                focusNode = selection.focusNode;
-
-            return anchorNode === focusNode && anchorNode.nodeType === 3 && (!anchorNode.nextSibling || anchorNode.nextSibling.compareDocumentPosition(focusNode) !== 4);
-        }
-    }]);
-
-    return _SELECTION;
+  return _SELECTION;
 }();
 
 exports.default = _SELECTION;
@@ -1844,7 +1845,7 @@ exports.default = function () {
     addNote: function addNote(id) {
       this.emit('add:note', this.findMark(id));
     },
-    setBookmark: function setBookmark(m) {
+    setBookmark: function setBookmark(m, save) {
       var bookmark = this.bookmark,
           mark = this.findMark(m);
 
@@ -1858,7 +1859,7 @@ exports.default = function () {
       this.bookmark = new _bookmark2.default().set(mark);
 
       this.emit('added:bookmark');
-      this.autosave();
+      if (save !== false) this.autosave();
     },
     undoBookmark: function undoBookmark() {
       this.bookmark = null;
@@ -2135,7 +2136,7 @@ var _MARK = function () {
 
 						this.definePosition(lastIndex);
 
-						if (this.keyData.bookmark) this.marker.setBookmark(this);
+						if (this.keyData.bookmark) this.marker.setBookmark(this, false);
 
 						if (!this.keyData.conds) this.describe();
 

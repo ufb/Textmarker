@@ -22,6 +22,7 @@ export default {
     },
     history: {
       autosave: true,
+      saveInPriv: false,
       naming: 'title',
       download: 'text',
       copy: 'text',

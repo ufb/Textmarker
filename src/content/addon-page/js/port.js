@@ -10,6 +10,7 @@ export default new _PORT({
       'change:shortcut-setting',
       'toggle:ctm-setting',
       'change:saveopt-setting',
+      'toggle:priv-setting',
       'change:namingopt-setting',
       'change:sort-setting',
       'change:view-setting',

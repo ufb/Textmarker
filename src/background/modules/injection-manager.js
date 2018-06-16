@@ -27,21 +27,37 @@ new _MODULE({
       .then(windowInfo => {
         const priv = windowInfo.incognito;
         if (priv) this.emit('failed:pbm');
-        sendResponse(!priv);
+        if (!priv) sendResponse(!priv);
+        else {
+          _STORAGE.get('privsave').then(saveInPriv => {
+            if (!saveInPriv) this.emit('failed:pbm');
+            else sendResponse(saveInPriv);
+          });
+        }
       });
   },
   onSaveNewRequest(entry) {
     return browser.windows.getLastFocused()
       .then(windowInfo => {
-        if (windowInfo.incognito) this.emit('failed:pbm');
-        else this.emit('granted:save-entry', entry);
+        if (!windowInfo.incognito) this.emit('granted:save-entry', entry);
+        else {
+          _STORAGE.get('privsave').then(saveInPriv => {
+            if (!saveInPriv) this.emit('failed:pbm');
+            else this.emit('granted:save-entry', entry);
+          });
+        }
       });
   },
   onUpdateRequest(entry) {
     return browser.windows.getLastFocused()
       .then(windowInfo => {
-        if (windowInfo.incognito) this.emit('failed:pbm');
-        else this.emit('granted:update-entry', entry);
+        if (!windowInfo.incognito) this.emit('granted:update-entry', entry);
+        else {
+          _STORAGE.get('privsave').then(saveInPriv => {
+            if (!saveInPriv) this.emit('failed:pbm');
+            else this.emit('granted:update-entry', entry);
+          });
+        }
       });
   },
   getHashlessURL(url) {

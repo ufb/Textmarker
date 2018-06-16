@@ -146,7 +146,7 @@ export default function() {
 
       if (action === 'tag') {
         let val = document.getElementById('tag').value;
-        if (val) this.tag(names, val);
+        this.tag(names, val);
       } else {
         let split = document.getElementById('specification').value.split(' '),
             type = split[0],
