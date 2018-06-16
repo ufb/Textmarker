@@ -52,6 +52,7 @@
 "title_submit_action":{"message":"Effectuer l’action sélectionnée"},
 "title_name":{"message":"Ouvrir la page dans un nouvel onglet"},
 "title_view":{"message":"Ouvrir la vue détaillée dans une nouvelle fenêtre"},
+"experimental":{"message":"expérimental"},
 "h10":{"message":"Nouveautés"},
 "h111":{"message":"Actions depuis la barre latérale"},
 "t111":{"message":"Vous avez dorénavant la possibilité de surligner un texte, définir la couleur des surligneurs et exécuter des actions sur la page (enregistrer, annuler, rétablir, atteindre un surlignage marqué, afficher ou cacher les notes) ainsi que sur les surlignages sélectionnés (supprimer, marquer ou supprimer le signet, joindre une note) depuis la barre latérale. La sélection des surlignages se fait en les cliquant."},
