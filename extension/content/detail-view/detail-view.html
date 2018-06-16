@@ -14,15 +14,19 @@
   <div id="main">
     <section id="meta">
       <h2 data-l10n-id="detail_meta"></h2>
-      <p><span class="meta__field" data-l10n-id="created"></span><span id="created"></span></p>
-      <p><span class="meta__field" data-l10n-id="last_modified"></span><span id="last_modified"></span></p>
-      <p><span class="meta__field" data-l10n-id="page_title"></span><span id="title"></span></p>
-      <p><span class="meta__field">URL</span><a id="url" target="_blank"></a></p>
-      <p><span class="meta__field" data-l10n-id="detail_sync"></span><span id="synced"></span></p>
+      <table id="table--meta">
+        <tbody>
+          <tr><td><span class="meta__field" data-l10n-id="created"></span></td><td><span id="created"></span></td></tr>
+          <tr><td><span class="meta__field" data-l10n-id="last_modified"></span></td><td><span id="last_modified"></span></td></tr>
+          <tr><td><span class="meta__field" data-l10n-id="page_title"></span></td><td><span id="title"></span></td></tr>
+          <tr><td><span class="meta__field">URL</span></td><td><a id="url" target="_blank"></a></td></tr>
+          <tr><td><span class="meta__field" data-l10n-id="detail_sync"></span></td><td><span id="synced"></span></td></tr>
+        </tbody>
+      </table>
     </section>
     <section id="marks">
       <h2><span data-l10n-id="t439"></span> <span id="marks-count"></span></h2>
-      <table>
+      <table id="table--marks">
         <colgroup><col></col><col></col></colgroup>
         <thead>
           <tr><th data-l10n-id="detail_text"></th><th><span data-l10n-id="note"></span><span class="col-toggle" data-l10n-attr data-l10n-title="title_coltoggle"></span></th></tr>
