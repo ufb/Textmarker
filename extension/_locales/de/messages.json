@@ -52,6 +52,7 @@
 "title_submit_action":{"message":"Aktion ausführen"},
 "title_name":{"message":"Öffne Seite in neuem Tab"},
 "title_view":{"message":"Öffne Detailansicht in neuem Fenster"},
+"experimental":{"message":"experimentell"},
 "h10":{"message":"Neu"},
 "h111":{"message":"Aktionen über die Seitenleiste"},
 "t111":{"message":"Über die Seitenleiste können Markierungen vorgenommen und Markerfarben bestimmt werden sowie Seitenaktionen (Speichern, Rückgängig-Machen, Wiederherstellen, Zum Lesezeichen scrollen, Notizzettel ein-/ausblenden) und Aktionen an ausgewählten Markierungen (Löschen, Lesezeichen setzen/löschen, Notiz hinzufügen) ausgeführt werden. Markierungen können durch Mausklick auf selbige ausgewählt werden."},

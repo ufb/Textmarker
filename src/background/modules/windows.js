@@ -15,7 +15,7 @@ export default function() {
       browser.windows.getCurrent().then(currentWindow => {
 
         browser.windows.create({
-          url: popupURL + '#' + name,
+          url: popupURL + '#' + encodeURIComponent(name),
           type: 'panel',
           height: currentWindow.height - 22,
           width: Math.min(currentWindow.width, 980),

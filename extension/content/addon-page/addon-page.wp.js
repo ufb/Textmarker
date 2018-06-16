@@ -1524,24 +1524,39 @@ exports.default = function () {
       tag = entries[name].tag || null;
       if (tag && !tags.includes(tag)) tags.push(tag);
     }
-    if (!tags.length) {
-      this.addFilterOpt('', browser.i18n.getMessage('detail_notag'), 'disabled');
+    if (!tags.length && !document.getElementById('filter-opt-notag')) {
+      this.addFilterOpt('', browser.i18n.getMessage('detail_notag'), { disabled: true, id: 'filter-opt-notag' });
     } else {
       tags.forEach(function (tag) {
         return _this6.addFilterOpt(tag, tag);
       });
-      this.addFilterOpt('', browser.i18n.getMessage('t5125'));
+      if (!document.getElementById('filter-opt-tagless')) {
+        this.addFilterOpt('', browser.i18n.getMessage('t5125'), { id: 'filter-opt-tagless' });
+      }
     }
     this.filterOptionsSet = true;
-  }), _defineProperty(_ref, 'addFilterOpt', function addFilterOpt(tag, text, attr) {
+  }), _defineProperty(_ref, 'addFilterOpt', function addFilterOpt(tag, text, attrs) {
     if (this.tags.includes(tag)) return this;
-    this.tags.push(tag);
+
     var select = document.getElementById('filter-entries');
     var opt = document.createElement('option');
+
     select.appendChild(opt);
     opt.value = tag;
     opt.innerText = text;
-    if (attr) opt.setAttribute(attr, true);
+    if (attrs) {
+      for (var a in attrs) {
+        opt.setAttribute(a, attrs[a]);
+      }
+    }
+    if (!this.tags.length && tag) {
+      var notagFilterOpt = document.getElementById('filter-opt-notag');
+      if (notagFilterOpt) select.removeChild(notagFilterOpt);
+      if (!document.getElementById('filter-opt-tagless')) {
+        this.addFilterOpt('', browser.i18n.getMessage('t5125'), { id: 'filter-opt-tagless' });
+      }
+    }
+    if (tag) this.tags.push(tag);
   }), _defineProperty(_ref, 'getText', function getText(names, spec) {
     var _this7 = this;
 
