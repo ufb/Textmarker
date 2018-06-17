@@ -1,3 +1,5 @@
+import './../sass/main.scss'
+
 import _ERRORTRACKER from './../../utils'
 import { _DOMMODULE } from './../../utils'
 import { _L10N } from './../../utils'

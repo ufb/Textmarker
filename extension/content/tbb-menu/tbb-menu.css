@@ -1,43 +1,44 @@
 /*    RESET
 ===============================================*/
 html, body, div, span, a, ul, li {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-family: inherit;
-	vertical-align: baseline;
-}
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+  vertical-align: baseline; }
+
 body {
-	width: 185px;
-	font-family: system, 'Segoe UI', Tahoma;
-}
+  width: 185px;
+  font-family: system, 'Segoe UI', Tahoma; }
+
 ul {
-	list-style-type: none;
-	font-size: 12px;
-	padding: 5px 0;
-}
+  list-style-type: none;
+  font-size: 12px;
+  padding: 5px 0; }
+
 li {
-	padding: 3px 10px;
-}
+  padding: 3px 10px; }
+
 li:hover {
-	background: #f0f0f0;
-}
+  background: #f0f0f0; }
+
 .partingline {
   height: 1px;
   padding: 0;
   background: #dedede;
-  margin: 5px 0;
-}
+  margin: 5px 0; }
+
 .partingline:hover {
-  background: #dedede;
-}
+  background: #dedede; }
+
 a {
-	text-decoration: none;
-	color: #3a74ad;
-}
+  text-decoration: none;
+  color: #3a74ad; }
+
 a:hover {
-	text-decoration: underline;
-}
+  text-decoration: underline; }
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjb250ZW50L3RiYi1tZW51L3RiYi1tZW51LmNzcyIsInNvdXJjZVJvb3QiOiIifQ==*/
