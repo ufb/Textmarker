@@ -8,9 +8,9 @@ button {
   display: block;
   width: 120px;
   margin-bottom: 12px;
-  transition: background 0.5s;
-}
-button:hover {
-  background: #fbfbfb;
-  color: #40566b;
-}
+  transition: background 0.5s; }
+  button:hover {
+    background: #fbfbfb;
+    color: #40566b; }
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjb250ZW50L29wdGlvbnMtdWkvb3B0aW9ucy5jc3MiLCJzb3VyY2VSb290IjoiIn0=*/

@@ -1,3 +1,5 @@
+import './../sass/main.scss'
+
 import { _L10N } from './../../utils'
 
 _L10N();
