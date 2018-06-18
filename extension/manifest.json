@@ -35,16 +35,16 @@
   ],
 
   "icons": {
-    "16": "content/icons/on16.png",
-    "32": "content/icons/on32.png"
+    "16": "icons/on16.png",
+    "32": "icons/on32.png"
   },
 
   "browser_action": {
     "default_title": "Textmarker",
     "default_icon": {
-      "16": "content/icons/on16.png",
-      "18": "content/icons/on18.png",
-      "32": "content/icons/on32.png"
+      "16": "icons/on16.png",
+      "18": "icons/on18.png",
+      "32": "icons/on32.png"
     },
     "default_popup": "content/tbb-menu/tbb-menu.html",
     "browser_style": true
@@ -54,9 +54,9 @@
     "default_title": "Textmarker",
     "default_panel": "content/sidebar/sidebar.html",
     "default_icon": {
-      "16": "content/icons/on16.png",
-      "18": "content/icons/on18.png",
-      "32": "content/icons/on32.png"
+      "16": "icons/on16.png",
+      "18": "icons/on18.png",
+      "32": "icons/on32.png"
     }
   },
 

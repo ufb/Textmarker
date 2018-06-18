@@ -28,7 +28,7 @@ export default function() {
             type: 'basic',
             title: 'Textmarker: ' + browser.i18n.getMessage(type),
             message,
-            iconUrl: browser.extension.getURL('content/icons/tm48.png')
+            iconUrl: browser.extension.getURL('icons/tm48.png')
           });
         }
       });
