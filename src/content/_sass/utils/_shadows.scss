@@ -1,0 +1,13 @@
+@mixin shadow-switch($color) {
+  box-shadow: 0 0 2px $color inset;
+}
+
+%shadow-switch {
+  @include shadow-switch($color-shadow--light);
+}
+%shadow-switch--hover {
+  @include shadow-switch($color-shadow--medium);
+}
+%shadow-switch--active {
+  @include shadow-switch($color-shadow--dark);
+}

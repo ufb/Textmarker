@@ -1,0 +1,133 @@
+// colors
+.u-color {
+  &--default {
+    color: $color-text--dark;
+  }
+  &--white {
+    color: $color-text--light;
+  }
+  &--grey {
+    color: $color-text--grey;
+  }
+  &--turquoise {
+    color: $color-text--turquoise;
+  }
+  &--red {
+    color: $color-text--red;
+  }
+}
+// font-sizes
+.u-size {
+  &--s5 {
+    font-size: $font-size--s5;
+  }
+  &--s4 {
+    font-size: $font-size--s4;
+  }
+  &--s3 {
+    font-size: $font-size--s3;
+  }
+  &--s2 {
+    font-size: $font-size--s2;
+  }
+  &--s1 {
+    font-size: $font-size--s1;
+  }
+  &--default {
+    font-size: $font-size--default;
+  }
+  &--l1 {
+    font-size: $font-size--l1;
+  }
+  &--l2 {
+    font-size: $font-size--l2;
+  }
+  &--l3 {
+    font-size: $font-size--l3;
+  }
+}
+$font-size--s5: 0.6667rem; // 10/15px
+$font-size--s4: 0.733rem; // 11/15px
+$font-size--s3: 0.8rem; // 12/15px
+$font-size--s2: 0.8667rem; // 13/15px
+$font-size--s1: 0.9333rem; // 14/15px
+$font-size--default: 1rem;
+$font-size--l1: 1.133rem; // 17/25px
+$font-size--l2: 1.333rem; // 20/25px
+$font-size--l3: 1.467rem; // 22/15px
+
+// spacing
+$ct-spacing-properties: (
+  'p' : 'padding',
+  'm' : 'margin'
+);
+
+$ct-spacing-directions: (
+  null : null,
+  't' : '-top',
+  'r' : '-right',
+  'b' : '-bottom',
+  'l' : '-left'
+);
+
+$ct-spacing-sizes: (
+  '-0_25'     : $spacing--tiny,
+  '-0_5'      : $spacing--small,
+  null        : $spacing--medium,
+  '-2'        : $spacing--large,
+  '-0'        : 0
+);
+
+@each $property-short, $property in $ct-spacing-properties {
+  @each $direction-short, $direction in $ct-spacing-directions {
+    @each $size, $value in $ct-spacing-sizes {
+      .u-#{$property-short}#{$direction-short}#{$size} {
+        #{$property}#{$direction}: $value !important;
+      }
+    }
+  }
+}
+
+// positioning
+.u-cf:after {
+	content: "";
+	visibility: hidden;
+	display: block;
+	clear: both;
+	height: 0;
+}
+.u-float {
+  &--right {
+    float: right;
+  }
+  &--left {
+    float: left;
+  }
+}
+
+// display
+.u-display {
+  &--none {
+    display: none !important;
+  }
+  &--block {
+    display: block !important;
+  }
+  &--inline {
+    display: inline;
+  }
+  &--inline-block {
+    display: inline-block;
+  }
+}
+
+// media queries
+@mixin mq($media-query) {
+
+    @if $media-query == mobile {
+        @media only screen and (max-width: $mq-mobile) { @content; }
+    }
+    @if $media-query == desk {
+        @media only screen and (max-width: $mq-desk--small) { @content; }
+    }
+}

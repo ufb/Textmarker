@@ -1,0 +1,50 @@
+.switch {
+  @extend %shadow-switch;
+  width: 44px;
+  height: 22px;
+  padding: 2px;
+  float: left;
+  cursor: pointer;
+
+  &--save {
+    .autosave {
+      display: none;
+    }
+  }
+  &:hover {
+    @extend %shadow-switch--hover;
+
+    &.active {
+      @extend %shadow-switch--active;
+    }
+  }
+  &.active {
+    @extend %shadow-switch--active;
+  }
+  span {
+    padding: 0 4px;
+  }
+}
+
+.switch__indicator {
+  width: 18px;
+  height: 18px;
+  background-color: $color-grey--light;
+  display: inline-block;
+  margin-left: 22px;
+  transition: margin 0.1s;
+
+  .switch--sync & {
+    @include icon('sync', center, 67%);
+  }
+  .switch--save & {
+    @include icon('save2', center, 67%);
+  }
+  .switch.active & {
+    background-color: $color-bg--turquoise-inactive;
+    margin-left: 0;
+  }
+  .switch.active:hover & {
+    background-color: $color-bg--turquoise;
+  }
+}

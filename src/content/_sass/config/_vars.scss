@@ -1,0 +1,62 @@
+// colors
+$color-turquoise: #2ba5b7;
+$color-grey--darker: #37414b;
+$color-grey--dark: #555;
+$color-grey--medium: #777;
+$color-grey--medium-light: #aaa;
+$color-grey--light: #c8c8c8;
+$color-grey--lighter: #e1e2e3;
+$color-red: #ad3a3a;
+$color-black: #000;
+$color-white: #fbfbfb;
+
+$color-bg--dark: $color-grey--darker;
+$color-bg--light: $color-white;
+$color-bg--turquoise: $color-turquoise;
+$color-bg--turquoise-inactive: transparentize($color-bg--turquoise, .25);
+
+$color-border: $color-grey--light;
+$color-border--light: $color-grey--lighter;
+
+$color-shadow--darker: $color-grey--darker;
+$color-shadow--dark: $color-grey--dark;
+$color-shadow--medium: $color-grey--medium;
+$color-shadow--light: $color-grey--medium-light;
+
+$color-text--dark: $color-grey--darker;
+$color-text--light: $color-white;
+$color-text--grey: $color-grey--medium;
+$color-text--turquoise: $color-turquoise;
+$color-text--red: $color-red;
+$color-text--disabled: $color-grey--light;
+
+// media queries
+$mq-desk--small: 940px;
+$mq-mobile: 768px;
+
+// font-sizes
+$font-size--s5: 0.6667rem; // 10/15px
+$font-size--s4: 0.733rem; // 11/15px
+$font-size--s3: 0.8rem; // 12/15px
+$font-size--s2: 0.8667rem; // 13/15px
+$font-size--s1: 0.9333rem; // 14/15px
+$font-size--default: 1rem;
+$font-size--l1: 1.133rem; // 17/25px
+$font-size--l2: 1.333rem; // 20/25px
+$font-size--l3: 1.467rem; // 22/15px
+
+// spacing
+$spacing--tiny: 5px;
+$spacing--small: 10px;
+$spacing--medium: 15px;
+$spacing--large: 20px;
+$spacing--huge: 30px;
+
+// layers
+$layer--sub: -1;
+$layer--ground: 0;
+$layer--up: 1;
+$layer--upper: 2;
+$layer--sky: 1000;
+$layer--sun: 1001;
+$layer--top: 1002;
