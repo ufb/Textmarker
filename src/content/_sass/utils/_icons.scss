@@ -1,0 +1,6 @@
+@mixin icon($name, $position: 0 0, $size: 100%, $repeat: no-repeat) {
+  background-image: url(../../icons/#{$name}.png);
+  background-repeat: $repeat;
+  background-position: $position;
+  background-size: $size;
+}
