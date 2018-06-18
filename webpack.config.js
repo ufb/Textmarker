@@ -1,23 +1,24 @@
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
 
 module.exports = {
     context: path.resolve(__dirname, 'src'),
     entry: {
       'background/background': './background/index.js',
-      'content/tbb-menu/tbb-menu': './content/tbb-menu/js/index.js',
-      'content/addon-page/addon-page': './content/addon-page/js/index.js',
-      'content/page-injections/injection': './content/page-injections/js/index.js',
-      'content/sidebar/sidebar': './content/sidebar/js/index.js',
-      'content/options-ui/options': './content/options-ui/js/index.js',
-      'content/detail-view/detail-view': './content/detail-view/js/index.js'
+      'content/tbb-menu/tbb-menu': './content/tbb-menu/index.js',
+      'content/addon-page/addon-page': './content/addon-page/index.js',
+      'content/page-injections/injection': './content/page-injections/index.js',
+      'content/sidebar/sidebar': './content/sidebar/index.js',
+      'content/options-ui/options': './content/options-ui/index.js',
+      'content/detail-view/detail-view': './content/detail-view/index.js'
     },
     output: {
       path: path.resolve(__dirname, 'extension'),
       filename: '[name].wp.js'
     },
-    mode: 'development',
-    devtool: 'inline-source-map',
+    mode: 'production',
+    //devtool: 'inline-source-map',
     module: {
       rules: [{
         test: /\.js$/,
@@ -32,8 +33,8 @@ module.exports = {
         loader: 'file-loader',
         options: {
           name: '[name].[ext]',
-          outputPath: 'content/icons/',
-          publicPath: '../icons/'
+          outputPath: 'icons/',
+          publicPath: '../../icons/'
         }
        }, {
         test: /\.scss$/,
@@ -44,36 +45,7 @@ module.exports = {
       }]
     },
     plugins: [
-      new ExtractTextPlugin('[name].css')
+      new ExtractTextPlugin('[name].css'),
+      new DuplicatePackageCheckerPlugin()
     ]
-}/*, {
-    entry: {
-      'content/addon-page/addon-page': './src/content/addon-page/sass/main.scss',
-      'content/detail-view/detail-view': './src/content/detail-view/sass/main.scss'
-    },
-    output: {
-      path: path.resolve(__dirname, 'extension'),
-      filename: '[name].css'
-    },
-    mode: 'production',
-    plugins: [
-      new ExtractTextPlugin('[name].css')
-    ],
-    module: {
-      rules: [{
-        test: /\.(png|jpg)$/,
-        exclude: /node_modules/,
-        loader: 'file-loader',
-        options: {
-          name: '../icons/[name].[ext]',
-          outputPath: 'content/icons/'
-        }
-       }, {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: ExtractTextPlugin.extract({
-          use: ['css-loader', 'sass-loader']
-        })
-      }]
-    }
-}]*/
+}

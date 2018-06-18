@@ -1,25 +1,25 @@
 * {
-  box-sizing: border-box; }
-
+  box-sizing: border-box;
+}
 body {
   font-size: 13px;
   padding-top: 10px;
-  color: #777; }
-
+  color: #777;
+}
 section {
   margin-bottom: 5px;
   padding: 10px 20px 30px;
-  border-bottom: 1px solid #e3e3e3; }
-
+  border-bottom: 1px solid #e3e3e3;
+}
 section:last-child {
-  border: 0; }
-
+  border: 0;
+}
 h2 {
   font-size: 100%;
   margin: 0 0 25px;
   font-weight: normal;
-  position: relative; }
-
+  position: relative;
+}
 h2 .i {
   cursor: pointer;
   color: #2ba5b7;
@@ -34,28 +34,28 @@ h2 .i {
   font-size: 11px;
   padding: 1px 2px 2px 1px;
   font-family: Georgia, serif;
-  margin-top: 3px; }
-
+  margin-top: 3px;
+}
 h2 .i:hover {
   text-decoration: none;
   color: #fff;
   background: #2ba5b7;
-  border: 0; }
-
+  border: 0;
+}
 h2 .i.active + small {
-  display: inline-block; }
-
+  display: inline-block;
+}
 h2 small {
   display: none;
   font-size: 12px;
   margin-top: 5px;
-  color: #2ba5b7; }
-
+  color: #2ba5b7;
+}
 label {
   float: left;
   padding-top: 2px;
-  cursor: pointer; }
-
+  cursor: pointer;
+}
 button {
   border: 1px solid #c8c8c8;
   transition: background 0.5s;
@@ -66,45 +66,45 @@ button {
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: center, 0 0;
-  opacity: 0.75; }
-
+  opacity: 0.75;
+}
 button:hover {
-  opacity: 1; }
-
+  opacity: 1;
+}
 button:last-child {
-  margin: 0; }
-
+  margin: 0;
+}
 .clearfix:after {
-  content: "";
-  visibility: hidden;
-  display: block;
-  clear: both;
-  height: 0; }
-
+	content: "";
+	visibility: hidden;
+	display: block;
+	clear: both;
+	height: 0;
+}
 .none {
-  display: none; }
-
+  display: none;
+}
 .marker {
-  margin-bottom: 8px; }
-
+  margin-bottom: 8px;
+}
 .marker__apply {
-  background-image: url(../../icons/highlight.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
-  margin: 0 0 0 10px; }
-
+  background-image: url(../../icons/highlight.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+  margin: 0 0 0 10px;
+}
 .marker__apply:hover {
-  opacity: 1; }
-
+  opacity: 1;
+}
 .marker__label {
-  display: inline-block; }
-
+  display: inline-block;
+}
 .marker__color {
   padding: 0;
   width: 44px;
   border: 0;
   -moz-appearance: none;
   cursor: pointer;
-  float: right; }
-
+  float: right;
+}
 .switch {
   margin-bottom: 18px;
   float: right;
@@ -112,88 +112,89 @@ button:last-child {
   width: 44px;
   height: 22px;
   padding: 2px;
-  cursor: pointer; }
-
+  cursor: pointer;
+}
 .switch:hover {
-  box-shadow: 0 0 2px #777 inset; }
-
+  box-shadow: 0 0 2px #777 inset;
+}
 .switch.active {
-  box-shadow: 0 0 2px #777 inset; }
-
+  box-shadow: 0 0 2px #777 inset;
+}
 .switch.active:hover {
-  box-shadow: 0 0 3px #555 inset; }
-
+  box-shadow: 0 0 3px #555 inset;
+}
 .switch-indicator {
   width: 18px;
   height: 18px;
-  background-color: #d2d2d2;
+  background-color: rgb(210, 210, 210);
   background-image: url(../../icons/save2.png);
   background-size: 67%;
   background-position: center;
   background-repeat: no-repeat;
   display: inline-block;
   margin-left: 22px;
-  transition: margin 0.1s; }
-
+  transition: margin 0.1s;
+}
 .switch span {
-  padding: 0 4px; }
-
+  padding: 0 4px;
+}
 .switch .autosave {
-  display: none; }
-
+  display: none;
+}
 .switch.active .switch-indicator {
   background-color: rgba(43, 165, 183, 0.75);
-  margin-left: 0; }
-
+  margin-left: 0;
+}
 .switch.active:hover .switch-indicator {
-  background-color: #2ba5b7; }
-
+  background-color: #2ba5b7;
+}
 .autosave-label {
-  cursor: default; }
-
+  cursor: default;
+}
 .link {
-  cursor: pointer; }
-
+  cursor: pointer;
+}
 .link:hover {
-  text-decoration: underline; }
-
+  text-decoration: underline;
+}
 [disabled] {
   opacity: 0.2 !important;
-  cursor: default; }
-
+  cursor: default;
+}
 .disabled label {
-  color: #d7d9db; }
-
+  color: #d7d9db;
+}
 .action-box {
-  margin: 0 0 6px 0; }
-
+  margin: 0 0 6px 0;
+}
 #mark-action--delete-highlight {
-  background-image: url(../../icons/bin.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/bin.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #mark-action--bookmark {
-  background-image: url(../../icons/bm3.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/bm3.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #mark-action--delete-bookmark {
-  background-image: url(../../icons/del-bm.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/del-bm.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #mark-action--add-note {
-  background-image: url(../../icons/note2.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/note2.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #page-action--save {
-  background-image: url(../../icons/save.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/save.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #page-action--undo {
-  background-image: url(../../icons/undo.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/undo.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #page-action--redo {
-  background-image: url(../../icons/redo.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/redo.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #page-action--scroll {
-  background-image: url(../../icons/to-bm.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/to-bm.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #page-action--notes {
-  background-image: url(../../icons/note2.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
-
+  background-image: url(../../icons/note2.png), linear-gradient(transparent 50%, rgba(43, 165, 183, .1) 50%);
+}
 #textmarker-sidebar--paused {
   padding: 10px 20px;
-  color: #ad3a3a; }
+  color: #ad3a3a;
+}

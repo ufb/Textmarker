@@ -87,13 +87,13 @@ new _MODULE({
   toggleBrowserActionIcon(on) {
     browser.browserAction.setIcon({
       path: on ? {
-        16: './../content/icons/on16.png',
-        18: './../content/icons/on18.png',
-        32: './../content/icons/on32.png'
+        16: '../icons/on16.png',
+        18: '../icons/on18.png',
+        32: '../icons/on32.png'
       } : {
-        16: './../content/icons/off16.png',
-        18: './../content/icons/off18.png',
-        32: './../content/icons/off32.png'
+        16: '../icons/off16.png',
+        18: '../icons/off18.png',
+        32: '../icons/off32.png'
       }
     });
   }
