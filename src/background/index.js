@@ -1,3 +1,12 @@
+import '../icons/on16.png'
+import '../icons/on18.png'
+import '../icons/on32.png'
+import '../icons/on36.png'
+import '../icons/on64.png'
+import '../icons/off16.png'
+import '../icons/off18.png'
+import '../icons/tm48.png'
+
 import _ERRORTRACKER from './utils'
 import _STORAGE from './storage'
 import './port'
