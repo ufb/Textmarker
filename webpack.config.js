@@ -1,6 +1,9 @@
 const path = require('path');
+const process = require('process');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
+
+const PROD = (process.env.NODE_ENV === 'PROD');
 
 module.exports = {
     context: path.resolve(__dirname, 'src'),
@@ -17,8 +20,8 @@ module.exports = {
       path: path.resolve(__dirname, 'extension'),
       filename: '[name].wp.js'
     },
-    mode: 'production',
-    //devtool: 'inline-source-map',
+    mode: PROD ? 'production' : 'development',
+    devtool: PROD ? false : 'inline-source-map',
     module: {
       rules: [{
         test: /\.js$/,

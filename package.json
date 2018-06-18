@@ -4,6 +4,7 @@
   "description": "webextensions-addon-textmarker",
   "main": "src/main.js",
   "dependencies": {
+    "cross-env": "^5.2.0",
     "webpack": "^4.12.0"
   },
   "devDependencies": {
@@ -20,6 +21,8 @@
     "webpack-cli": "^3.0.8"
   },
   "scripts": {
-    "build": "webpack --progress --config=webpack.config.js --hide-modules --display=minimal"
+    "__webpack": "webpack --progress --config=webpack.config.js --hide-modules --display=minimal",
+    "dev": "cross-env NODE_ENV=DEV npm run __webpack",
+    "prod": "cross-env NODE_ENV=PROD npm run __webpack"
   }
 }
