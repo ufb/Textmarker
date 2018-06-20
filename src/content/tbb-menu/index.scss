@@ -1,15 +1,6 @@
-/*    RESET
-===============================================*/
-html, body, div, span, a, ul, li {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-weight: inherit;
-	font-style: inherit;
-	font-family: inherit;
-	vertical-align: baseline;
-}
+@import '../_sass/config/vars';
+@import '../_sass/basics/reset';
+
 body {
 	width: 185px;
 	font-family: system, 'Segoe UI', Tahoma;
@@ -23,21 +14,14 @@ li {
 	padding: 3px 10px;
 }
 li:hover {
-	background: #f0f0f0;
+	background: transparentize($color-bg--turquoise, .9);
 }
 .partingline {
   height: 1px;
   padding: 0;
-  background: #dedede;
+  background: $color-border--light;
   margin: 5px 0;
 }
 .partingline:hover {
-  background: #dedede;
-}
-a {
-	text-decoration: none;
-	color: #3a74ad;
-}
-a:hover {
-	text-decoration: underline;
+  background: $color-border--light;
 }

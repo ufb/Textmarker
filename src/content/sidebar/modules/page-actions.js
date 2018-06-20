@@ -20,7 +20,7 @@ new _DOMMODULE({
     DOM: {
       click: {
         '.switch-toggle': 'onAutosaveSwitch',
-        '.page-action': 'pageAction'
+        '.action-box__action--page': 'pageAction'
       }
     }
   },
@@ -43,7 +43,7 @@ new _DOMMODULE({
   toggleAutosave(on) {
     const meth = on ? 'add' : 'remove';
     document.getElementById('autosave-switch').classList[meth]('active');
-    document.getElementById('page-action-box--save').classList[meth]('none');
+    document.getElementById('page-action-box--save').classList[meth]('u-display--none');
   },
   activateSave() {
     this.activate('save', true);

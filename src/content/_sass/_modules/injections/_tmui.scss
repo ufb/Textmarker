@@ -1,0 +1,35 @@
+tmui {
+  display: none;
+  z-index: $layer--max;
+  position: fixed;
+  background: $color-bg--light;
+  border: 1px solid $color-border--light;
+  padding-top: 3px;
+  box-sizing: border-box !important;
+}
+tmui.active {
+  display: block;
+}
+tmbm, tmnotestoggle {
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 3px;
+  margin-right: 3px;
+  vertical-align: top;
+  width: 12px;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.25));
+}
+tmbm {
+  @include icon('bm', center);
+  height: 18px;
+}
+tmbm:hover {
+  filter: brightness(1.15);
+}
+tmnotestoggle {
+  @include icon('note', center);
+  height: 16px;
+}
+tmnotestoggle:hover {
+  filter: brightness(1.15);
+}

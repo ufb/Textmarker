@@ -48,36 +48,36 @@
 }
 
 // spacing
-$ct-spacing-properties: (
-  'p' : 'padding',
-  'm' : 'margin'
-);
-
-$ct-spacing-directions: (
-  null : null,
-  't' : '-top',
-  'r' : '-right',
-  'b' : '-bottom',
-  'l' : '-left'
-);
-
-$ct-spacing-sizes: (
-  '-0_25'     : $spacing--tiny,
-  '-0_5'      : $spacing--small,
-  null        : $spacing--medium,
-  '-2'        : $spacing--large,
-  '-0'        : 0
-);
-
-@each $property-short, $property in $ct-spacing-properties {
-  @each $direction-short, $direction in $ct-spacing-directions {
-    @each $size, $value in $ct-spacing-sizes {
-      .u-#{$property-short}#{$direction-short}#{$size} {
-        #{$property}#{$direction}: $value !important;
-      }
-    }
-  }
-}
+// $spacing-properties: (
+//   'p' : 'padding',
+//   'm' : 'margin'
+// );
+//
+// $spacing-directions: (
+//   null : null,
+//   't' : '-top',
+//   'r' : '-right',
+//   'b' : '-bottom',
+//   'l' : '-left'
+// );
+//
+// $spacing-sizes: (
+//   '-0_25'     : $spacing--tiny,
+//   '-0_5'      : $spacing--small,
+//   null        : $spacing--medium,
+//   '-2'        : $spacing--large,
+//   '-0'        : 0
+// );
+//
+// @each $property-short, $property in $spacing-properties {
+//   @each $direction-short, $direction in $spacing-directions {
+//     @each $size, $value in $spacing-sizes {
+//       .u-#{$property-short}#{$direction-short}#{$size} {
+//         #{$property}#{$direction}: $value !important;
+//       }
+//     }
+//   }
+// }
 
 // positioning
 .u-cf:after {

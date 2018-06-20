@@ -1,17 +1,9 @@
-button {
-  border: 1px solid #c8c8c8;
-  background: #fff;
-  color: #3a74ad;
-  cursor: pointer;
-  font-size: inherit;
-  padding: 3px 7px 5px;
-  display: block;
-  width: 120px;
-  margin-bottom: 12px;
-  transition: background 0.5s;
+@import '../_sass/config/vars';
+@import '../_sass/objects/buttons';
 
-  &:hover {
-    background: #fbfbfb;
-    color: #40566b;
-  }
+button {
+  @extend %button;
+  width: 120px;
+  font-size: inherit;
+  margin-bottom: 12px;
 }

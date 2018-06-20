@@ -1,0 +1,11 @@
+@mixin links($color: $color-text--turquoise) {
+  a, .link {
+    color: $color;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

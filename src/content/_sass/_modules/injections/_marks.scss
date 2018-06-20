@@ -1,0 +1,17 @@
+tm {display: inline !important;}
+span.textmarker-highlight {
+  all: inherit;
+  display: inline !important;
+  position: static !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  float: none !important;
+  cursor: pointer;
+}
+
+#textmarker-bookmark-anchor {
+  padding-left: 15px !important;
+  @include icon('bm2', -2px 0);
+}

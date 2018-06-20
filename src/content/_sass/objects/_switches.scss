@@ -3,7 +3,6 @@
   width: 44px;
   height: 22px;
   padding: 2px;
-  float: left;
   cursor: pointer;
 
   &--save {
@@ -12,10 +11,10 @@
     }
   }
   &:hover {
-    @extend %shadow-switch--hover;
+    @extend %shadow-switch--active;
 
     &.active {
-      @extend %shadow-switch--active;
+      @extend %shadow-switch--hover;
     }
   }
   &.active {
@@ -41,7 +40,7 @@
     @include icon('save2', center, 67%);
   }
   .switch.active & {
-    background-color: $color-bg--turquoise-inactive;
+    background-color: transparentize($color-bg--turquoise, .25);
     margin-left: 0;
   }
   .switch.active:hover & {

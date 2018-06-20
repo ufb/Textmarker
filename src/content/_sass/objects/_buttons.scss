@@ -1,1 +1,16 @@
+%button {
+  border: 1px solid $color-border;
+  background-image: $gradient--button;
+	background-color: transparent;
+  color: $color-text--grey;
+  cursor: pointer;
+  font-size: $font-size--s2;
+  padding: 3px 7px 5px;
+	min-height: 22px;
+  transition: background 0.5s;
 
+  &:hover {
+    background-image: $gradient--button-hover;
+    color: $color-text--dark;
+  }
+}

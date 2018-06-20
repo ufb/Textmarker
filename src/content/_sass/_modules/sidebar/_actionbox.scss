@@ -1,0 +1,35 @@
+.action-box {
+  margin: 0 0 6px 0;
+
+  &.disabled {
+    color: $color-text--disabled;
+  }
+  &__action {
+    @include icon(null, center);
+
+    &[disabled] {
+      opacity: 0.2 !important;
+      cursor: default;
+    }
+  }
+}
+
+$action-buttons: (
+  '#mark-action--delete-highlight' : 'bin',
+  '#mark-action--bookmark' : 'bm3',
+  '#mark-action--delete-bookmark': 'del-bm',
+  '#mark-action--add-note': 'note2',
+  '#page-action--save': 'save',
+  '#page-action--undo': 'undo',
+  '#page-action--redo': 'redo',
+  '#page-action--scroll': 'to-bm',
+  '#page-action--notes': 'note2',
+
+  '.marker__apply': 'highlight'
+);
+
+@each $selector, $icon in $action-buttons {
+  #{$selector} {
+    @include button_icon($icon, $gradient: true);
+  }
+}

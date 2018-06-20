@@ -6,8 +6,8 @@
   @include shadow-switch($color-shadow--light);
 }
 %shadow-switch--hover {
-  @include shadow-switch($color-shadow--medium);
+  @include shadow-switch($color-shadow--dark);
 }
 %shadow-switch--active {
-  @include shadow-switch($color-shadow--dark);
+  @include shadow-switch($color-shadow--medium);
 }
