@@ -1,14 +1,18 @@
 button {
   border: 1px solid #c8c8c8;
-  background: #fff;
-  color: #3a74ad;
+  background-image: linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
+  background-color: transparent;
+  color: #777;
   cursor: pointer;
-  font-size: inherit;
+  font-size: 0.8667rem;
   padding: 3px 7px 5px;
-  display: block;
-  width: 120px;
-  margin-bottom: 12px;
+  min-height: 22px;
   transition: background 0.5s; }
   button:hover {
-    background: #fbfbfb;
-    color: #40566b; }
+    background-image: linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%);
+    color: #37414b; }
+
+button {
+  width: 120px;
+  font-size: inherit;
+  margin-bottom: 12px; }

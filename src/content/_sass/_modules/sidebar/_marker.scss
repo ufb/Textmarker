@@ -1,0 +1,18 @@
+.marker {
+  margin-bottom: 8px;
+
+  &__apply {
+    margin: 0 0 0 10px;
+  }
+  &__label {
+    display: inline-block;
+  }
+  &__color {
+    padding: 0;
+    width: 44px;
+    border: 0;
+    -moz-appearance: none;
+    cursor: pointer;
+    float: right;
+  }
+}

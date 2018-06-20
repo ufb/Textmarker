@@ -1,0 +1,54 @@
+tmnote {
+  display: none;
+  position: absolute;
+  font-family: Verdana, sans-serif;
+  font-size: 12px;
+  color: $color-text--dark;
+  line-height: 1.4;
+  margin: 0;
+  z-index: $layer--max;
+  box-sizing: border-box !important;
+}
+tmnotedelete,
+tmnoteminimize {
+  position: absolute;
+  display: block;
+  font-size: 14px;
+  background: $color-yellow--light;
+  right: -20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+  color: $color-text--grey;
+  line-height: 1;
+  height: 20px;
+  box-sizing: border-box !important;
+}
+tmnotedelete:hover,
+tmnoteminimize:hover {
+  color: $color-text--dark;
+  background: $color-yellow--dark;
+}
+tmnotedelete {
+  top: 2px;
+  font-size: 12px;
+  padding: 4px 6px 0 10px;
+}
+tmnoteminimize {
+  top: 24px;
+  padding: 0 6px 4px 10px;
+}
+body > tmnote > textarea[data-tm-note] {
+  display: block !important;
+  padding: 10px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+  position: relative !important;
+  min-width: 300px !important;
+  background-image: linear-gradient($color-yellow--light, $color-yellow) !important;
+  min-height: 100px !important;
+  font-family: Verdana, sans-serif !important;
+  font-size: 12px !important;
+  border: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}

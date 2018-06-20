@@ -1,0 +1,77 @@
+table {
+  border-collapse: collapse;
+
+  td {
+    padding: 2px 15px 2px 0;
+  }
+
+  &.table--bordered {
+    col {
+      width: 50%;
+    }
+    td, th {
+      border: 1px solid $color-border;
+    }
+    th {
+      padding: 5px 10px;
+      text-align: left;
+    }
+    td {
+      padding: 10px;
+    }
+  }
+  &.no-notes {
+    col {
+      &:first-child {
+        width: 100%;
+      }
+      &:last-child {
+        width: 0;
+      }
+    }
+    thead {
+      display: none;
+    }
+    td {
+      &:last-child {
+        display: none;
+      }
+    }
+  }
+  &.hide-notes {
+    col {
+      &:first-child {
+        width: 100%;
+      }
+      &:last-child {
+        width: 0;
+      }
+    }
+    th {
+      &:last-child {
+        text-indent: -1000px;
+        overflow: hidden;
+      }
+    }
+    td {
+      &:last-child {
+        border: 0;
+      }
+    }
+    .mark-note {
+      display: none;
+    }
+  }
+}
+
+.col-toggle {
+  @include icon('double-arrow', 0 center, 18px);
+  width: 18px;
+  height: 20px;
+  float: right;
+  cursor: pointer;
+
+  .hide-notes & {
+    transform: rotate(180deg);
+  }
+}

@@ -9,7 +9,7 @@ new _DOMMODULE({
     },
     DOM: {
       click: {
-        '.mark-action': 'markAction',
+        '.action-box__action--mark': 'markAction',
         '.i': 'toggleInfo'
       }
     }

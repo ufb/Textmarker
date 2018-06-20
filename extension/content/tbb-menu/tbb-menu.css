@@ -1,6 +1,10 @@
-/*    RESET
-===============================================*/
-html, body, div, span, a, ul, li {
+html, body, object, iframe,
+div, h1, h2, h3, h4, h5, h6, p,
+span, a, abbr, img,
+em, small, sub, sup,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label,
+table, caption, tbody, thead, tr, th, td {
   margin: 0;
   padding: 0;
   border: 0;
@@ -8,7 +12,9 @@ html, body, div, span, a, ul, li {
   font-weight: inherit;
   font-style: inherit;
   font-family: inherit;
-  vertical-align: baseline; }
+  line-height: normal;
+  vertical-align: baseline;
+  color: inherit; }
 
 body {
   width: 185px;
@@ -23,20 +29,13 @@ li {
   padding: 3px 10px; }
 
 li:hover {
-  background: #f0f0f0; }
+  background: rgba(43, 165, 183, 0.1); }
 
 .partingline {
   height: 1px;
   padding: 0;
-  background: #dedede;
+  background: #e1e2e3;
   margin: 5px 0; }
 
 .partingline:hover {
-  background: #dedede; }
-
-a {
-  text-decoration: none;
-  color: #3a74ad; }
-
-a:hover {
-  text-decoration: underline; }
+  background: #e1e2e3; }

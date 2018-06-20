@@ -9,11 +9,13 @@ $color-grey--lighter: #e1e2e3;
 $color-red: #ad3a3a;
 $color-black: #000;
 $color-white: #fbfbfb;
+$color-yellow: #ffd;
+$color-yellow--light: #ffe;
+$color-yellow--dark: #ffc;
 
 $color-bg--dark: $color-grey--darker;
 $color-bg--light: $color-white;
 $color-bg--turquoise: $color-turquoise;
-$color-bg--turquoise-inactive: transparentize($color-bg--turquoise, .25);
 
 $color-border: $color-grey--light;
 $color-border--light: $color-grey--lighter;
@@ -35,6 +37,9 @@ $mq-desk--small: 940px;
 $mq-mobile: 768px;
 
 // font-sizes
+$font-size--base: 15px;
+$font-size--base-small: 13px;
+
 $font-size--s5: 0.6667rem; // 10/15px
 $font-size--s4: 0.733rem; // 11/15px
 $font-size--s3: 0.8rem; // 12/15px
@@ -46,11 +51,11 @@ $font-size--l2: 1.333rem; // 20/25px
 $font-size--l3: 1.467rem; // 22/15px
 
 // spacing
-$spacing--tiny: 5px;
-$spacing--small: 10px;
-$spacing--medium: 15px;
-$spacing--large: 20px;
-$spacing--huge: 30px;
+// $spacing--tiny: 5px;
+// $spacing--small: 10px;
+// $spacing--medium: 15px;
+// $spacing--large: 20px;
+// $spacing--huge: 30px;
 
 // layers
 $layer--sub: -1;
@@ -60,3 +65,8 @@ $layer--upper: 2;
 $layer--sky: 1000;
 $layer--sun: 1001;
 $layer--top: 1002;
+$layer--max: 2147483646;
+
+// gradients
+$gradient--button-hover: linear-gradient(transparentize($color-bg--turquoise, .9) 50%, transparent 50%);
+$gradient--button: linear-gradient(transparent 50%, transparentize($color-bg--turquoise, .9) 50%);

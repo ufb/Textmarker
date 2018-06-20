@@ -50,7 +50,7 @@ new _DOMMODULE({
         button = document.createElement('button');
         color = this.extractBgColor(markers[m]);
 
-        box.className = 'marker clearfix';
+        box.className = 'marker u-cf';
         label.setAttribute('for', 'marker-' + m);
         label.className = 'marker__label';
         input.className = 'marker__color';

@@ -7,7 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="sidebar.css">
 </head>
 <body>
-  <div id="textmarker-sidebar--paused" class="none" data-l10n-id="sb_paused"></div>
+  <div id="textmarker-sidebar--paused" class="u-display--none" data-l10n-id="sb_paused"></div>
   <div id="textmarker-sidebar">
     <section id="markers">
       <!--<h2>Markers</h2>-->
@@ -15,31 +15,31 @@
     </section>
     <section id="page-actions">
       <!--<h2>Page actions</h2>-->
-      <div class="action-box clearfix">
+      <div class="action-box u-cf">
         <label data-l10n-id="sb_b1" class="autosave-label"></label>
-        <div id="autosave-switch" class="switch switch-toggle clearfix">
-          <div class="switch-toggle switch-indicator"></div>
+        <div id="autosave-switch" class="switch switch--save switch-toggle u-float--right u-cf">
+          <div class="switch-toggle switch__indicator"></div>
         </div>
       </div>
-      <div class="action-box clearfix disabled" id="page-action-box--save">
+      <div class="action-box u-cf disabled" id="page-action-box--save">
         <label data-l10n-id="sb_b2" for="page-action--save"></label>
-        <button type="button" id="page-action--save" data-action="save-changes" class="page-action" disabled></button>
+        <button type="button" id="page-action--save" data-action="save-changes" class="action-box__action action-box__action--page" disabled></button>
       </div>
-      <div class="action-box clearfix">
+      <div class="action-box u-cf">
         <label data-l10n-id="sb_b3" for="page-action--undo"></label>
-        <button type="button" id="page-action--undo" data-action="undo" class="page-action"></button>
+        <button type="button" id="page-action--undo" data-action="undo" class="action-box__action action-box__action--page"></button>
       </div>
-      <div class="action-box clearfix">
+      <div class="action-box u-cf">
         <label data-l10n-id="sb_b4" for="page-action--redo"></label>
-        <button type="button" id="page-action--redo" data-action="redo" class="page-action"></button>
+        <button type="button" id="page-action--redo" data-action="redo" class="action-box__action action-box__action--page"></button>
       </div>
-      <div class="action-box clearfix disabled">
+      <div class="action-box u-cf disabled">
         <label data-l10n-id="sb_b5" for="page-action--scroll"></label>
-        <button type="button" id="page-action--scroll" data-action="scroll-to-bookmark" class="page-action" disabled></button>
+        <button type="button" id="page-action--scroll" data-action="scroll-to-bookmark" class="action-box__action action-box__action--page" disabled></button>
       </div>
-      <div class="action-box clearfix disabled">
+      <div class="action-box u-cf disabled">
         <label data-l10n-id="sb_b6" for="page-action--notes"></label>
-        <button type="button" id="page-action--notes" data-action="toggle-notes" class="page-action" disabled></button>
+        <button type="button" id="page-action--notes" data-action="toggle-notes" class="action-box__action action-box__action--page" disabled></button>
       </div>
   	</section>
     <section id="mark-actions">
@@ -48,21 +48,21 @@
         <span class="i">i</span>
         <small data-l10n-id="sb_h1b"></small>
       </h2>
-      <div class="action-box clearfix disabled">
+      <div class="action-box u-cf disabled">
         <label data-l10n-id="sb_b7" for="mark-action--delete-highlight"></label>
-        <button type="button" id="mark-action--delete-highlight" data-action="delete-highlight" class="mark-action" disabled></button>
+        <button type="button" id="mark-action--delete-highlight" data-action="delete-highlight" class="action-box__action action-box__action--mark" disabled></button>
       </div>
-      <div class="action-box clearfix disabled">
+      <div class="action-box u-cf disabled">
         <label data-l10n-id="sb_b8" for="mark-action--bookmark"></label>
-        <button type="button" id="mark-action--bookmark" data-action="bookmark" class="mark-action" disabled></button>
+        <button type="button" id="mark-action--bookmark" data-action="bookmark" class="action-box__action action-box__action--mark" disabled></button>
       </div>
-      <div class="action-box clearfix disabled">
+      <div class="action-box u-cf disabled">
         <label data-l10n-id="sb_b9" for="mark-action--delete-bookmark"></label>
-        <button type="button" id="mark-action--delete-bookmark" data-action="delete-bookmark" class="mark-action" disabled></button>
+        <button type="button" id="mark-action--delete-bookmark" data-action="delete-bookmark" class="action-box__action action-box__action--mark" disabled></button>
       </div>
-      <div class="action-box clearfix disabled">
+      <div class="action-box u-cf disabled">
         <label data-l10n-id="sb_b10" for="mark-action--add-note"></label>
-        <button type="button" id="mark-action--add-note" data-action="note" class="mark-action" disabled></button>
+        <button type="button" id="mark-action--add-note" data-action="note" class="action-box__action action-box__action--mark" disabled></button>
       </div>
   	</section>
     <section id="links">

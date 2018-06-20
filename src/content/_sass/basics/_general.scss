@@ -7,12 +7,9 @@
 * {
   box-sizing: border-box;
 }
-body, html, body > div {
-  height: 100%;
-}
 body {
 	font-family: Verdana, Arial, sans-serif;
 	color: $color-text--dark;
 	cursor: default;
-  font-size: $font-size--default;
+  font-size: $font-size--base;
 }

@@ -1,12 +1,10 @@
-/*    RESET
-===============================================*/
-html, body,
+html, body, object, iframe,
 div, h1, h2, h3, h4, h5, h6, p,
-span, a,
+span, a, abbr, img,
 em, small, sub, sup,
-ol, ul, li,
-label,
-table, tbody, thead, tr, th, td {
+dl, dt, dd, ol, ul, li,
+fieldset, form, label,
+table, caption, tbody, thead, tr, th, td {
   margin: 0;
   padding: 0;
   border: 0;
@@ -18,9 +16,6 @@ table, tbody, thead, tr, th, td {
   vertical-align: baseline;
   color: inherit; }
 
-/*
-===============================================*/
-/* GENERAL */
 :focus {
   outline: none; }
 
@@ -34,15 +29,10 @@ body {
   font-family: Verdana, Arial, sans-serif;
   color: #37414b;
   cursor: default;
-  background: #fbfbfb;
   font-size: 15px; }
 
-a {
-  color: #2ba5b7;
-  text-decoration: none; }
-
-a:hover {
-  text-decoration: underline; }
+body {
+  background: #fbfbfb; }
 
 p {
   margin-bottom: 5px; }
@@ -70,64 +60,53 @@ h2 {
 
 table {
   border-collapse: collapse; }
-
-col {
-  width: 50%; }
-
-#table--marks td, #table--marks th {
-  border: 1px solid #c8c8c8; }
-
-#table--marks th {
-  padding: 5px 10px;
-  text-align: left; }
-
-#table--marks td {
-  padding: 10px; }
-
-#table--meta td {
-  padding: 2px 15px 2px 0; }
-
-.no-notes col:first-child {
-  width: 100%; }
-
-.no-notes col:last-child {
-  width: 0; }
-
-.no-notes thead {
-  display: none; }
-
-.no-notes td:last-child {
-  display: none; }
-
-.hide-notes col:first-child {
-  width: 100%; }
-
-.hide-notes col:last-child {
-  width: 0; }
-
-.hide-notes th:last-child {
-  text-indent: -1000px;
-  overflow: hidden; }
-
-.hide-notes td:last-child {
-  border: 0; }
-
-.hide-notes .mark-note {
-  display: none; }
-
-#main {
-  padding: 20px; }
+  table td {
+    padding: 2px 15px 2px 0; }
+  table.table--bordered col {
+    width: 50%; }
+  table.table--bordered td, table.table--bordered th {
+    border: 1px solid #c8c8c8; }
+  table.table--bordered th {
+    padding: 5px 10px;
+    text-align: left; }
+  table.table--bordered td {
+    padding: 10px; }
+  table.no-notes col:first-child {
+    width: 100%; }
+  table.no-notes col:last-child {
+    width: 0; }
+  table.no-notes thead {
+    display: none; }
+  table.no-notes td:last-child {
+    display: none; }
+  table.hide-notes col:first-child {
+    width: 100%; }
+  table.hide-notes col:last-child {
+    width: 0; }
+  table.hide-notes th:last-child {
+    text-indent: -1000px;
+    overflow: hidden; }
+  table.hide-notes td:last-child {
+    border: 0; }
+  table.hide-notes .mark-note {
+    display: none; }
 
 .col-toggle {
+  background-image: url(../../icons/double-arrow.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
+  background-repeat: no-repeat;
+  background-position: 0 center, 0 0;
+  background-size: 18px, 100%;
   width: 18px;
   height: 20px;
   float: right;
-  background: url(../../icons/double-arrow.png) no-repeat 0 center;
-  background-size: 18px;
   cursor: pointer; }
+  .col-toggle:hover {
+    background-image: url(../../icons/double-arrow.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+  .hide-notes .col-toggle {
+    transform: rotate(180deg); }
 
-.hide-notes .col-toggle {
-  transform: rotate(180deg); }
+#main {
+  padding: 20px; }
 
 #marks-count {
   color: #c8c8c8; }

@@ -1,0 +1,28 @@
+body {
+  background: $color-bg--light;
+}
+
+p {
+  margin-bottom: 5px;
+}
+header {
+  background: $color-bg--dark;
+  padding: 10px 20px;
+}
+header p {
+  color: $color-text--turquoise;
+}
+section {
+  margin-bottom: 30px;
+}
+section:last-child {
+  margin: 0;
+}
+h1 {
+  color: $color-text--light;
+  font-size: 20px;
+}
+h2 {
+  font-size: 17px;
+  margin-bottom: 15px;
+}
