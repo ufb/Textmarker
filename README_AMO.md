@@ -3,15 +3,15 @@
 ## Summarized
 
 __Source code:__  
-The _src/_ folder contains the JavaScript files.  
-The webpack bundled JS files go into the folder extension/.  
+The _src/_ folder contains the JavaScript ans SASS source files.
 
-__dev process:__  
-JavaScript gets _bundled_ using _webpack_, _babel_ and _gulp_.  
+_webpack_ is used for precompiling and bundling.  
+
+__Production code:__
+The _extension/_ folder contains the addon code.
 
 ### Prerequisites
 
-* Operating system: windows 7
 * __node.js__ v6.11.4
 * __npm__ 5.6.0
 
@@ -27,5 +27,5 @@ npm install
 __Run the following from console/terminal (root folder):__  
 for bundling the source code
 ```
-gulp build
+npm run prod
 ```
