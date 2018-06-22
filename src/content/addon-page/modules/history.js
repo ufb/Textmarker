@@ -1,4 +1,4 @@
-import { _DOMMODULE } from './../../utils'
+import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 import _TOGGLER from './toggler'
 import _SORT from './history-sort'
@@ -186,7 +186,7 @@ export default function() {
             clone = template.cloneNode(true);
             container.appendChild(clone);
             clone.id = 'entry-' + j;
-            clone.classList.remove('none');
+            clone.classList.remove('u-display--none');
             clone.setAttribute('data-name', name);
             nameField = clone.getElementsByClassName('name')[0];
             input = clone.getElementsByTagName('input')[0];
@@ -216,7 +216,7 @@ export default function() {
             //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
 
             if (entry.synced === undefined || entry.synced) {
-              clone.getElementsByClassName('sync-switch')[0].classList.add('active');
+              clone.getElementsByClassName('switch--sync')[0].classList.add('active');
             }
           }
         })(i, l-i-1);
@@ -238,14 +238,14 @@ export default function() {
       const meth_2 = l > 2 ? 'remove' : 'add';
       const meth_3 = l > 10 ? 'remove' : 'add';
 
-      noEntriesHint.classList[meth_0]('none');
-      actions.classList[meth_1]('none');
-      search.classList[meth_2]('none');
-      sort.classList[meth_2]('none');
-      filter.classList[meth_2]('none');
-      count.classList[meth_3]('none');
-      view.classList[meth_1]('none');
-      checkall.classList[meth_2]('none');
+      noEntriesHint.classList[meth_0]('u-display--none');
+      actions.classList[meth_1]('u-display--none');
+      search.classList[meth_2]('u-display--none');
+      sort.classList[meth_2]('u-display--none');
+      filter.classList[meth_2]('u-display--none');
+      count.classList[meth_3]('u-display--none');
+      view.classList[meth_1]('u-display--none');
+      checkall.classList[meth_2]('u-display--none');
 
       document.getElementById('entries-count').innerText = l;
 
@@ -409,7 +409,7 @@ export default function() {
       const classMeth = term ? 'add' : 'remove';
       const toggle = document.getElementById('search-toggle');
       this.setupSearch(term).renderEntries();
-      countSelect.classList[classMeth]('none');
+      countSelect.classList[classMeth]('u-display--none');
       toggle.classList[classMeth]('active');
     },
     setupSearch(term) {
@@ -531,12 +531,12 @@ export default function() {
       !this[action] || this[action](name, el);
     },
     toggleSwitch(e, el) {
-      el = el.classList.contains('sync-switch') ? el : el.parentNode;
+      el = el.classList.contains('switch--sync') ? el : el.parentNode;
       el.classList.toggle('active');
       this.delegateButtonAction(e, el);
     },
     undoSyncToggle(name) {
-      document.querySelector('.sync-switch[data-name="' + name + '"]').classList.toggle('active');
+      document.querySelector('.switch--sync[data-name="' + name + '"]').classList.toggle('active');
     },
     render() {
       _STORE.get().then(storage => {

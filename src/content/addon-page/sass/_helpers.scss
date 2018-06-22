@@ -1,0 +1,20 @@
+.width--full {
+	width: 100% !important;
+}
+.border-top {
+  border-bottom: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+.open {
+  display: block !important;
+  max-height: 1000px !important;
+}
+.toggle-button {
+  @include mq('mobile') {
+    position: relative;
+  }
+}
+.nowrap {
+  white-space: nowrap;
+}

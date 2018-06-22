@@ -71,28 +71,28 @@ table {
     text-align: left; }
   table.table--bordered td {
     padding: 10px; }
-  table.no-notes col:first-child {
+  .no-notes table col:first-child {
     width: 100%; }
-  table.no-notes col:last-child {
+  .no-notes table col:last-child {
     width: 0; }
-  table.no-notes thead {
+  .no-notes table thead {
     display: none; }
-  table.no-notes td:last-child {
+  .no-notes table td:last-child {
     display: none; }
-  table.hide-notes col:first-child {
+  .hide-notes table col:first-child {
     width: 100%; }
-  table.hide-notes col:last-child {
+  .hide-notes table col:last-child {
     width: 0; }
-  table.hide-notes th:last-child {
+  .hide-notes table th:last-child {
     text-indent: -1000px;
     overflow: hidden; }
-  table.hide-notes td:last-child {
+  .hide-notes table td:last-child {
     border: 0; }
-  table.hide-notes .mark-note {
+  .hide-notes table .mark-note {
     display: none; }
 
 .col-toggle {
-  background-image: url(../../icons/double-arrow.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
+  background-image: url(../../icons/double-arrow.png);
   background-repeat: no-repeat;
   background-position: 0 center, 0 0;
   background-size: 18px, 100%;
@@ -100,10 +100,15 @@ table {
   height: 20px;
   float: right;
   cursor: pointer; }
-  .col-toggle:hover {
-    background-image: url(../../icons/double-arrow.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
   .hide-notes .col-toggle {
     transform: rotate(180deg); }
+
+a, .link {
+  color: #2ba5b7;
+  text-decoration: none;
+  cursor: pointer; }
+  a:hover, .link:hover {
+    text-decoration: underline; }
 
 #main {
   padding: 20px; }

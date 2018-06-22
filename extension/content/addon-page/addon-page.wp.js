@@ -86,6 +86,56 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./content/_shared/utils.js":
+/*!**********************************!*\
+  !*** ./content/_shared/utils.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
+
+var _copy = __webpack_require__(/*! ./../../utils/copy */ "./utils/copy.js");
+
+var _getActiveTab = __webpack_require__(/*! ./../../utils/getActiveTab */ "./utils/getActiveTab.js");
+
+var _extend = __webpack_require__(/*! ./../../utils/extend */ "./utils/extend.js");
+
+var _extend2 = _interopRequireDefault(_extend);
+
+var _module = __webpack_require__(/*! ./../../utils/module */ "./utils/module.js");
+
+var _dommodule = __webpack_require__(/*! ./../../utils/dommodule */ "./utils/dommodule.js");
+
+var _port = __webpack_require__(/*! ./../../utils/port */ "./utils/port.js");
+
+var _l10n = __webpack_require__(/*! ./../../utils/l10n */ "./utils/l10n.js");
+
+var _l10n2 = _interopRequireDefault(_l10n);
+
+var _errorTracker = __webpack_require__(/*! ./../../utils/error-tracker */ "./utils/error-tracker.js");
+
+var _errorTracker2 = _interopRequireDefault(_errorTracker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports._COPY = _copy._COPY;
+exports._GET_ACTIVE_TAB = _getActiveTab._GET_ACTIVE_TAB;
+exports._EXTEND = _extend2.default;
+exports._MODULE = _module._MODULE;
+exports._DOMMODULE = _dommodule._DOMMODULE;
+exports._PORT = _port._PORT;
+exports._L10N = _l10n2.default;
+exports._ERRORTRACKER = _errorTracker2.default;
+
+/***/ }),
+
 /***/ "./content/addon-page/_store.js":
 /*!**************************************!*\
   !*** ./content/addon-page/_store.js ***!
@@ -100,7 +150,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _utils = __webpack_require__(/*! ./../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../_shared/utils */ "./content/_shared/utils.js");
 
 exports.default = new _utils._MODULE({
   events: {
@@ -221,7 +271,7 @@ var _store = __webpack_require__(/*! ./_store */ "./content/addon-page/_store.js
 
 var _store2 = _interopRequireDefault(_store);
 
-var _utils = __webpack_require__(/*! ./../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../_shared/utils */ "./content/_shared/utils.js");
 
 var _history = __webpack_require__(/*! ./modules/history */ "./content/addon-page/modules/history.js");
 
@@ -309,9 +359,9 @@ new _utils._MODULE({
 "use strict";
 
 
-__webpack_require__(/*! ./index.scss */ "./content/addon-page/index.scss");
+__webpack_require__(/*! ./sass/index.scss */ "./content/addon-page/sass/index.scss");
 
-var _utils = __webpack_require__(/*! ./../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../_shared/utils */ "./content/_shared/utils.js");
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -352,17 +402,6 @@ var toggleButtons = document.getElementsByClassName('toggle-button'),
 while (t--) {
     new _toggler2.default(toggleButtons[t]);
 } /* end: configure toggle elements */
-
-/***/ }),
-
-/***/ "./content/addon-page/index.scss":
-/*!***************************************!*\
-  !*** ./content/addon-page/index.scss ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ }),
 
@@ -436,7 +475,7 @@ exports.default = function () {
   });
 };
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 var _store = __webpack_require__(/*! ./../_store */ "./content/addon-page/_store.js");
 
@@ -543,10 +582,10 @@ exports.default = function () {
       });
 
       if (l < this.perPage + 1) {
-        this.el.classList.add('none');
+        this.el.classList.add('u-display--none');
         return;
       } else {
-        this.el.classList.remove('none');
+        this.el.classList.remove('u-display--none');
       }
       var p = this.currentPage;
 
@@ -580,7 +619,7 @@ exports.default = function () {
   });
 };
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 var _store = __webpack_require__(/*! ./../_store */ "./content/addon-page/_store.js");
 
@@ -850,7 +889,7 @@ exports.default = function () {
           clone = template.cloneNode(true);
           container.appendChild(clone);
           clone.id = 'entry-' + j;
-          clone.classList.remove('none');
+          clone.classList.remove('u-display--none');
           clone.setAttribute('data-name', name);
           nameField = clone.getElementsByClassName('name')[0];
           input = clone.getElementsByTagName('input')[0];
@@ -880,7 +919,7 @@ exports.default = function () {
           //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
 
           if (entry.synced === undefined || entry.synced) {
-            clone.getElementsByClassName('sync-switch')[0].classList.add('active');
+            clone.getElementsByClassName('switch--sync')[0].classList.add('active');
           }
         }
       })(i, l - i - 1);
@@ -903,14 +942,14 @@ exports.default = function () {
     var meth_2 = l > 2 ? 'remove' : 'add';
     var meth_3 = l > 10 ? 'remove' : 'add';
 
-    noEntriesHint.classList[meth_0]('none');
-    actions.classList[meth_1]('none');
-    search.classList[meth_2]('none');
-    sort.classList[meth_2]('none');
-    filter.classList[meth_2]('none');
-    count.classList[meth_3]('none');
-    view.classList[meth_1]('none');
-    checkall.classList[meth_2]('none');
+    noEntriesHint.classList[meth_0]('u-display--none');
+    actions.classList[meth_1]('u-display--none');
+    search.classList[meth_2]('u-display--none');
+    sort.classList[meth_2]('u-display--none');
+    filter.classList[meth_2]('u-display--none');
+    count.classList[meth_3]('u-display--none');
+    view.classList[meth_1]('u-display--none');
+    checkall.classList[meth_2]('u-display--none');
 
     document.getElementById('entries-count').innerText = l;
 
@@ -1076,7 +1115,7 @@ exports.default = function () {
     var classMeth = term ? 'add' : 'remove';
     var toggle = document.getElementById('search-toggle');
     this.setupSearch(term).renderEntries();
-    countSelect.classList[classMeth]('none');
+    countSelect.classList[classMeth]('u-display--none');
     toggle.classList[classMeth]('active');
   }), _defineProperty(_ref, 'setupSearch', function setupSearch(term) {
     term = typeof term === 'string' ? term : this.searchTerm;
@@ -1188,11 +1227,11 @@ exports.default = function () {
 
     !this[action] || this[action](name, el);
   }), _defineProperty(_ref, 'toggleSwitch', function toggleSwitch(e, el) {
-    el = el.classList.contains('sync-switch') ? el : el.parentNode;
+    el = el.classList.contains('switch--sync') ? el : el.parentNode;
     el.classList.toggle('active');
     this.delegateButtonAction(e, el);
   }), _defineProperty(_ref, 'undoSyncToggle', function undoSyncToggle(name) {
-    document.querySelector('.sync-switch[data-name="' + name + '"]').classList.toggle('active');
+    document.querySelector('.switch--sync[data-name="' + name + '"]').classList.toggle('active');
   }), _defineProperty(_ref, 'render', function render() {
     var _this9 = this;
 
@@ -1223,7 +1262,7 @@ exports.default = function () {
   }), _ref));
 };
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 var _store = __webpack_require__(/*! ./../_store */ "./content/addon-page/_store.js");
 
@@ -1345,7 +1384,7 @@ exports.default = function () {
   });
 };
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 var _store = __webpack_require__(/*! ./../_store */ "./content/addon-page/_store.js");
 
@@ -1406,9 +1445,9 @@ exports.default = function () {
             msg = void 0;
 
         if (l) {
-          noLogs.classList.add('none');
-          logsTable.classList.remove('none');
-          clearBtn.classList.remove('none');
+          noLogs.classList.add('u-display--none');
+          logsTable.classList.remove('u-display--none');
+          clearBtn.classList.remove('u-display--none');
           while (l--) {
             log = logs[l];
             msg = log[1];
@@ -1430,9 +1469,9 @@ exports.default = function () {
           tableBody.innerText = '';
           tableBody.appendChild(frag);
         } else {
-          noLogs.classList.remove('none');
-          logsTable.classList.add('none');
-          clearBtn.classList.add('none');
+          noLogs.classList.remove('u-display--none');
+          logsTable.classList.add('u-display--none');
+          clearBtn.classList.add('u-display--none');
         }
       });
     },
@@ -1449,7 +1488,7 @@ exports.default = function () {
   });
 };
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 var _store = __webpack_require__(/*! ./../_store */ "./content/addon-page/_store.js");
 
@@ -1748,19 +1787,19 @@ exports.default = function (el) {
     open: function open(el) {
       var targetId = el.getAttribute('data-target');
       el.classList.add('active');
-      document.getElementById(targetId).classList.remove('none');
+      document.getElementById(targetId).classList.remove('u-display--none');
       this.emit('opened:tab', targetId);
       this.current = el;
       if (this.pageNav) window.document.title = 'Textmarker - ' + browser.i18n.getMessage(targetId);
     },
     close: function close(el) {
       el.classList.remove('active');
-      document.getElementById(el.getAttribute('data-target')).classList.add('none');
+      document.getElementById(el.getAttribute('data-target')).classList.add('u-display--none');
     }
   });
 };
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 /***/ }),
 
@@ -1966,10 +2005,10 @@ exports.default = function () {
       document.getElementById('tmuipos--bmicon').value = miscSettings.tmuipos;
     },
     showCustomSearchSettingSuccess: function showCustomSearchSettingSuccess() {
-      document.getElementById('custom-search--submitted').classList.remove('none');
+      document.getElementById('custom-search--submitted').classList.remove('u-display--none');
     },
     hideCustomSearchSettingSuccess: function hideCustomSearchSettingSuccess() {
-      document.getElementById('custom-search--submitted').classList.add('none');
+      document.getElementById('custom-search--submitted').classList.add('u-display--none');
     },
     changeStyle: function changeStyle(e, el) {
       var marker = this.marker.update(el);
@@ -2083,7 +2122,7 @@ exports.default = function () {
   });
 };
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 var _store = __webpack_require__(/*! ./../_store */ "./content/addon-page/_store.js");
 
@@ -2126,21 +2165,21 @@ exports.default = function () {
     },
 
     autoinit: function autoinit() {
-      document.getElementById('sync-switch-settings').classList.toggle('active', _store2.default.area_settings === 'sync');
-      document.getElementById('sync-switch-history').classList.toggle('active', _store2.default.area_history === 'sync');
+      document.getElementById('sync-switch--settings').classList.toggle('active', _store2.default.area_settings === 'sync');
+      document.getElementById('sync-switch--history').classList.toggle('active', _store2.default.area_history === 'sync');
     },
     toggleSwitch: function toggleSwitch(e, el) {
-      el = el.classList.contains('sync-switch') ? el : el.parentNode;
+      el = el.classList.contains('switch--sync') ? el : el.parentNode;
       el.classList.toggle('active');
       this.emit('toggle:sync', el.getAttribute('data-type'), el.classList.contains('active'));
     },
     undo: function undo(field) {
-      document.getElementById('sync-switch-' + field).classList.toggle('active');
+      document.getElementById('sync-switch--' + field).classList.toggle('active');
     }
   });
 };
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 var _store = __webpack_require__(/*! ./../_store */ "./content/addon-page/_store.js");
 
@@ -2220,7 +2259,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _utils = __webpack_require__(/*! ./../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../_shared/utils */ "./content/_shared/utils.js");
 
 exports.default = new _utils._PORT({
   name: 'addon-page',
@@ -2232,53 +2271,14 @@ exports.default = new _utils._PORT({
 
 /***/ }),
 
-/***/ "./content/utils.js":
-/*!**************************!*\
-  !*** ./content/utils.js ***!
-  \**************************/
+/***/ "./content/addon-page/sass/index.scss":
+/*!********************************************!*\
+  !*** ./content/addon-page/sass/index.scss ***!
+  \********************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
-
-var _copy = __webpack_require__(/*! ./../utils/copy */ "./utils/copy.js");
-
-var _getActiveTab = __webpack_require__(/*! ./../utils/getActiveTab */ "./utils/getActiveTab.js");
-
-var _extend = __webpack_require__(/*! ./../utils/extend */ "./utils/extend.js");
-
-var _extend2 = _interopRequireDefault(_extend);
-
-var _module = __webpack_require__(/*! ./../utils/module */ "./utils/module.js");
-
-var _dommodule = __webpack_require__(/*! ./../utils/dommodule */ "./utils/dommodule.js");
-
-var _port = __webpack_require__(/*! ./../utils/port */ "./utils/port.js");
-
-var _l10n = __webpack_require__(/*! ./../utils/l10n */ "./utils/l10n.js");
-
-var _l10n2 = _interopRequireDefault(_l10n);
-
-var _errorTracker = __webpack_require__(/*! ./../utils/error-tracker */ "./utils/error-tracker.js");
-
-var _errorTracker2 = _interopRequireDefault(_errorTracker);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports._COPY = _copy._COPY;
-exports._GET_ACTIVE_TAB = _getActiveTab._GET_ACTIVE_TAB;
-exports._EXTEND = _extend2.default;
-exports._MODULE = _module._MODULE;
-exports._DOMMODULE = _dommodule._DOMMODULE;
-exports._PORT = _port._PORT;
-exports._L10N = _l10n2.default;
-exports._ERRORTRACKER = _errorTracker2.default;
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 

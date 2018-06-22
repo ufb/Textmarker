@@ -1,4 +1,4 @@
-import { _DOMMODULE } from './../../utils'
+import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 import _TOGGLER from './toggler'
 
@@ -76,10 +76,10 @@ export default function() {
       Array.from(ul.getElementsByClassName('page')).forEach(li => li.remove());
 
       if (l < this.perPage + 1) {
-        this.el.classList.add('none');
+        this.el.classList.add('u-display--none');
         return;
       } else {
-        this.el.classList.remove('none');
+        this.el.classList.remove('u-display--none');
       }
       const p = this.currentPage;
 

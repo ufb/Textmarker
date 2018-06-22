@@ -1,4 +1,4 @@
-import { _MODULE } from './../../utils'
+import { _MODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 import _MARK from './mark-item'
 import _BOOKMARK from './bookmark'

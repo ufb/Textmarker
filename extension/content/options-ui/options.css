@@ -1,10 +1,12 @@
 button {
   border: 1px solid #c8c8c8;
   background-image: linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
+  background-repeat: no-repeat;
   background-color: transparent;
   color: #777;
   cursor: pointer;
-  font-size: 0.8667rem;
+  font-size: 0.8rem;
+  font-family: inherit;
   padding: 3px 7px 5px;
   min-height: 22px;
   transition: background 0.5s; }

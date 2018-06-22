@@ -86,6 +86,56 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./content/_shared/utils.js":
+/*!**********************************!*\
+  !*** ./content/_shared/utils.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
+
+var _copy = __webpack_require__(/*! ./../../utils/copy */ "./utils/copy.js");
+
+var _getActiveTab = __webpack_require__(/*! ./../../utils/getActiveTab */ "./utils/getActiveTab.js");
+
+var _extend = __webpack_require__(/*! ./../../utils/extend */ "./utils/extend.js");
+
+var _extend2 = _interopRequireDefault(_extend);
+
+var _module = __webpack_require__(/*! ./../../utils/module */ "./utils/module.js");
+
+var _dommodule = __webpack_require__(/*! ./../../utils/dommodule */ "./utils/dommodule.js");
+
+var _port = __webpack_require__(/*! ./../../utils/port */ "./utils/port.js");
+
+var _l10n = __webpack_require__(/*! ./../../utils/l10n */ "./utils/l10n.js");
+
+var _l10n2 = _interopRequireDefault(_l10n);
+
+var _errorTracker = __webpack_require__(/*! ./../../utils/error-tracker */ "./utils/error-tracker.js");
+
+var _errorTracker2 = _interopRequireDefault(_errorTracker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports._COPY = _copy._COPY;
+exports._GET_ACTIVE_TAB = _getActiveTab._GET_ACTIVE_TAB;
+exports._EXTEND = _extend2.default;
+exports._MODULE = _module._MODULE;
+exports._DOMMODULE = _dommodule._DOMMODULE;
+exports._PORT = _port._PORT;
+exports._L10N = _l10n2.default;
+exports._ERRORTRACKER = _errorTracker2.default;
+
+/***/ }),
+
 /***/ "./content/detail-view/index.js":
 /*!**************************************!*\
   !*** ./content/detail-view/index.js ***!
@@ -96,9 +146,9 @@
 "use strict";
 
 
-__webpack_require__(/*! ./index.scss */ "./content/detail-view/index.scss");
+__webpack_require__(/*! ./sass/index.scss */ "./content/detail-view/sass/index.scss");
 
-var _utils = __webpack_require__(/*! ./../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../_shared/utils */ "./content/_shared/utils.js");
 
 __webpack_require__(/*! ./modules/header */ "./content/detail-view/modules/header.js");
 
@@ -128,17 +178,6 @@ new _utils._MODULE({
 
 /***/ }),
 
-/***/ "./content/detail-view/index.scss":
-/*!****************************************!*\
-  !*** ./content/detail-view/index.scss ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
 /***/ "./content/detail-view/modules/header.js":
 /*!***********************************************!*\
   !*** ./content/detail-view/modules/header.js ***!
@@ -149,7 +188,7 @@ new _utils._MODULE({
 "use strict";
 
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 new _utils._DOMMODULE({
   el: document.getElementById('header'),
@@ -186,7 +225,7 @@ new _utils._DOMMODULE({
 "use strict";
 
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 new _utils._DOMMODULE({
   el: document.getElementById('marks'),
@@ -269,7 +308,7 @@ new _utils._DOMMODULE({
 "use strict";
 
 
-var _utils = __webpack_require__(/*! ./../../utils */ "./content/utils.js");
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 new _utils._DOMMODULE({
   el: document.getElementById('meta'),
@@ -315,53 +354,14 @@ new _utils._DOMMODULE({
 
 /***/ }),
 
-/***/ "./content/utils.js":
-/*!**************************!*\
-  !*** ./content/utils.js ***!
-  \**************************/
+/***/ "./content/detail-view/sass/index.scss":
+/*!*********************************************!*\
+  !*** ./content/detail-view/sass/index.scss ***!
+  \*********************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports._ERRORTRACKER = exports._L10N = exports._PORT = exports._DOMMODULE = exports._MODULE = exports._EXTEND = exports._GET_ACTIVE_TAB = exports._COPY = undefined;
-
-var _copy = __webpack_require__(/*! ./../utils/copy */ "./utils/copy.js");
-
-var _getActiveTab = __webpack_require__(/*! ./../utils/getActiveTab */ "./utils/getActiveTab.js");
-
-var _extend = __webpack_require__(/*! ./../utils/extend */ "./utils/extend.js");
-
-var _extend2 = _interopRequireDefault(_extend);
-
-var _module = __webpack_require__(/*! ./../utils/module */ "./utils/module.js");
-
-var _dommodule = __webpack_require__(/*! ./../utils/dommodule */ "./utils/dommodule.js");
-
-var _port = __webpack_require__(/*! ./../utils/port */ "./utils/port.js");
-
-var _l10n = __webpack_require__(/*! ./../utils/l10n */ "./utils/l10n.js");
-
-var _l10n2 = _interopRequireDefault(_l10n);
-
-var _errorTracker = __webpack_require__(/*! ./../utils/error-tracker */ "./utils/error-tracker.js");
-
-var _errorTracker2 = _interopRequireDefault(_errorTracker);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports._COPY = _copy._COPY;
-exports._GET_ACTIVE_TAB = _getActiveTab._GET_ACTIVE_TAB;
-exports._EXTEND = _extend2.default;
-exports._MODULE = _module._MODULE;
-exports._DOMMODULE = _dommodule._DOMMODULE;
-exports._PORT = _port._PORT;
-exports._L10N = _l10n2.default;
-exports._ERRORTRACKER = _errorTracker2.default;
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 

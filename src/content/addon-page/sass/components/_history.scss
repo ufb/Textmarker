@@ -1,0 +1,287 @@
+#history select {
+  margin-bottom: 4px;
+  border-color: $color-border--light;
+  color: $color-text--turquoise;
+  height: 27px;
+  background-position: right 10px;
+}
+#history input[type="text"] {
+  border-color: $color-border--light;
+  height: 27px;
+}
+
+#entries {
+  margin: 7px -20px 0;
+  clear: both;
+
+  &.detailed-list {
+    margin-top: 23px;
+  }
+}
+
+.entry {
+  padding: 8px 20px;
+
+  input {
+    float: right;
+  }
+  .name {
+    cursor: pointer;
+    display: inline-block;
+    max-width: calc(100% - 180px);
+    padding-right: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    white-space: nowrap;
+    top: 4px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .view {
+    cursor: pointer;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    @include icon('view', 0 0, 12px);
+    opacity: .5;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .quick-buttons {
+    float: right;
+    position: relative;
+  	top: 3px;
+
+    .delete {
+      &:hover {
+        color: $color-text--red;
+      }
+    }
+    .download {
+      @include icon('download', 4px 4px, $gradient: true);
+    }
+  }
+  .details {
+    display: none;
+  	margin-left: 34px;
+  	width: calc(100% - 130px);
+    color: $color-text--disabled;
+
+    .tag {
+      @include icon('folder', 0 4px);
+      padding-left: 17px;
+      background-size: 12px;
+      margin: 3px 0;
+    }
+    li {
+      list-style-type: none;
+      float: left;
+      font-size: 0.8em;
+      margin-right: 20px;
+    }
+  }
+  &:hover {
+    .details {
+      color: $color-text--grey;
+    }
+    .name {
+      color: $color-text--turquoise;
+    }
+  }
+  .detailed-list & {
+    &:hover {
+      border: 1px solid $color-border;
+      border-left: 0;
+      border-right: 0;
+      padding: 7px 20px;
+    }
+    .details {
+      display: block;
+    }
+    .quick-buttons {
+      top: 9px;
+    }
+  }
+}
+
+#page-actions {
+  > div {
+    padding-bottom: 3px;
+  }
+  select {
+    width: 100%;
+  }
+}
+
+#filter {
+  &.active {
+    #filter-entries {
+      width: calc(100% - 27px);
+    }
+    #remove-filter {
+      display: inline-block;
+    }
+  }
+}
+#remove-filter {
+  border: 0;
+  background: none;
+  display: none;
+}
+
+#search {
+  position: relative;
+}
+#search-entries {
+  width: calc(100% - 27px);
+}
+#search-toggle {
+  @include icon('search', 5px 6px, 12px);
+  border: 0;
+  color: transparent;
+
+  &.active {
+    color: inherit;
+    background-image: none;
+  	padding-top: 2px;
+  }
+}
+#search-count {
+  position: absolute;
+  top: 7px;
+  left: -25px;
+  font-size: 12px;
+}
+
+#sort {
+  label {
+    width: auto;
+    padding-right: 10px;
+  }
+}
+
+#history-actions {
+  position: relative;
+
+  button {
+    @include icon('submit', 6px 7px, 11px);
+    border: 0;
+    float: right;
+  }
+}
+#action {
+  width: calc(100% - 27px) !important;
+
+  @include mq('desk') {
+    margin-right: 0;
+  }
+}
+#specification,
+#tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#tag {
+	width: calc(100% - 50px);
+}
+#specification {
+  left: calc(-100% - 10px);
+
+    @include mq('desk') {
+      margin-right: 0;
+    }
+
+    &.open {
+      @include mq('desk') {
+        display: inline-block !important;
+      }
+    }
+}
+#checkmark-all-container {
+	position: relative;
+	top: -27px;
+	float: left;
+}
+.checkmark-all {
+  float: right;
+
+  label {
+    width: auto;
+  }
+}
+
+
+#paginator {
+  padding-top: 21px;
+  text-align: center;
+  -moz-user-select: -moz-none;
+
+  @include mq('desk') {
+    text-align: left;
+  }
+  .searched & {
+    display: none;
+  }
+
+  li {
+    position: relative;
+    cursor: pointer;
+    min-width: 24px;
+    height: 22px;
+    border: 1px solid $color-border;
+    display: inline-block;
+    margin: 0 3px 6px;
+    padding: 0 3px;
+    font-size: 13px;
+    vertical-align: bottom;
+    text-align: center;
+    -moz-user-select: -moz-none;
+
+    @include mq('desk') {
+      margin: 0 6px 6px 0;
+    }
+    &.active {
+      cursor: default;
+      border-color: transparent !important;
+    }
+    &.prev,
+    &.next {
+      margin: 0 8px 6px;
+
+      @include mq('desk') {
+        margin: 0 6px 6px 0;
+      }
+      &:before {
+        content: '';
+        @include icon('arrow-down', 6px 6px);
+        width: 22px;
+        height: 22px;
+        position: absolute;
+      }
+    }
+    &.prev {
+      &:before {
+        transform: rotate(90deg);
+        top: 0;
+        left: -2px;
+      }
+    }
+    &.next {
+      &:before {
+        transform: rotate(-90deg);
+        top: -2px;
+        left: 1px;
+      }
+    }
+  }
+  .disabled {
+    opacity: 0.5;
+  	cursor: default;
+  }
+}

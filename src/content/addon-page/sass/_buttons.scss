@@ -1,0 +1,11 @@
+button, .btn {
+  @extend %button;
+  &--small {
+    height: 22px;
+    width: 22px;
+    padding: 3px 5px;
+    background-position: 5px 5px, 0 0;
+    background-size: 13px, 100%;
+    margin-left: 5px;
+  }
+}

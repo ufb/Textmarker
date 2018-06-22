@@ -1,5 +1,5 @@
-import { _DOMMODULE } from './../../utils'
-import { _GET_ACTIVE_TAB } from './../../utils'
+import { _DOMMODULE } from './../../_shared/utils'
+import { _GET_ACTIVE_TAB } from './../../_shared/utils'
 
 new _DOMMODULE({
   el: document.getElementById('mark-actions'),

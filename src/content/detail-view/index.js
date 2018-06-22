@@ -1,7 +1,7 @@
-import './index.scss'
+import './sass/index.scss'
 
-import { _MODULE } from './../utils'
-import { _L10N } from './../utils'
+import { _MODULE } from './../_shared/utils'
+import { _L10N } from './../_shared/utils'
 import './modules/header'
 import './modules/meta'
 import './modules/marks'

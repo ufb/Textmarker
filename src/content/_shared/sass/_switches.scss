@@ -5,6 +5,9 @@
   padding: 2px;
   cursor: pointer;
 
+  &--sync {
+    margin-right: 10px;
+  }
   &--save {
     .autosave {
       display: none;

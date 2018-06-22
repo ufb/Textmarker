@@ -22,11 +22,17 @@ body {
 .u-color--grey {
   color: #777; }
 
+.u-color--grey-light {
+  color: #c8c8c8; }
+
 .u-color--turquoise {
   color: #2ba5b7; }
 
 .u-color--red {
   color: #ad3a3a; }
+
+.u-color--green {
+  color: #3aad74; }
 
 .u-size--s5 {
   font-size: 0.6667rem; }
@@ -55,6 +61,12 @@ body {
 .u-size--l3 {
   font-size: 1.467rem; }
 
+.u-font-weight--normal {
+  font-weight: normal; }
+
+.u-font-weight--bold {
+  font-weight: bold; }
+
 .u-cf:after {
   content: "";
   visibility: hidden;
@@ -62,11 +74,25 @@ body {
   clear: both;
   height: 0; }
 
+.u-clear {
+  clear: both; }
+
 .u-float--right {
   float: right; }
 
 .u-float--left {
   float: left; }
+
+.u-float--none {
+  float: none !important; }
+
+.u-pull--right {
+  float: right;
+  margin-right: 0 !important; }
+
+.u-pull--left {
+  float: left;
+  margin-left: 0 !important; }
 
 .u-display--none {
   display: none !important; }
@@ -94,6 +120,8 @@ body {
   height: 22px;
   padding: 2px;
   cursor: pointer; }
+  .switch--sync {
+    margin-right: 10px; }
   .switch--save .autosave {
     display: none; }
   .switch span {
@@ -107,19 +135,15 @@ body {
   margin-left: 22px;
   transition: margin 0.1s; }
   .switch--sync .switch__indicator {
-    background-image: url(../../icons/sync.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
+    background-image: url(../../icons/sync.png);
     background-repeat: no-repeat;
     background-position: center, 0 0;
     background-size: 67%, 100%; }
-    .switch--sync .switch__indicator:hover {
-      background-image: url(../../icons/sync.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
   .switch--save .switch__indicator {
-    background-image: url(../../icons/save2.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
+    background-image: url(../../icons/save2.png);
     background-repeat: no-repeat;
     background-position: center, 0 0;
     background-size: 67%, 100%; }
-    .switch--save .switch__indicator:hover {
-      background-image: url(../../icons/save2.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
   .switch.active .switch__indicator {
     background-color: rgba(43, 165, 183, 0.75);
     margin-left: 0; }
@@ -200,20 +224,6 @@ button:hover {
 button:last-child {
   margin: 0; }
 
-.marker {
-  margin-bottom: 8px; }
-  .marker__apply {
-    margin: 0 0 0 10px; }
-  .marker__label {
-    display: inline-block; }
-  .marker__color {
-    padding: 0;
-    width: 44px;
-    border: 0;
-    -moz-appearance: none;
-    cursor: pointer;
-    float: right; }
-
 .action-box {
   margin: 0 0 6px 0; }
   .action-box.disabled {
@@ -275,6 +285,20 @@ button:last-child {
   background-image: url(../../icons/highlight.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
   .marker__apply:hover {
     background-image: url(../../icons/highlight.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+
+.marker {
+  margin-bottom: 8px; }
+  .marker__apply {
+    margin: 0 0 0 10px; }
+  .marker__label {
+    display: inline-block; }
+  .marker__color {
+    padding: 0;
+    width: 44px;
+    border: 0;
+    -moz-appearance: none;
+    cursor: pointer;
+    float: right; }
 
 a, .link {
   color: inherit;

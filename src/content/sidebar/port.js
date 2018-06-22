@@ -1,4 +1,4 @@
-import { _PORT } from './../utils'
+import { _PORT } from './../_shared/utils'
 
 export default new _PORT({
   name: 'sidebar',

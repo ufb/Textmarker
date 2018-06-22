@@ -1,8 +1,8 @@
-import './index.scss'
+import './sass/index.scss'
 
-import _ERRORTRACKER from './../utils'
-import { _DOMMODULE } from './../utils'
-import { _L10N } from './../utils'
+import _ERRORTRACKER from './../_shared/utils'
+import { _DOMMODULE } from './../_shared/utils'
+import { _L10N } from './../_shared/utils'
 import _PORT from './port'
 _L10N();
 

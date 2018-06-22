@@ -1,4 +1,4 @@
-import { _DOMMODULE } from './../../utils'
+import { _DOMMODULE } from './../../_shared/utils'
 
 new _DOMMODULE({
   el: document.getElementById('meta'),

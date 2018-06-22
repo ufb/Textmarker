@@ -1,3 +1,15 @@
+.textLayer {
+  opacity: 1; }
+
+.textLayer ::-moz-selection {
+  background: rgba(51, 153, 255, 0.3) !important; }
+
+.textLayer .selected {
+  color: #fbfbfb; }
+
+.textLayer tm {
+  color: #000; }
+
 tm {
   display: inline !important; }
 
@@ -14,57 +26,10 @@ span.textmarker-highlight {
 
 #textmarker-bookmark-anchor {
   padding-left: 15px !important;
-  background-image: url(../../icons/bm2.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
+  background-image: url(../../icons/bm2.png);
   background-repeat: no-repeat;
   background-position: -2px 0, 0 0;
   background-size: unset, 100%; }
-  #textmarker-bookmark-anchor:hover {
-    background-image: url(../../icons/bm2.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
-
-tmui {
-  display: none;
-  z-index: 2147483646;
-  position: fixed;
-  background: #fbfbfb;
-  border: 1px solid #e1e2e3;
-  padding-top: 3px;
-  box-sizing: border-box !important; }
-
-tmui.active {
-  display: block; }
-
-tmbm, tmnotestoggle {
-  display: inline-block;
-  cursor: pointer;
-  margin-left: 3px;
-  margin-right: 3px;
-  vertical-align: top;
-  width: 12px;
-  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.25)); }
-
-tmbm {
-  background-image: url(../../icons/bm.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
-  background-repeat: no-repeat;
-  background-position: center, 0 0;
-  background-size: unset, 100%;
-  height: 18px; }
-  tmbm:hover {
-    background-image: url(../../icons/bm.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
-
-tmbm:hover {
-  filter: brightness(1.15); }
-
-tmnotestoggle {
-  background-image: url(../../icons/note.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
-  background-repeat: no-repeat;
-  background-position: center, 0 0;
-  background-size: unset, 100%;
-  height: 16px; }
-  tmnotestoggle:hover {
-    background-image: url(../../icons/note.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
-
-tmnotestoggle:hover {
-  filter: brightness(1.15); }
 
 tmnote {
   display: none;
@@ -120,14 +85,43 @@ body > tmnote > textarea[data-tm-note] {
   margin: 0 !important;
   box-sizing: border-box !important; }
 
-.textLayer {
-  opacity: 1; }
+tmui {
+  display: none;
+  z-index: 2147483646;
+  position: fixed;
+  background: #fbfbfb;
+  border: 1px solid #e1e2e3;
+  padding-top: 3px;
+  box-sizing: border-box !important; }
 
-.textLayer ::-moz-selection {
-  background: rgba(51, 153, 255, 0.3) !important; }
+tmui.active {
+  display: block; }
 
-.textLayer .selected {
-  color: #fbfbfb; }
+tmbm, tmnotestoggle {
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 3px;
+  margin-right: 3px;
+  vertical-align: top;
+  width: 12px;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.25)); }
 
-.textLayer tm {
-  color: #000; }
+tmbm {
+  background-image: url(../../icons/bm.png);
+  background-repeat: no-repeat;
+  background-position: center, 0 0;
+  background-size: unset, 100%;
+  height: 18px; }
+
+tmbm:hover {
+  filter: brightness(1.15); }
+
+tmnotestoggle {
+  background-image: url(../../icons/note.png);
+  background-repeat: no-repeat;
+  background-position: center, 0 0;
+  background-size: unset, 100%;
+  height: 16px; }
+
+tmnotestoggle:hover {
+  filter: brightness(1.15); }

@@ -1,0 +1,17 @@
+@import '../../_shared/sass/vars';
+@import '../../_shared/sass/reset';
+@import '../../_shared/sass/general';
+@import '../../_shared/sass/links';
+@import '../../_shared/sass/icons';
+
+@import './general';
+@import './tables';
+
+@include links($color-text--turquoise);
+
+#main {
+  padding: 20px;
+}
+#marks-count {
+  color: $color-text--disabled;
+}

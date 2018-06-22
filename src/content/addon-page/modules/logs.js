@@ -1,4 +1,4 @@
-import { _DOMMODULE } from './../../utils'
+import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 import _LOG_KEYS from '../../../data/log-keys'
 
@@ -30,9 +30,9 @@ export default function() {
             tr, td_date, td_msg, node_date, node_msg, log, time, msg;
 
         if (l) {
-          noLogs.classList.add('none');
-          logsTable.classList.remove('none');
-          clearBtn.classList.remove('none');
+          noLogs.classList.add('u-display--none');
+          logsTable.classList.remove('u-display--none');
+          clearBtn.classList.remove('u-display--none');
           while(l--) {
             log = logs[l];
             msg = log[1];
@@ -54,9 +54,9 @@ export default function() {
           tableBody.innerText = '';
           tableBody.appendChild(frag);
         } else {
-          noLogs.classList.remove('none');
-          logsTable.classList.add('none');
-          clearBtn.classList.add('none');
+          noLogs.classList.remove('u-display--none');
+          logsTable.classList.add('u-display--none');
+          clearBtn.classList.add('u-display--none');
         }
       });
     },

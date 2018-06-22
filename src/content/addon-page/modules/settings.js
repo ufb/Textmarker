@@ -1,4 +1,4 @@
-import { _DOMMODULE } from './../../utils'
+import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 import _MARKER from './marker'
 
@@ -185,10 +185,10 @@ export default function() {
       document.getElementById('tmuipos--bmicon').value = miscSettings.tmuipos;
     },
     showCustomSearchSettingSuccess() {
-      document.getElementById('custom-search--submitted').classList.remove('none');
+      document.getElementById('custom-search--submitted').classList.remove('u-display--none');
     },
     hideCustomSearchSettingSuccess() {
-      document.getElementById('custom-search--submitted').classList.add('none');
+      document.getElementById('custom-search--submitted').classList.add('u-display--none');
     },
     changeStyle(e, el) {
       let marker = this.marker.update(el);

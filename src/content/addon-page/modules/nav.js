@@ -1,4 +1,4 @@
-import { _DOMMODULE } from './../../utils'
+import { _DOMMODULE } from './../../_shared/utils'
 
 export default function(el) {
 
@@ -30,14 +30,14 @@ export default function(el) {
     open(el) {
       const targetId = el.getAttribute('data-target');
       el.classList.add('active');
-      document.getElementById(targetId).classList.remove('none');
+      document.getElementById(targetId).classList.remove('u-display--none');
       this.emit('opened:tab', targetId);
       this.current = el;
       if (this.pageNav) window.document.title = 'Textmarker - ' + browser.i18n.getMessage(targetId);
     },
     close(el) {
       el.classList.remove('active');
-      document.getElementById(el.getAttribute('data-target')).classList.add('none');
+      document.getElementById(el.getAttribute('data-target')).classList.add('u-display--none');
     }
   });
 }

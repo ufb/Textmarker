@@ -1,7 +1,7 @@
-import './index.scss'
+import './sass/index.scss'
 
-import _ERRORTRACKER from './../utils'
-import { _L10N } from './../utils'
+import _ERRORTRACKER from './../_shared/utils'
+import { _L10N } from './../_shared/utils'
 import _NAV from './modules/nav'
 import _TOGGLER from './modules/toggler'
 import './port'
