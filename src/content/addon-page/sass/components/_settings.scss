@@ -1,0 +1,87 @@
+.option-row {
+  margin-top: 10px;
+
+  button {
+    float: right;
+    padding: 0 7px;
+  }
+  > div {
+    display: inline-block;
+  }
+}
+.function {
+  width: 190px;
+}
+.key {
+  background: $color-bg--dark;
+  color: $color-text--light;
+  font-size: inherit;
+  padding: 3px 7px 5px;
+  width: 40px;
+  height: 40px;
+  float: left;
+  border-radius: 5px;
+  margin: 8px 8px 0 0;
+}
+.accordion {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 1s;
+  clear: both;
+}
+/* markers */
+#customized-key {
+  margin-left: 4px;
+}
+#shadow-settings > div {
+  margin-bottom: 5px;
+}
+#preview {
+  position: relative;
+
+  button {
+  	position: absolute;
+  	right: 0;
+  	top: -30px;
+  }
+}
+#example {
+  padding: 0 5px;
+  margin-top: 30px;
+	overflow: hidden;
+  float: left;
+}
+#custom-keys div {
+	vertical-align: bottom;
+}
+
+/* shortcuts */
+#overwrite-hint {
+  text-indent: -9px;
+  display: inline-block;
+  margin-left: 9px;
+}
+#customize-shortcuts--left {
+  margin: 0 60px 30px 0;
+}
+/* history */
+#notification {
+  margin: 0 3px 0 5px;
+}
+#custom-name-row {
+  display: none;
+}
+/* misc */
+.tmuipos {
+  display: none;
+}
+.misc-cb:checked + label + .tmuipos {
+  display: inline;
+}
+#custom-search {
+  @include mq('desk') {
+    float: none;
+    margin-top: 10px;
+    vertical-align: -2px;
+  }
+}

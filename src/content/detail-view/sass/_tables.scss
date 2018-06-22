@@ -6,6 +6,8 @@ table {
   }
 
   &.table--bordered {
+    width: 100%;
+    
     col {
       width: 50%;
     }
@@ -20,7 +22,7 @@ table {
       padding: 10px;
     }
   }
-  &.no-notes {
+  .no-notes & {
     col {
       &:first-child {
         width: 100%;
@@ -38,7 +40,7 @@ table {
       }
     }
   }
-  &.hide-notes {
+  .hide-notes & {
     col {
       &:first-child {
         width: 100%;

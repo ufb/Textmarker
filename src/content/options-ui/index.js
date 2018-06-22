@@ -1,6 +1,6 @@
-import './index.scss'
+import './sass/index.scss'
 
-import { _L10N } from './../utils'
+import { _L10N } from './../_shared/utils'
 
 _L10N();
 

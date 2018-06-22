@@ -1,0 +1,111 @@
+::-moz-placeholder,
+:placeholder-shown {
+  color: $color-text--disabled;
+}
+select, input {
+  font-family: inherit !important;
+}
+label {
+  width: 224px;
+  display: inline-block;
+}
+label span {
+  display: inline-block;
+  line-height: 1.2;
+  height: 22px;
+  width: 22px;
+  text-align: center;
+  color: $color-text--turquoise;
+  text-indent: -1000px;
+  overflow: hidden;
+  border: 1px solid $color-border;
+  border-radius: 2px;
+  vertical-align: -5px;
+  margin-right: 8px;
+}
+select {
+  @include icon('arrow-down', right 7px);
+  background-color: transparent;
+  -moz-appearance: none;
+  border: 1px solid $color-border;
+  height: 22px;
+  min-width: 34px;
+  padding-right: 20px;
+}
+select.small {
+  width: 68px;
+}
+select.big {
+  width: 120px;
+}
+.cb-sub-select {
+  margin: 10px 0 0 35px;
+}
+input:disabled {
+  opacity: 0.25;
+}
+input[type="search"] {
+  float: right;
+  border: 1px solid $color-border--light;
+  color: inherit;
+  text-align: left;
+  padding: 0 0 0 5px;
+  height: 27px;
+}
+input[type="color"] {
+  padding: 0;
+}
+input[type="color"] {
+  vertical-align: middle;
+  width: 36px;
+  text-align: center;
+}
+input[type="text"] {
+  border: 1px solid $color-border;
+  color: inherit;
+  padding: 0;
+  height: 22px;
+  width: 190px;
+  padding: 0 4px;
+
+  @include mq('mobile') {
+    width: 126px;
+  }
+}
+input[type="file"] {
+  display: none;
+}
+/* custom inputs */
+input[type="checkbox"],
+input[type="radio"] {
+  display: none;
+}
+input[type="radio"] + label span {
+  border-radius: 50%;
+}
+label.fake-cb,
+label.fake-rb {
+  width: auto;
+}
+label sup {
+  font-size: inherit;
+	vertical-align: 0;
+}
+label.fake-cb:not(.pull-right) sup {
+	width: calc(100% - 40px);
+	display: inline-block;
+	vertical-align: middle;
+}
+label.pull-right span {
+  margin: 0 0 0 8px;
+}
+label.fake-cb + label {
+  width: 188px;
+}
+input[type="checkbox"]:checked + label span,
+input[type="radio"]:checked + label span {
+  text-indent: 0;
+}
+input[type="number"] {
+  width: 35px;
+}

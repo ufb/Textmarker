@@ -7,6 +7,7 @@ $color-grey--medium-light: #aaa;
 $color-grey--light: #c8c8c8;
 $color-grey--lighter: #e1e2e3;
 $color-red: #ad3a3a;
+$color-green: #3aad74;
 $color-black: #000;
 $color-white: #fbfbfb;
 $color-yellow: #ffd;
@@ -19,6 +20,7 @@ $color-bg--turquoise: $color-turquoise;
 
 $color-border: $color-grey--light;
 $color-border--light: $color-grey--lighter;
+$color-border--dark: $color-grey--darker;
 
 $color-shadow--darker: $color-grey--darker;
 $color-shadow--dark: $color-grey--dark;
@@ -30,6 +32,7 @@ $color-text--light: $color-white;
 $color-text--grey: $color-grey--medium;
 $color-text--turquoise: $color-turquoise;
 $color-text--red: $color-red;
+$color-text--green: $color-green;
 $color-text--disabled: $color-grey--light;
 
 // media queries

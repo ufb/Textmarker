@@ -1,5 +1,5 @@
 import _STORE from './_store'
-import { _MODULE } from './../utils'
+import { _MODULE } from './../_shared/utils'
 
 import _HISTORY from './modules/history'
 import _SETTINGS from './modules/settings'

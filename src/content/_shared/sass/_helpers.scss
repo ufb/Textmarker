@@ -9,11 +9,17 @@
   &--grey {
     color: $color-text--grey;
   }
+  &--grey-light {
+    color: $color-text--disabled;
+  }
   &--turquoise {
     color: $color-text--turquoise;
   }
   &--red {
     color: $color-text--red;
+  }
+  &--green {
+    color: $color-text--green;
   }
 }
 // font-sizes
@@ -44,6 +50,15 @@
   }
   &--l3 {
     font-size: $font-size--l3;
+  }
+}
+// font-weight
+.u-font-weight {
+  &--normal {
+    font-weight: normal;
+  }
+  &--bold {
+    font-weight: bold;
   }
 }
 
@@ -87,12 +102,28 @@
 	clear: both;
 	height: 0;
 }
+.u-clear {
+  clear: both;
+}
 .u-float {
   &--right {
     float: right;
   }
   &--left {
     float: left;
+  }
+  &--none {
+    float: none !important;
+  }
+}
+.u-pull {
+  &--right {
+    float: right;
+    margin-right: 0 !important;
+  }
+  &--left {
+    float: left;
+    margin-left: 0 !important;
   }
 }
 

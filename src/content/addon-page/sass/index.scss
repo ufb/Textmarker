@@ -1,0 +1,65 @@
+@import '../../_shared/sass/vars';
+@import '../../_shared/sass/reset';
+@import '../../_shared/sass/general';
+@import '../../_shared/sass/helpers';
+@import '../../_shared/sass/buttons';
+@import '../../_shared/sass/icons';
+@import '../../_shared/sass/forms';
+@import '../../_shared/sass/links';
+@import '../../_shared/sass/shadows';
+@import '../../_shared/sass/switches';
+
+@import './general';
+@import './helpers';
+@import './navs';
+@import './buttons';
+@import './components/settings';
+@import './components/history';
+@import './components/data-management';
+@import './components/contact';
+@import './components/logs';
+
+@include links;
+
+button {
+  @extend %button;
+}
+
+/* MAIN CONTENT */
+#main {
+  padding: 20px;
+  max-width: 760px;
+  width: calc(100% - 220px);
+  float: left;
+  min-height: 100%;
+  box-shadow: 0 0 8px 0px $color-shadow--darker;
+  background: $color-bg--light;
+
+  @include mq('mobile') {
+    width: 100%;
+  }
+  small {
+    color: $color-text--grey;
+  }
+}
+.content {
+  padding-bottom: 20px;
+
+  a {
+    color: $color-text--turquoise;
+    text-decoration: underline;
+  }
+  @include mq('mobile') {
+    padding-top: 35px;
+  }
+}
+.tab {
+  padding: 40px 0;
+}
+.block-spacing {
+  padding: 12px 0 21px;
+}
+.seperator {
+  border-top: 1px solid $color-border;
+  margin: 20px 0;
+}

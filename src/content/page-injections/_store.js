@@ -1,4 +1,4 @@
-import { _MODULE } from './../utils'
+import { _MODULE } from './../_shared/utils'
 
 export default new _MODULE({
   events: {

@@ -1,10 +1,12 @@
 %button {
   border: 1px solid $color-border;
   background-image: $gradient--button;
+  background-repeat: no-repeat;
 	background-color: transparent;
   color: $color-text--grey;
   cursor: pointer;
-  font-size: $font-size--s2;
+  font-size: $font-size--s3;
+  font-family: inherit;
   padding: 3px 7px 5px;
 	min-height: 22px;
   transition: background 0.5s;

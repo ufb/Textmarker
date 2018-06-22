@@ -1,8 +1,8 @@
-import './index.scss'
+import './sass/index.scss'
 
-import _ERRORTRACKER from './../utils'
-import { _MODULE } from './../utils'
-import { _L10N } from './../utils'
+import _ERRORTRACKER from './../_shared/utils'
+import { _MODULE } from './../_shared/utils'
+import { _L10N } from './../_shared/utils'
 import _PORT from './port'
 import _STORE from './_store'
 import './modules/markers'
@@ -25,11 +25,11 @@ new _MODULE({
     const content = document.getElementById('textmarker-sidebar');
 
     if (on) {
-      placeholder.classList.add('none');
-      content.classList.remove('none');
+      placeholder.classList.add('u-display--none');
+      content.classList.remove('u-display--none');
     } else {
-      placeholder.classList.remove('none');
-      content.classList.add('none');
+      placeholder.classList.remove('u-display--none');
+      content.classList.add('u-display--none');
     }
   },
   onStart() {

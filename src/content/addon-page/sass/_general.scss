@@ -1,0 +1,74 @@
+body, html, body > div {
+  height: 100%;
+}
+body {
+	background: $color-bg--dark;
+}
+p {
+  margin-bottom: 1em;
+}
+h1 {
+	font-size: 1em;
+	font-weight: normal;
+  text-align: right;
+  margin: 0 -1px 15px 0;
+  height: 38px;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-text--turquoise;
+      text-decoration: none;
+    }
+  }
+  > span {
+    display: block;
+    font-size: 0.65em;
+    color: $color-text--disabled;
+  }
+}
+h2 {
+  font-weight: normal;
+  padding: 0 0 27px;
+  color: $color-text--turquoise;
+
+  span {
+    color: $color-text--disabled;
+    font-size: 0.7em;
+    display: block;
+    margin-top: 10px;
+  }
+}
+h3 {
+  font-size: 1.15em;
+  font-weight: normal;
+  padding: 0 0 20px;
+  color: $color-text--turquoise;
+}
+h4 {
+  font-size: 1em;
+  font-weight: normal;
+  color: $color-text--turquoise;
+  padding: 25px 0 15px;
+}
+ul,
+li {
+  list-style-type: none;
+}
+ol {
+  margin: -5px 0 1em 0;
+
+  li {
+    margin-top: 5px;
+
+    strong.u-color--turquoise {
+      font-family: Helvetica, Verdana, Arial, sans-serif;
+    }
+  }
+}
+.unset li {
+	list-style-type: unset;
+	margin-left: 20px;
+}

@@ -1,0 +1,23 @@
+#logs-table {
+  border-collapse: collapse;
+
+  th {
+    padding: 3px 5px 15px;
+    text-align: left;
+    text-transform: uppercase;
+
+    &:first-child {
+      width: 180px;
+    }
+  }
+  td {
+    padding: 4px 5px 5px;
+    border-top: 1px solid $color-border;
+    border-bottom: 1px solid $color-border;
+    font-size: 13px;
+
+    tr:last-child & {
+      border: 0;
+    }
+  }
+}

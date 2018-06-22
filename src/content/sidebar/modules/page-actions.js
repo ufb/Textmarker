@@ -1,5 +1,5 @@
-import { _DOMMODULE } from './../../utils'
-import { _GET_ACTIVE_TAB } from './../../utils'
+import { _DOMMODULE } from './../../_shared/utils'
+import { _GET_ACTIVE_TAB } from './../../_shared/utils'
 import _STORE from './../_store'
 
 new _DOMMODULE({

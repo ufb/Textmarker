@@ -1,0 +1,19 @@
+@mixin button_icon($name, $gradient: true) {
+  @if ($gradient) {
+    background-image: url(../../../icons/#{$name}.png), $gradient--button;
+    &:hover {
+      background-image: url(../../../icons/#{$name}.png), $gradient--button-hover;
+    }
+  } @else {
+    background-image: url(../../../icons/#{$name}.png);
+  }
+}
+
+@mixin icon($name: '', $position: 0 0, $size: unset, $repeat: no-repeat, $gradient: false) {
+  @if ($name) {
+    @include button_icon($name, $gradient);
+  }
+  background-repeat: $repeat;
+  background-position: $position, 0 0;
+  background-size: $size, 100%;
+}
