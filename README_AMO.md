@@ -13,7 +13,7 @@ The _extension/_ folder contains the addon code.
 ### Prerequisites
 
 * __node.js__ v6.11.4
-* __npm__ 5.6.0
+* __npm__ 6.1.0
 
 ### Installing modules
 
