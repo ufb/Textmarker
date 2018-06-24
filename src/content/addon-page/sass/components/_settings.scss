@@ -74,6 +74,7 @@
 /* misc */
 .tmuipos {
   display: none;
+  border-color: $color-border--light;
 }
 .misc-cb:checked + label + .tmuipos {
   display: inline;

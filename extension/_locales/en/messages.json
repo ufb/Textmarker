@@ -270,7 +270,7 @@
 "h444":{"message":"Notes"},
 "t447":{"message":"Display button for toggling all notes (top-right of page)"},
 "t448":{"message":"Click on highlight opens corresp. note"},
-"t448b":{"message":"semi-transparent if inactive"},
+"t448b":{"message":"Semi-transparent if inactive"},
 "t449":{"message":"Siehe: Anleitung > Funktionen > Notizen"},
 "h451":{"message":"Show notifications"},
 "t451":{"message":"when a new entry has been saved to Textmarker's history -"},

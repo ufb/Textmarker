@@ -112,13 +112,9 @@ __webpack_require__(/*! ../icons/off18.png */ "./icons/off18.png");
 
 __webpack_require__(/*! ../icons/tm48.png */ "./icons/tm48.png");
 
-var _utils = __webpack_require__(/*! ./utils */ "./background/utils.js");
+var _utils = _interopRequireWildcard(__webpack_require__(/*! ./utils */ "./background/utils.js"));
 
-var _utils2 = _interopRequireDefault(_utils);
-
-var _storage = __webpack_require__(/*! ./storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./storage */ "./background/storage.js"));
 
 __webpack_require__(/*! ./port */ "./background/port.js");
 
@@ -126,25 +122,15 @@ __webpack_require__(/*! ./modules/error-logging */ "./background/modules/error-l
 
 __webpack_require__(/*! ./modules/injection-manager */ "./background/modules/injection-manager.js");
 
-var _notifications = __webpack_require__(/*! ./modules/notifications */ "./background/modules/notifications.js");
+var _notifications = _interopRequireDefault(__webpack_require__(/*! ./modules/notifications */ "./background/modules/notifications.js"));
 
-var _notifications2 = _interopRequireDefault(_notifications);
+var _tabs = _interopRequireDefault(__webpack_require__(/*! ./modules/tabs */ "./background/modules/tabs.js"));
 
-var _tabs = __webpack_require__(/*! ./modules/tabs */ "./background/modules/tabs.js");
+var _windows = _interopRequireDefault(__webpack_require__(/*! ./modules/windows */ "./background/modules/windows.js"));
 
-var _tabs2 = _interopRequireDefault(_tabs);
+var _namer = _interopRequireDefault(__webpack_require__(/*! ./modules/namer */ "./background/modules/namer.js"));
 
-var _windows = __webpack_require__(/*! ./modules/windows */ "./background/modules/windows.js");
-
-var _windows2 = _interopRequireDefault(_windows);
-
-var _namer = __webpack_require__(/*! ./modules/namer */ "./background/modules/namer.js");
-
-var _namer2 = _interopRequireDefault(_namer);
-
-var _contextMenu = __webpack_require__(/*! ./modules/context-menu */ "./background/modules/context-menu.js");
-
-var _contextMenu2 = _interopRequireDefault(_contextMenu);
+var _contextMenu = _interopRequireDefault(__webpack_require__(/*! ./modules/context-menu */ "./background/modules/context-menu.js"));
 
 __webpack_require__(/*! ./modules/version-manager */ "./background/modules/version-manager.js");
 
@@ -152,6 +138,9 @@ __webpack_require__(/*! ./modules/store-manager */ "./background/modules/store-m
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+//import _IDB from './modules/indexeddb'
 new _utils._MODULE({
   events: {
     ENV: {
@@ -162,21 +151,19 @@ new _utils._MODULE({
       'toggle:addon': 'toggle'
     }
   },
-
   active: true,
   version: '',
   loadReason: '',
-
   autoinit: function autoinit() {
     var _this = this;
 
     var currentVersion = this.version = browser.runtime.getManifest().version;
-
     browser.runtime.onInstalled.addListener(function (details) {
-      _storage2.default.get('version').then(function (version) {
+      _storage.default.get('version').then(function (version) {
         if (!version || version !== currentVersion) {
           var loadReason = _this.loadReason = details.reason;
           var prevVersion = details.previousVersion || '2';
+
           if (loadReason && (loadReason === 'update' || loadReason === 'install')) {
             _this.emit(loadReason + ':app', prevVersion, loadReason);
           } else {
@@ -185,23 +172,24 @@ new _utils._MODULE({
         }
       });
     });
-    _storage2.default.get('version').then(function (version) {
+
+    _storage.default.get('version').then(function (version) {
       if (version && version === currentVersion) _this.emit('check:storage');
     });
   },
   start: function start() {
     var _this2 = this;
 
-    _storage2.default.set('version', this.version);
+    _storage.default.set('version', this.version); //_IDB();
 
-    //_IDB();
-    (0, _notifications2.default)();
-    (0, _tabs2.default)();
-    (0, _namer2.default)();
-    (0, _contextMenu2.default)();
-    (0, _windows2.default)();
 
-    _storage2.default.get('mode').then(function (mode) {
+    (0, _notifications.default)();
+    (0, _tabs.default)();
+    (0, _namer.default)();
+    (0, _contextMenu.default)();
+    (0, _windows.default)();
+
+    _storage.default.get('mode').then(function (mode) {
       return _this2.activate(mode);
     }).catch(function () {
       return _this2.activate(true);
@@ -221,7 +209,7 @@ new _utils._MODULE({
   toggleOnImport: function toggleOnImport() {
     var _this3 = this;
 
-    _storage2.default.get('mode').then(function (mode) {
+    _storage.default.get('mode').then(function (mode) {
       return _this3.activate(mode);
     });
   },
@@ -239,7 +227,6 @@ new _utils._MODULE({
     });
   }
 });
-//import _IDB from './modules/indexeddb'
 
 /***/ }),
 
@@ -256,8 +243,15 @@ new _utils._MODULE({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = _default;
 
-exports.default = function () {
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
+
+var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
@@ -265,29 +259,42 @@ exports.default = function () {
         'updated:ctm-settings': 'update'
       }
     },
-
     items: {
-      m: { contexts: ['selection'] },
-      w: { contexts: ['selection'] },
-      d: { contexts: ['page'] },
-      b: { contexts: ['page'] },
-      '-b': { contexts: ['page'] },
-      n: { contexts: ['page'] }
+      m: {
+        contexts: ['selection']
+      },
+      w: {
+        contexts: ['selection']
+      },
+      d: {
+        contexts: ['page']
+      },
+      b: {
+        contexts: ['page']
+      },
+      '-b': {
+        contexts: ['page']
+      },
+      n: {
+        contexts: ['page']
+      }
     },
     created: [],
-
     autoinit: function autoinit() {
       var _this = this;
 
-      var item = void 0;
+      var item;
+
       for (var i in this.items) {
         item = this.items[i];
         item.id = i;
         item.title = browser.i18n.getMessage('ctx_' + (i === '-b' ? 'db' : i));
+
         item.onclick = function (infos, tab) {
           return _this.onClick(infos, tab);
         };
       }
+
       this.update();
     },
     create: function create(id) {
@@ -315,7 +322,8 @@ exports.default = function () {
       var _this2 = this;
 
       var created = this.created;
-      _storage2.default.get('shortcuts').then(function (shortcuts) {
+
+      _storage.default.get('shortcuts').then(function (shortcuts) {
         for (var i in _this2.items) {
           if (shortcuts[i][2]) _this2.create(i);else _this2.remove(i);
         }
@@ -323,18 +331,12 @@ exports.default = function () {
     },
     onClick: function onClick(infos, tab) {
       var id = infos.menuItemId;
-      if (id === 'w') this.emit('lookup:word', infos.selectionText);else this.emit('ctx:' + id, null, null, { tab: tab.id });
+      if (id === 'w') this.emit('lookup:word', infos.selectionText);else this.emit('ctx:' + id, null, null, {
+        tab: tab.id
+      });
     }
   });
-};
-
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
-
-var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+}
 
 /***/ }),
 
@@ -348,15 +350,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 "use strict";
 
 
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
 
 var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
 
-var _logKeys = __webpack_require__(/*! ./../../data/log-keys */ "./data/log-keys.js");
-
-var _logKeys2 = _interopRequireDefault(_logKeys);
+var _logKeys = _interopRequireDefault(__webpack_require__(/*! ./../../data/log-keys */ "./data/log-keys.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -376,24 +374,27 @@ new _utils._MODULE({
       'clear:logs': 'clear'
     }
   },
-
   log: function log(error) {
     var _this = this;
 
-    var log = void 0;
+    var log;
+
     if (error.time) {
       log = [error.time, error.message + ' [' + error.location + ']'];
     } else {
-      log = [new Date().getTime(), _logKeys2.default[error]];
+      log = [new Date().getTime(), _logKeys.default[error]];
     }
-    _storage2.default.set('log', log).then(function () {
+
+    _storage.default.set('log', log).then(function () {
       return _this.emit('updated:logs logged:error', log);
     });
   },
   clear: function clear() {
     var _this2 = this;
 
-    _storage2.default.set('log', { clear: true }).then(function () {
+    _storage.default.set('log', {
+      clear: true
+    }).then(function () {
       return _this2.emit('updated:logs');
     });
   },
@@ -420,9 +421,7 @@ new _utils._MODULE({
 "use strict";
 
 
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
 
 var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
 
@@ -440,11 +439,13 @@ new _utils._MODULE({
   checkUrl: function checkUrl(url, sender, sendResponse) {
     var _this = this;
 
-    _storage2.default.get('history').then(function (history) {
+    _storage.default.get('history').then(function (history) {
       var entries = history.entries,
-          entry = void 0;
+          entry;
+
       for (var e in entries) {
         entry = entries[e];
+
         if (url === _this.getHashlessURL(entry.url)) {
           sendResponse(entry);
           break;
@@ -459,7 +460,7 @@ new _utils._MODULE({
       var priv = windowInfo.incognito;
       if (priv) _this2.emit('failed:pbm');
       if (!priv) sendResponse(!priv);else {
-        _storage2.default.get('privsave').then(function (saveInPriv) {
+        _storage.default.get('privsave').then(function (saveInPriv) {
           if (!saveInPriv) _this2.emit('failed:pbm');else sendResponse(saveInPriv);
         });
       }
@@ -470,7 +471,7 @@ new _utils._MODULE({
 
     return browser.windows.getLastFocused().then(function (windowInfo) {
       if (!windowInfo.incognito) _this3.emit('granted:save-entry', entry);else {
-        _storage2.default.get('privsave').then(function (saveInPriv) {
+        _storage.default.get('privsave').then(function (saveInPriv) {
           if (!saveInPriv) _this3.emit('failed:pbm');else _this3.emit('granted:save-entry', entry);
         });
       }
@@ -481,7 +482,7 @@ new _utils._MODULE({
 
     return browser.windows.getLastFocused().then(function (windowInfo) {
       if (!windowInfo.incognito) _this4.emit('granted:update-entry', entry);else {
-        _storage2.default.get('privsave').then(function (saveInPriv) {
+        _storage.default.get('privsave').then(function (saveInPriv) {
           if (!saveInPriv) _this4.emit('failed:pbm');else _this4.emit('granted:update-entry', entry);
         });
       }
@@ -508,8 +509,15 @@ new _utils._MODULE({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = _default;
 
-exports.default = function () {
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
+
+var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
@@ -517,13 +525,12 @@ exports.default = function () {
       }
     },
     maxChars: 70,
-
     name: function name(entry) {
       var _this = this;
 
       if (entry.name) return this.adjustName(entry.name, entry);
 
-      _storage2.default.get('naming').then(function (naming) {
+      _storage.default.get('naming').then(function (naming) {
         return _this.adjustName(null, entry, naming);
       }).catch(function () {
         return _this.emit('error', 'error_naming');
@@ -533,13 +540,14 @@ exports.default = function () {
       var _this2 = this;
 
       name = name ? name : method === 'title' ? entry.title : method === 'date' ? new Date(entry.first).toLocaleString() : '';
-
       name = name.substring(0, this.maxChars - 1);
 
-      _storage2.default.get('history').then(function (history) {
+      _storage.default.get('history').then(function (history) {
         var counter = _this2.getDoubleNameCount(history);
+
         if (counter) name += ' (' + (counter + 1) + ')';
         entry.name = name;
+
         _this2.emit('named:entry', entry);
       }).catch(function () {
         return _this2.emit('error', 'error_naming');
@@ -549,39 +557,27 @@ exports.default = function () {
       var existingNames = history.order,
           l = existingNames.length,
           counter = 0,
-          checkpoint = void 0;
+          checkpoint;
 
       while (l--) {
         checkpoint = existingNames[l];
         if (this.isDoubleName(name, checkpoint)) counter++;
       }
+
       return counter;
     },
     isDoubleName: function isDoubleName(name, checkpoint) {
       if (name === checkpoint) return true;
-
       var l = name.length,
           checkpoint_start = checkpoint.substring(0, l),
-          checkpoint_end = void 0;
-
+          checkpoint_end;
       if (name !== checkpoint_start) return false;
-
       checkpoint_end = checkpoint.substring(l, checkpoint.length);
-
       if (/^\s*\(\d+\)$/.test(checkpoint_end)) return true;
-
       return false;
     }
   });
-};
-
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
-
-var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+}
 
 /***/ }),
 
@@ -598,8 +594,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = _default;
 
-exports.default = function () {
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
+
+var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
@@ -618,9 +621,8 @@ exports.default = function () {
         'error': 'onError'
       }
     },
-
     notify: function notify(condition, message, type) {
-      _storage2.default.get('settings').then(function (settings) {
+      _storage.default.get('settings').then(function (settings) {
         if (condition(settings)) {
           browser.notifications.create({
             type: 'basic',
@@ -694,15 +696,7 @@ exports.default = function () {
       }, browser.i18n.getMessage('note_error', browser.i18n.getMessage(error)), 'error');
     }
   });
-};
-
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
-
-var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+}
 
 /***/ }),
 
@@ -716,9 +710,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 "use strict";
 
 
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
 
 var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
 
@@ -730,7 +722,6 @@ new _utils._MODULE({
       'started:app': 'registerStorageChangedHandler',
       'toggled:addon': 'saveActivationState',
       'toggle:sync': 'toggleSync',
-
       'change:style-setting': 'changeStyle',
       'change:bg-setting': 'changeBgColor',
       'toggle:shortcut-setting': 'toggleShortcutSetting',
@@ -749,10 +740,8 @@ new _utils._MODULE({
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
       'sidebar:toggle-autosave': 'changeSaveOpt',
-
       'remove:custom-marker': 'removeCustomMarker',
       'add:custom-marker': 'addCustomMarker',
-
       'named:entry': 'saveEntry',
       'granted:update-entry': 'updateEntry',
       'delete:entries': 'deleteEntries',
@@ -763,19 +752,21 @@ new _utils._MODULE({
     }
   },
   updateOnChangedSync: false,
-
   saveActivationState: function saveActivationState(active) {
-    _storage2.default.update('settings', function (settings) {
-      settings.addon.active = active;return settings;
+    _storage.default.update('settings', function (settings) {
+      settings.addon.active = active;
+      return settings;
     });
   },
   toggleSync: function toggleSync(field, val) {
     var _this = this;
 
-    _storage2.default.update('sync', function (sync) {
-      sync[field] = val;return sync;
+    _storage.default.update('sync', function (sync) {
+      sync[field] = val;
+      return sync;
     }).catch(function () {
       _this.emit('error', 'error_toggle_sync');
+
       _this.emit('failed:toggle-sync', field);
     }).then(function () {
       return _this.emit('toggled:sync toggled:sync-' + field, field, val);
@@ -784,7 +775,7 @@ new _utils._MODULE({
   updateSettings: function updateSettings(updater, setting, error) {
     var _this2 = this;
 
-    _storage2.default.update('settings', updater).then(function () {
+    _storage.default.update('settings', updater).then(function () {
       return _this2.emit('updated:' + setting + '-settings');
     }).catch(function () {
       if (error) _this2.emit('error', error);
@@ -792,19 +783,21 @@ new _utils._MODULE({
   },
   addCustomMarker: function addCustomMarker(key, style) {
     this.updateSettings(function (settings) {
-      settings.markers[key] = style;return settings;
+      settings.markers[key] = style;
+      return settings;
     }, 'marker', 'error_add_marker');
   },
   removeCustomMarker: function removeCustomMarker(key) {
     this.updateSettings(function (settings) {
-      delete settings.markers[key];return settings;
+      delete settings.markers[key];
+      return settings;
     }, 'marker', 'error_remove_marker');
   },
   changeStyle: function changeStyle(key, style) {
     if (!key) return false;
-
     this.updateSettings(function (settings) {
-      settings.markers[key] = style;return settings;
+      settings.markers[key] = style;
+      return settings;
     }, 'style', 'error_save_style');
   },
   changeBgColor: function changeBgColor(key, color) {
@@ -814,105 +807,120 @@ new _utils._MODULE({
       if (marker) {
         var split = marker.split(';'),
             l = split.length,
-            style = void 0;
+            style;
 
         while (l--) {
           style = split[l];
+
           if (style.includes('background-color')) {
             settings.markers[key] = marker.replace(/background-color:#.{6}/, 'background-color:' + color);
             break;
           }
         }
       }
+
       return settings;
     }, 'bg-color', 'error_save_style');
   },
   toggleShortcutSetting: function toggleShortcutSetting(key, status) {
     this.updateSettings(function (settings) {
-      settings.shortcuts[key][1] = status;return settings;
+      settings.shortcuts[key][1] = status;
+      return settings;
     }, 'shortcut', 'error_save__toggle_sc');
   },
   changeShortcutSetting: function changeShortcutSetting(key, value) {
     this.updateSettings(function (settings) {
-      settings.shortcuts[key][0] = value;return settings;
+      settings.shortcuts[key][0] = value;
+      return settings;
     }, 'shortcut', 'error_save_change_sc');
   },
   changeSortOpt: function changeSortOpt(value) {
     this.updateSettings(function (settings) {
-      settings.history.sorted = value;return settings;
+      settings.history.sorted = value;
+      return settings;
     }, 'sort');
   },
   changeViewOpt: function changeViewOpt(value) {
     this.updateSettings(function (settings) {
-      settings.history.view = value;return settings;
+      settings.history.view = value;
+      return settings;
     }, 'view');
   },
   changeCustomSearch: function changeCustomSearch(values) {
     this.updateSettings(function (settings) {
-      settings.misc.customSearch = values;return settings;
+      settings.misc.customSearch = values;
+      return settings;
     }, 'custom-search', 'error_save_change_search');
   },
   changeCountPerPage: function changeCountPerPage(value) {
     this.updateSettings(function (settings) {
-      settings.history.pp = value;return settings;
+      settings.history.pp = value;
+      return settings;
     }, 'count-per-page');
   },
   toggleCtmSetting: function toggleCtmSetting(key, value) {
     this.updateSettings(function (settings) {
-      settings.shortcuts[key][2] = value;return settings;
+      settings.shortcuts[key][2] = value;
+      return settings;
     }, 'ctm', 'error_save_ctm');
   },
   changeSaveOpt: function changeSaveOpt(val) {
     this.updateSettings(function (settings) {
-      settings.history.autosave = val;return settings;
+      settings.history.autosave = val;
+      return settings;
     }, 'saveopt', 'error_save_autosave');
   },
   togglePrivSaveOpt: function togglePrivSaveOpt(val) {
     this.updateSettings(function (settings) {
-      settings.history.saveInPriv = val;return settings;
+      settings.history.saveInPriv = val;
+      return settings;
     }, 'privsaveopt', 'error_save_priv');
   },
   changeNamingOpt: function changeNamingOpt(val) {
     this.updateSettings(function (settings) {
-      settings.history.naming = val;return settings;
+      settings.history.naming = val;
+      return settings;
     }, 'naming', 'error_save_naming');
   },
   toggleNoteOpt: function toggleNoteOpt(val) {
     this.updateSettings(function (settings) {
-      settings.history.saveNote = val;return settings;
+      settings.history.saveNote = val;
+      return settings;
     }, 'noteopt', 'error_save_notify');
   },
   toggleQuickbuttonOpt: function toggleQuickbuttonOpt(prop, val) {
     this.updateSettings(function (settings) {
-      settings.history[prop] = val;return settings;
+      settings.history[prop] = val;
+      return settings;
     }, 'quickbutton', 'error_save_download');
   },
   toggleNotificationOpt: function toggleNotificationOpt(prop, val) {
     this.updateSettings(function (settings) {
-      settings.misc[prop] = val;return settings;
+      settings.misc[prop] = val;
+      return settings;
     }, 'notification', 'error_save_notify');
   },
   changeMiscSetting: function changeMiscSetting(prop, val) {
     this.updateSettings(function (settings) {
-      settings.misc[prop] = val;return settings;
+      settings.misc[prop] = val;
+      return settings;
     }, 'misc', 'error_save_bmicon');
   },
   cleanEntries: function cleanEntries(names, area) {
     var _this3 = this;
 
     if (!names.length) return;
-
     area = typeof area === 'string' ? area : 'sync';
-
     var names_local = [];
-
-    return _storage2.default.update('history', function (history) {
+    return _storage.default.update('history', function (history) {
       var i = names.length,
-          name = void 0;
+          name;
+
       while (i--) {
         name = names[i];
         if (history.entries[name]) history.entries[name].lost.length = 0;else names_local.push(name);
       }
+
       return history;
     }, area).then(function () {
       if (area === 'local') {
@@ -930,7 +938,8 @@ new _utils._MODULE({
     var _this4 = this;
 
     entry.lost = [];
-    _storage2.default.set('entry', entry).then(function () {
+
+    _storage.default.set('entry', entry).then(function () {
       return _this4.emit('saved:entry', entry);
     }).catch(function () {
       return _this4.emit('failed:save-entry', 'error_save_entry');
@@ -939,14 +948,12 @@ new _utils._MODULE({
   updateEntry: function updateEntry(entry) {
     var _this5 = this;
 
-    _storage2.default.update('history', function (history) {
+    _storage.default.update('history', function (history) {
       var name = entry.name,
           currentEntry = history.entries[name],
           lost = currentEntry.lost;
-
       history.entries[name] = entry;
       history.entries[name].lost = lost || [];
-
       return history;
     }, entry.synced ? 'sync' : 'local').then(function () {
       return _this5.emit('updated:entry');
@@ -958,24 +965,20 @@ new _utils._MODULE({
     var _this6 = this;
 
     if (!names.length) return;
-
     area = typeof area === 'string' ? area : 'sync';
-
     var names_local = [];
-
-    return _storage2.default.update('history', function (history) {
-      var name = void 0,
-          i = void 0;
+    return _storage.default.update('history', function (history) {
+      var name, i;
 
       while (names.length) {
         name = names.pop();
         i = history.order.indexOf(name);
-
         delete history.entries[name];
         if (i !== -1) history.order.splice(i, 1);else names_local.push(name);
 
         _this6.emit('deleted:entry', name);
       }
+
       return history;
     }, area).catch(function () {
       return _this6.emit('failed:delete-entries', 'error_del_entry');
@@ -988,18 +991,17 @@ new _utils._MODULE({
     });
   },
   updateEntryOnRestoration: function updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
-    _storage2.default.update('history', function (history) {
+    _storage.default.update('history', function (history) {
       var oldLostMarks = history.entries[entryName].lost;
       history.entries[entryName].marks = restoredMarks;
       history.entries[entryName].lost = oldLostMarks.concat(lostMarks);
-
       return history;
     }, area);
   },
   syncEntry: function syncEntry(name, val) {
     var _this7 = this;
 
-    _storage2.default.sync(name, val).then(function () {
+    _storage.default.sync(name, val).then(function () {
       return _this7.emit('synced:entry');
     }).catch(function () {
       return _this7.emit('failed:sync-entry', name);
@@ -1008,14 +1010,14 @@ new _utils._MODULE({
   tagEntries: function tagEntries(names, tag) {
     var _this8 = this;
 
-    _storage2.default.update('history', function (history) {
+    _storage.default.update('history', function (history) {
       var entries = history.entries;
       names.sync.forEach(function (name) {
         return entries[name].tag = tag;
       });
       return history;
     }, 'sync').then(function () {
-      return _storage2.default.update('history', function (history) {
+      return _storage.default.update('history', function (history) {
         var entries = history.entries;
         names.local.forEach(function (name) {
           return entries[name].tag = tag;
@@ -1050,8 +1052,15 @@ new _utils._MODULE({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = _default;
 
-exports.default = function () {
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
+
+var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
@@ -1072,15 +1081,17 @@ exports.default = function () {
       export: 'content/addon-page/addon-page.html#page=export',
       sync: 'content/addon-page/addon-page.html#page=sync'
     },
-
     open: function open(urls) {
       var _this = this;
 
       urls = typeof urls === 'string' ? [urls] : urls;
       var l = urls.length,
           securityWarning = false;
+
       while (l--) {
-        browser.tabs.create({ url: urls[l] }).catch(function () {
+        browser.tabs.create({
+          url: urls[l]
+        }).catch(function () {
           if (!securityWarning) _this.emit('failed:open-tab');
           securityWarning = true;
         });
@@ -1095,23 +1106,16 @@ exports.default = function () {
     openSearch: function openSearch(word) {
       var _this2 = this;
 
-      _storage2.default.get('settings').then(function (settings) {
+      _storage.default.get('settings').then(function (settings) {
         var custom = settings.misc.customSearch,
-            url = void 0;
+            url;
         if (custom) url = 'https://' + custom[0] + word + custom[1];else url = 'https://' + browser.i18n.getMessage('lng') + '.wikipedia.org/wiki/' + word;
+
         _this2.open(url);
       });
     }
   });
-};
-
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
-
-var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+}
 
 /***/ }),
 
@@ -1125,13 +1129,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 "use strict";
 
 
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
 
-var _storage2 = _interopRequireDefault(_storage);
-
-var _defaultStorage = __webpack_require__(/*! ./../../data/default-storage */ "./data/default-storage.js");
-
-var _defaultStorage2 = _interopRequireDefault(_defaultStorage);
+var _defaultStorage = _interopRequireDefault(__webpack_require__(/*! ./../../data/default-storage */ "./data/default-storage.js"));
 
 var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
 
@@ -1146,10 +1146,9 @@ new _utils._MODULE({
       'import:storage': 'importStorage'
     }
   },
-
   updateSettings: function updateSettings(settings) {
     var noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
-    var defaultSettings = _defaultStorage2.default.settings;
+    var defaultSettings = _defaultStorage.default.settings;
 
     if (!settings.shortcuts) {
       settings = defaultSettings;
@@ -1159,41 +1158,48 @@ new _utils._MODULE({
           settings.misc[noteType] = defaultSettings.misc[noteType];
         }
       });
+
       if (!settings.history.sorted) {
         settings.history.sorted = defaultSettings.history.sorted;
       }
+
       if (!settings.history.view) {
         settings.history.view = defaultSettings.history.view;
       }
+
       if (typeof settings.history.saveInPriv !== 'boolean') {
         settings.history.saveInPriv = defaultSettings.history.saveInPriv;
       }
+
       if (!settings.shortcuts.n) {
         settings.shortcuts.n = defaultSettings.shortcuts.n;
         settings.misc.noteicon = defaultSettings.misc.noteicon;
         settings.misc.noteonclick = defaultSettings.misc.noteonclick;
       }
+
       if (!settings.misc.tmuipos) {
         settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }
+
       if (typeof settings.misc.notetransp !== 'boolean') {
         settings.misc.notetransp = defaultSettings.misc.notetransp;
       }
     }
+
     return settings;
   },
   updateHistory: function updateHistory(history) {
     var entries = history.entries,
         order = history.order,
         l = order ? order.length : 0,
-        entry = void 0;
-
+        entry;
     if (!l) return history;
 
     while (l--) {
       entry = this.fixHistoryDates(entries[order[l]]);
       entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
     }
+
     return history;
   },
   fixHistoryDates: function fixHistoryDates(entry) {
@@ -1204,7 +1210,6 @@ new _utils._MODULE({
   },
   fixHistory: function fixHistory(history) {
     history = history || {};
-
     var entries = history.entries || {},
         order = history.order || [],
         l = order.length;
@@ -1217,27 +1222,30 @@ new _utils._MODULE({
 
     for (var name in entries) {
       if (!order.includes(name)) order.push(name);
-    }return history;
+    }
+
+    return history;
   },
   mergeHistories: function mergeHistories(newHistory, area) {
-    return _storage2.default.update('history', function (history) {
-
+    return _storage.default.update('history', function (history) {
       var order = newHistory.order,
           entries = newHistory.entries,
           l = order.length,
           i = 0,
           oldOrder = history.order,
           oldEntries = history.entries,
-          name = void 0;
+          name;
 
       for (; i < l; i++) {
         name = order[i];
+
         if (!oldOrder.includes(name)) {
           oldOrder.push(name);
           oldEntries[name] = entries[name];
           oldEntries[name].synced = area === 'sync';
         }
       }
+
       return history;
     }, area);
   },
@@ -1245,54 +1253,58 @@ new _utils._MODULE({
     var _this = this;
 
     var prevVersion = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '2';
-    var loadReason = arguments[1];
+    var loadReason = arguments.length > 1 ? arguments[1] : undefined;
 
-    _storage2.default.isEmpty('sync').then(function (empty) {
+    _storage.default.isEmpty('sync').then(function (empty) {
       if (empty) {
         if (loadReason !== 'install') _this.emit('error', 'error_empty_synced_storage_onupdate');
       }
-      return _storage2.default.set('storage', 'sync');
+
+      return _storage.default.set('storage', 'sync');
     }).then(function () {
       if (prevVersion < '4') {
-        _storage2.default.update('settings', function (settings) {
+        _storage.default.update('settings', function (settings) {
           return _this.updateSettings(settings);
         }, 'sync');
       }
     }).then(function () {
       if (prevVersion < '4') {
-        _storage2.default.update('settings', function (settings) {
+        _storage.default.update('settings', function (settings) {
           return _this.updateSettings(settings);
         }, 'local');
       }
     }).then(function () {
       if (prevVersion < '3') {
-        _storage2.default.update('history', function (history) {
+        _storage.default.update('history', function (history) {
           return _this.updateHistory(history);
         }, 'sync');
       }
     }).then(function () {
-      return _storage2.default.set('storage', 'local');
+      return _storage.default.set('storage', 'local');
     }).then(function () {
       return _this.emit('initialized:storage', prevVersion);
     }).catch(function () {
       _this.emit('initialized:storage', prevVersion);
+
       _this.emit('error', 'error_storage_migration');
     });
   },
   checkStorageOnStart: function checkStorageOnStart() {
     var _this2 = this;
 
-    _storage2.default.isEmpty('sync').then(function (empty) {
+    _storage.default.isEmpty('sync').then(function (empty) {
       if (empty) {
         _this2.emit('error', 'error_empty_synced_storage_onstart');
       }
-      return _storage2.default.set('storage', 'sync');
+
+      return _storage.default.set('storage', 'sync');
     }).then(function () {
-      return _storage2.default.isEmpty('local').then(function (empty) {
+      return _storage.default.isEmpty('local').then(function (empty) {
         if (empty) {
           _this2.emit('error', 'error_empty_local_storage_onstart');
         }
-        return _storage2.default.set('storage', 'local');
+
+        return _storage.default.set('storage', 'local');
       });
     }).then(function () {
       return _this2.emit('checked:storage');
@@ -1305,7 +1317,6 @@ new _utils._MODULE({
 
     var settings = importedStorage.settings,
         history = importedStorage.history;
-
     if (!history && !settings) this.emit('failed:import', 'error_import_empty');else {
       if (!history) {
         if (!settings.shortcuts) this.emit('failed:import', 'error_import_history_not_found', 'error_import_outdated');else this.importSettings(settings, area).then(function (success) {
@@ -1336,8 +1347,7 @@ new _utils._MODULE({
     var _this4 = this;
 
     if (!settings.shortcuts) return Promise.resolve('outdated');
-
-    return _storage2.default.update('settings', function (settings) {
+    return _storage.default.update('settings', function (settings) {
       return _this4.updateSettings(settings);
     }, area).then(function () {
       return true;
@@ -1369,20 +1379,24 @@ new _utils._MODULE({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = _default;
 
-exports.default = function () {
+var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ "./background/storage.js"));
+
+var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
         'view:entry': 'openEntryDetailPage'
       }
     },
-
     openEntryDetailPage: function openEntryDetailPage(name) {
       var popupURL = browser.extension.getURL('content/detail-view/detail-view.html');
-
       browser.windows.getCurrent().then(function (currentWindow) {
-
         browser.windows.create({
           url: popupURL + '#' + encodeURIComponent(name),
           type: 'panel',
@@ -1393,15 +1407,7 @@ exports.default = function () {
       });
     }
   });
-};
-
-var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
-
-var _storage2 = _interopRequireDefault(_storage);
-
-var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+}
 
 /***/ }),
 
@@ -1442,29 +1448,25 @@ new _utils._PORT({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
 var _utils = __webpack_require__(/*! ./utils */ "./background/utils.js");
 
-var _defaultStorage = __webpack_require__(/*! ./../data/default-storage */ "./data/default-storage.js");
-
-var _defaultStorage2 = _interopRequireDefault(_defaultStorage);
+var _defaultStorage = _interopRequireDefault(__webpack_require__(/*! ./../data/default-storage */ "./data/default-storage.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = new _utils._MODULE({
-
+var _default = new _utils._MODULE({
   initialized: false,
   initializing: false,
-  area_settings: _defaultStorage2.default.sync.settings ? 'sync' : 'local',
-  area_history: _defaultStorage2.default.sync.history ? 'sync' : 'local',
-
+  area_settings: _defaultStorage.default.sync.settings ? 'sync' : 'local',
+  area_history: _defaultStorage.default.sync.history ? 'sync' : 'local',
   init: function init() {
     var _this = this;
 
     browser.storage.sync.remove('logs');
-
     return browser.storage.local.get().then(function (localStorage) {
-      var sync = localStorage && localStorage.sync ? localStorage.sync : _defaultStorage2.default.sync;
+      var sync = localStorage && localStorage.sync ? localStorage.sync : _defaultStorage.default.sync;
       return _this._set_sync(sync);
     });
   },
@@ -1480,6 +1482,7 @@ exports.default = new _utils._MODULE({
         }, 10);
       });
     }
+
     var meth = this['_get_' + field];
     if (!meth) throw 'field ' + field + ' doesn\'t exist';
 
@@ -1491,6 +1494,7 @@ exports.default = new _utils._MODULE({
         return _this2['_get_' + field]();
       });
     }
+
     return this['_get_' + field]();
   },
   set: function set(field, val) {
@@ -1508,7 +1512,7 @@ exports.default = new _utils._MODULE({
       if (!history.entries.hasOwnProperty(name)) throw 'entry doesnt exist';
       var entry = (0, _utils._COPY)(history.entries[name]);
       return browser.storage.sync.get().then(function (storage) {
-        var syncedEntry = void 0;
+        var syncedEntry;
         if (storage.history.entries.hasOwnProperty(name)) syncedEntry = storage.history.entries[name];
         if (val && syncedEntry) syncedEntry.synced = val;else if (val && !syncedEntry) {
           storage.history.entries[name] = (0, _utils._COPY)(entry);
@@ -1518,10 +1522,12 @@ exports.default = new _utils._MODULE({
           delete storage.history.entries[name];
           storage.history.order.splice(storage.history.order.indexOf(name), 1);
         }
-        return browser.storage.sync.set({ history: storage.history });
+        return browser.storage.sync.set({
+          history: storage.history
+        });
       }).then(function () {
         return browser.storage.local.get().then(function (localStorage) {
-          var localEntry = void 0;
+          var localEntry;
           if (localStorage.history.entries.hasOwnProperty(name)) localEntry = localStorage.history.entries[name];
           if (!val && localEntry) localEntry.synced = val;else if (!val && !localEntry) {
             localStorage.history.entries[name] = (0, _utils._COPY)(entry);
@@ -1531,14 +1537,15 @@ exports.default = new _utils._MODULE({
             delete localStorage.history.entries[name];
             localStorage.history.order.splice(localStorage.history.order.indexOf(name), 1);
           }
-          return browser.storage.local.set({ history: localStorage.history });
+          return browser.storage.local.set({
+            history: localStorage.history
+          });
         });
       });
     });
   },
   isEmpty: function isEmpty() {
     var area = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sync';
-
     return browser.storage[area].get().then(function (storage) {
       if (!storage || !Object.keys(storage).length && storage.constructor === Object || !storage.history) return true;
       return false;
@@ -1569,16 +1576,17 @@ exports.default = new _utils._MODULE({
   _get_history: function _get_history() {
     return browser.storage.sync.get().then(function (syncedStorage) {
       var syncedHistory = syncedStorage.history;
-
       return browser.storage.local.get().then(function (localStorage) {
         var localHistory = localStorage.history;
         if (!syncedHistory) return localHistory;
         if (!localHistory) return syncedHistory;
-
         syncedHistory.order = syncedHistory.order.concat(localHistory.order);
+
         for (var e in localHistory.entries) {
           syncedHistory.entries[e] = localHistory.entries[e];
-        }return syncedHistory;
+        }
+
+        return syncedHistory;
       });
     });
   },
@@ -1600,6 +1608,7 @@ exports.default = new _utils._MODULE({
           return syncedStorage.version || '';
         });
       }
+
       return localStorage.version;
     });
   },
@@ -1635,7 +1644,6 @@ exports.default = new _utils._MODULE({
     var _this4 = this;
 
     var area = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-
     return this._set_settings(area).then(function () {
       return _this4._set_history(area);
     });
@@ -1643,8 +1651,12 @@ exports.default = new _utils._MODULE({
   _set_sync: function _set_sync(sync) {
     var _this5 = this;
 
-    return browser.storage.local.set({ sync: sync }).then(function () {
-      return browser.storage.sync.set({ sync: sync });
+    return browser.storage.local.set({
+      sync: sync
+    }).then(function () {
+      return browser.storage.sync.set({
+        sync: sync
+      });
     }).then(function () {
       _this5.area_settings = sync.settings ? 'sync' : 'local';
       _this5.area_history = sync.history ? 'sync' : 'local';
@@ -1652,31 +1664,42 @@ exports.default = new _utils._MODULE({
   },
   _set_settings: function _set_settings() {
     var area = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.area_settings;
-
     return browser.storage[area].get().then(function (storage) {
-      if (!storage || !storage.settings) return browser.storage[area].set({ settings: (0, _utils._COPY)(_defaultStorage2.default.settings) });
+      if (!storage || !storage.settings) return browser.storage[area].set({
+        settings: (0, _utils._COPY)(_defaultStorage.default.settings)
+      });
     });
   },
   _set_history: function _set_history() {
     var area = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.area_history;
-
     return browser.storage[area].get().then(function (storage) {
-      if (!storage || !storage.history) return browser.storage[area].set({ history: (0, _utils._COPY)(_defaultStorage2.default.history) });
+      if (!storage || !storage.history) return browser.storage[area].set({
+        history: (0, _utils._COPY)(_defaultStorage.default.history)
+      });
     });
   },
   _set_version: function _set_version(version) {
-    return browser.storage.local.set({ version: version }).then(function () {
-      return browser.storage.sync.set({ version: version });
+    return browser.storage.local.set({
+      version: version
+    }).then(function () {
+      return browser.storage.sync.set({
+        version: version
+      });
     });
   },
   _set_log: function _set_log(log) {
     if (log.clear) {
-      return browser.storage.local.set({ logs: [] });
+      return browser.storage.local.set({
+        logs: []
+      });
     }
+
     return this._get_logs().then(function (logs) {
       logs.push(log);
       if (logs.length > 200) logs.shift();
-      return browser.storage.local.set({ logs: logs });
+      return browser.storage.local.set({
+        logs: logs
+      });
     });
   },
   _set_entry: function _set_entry(entry) {
@@ -1687,31 +1710,37 @@ exports.default = new _utils._MODULE({
       if (history.order.includes(entry.name)) return _this6._update_entry(entry);
       history.order.push(entry.name);
       history.entries[entry.name] = entry;
-      return browser.storage[_this6.area_history].set({ history: history });
+      return browser.storage[_this6.area_history].set({
+        history: history
+      });
     });
   },
   _update_history: function _update_history(updater) {
     var area = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.area_history;
-
     return browser.storage[area].get().then(function (storage) {
       if (!storage.history) {
-        storage.history = (0, _utils._COPY)(_defaultStorage2.default.history);
+        storage.history = (0, _utils._COPY)(_defaultStorage.default.history);
       }
+
       var history = updater(storage.history);
-      return browser.storage[area].set({ history: history }).then(function () {
+      return browser.storage[area].set({
+        history: history
+      }).then(function () {
         return history;
       });
     });
   },
   _update_settings: function _update_settings(updater) {
     var area = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.area_settings;
-
     return browser.storage[area].get().then(function (storage) {
       if (!storage.settings) {
-        storage.settings = (0, _utils._COPY)(_defaultStorage2.default.settings);
+        storage.settings = (0, _utils._COPY)(_defaultStorage.default.settings);
       }
+
       var settings = updater(storage.settings);
-      return browser.storage[area].set({ settings: settings }).then(function () {
+      return browser.storage[area].set({
+        settings: settings
+      }).then(function () {
         return settings;
       });
     });
@@ -1723,6 +1752,8 @@ exports.default = new _utils._MODULE({
     return this._set_sync(updater(sync));
   }
 });
+
+exports.default = _default;
 
 /***/ }),
 
@@ -1739,29 +1770,48 @@ exports.default = new _utils._MODULE({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._ERRORTRACKER = exports._PORT = exports._MODULE = exports._EXTEND = exports._COPY = undefined;
+Object.defineProperty(exports, "_COPY", {
+  enumerable: true,
+  get: function get() {
+    return _copy._COPY;
+  }
+});
+Object.defineProperty(exports, "_EXTEND", {
+  enumerable: true,
+  get: function get() {
+    return _extend.default;
+  }
+});
+Object.defineProperty(exports, "_MODULE", {
+  enumerable: true,
+  get: function get() {
+    return _module._MODULE;
+  }
+});
+Object.defineProperty(exports, "_PORT", {
+  enumerable: true,
+  get: function get() {
+    return _port._PORT;
+  }
+});
+Object.defineProperty(exports, "_ERRORTRACKER", {
+  enumerable: true,
+  get: function get() {
+    return _errorTracker.default;
+  }
+});
 
 var _copy = __webpack_require__(/*! ./../utils/copy */ "./utils/copy.js");
 
-var _extend = __webpack_require__(/*! ./../utils/extend */ "./utils/extend.js");
-
-var _extend2 = _interopRequireDefault(_extend);
+var _extend = _interopRequireDefault(__webpack_require__(/*! ./../utils/extend */ "./utils/extend.js"));
 
 var _module = __webpack_require__(/*! ./../utils/module */ "./utils/module.js");
 
 var _port = __webpack_require__(/*! ./../utils/port */ "./utils/port.js");
 
-var _errorTracker = __webpack_require__(/*! ./../utils/error-tracker */ "./utils/error-tracker.js");
-
-var _errorTracker2 = _interopRequireDefault(_errorTracker);
+var _errorTracker = _interopRequireDefault(__webpack_require__(/*! ./../utils/error-tracker */ "./utils/error-tracker.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports._COPY = _copy._COPY;
-exports._EXTEND = _extend2.default;
-exports._MODULE = _module._MODULE;
-exports._PORT = _port._PORT;
-exports._ERRORTRACKER = _errorTracker2.default;
 
 /***/ }),
 
@@ -1778,7 +1828,8 @@ exports._ERRORTRACKER = _errorTracker2.default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = {
+exports.default = void 0;
+var _default = {
   version: browser.runtime.getManifest().version,
   settings: {
     shortcuts: {
@@ -1838,6 +1889,7 @@ exports.default = {
     history: false
   }
 };
+exports.default = _default;
 
 /***/ }),
 
@@ -1854,7 +1906,8 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = {
+exports.default = void 0;
+var _default = {
   note_pbm: 1,
   note_restoration_failure: 2,
   note_url: 3,
@@ -1887,7 +1940,6 @@ exports.default = {
   error_empty_local_storage_onupdate: 30,
   error_toggle_sync: 31,
   error_save_priv: 32,
-
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {
@@ -1895,9 +1947,11 @@ exports.default = {
         break;
       }
     }
+
     return '';
   }
 };
+exports.default = _default;
 
 /***/ }),
 
@@ -2002,8 +2056,9 @@ module.exports = "../../icons/tm48.png";
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports._COPY = void 0;
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var _COPY = function _COPY(original, clone) {
   clone = clone || {};
@@ -2012,12 +2067,14 @@ var _COPY = function _COPY(original, clone) {
     if (original.hasOwnProperty(i)) {
       if (_typeof(original[i]) === 'object') {
         clone[i] = Array.isArray(original[i]) ? [] : {};
+
         _COPY(original[i], clone[i]);
       } else {
         clone[i] = original[i];
       }
     }
   }
+
   return clone;
 };
 
@@ -2038,6 +2095,7 @@ exports._COPY = _COPY;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
 var _module = __webpack_require__(/*! ./module */ "./utils/module.js");
 
@@ -2047,6 +2105,7 @@ var _ERRORTRACKER = new _module._MODULE({
 
     window.addEventListener('error', function (error) {
       var file = error.filename.split('/').pop();
+
       if (['sidebar.wp.js', 'tbb-menu.wp.js', 'options.wp.js', 'addon-page.wp.js'].includes(file)) {
         _this.emit('error:browser-console', {
           message: error.message,
@@ -2058,7 +2117,8 @@ var _ERRORTRACKER = new _module._MODULE({
   }
 });
 
-exports.default = _ERRORTRACKER;
+var _default = _ERRORTRACKER;
+exports.default = _default;
 
 /***/ }),
 
@@ -2075,12 +2135,15 @@ exports.default = _ERRORTRACKER;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = _default;
 
-exports.default = function (obj1, obj2) {
+function _default(obj1, obj2) {
   for (var i in obj2) {
     if (!obj1[i]) obj1[i] = obj2[i];
-  }return obj1;
-};
+  }
+
+  return obj1;
+}
 
 /***/ }),
 
@@ -2097,66 +2160,72 @@ exports.default = function (obj1, obj2) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.default = void 0;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 var topics = {};
 
-var _class = function () {
-  function _class() {
-    _classCallCheck(this, _class);
+var _default =
+/*#__PURE__*/
+function () {
+  function _default() {
+    _classCallCheck(this, _default);
   }
 
-  _createClass(_class, [{
-    key: 'on',
+  _createClass(_default, [{
+    key: "on",
     value: function on(event, handler) {
       if (!topics[event]) topics[event] = [];
-
       topics[event].push(handler);
     }
   }, {
-    key: 'emit',
+    key: "emit",
     value: function emit(events) {
       var _this = this;
 
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
       }
 
       events = events.split(' ');
-
       var i = 0,
           l = events.length,
-          topic = void 0;
+          topic;
 
       for (; i < l; i++) {
         topic = topics[events[i]];
-
         if (topic) topic.forEach(function (handler) {
           return handler.apply(_this, args);
         });
       }
     }
   }, {
-    key: 'request',
+    key: "request",
     value: function request(event) {
-      for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
         args[_key2 - 1] = arguments[_key2];
       }
 
-      return browser.runtime.sendMessage({ ev: event, args: args, wait: true }).catch(function () {});
+      return browser.runtime.sendMessage({
+        ev: event,
+        args: args,
+        wait: true
+      }).catch(function () {});
     }
   }, {
-    key: 'proxy',
+    key: "proxy",
     value: function proxy(context, func) {
-      for (var _len3 = arguments.length, args1 = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+      for (var _len3 = arguments.length, args1 = new Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
         args1[_key3 - 2] = arguments[_key3];
       }
 
       return function () {
-        for (var _len4 = arguments.length, args2 = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+        for (var _len4 = arguments.length, args2 = new Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
           args2[_key4] = arguments[_key4];
         }
 
@@ -2165,10 +2234,10 @@ var _class = function () {
     }
   }]);
 
-  return _class;
+  return _default;
 }();
 
-exports.default = _class;
+exports.default = _default;
 
 /***/ }),
 
@@ -2185,48 +2254,63 @@ exports.default = _class;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._MODULE = undefined;
+exports._MODULE = void 0;
 
-var _mediator = __webpack_require__(/*! ./mediator */ "./utils/mediator.js");
-
-var _mediator2 = _interopRequireDefault(_mediator);
+var _mediator = _interopRequireDefault(__webpack_require__(/*! ./mediator */ "./utils/mediator.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
-var _MODULE = exports._MODULE = function (_MEDIATOR2) {
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var _MODULE =
+/*#__PURE__*/
+function (_MEDIATOR2) {
   _inherits(_MODULE, _MEDIATOR2);
 
   function _MODULE(obj) {
+    var _this;
+
     _classCallCheck(this, _MODULE);
 
-    var _this = _possibleConstructorReturn(this, (_MODULE.__proto__ || Object.getPrototypeOf(_MODULE)).call(this));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(_MODULE).call(this));
 
     for (o in obj) {
       _this[o] = obj[o];
-    }var events = _this.events,
-        envEvents = void 0,
-        o = void 0,
-        e = void 0,
-        handler = void 0;
+    }
+
+    var events = _this.events,
+        envEvents,
+        o,
+        e,
+        handler;
 
     if (events && (envEvents = events.ENV)) {
       for (e in envEvents) {
         handler = envEvents[e];
-        if (_this[handler]) _this.on(e, _this.proxy(_this, _this[handler]));
+        if (_this[handler]) _this.on(e, _this.proxy(_assertThisInitialized(_assertThisInitialized(_this)), _this[handler]));
       }
     }
+
     !_this.autoinit || _this.autoinit();
     return _this;
   }
 
   return _MODULE;
-}(_mediator2.default);
+}(_mediator.default);
+
+exports._MODULE = _MODULE;
 
 /***/ }),
 
@@ -2243,40 +2327,50 @@ var _MODULE = exports._MODULE = function (_MEDIATOR2) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports._PORT = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports._PORT = void 0;
 
 var _module = __webpack_require__(/*! ./module */ "./utils/module.js");
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var _PORT = exports._PORT = function (_MODULE2) {
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+var _PORT =
+/*#__PURE__*/
+function (_MODULE2) {
   _inherits(_PORT, _MODULE2);
 
   function _PORT(obj) {
+    var _this;
+
     _classCallCheck(this, _PORT);
 
-    var _this = _possibleConstructorReturn(this, (_PORT.__proto__ || Object.getPrototypeOf(_PORT)).call(this, obj));
-
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(_PORT).call(this, obj));
     _this.port = null;
-
     var type = _this.type;
-
-    browser.runtime.onMessage.addListener(_this.proxy(_this, _this.passMessage));
-
+    browser.runtime.onMessage.addListener(_this.proxy(_assertThisInitialized(_assertThisInitialized(_this)), _this.passMessage));
     if (type === 'privileged' || type === 'background') _this.initPorting();
-
     var events = _this.events,
-        oneOffEvents = void 0,
-        connectionBasedEvents = void 0;
+        oneOffEvents,
+        connectionBasedEvents;
 
     if (events) {
       oneOffEvents = events.ONEOFF;
+
       if (oneOffEvents) {
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -2286,14 +2380,14 @@ var _PORT = exports._PORT = function (_MODULE2) {
           for (var _iterator = oneOffEvents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var e = _step.value;
 
-            _this.on(e, _this.proxy(_this, _this.sendMessage, e));
+            _this.on(e, _this.proxy(_assertThisInitialized(_assertThisInitialized(_this)), _this.sendMessage, e));
           }
         } catch (err) {
           _didIteratorError = true;
           _iteratorError = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
+            if (!_iteratorNormalCompletion && _iterator.return != null) {
               _iterator.return();
             }
           } finally {
@@ -2303,7 +2397,9 @@ var _PORT = exports._PORT = function (_MODULE2) {
           }
         }
       }
+
       connectionBasedEvents = events.CONNECTION;
+
       if (connectionBasedEvents) {
         var _iteratorNormalCompletion2 = true;
         var _didIteratorError2 = false;
@@ -2313,14 +2409,14 @@ var _PORT = exports._PORT = function (_MODULE2) {
           for (var _iterator2 = connectionBasedEvents[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
             var f = _step2.value;
 
-            _this.on(f, _this.proxy(_this, _this.postMessage, f));
+            _this.on(f, _this.proxy(_assertThisInitialized(_assertThisInitialized(_this)), _this.postMessage, f));
           }
         } catch (err) {
           _didIteratorError2 = true;
           _iteratorError2 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
               _iterator2.return();
             }
           } finally {
@@ -2331,34 +2427,42 @@ var _PORT = exports._PORT = function (_MODULE2) {
         }
       }
     }
+
     return _this;
   }
 
   _createClass(_PORT, [{
-    key: 'passMessage',
+    key: "passMessage",
     value: function passMessage(req, sender, sendResponse) {
       req.args = req.args || [];
       var args = [].concat(req.ev, req.args);
       if (!sender || !sender.name) args = args.concat(sender, sendResponse);
       this.emit.apply(this, args);
       if (req.wait) return true; // this will keep the message channel open to the other end until `sendResponse` is called
+
       return false;
     }
   }, {
-    key: 'sendMessage',
+    key: "sendMessage",
     value: function sendMessage(e) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
       }
 
       var type = this.type;
-      var msg = { ev: e, args: args };
+      var msg = {
+        ev: e,
+        args: args
+      };
       if (type === 'content') browser.runtime.sendMessage(msg).catch(function () {});else if (type === 'background') {
         var lastArg = args[args.length - 1];
+
         if (lastArg !== undefined && lastArg.tab) {
           browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
         } else {
-          browser.tabs.query({/* currentWindow: false, active: false */}).then(function (tabs) {
+          browser.tabs.query({
+            /* currentWindow: false, active: false */
+          }).then(function (tabs) {
             var _iteratorNormalCompletion3 = true;
             var _didIteratorError3 = false;
             var _iteratorError3 = undefined;
@@ -2366,7 +2470,6 @@ var _PORT = exports._PORT = function (_MODULE2) {
             try {
               for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
                 var tab = _step3.value;
-
                 browser.tabs.sendMessage(tab.id, msg).catch(function () {});
               }
             } catch (err) {
@@ -2374,7 +2477,7 @@ var _PORT = exports._PORT = function (_MODULE2) {
               _iteratorError3 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
                   _iterator3.return();
                 }
               } finally {
@@ -2388,17 +2491,20 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
     }
   }, {
-    key: 'postMessage',
+    key: "postMessage",
     value: function postMessage(e) {
-      for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+      for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
         args[_key2 - 1] = arguments[_key2];
       }
 
-      var msg = { ev: e, args: args };
+      var msg = {
+        ev: e,
+        args: args
+      };
       if (this.port) this.port.postMessage(msg);
     }
   }, {
-    key: 'initPorting',
+    key: "initPorting",
     value: function initPorting() {
       if (!this.postponeConnection) {
         this.connect();
@@ -2408,17 +2514,19 @@ var _PORT = exports._PORT = function (_MODULE2) {
       }
     }
   }, {
-    key: 'connect',
+    key: "connect",
     value: function connect() {
       var _this2 = this;
 
-      var port = this.port = this.port || browser.runtime.connect({ name: this.name });
+      var port = this.port = this.port || browser.runtime.connect({
+        name: this.name
+      });
       port.onDisconnect.addListener(function () {
         return _this2.port = null;
       });
     }
   }, {
-    key: 'addConnectionListeners',
+    key: "addConnectionListeners",
     value: function addConnectionListeners(cb) {
       var _this3 = this;
 
@@ -2431,6 +2539,8 @@ var _PORT = exports._PORT = function (_MODULE2) {
 
   return _PORT;
 }(_module._MODULE);
+
+exports._PORT = _PORT;
 
 /***/ })
 
