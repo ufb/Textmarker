@@ -11,6 +11,8 @@ export default function(mark) {
         click: {
           'tmnotedelete': '_delete',
           'tmnoteminimize': 'hide',
+          'tmnotecustomize': 'togglePalette',
+          'tmnotecolor': 'changeColor',
           'textarea': 'bringUpFront'
         },
         keyup: {
@@ -25,28 +27,52 @@ export default function(mark) {
     text: '',
     visible: false,
     recentlyUpdated: false,
+    settingsMode: false,
+    color: 'yellow',
 
     autoinit() {
+      this.adjustNoteDataObject();
       this.createNoteElement();
       this.addListeners();
       this.addMarkListeners();
     },
 
+    adjustNoteDataObject() {
+      const noteData = this.mark.keyData.note;
+      if (typeof noteData === 'string') {
+        this.mark.keyData.note = { text: noteData, color: 'yellow' };
+      }
+    },
     createNoteElement() {
       const note = this.el = document.createElement('tmnote');
       const del = this.del = document.createElement('tmnotedelete');
       const min = this.min = document.createElement('tmnoteminimize');
+      const gear = document.createElement('tmnotecustomize');
+      const palette = this.palette = document.createElement('tmnotepalette');
       const p = this.textElement = document.createElement('textarea');
-      const text = this.mark.keyData.note || '';
+      const text = this.mark.keyData.note.text;
+      const color = this.color = this.mark.keyData.note.color || 'yellow';
+
       const delText = document.createTextNode(String.fromCharCode(10005));
       const minText = document.createTextNode(String.fromCharCode(0x2013));
+      const gearText = document.createTextNode(String.fromCharCode(0x2699));
+
+      ['green', 'white', 'yellow', 'orange', 'red', 'pink', 'blue', 'turquoise'].forEach(c => {
+        let color = document.createElement('tmnotecolor');
+        color.className = 'tmnotecolor--' + c;
+        color.setAttribute('data-color', c);
+        palette.appendChild(color);
+      });
 
       p.setAttribute('data-tm-note', true);
       del.appendChild(delText);
       min.appendChild(minText);
+      gear.appendChild(gearText);
+      note.appendChild(gear);
       note.appendChild(del);
       note.appendChild(min);
       note.appendChild(p);
+      note.classList.add('tmnote--' + color);
       if (text) p.value = text;
 
       p.addEventListener('blur', e => this.attemptUpdate(e, e.target, true), false);
@@ -70,7 +96,7 @@ export default function(mark) {
       }
     },
     update(el) {
-      this.mark.keyData.note = el.value;
+      this.mark.keyData.note.text = el.value;
       this.emit('updated:note');
       this.recentlyUpdated = false;
     },
@@ -95,6 +121,22 @@ export default function(mark) {
     hide() {
       BODY.removeChild(this.el);
       this.visible = false;
+    },
+    togglePalette() {
+      if (this.settingsMode) {
+        this.el.removeChild(this.palette);
+      } else {
+        this.el.appendChild(this.palette);
+      }
+      this.settingsMode = !this.settingsMode;
+    },
+    changeColor(e, el) {
+      this.el.classList.remove('tmnote--' + this.color);
+      const color = this.color = el.getAttribute('data-color');
+      this.el.classList.add('tmnote--' + color);
+      this.mark.keyData.note.color = color;
+      this.togglePalette();
+      this.emit('changed:note-color');
     },
     addMarkListeners() {
       _STORE.get('noteonclick').then(noteonclick => {

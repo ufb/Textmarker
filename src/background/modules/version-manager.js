@@ -42,6 +42,9 @@ new _MODULE({
       if (!settings.misc.tmuipos) {
         settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }
+      if (typeof settings.misc.notetransp !== 'boolean') {
+        settings.misc.notetransp = defaultSettings.misc.notetransp;
+      }
     }
     return settings;
   },

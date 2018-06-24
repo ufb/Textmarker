@@ -22,6 +22,7 @@ export default function() {
         'ctx:n': 'addNote',
         'updated:note': 'autosave',
         'removed:note': 'autosave',
+				'changed:note-color': 'autosave',
 				'sidebar:highlight': 'onMarkerKey',
         'sidebar:delete-highlight': 'remove',
         'sidebar:bookmark': 'setBookmark',

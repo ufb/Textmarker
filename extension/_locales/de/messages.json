@@ -270,6 +270,7 @@
 "h444":{"message":"Notizen"},
 "t447":{"message":"Button auf Seite zeigen, mit dem alle Notizen ein-/ausgeblendet werden können"},
 "t448":{"message":"Zeige Notiz bei Klick auf Highlight"},
+"t448b":{"message":"halb-transparent, wenn nicht aktiv"},
 "t449":{"message":"Siehe: Anleitung > Funktionen > Notizen"},
 "h451":{"message":"Benachrichtigung anzeigen, wenn ..."},
 "t451":{"message":"ein neuer Eintrag in die Chronik gespeichert wurde;"},

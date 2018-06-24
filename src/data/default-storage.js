@@ -38,6 +38,7 @@ export default {
       bmicon: true,
       noteicon: true,
       noteonclick: true,
+      notetransp: false,
       overwrite: false,
       failureNote: true,
       successNote: true,

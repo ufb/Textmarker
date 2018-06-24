@@ -159,6 +159,7 @@ exports.default = new _utils._MODULE({
     }
   },
   initialized: false,
+  initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
   area_entry: 'sync',
@@ -185,12 +186,21 @@ exports.default = new _utils._MODULE({
 
     var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
 
+    if (this.initializing) {
+      return new Promise(function (r) {
+        return window.setTimeout(function () {
+          return r(_this2.get(field));
+        }, 10);
+      });
+    }
     var meth = this['_get_' + field];
     if (!meth) throw 'field ' + field + ' doesn\'t exist';
 
     if (!this.initialized) {
+      this.initializing = true;
       this.initialized = true;
       return this.setAreas().then(function () {
+        _this2.initializing = false;
         return _this2['_get_' + field]();
       });
     }
@@ -233,6 +243,12 @@ exports.default = new _utils._MODULE({
     return browser.storage[this.area_settings].get().then(function (storage) {
       if (!storage || !storage.settings) return true;
       return storage.settings.misc.noteonclick;
+    });
+  },
+  _get_notetransp: function _get_notetransp() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.misc.notetransp;
     });
   },
   _get_tmuipos: function _get_tmuipos() {
@@ -878,6 +894,7 @@ exports.default = function () {
         'ctx:n': 'addNote',
         'updated:note': 'autosave',
         'removed:note': 'autosave',
+        'changed:note-color': 'autosave',
         'sidebar:highlight': 'onMarkerKey',
         'sidebar:delete-highlight': 'remove',
         'sidebar:bookmark': 'setBookmark',
@@ -1303,6 +1320,8 @@ exports.default = function (mark) {
         click: {
           'tmnotedelete': '_delete',
           'tmnoteminimize': 'hide',
+          'tmnotecustomize': 'togglePalette',
+          'tmnotecolor': 'changeColor',
           'textarea': 'bringUpFront'
         },
         keyup: {
@@ -1317,11 +1336,20 @@ exports.default = function (mark) {
     text: '',
     visible: false,
     recentlyUpdated: false,
+    settingsMode: false,
+    color: 'yellow',
 
     autoinit: function autoinit() {
+      this.adjustNoteDataObject();
       this.createNoteElement();
       this.addListeners();
       this.addMarkListeners();
+    },
+    adjustNoteDataObject: function adjustNoteDataObject() {
+      var noteData = this.mark.keyData.note;
+      if (typeof noteData === 'string') {
+        this.mark.keyData.note = { text: noteData, color: 'yellow' };
+      }
     },
     createNoteElement: function createNoteElement() {
       var _this = this;
@@ -1329,17 +1357,32 @@ exports.default = function (mark) {
       var note = this.el = document.createElement('tmnote');
       var del = this.del = document.createElement('tmnotedelete');
       var min = this.min = document.createElement('tmnoteminimize');
+      var gear = document.createElement('tmnotecustomize');
+      var palette = this.palette = document.createElement('tmnotepalette');
       var p = this.textElement = document.createElement('textarea');
-      var text = this.mark.keyData.note || '';
+      var text = this.mark.keyData.note.text;
+      var color = this.color = this.mark.keyData.note.color || 'yellow';
+
       var delText = document.createTextNode(String.fromCharCode(10005));
       var minText = document.createTextNode(String.fromCharCode(0x2013));
+      var gearText = document.createTextNode(String.fromCharCode(0x2699));
+
+      ['green', 'white', 'yellow', 'orange', 'red', 'pink', 'blue', 'turquoise'].forEach(function (c) {
+        var color = document.createElement('tmnotecolor');
+        color.className = 'tmnotecolor--' + c;
+        color.setAttribute('data-color', c);
+        palette.appendChild(color);
+      });
 
       p.setAttribute('data-tm-note', true);
       del.appendChild(delText);
       min.appendChild(minText);
+      gear.appendChild(gearText);
+      note.appendChild(gear);
       note.appendChild(del);
       note.appendChild(min);
       note.appendChild(p);
+      note.classList.add('tmnote--' + color);
       if (text) p.value = text;
 
       p.addEventListener('blur', function (e) {
@@ -1368,7 +1411,7 @@ exports.default = function (mark) {
       }
     },
     update: function update(el) {
-      this.mark.keyData.note = el.value;
+      this.mark.keyData.note.text = el.value;
       this.emit('updated:note');
       this.recentlyUpdated = false;
     },
@@ -1394,6 +1437,22 @@ exports.default = function (mark) {
     hide: function hide() {
       BODY.removeChild(this.el);
       this.visible = false;
+    },
+    togglePalette: function togglePalette() {
+      if (this.settingsMode) {
+        this.el.removeChild(this.palette);
+      } else {
+        this.el.appendChild(this.palette);
+      }
+      this.settingsMode = !this.settingsMode;
+    },
+    changeColor: function changeColor(e, el) {
+      this.el.classList.remove('tmnote--' + this.color);
+      var color = this.color = el.getAttribute('data-color');
+      this.el.classList.add('tmnote--' + color);
+      this.mark.keyData.note.color = color;
+      this.togglePalette();
+      this.emit('changed:note-color');
     },
     addMarkListeners: function addMarkListeners() {
       var _this4 = this;
@@ -1507,11 +1566,15 @@ exports.default = function () {
         'restore:notes': 'restore',
         'removed:mark': 'removeNote',
         'toggle:notes': 'toggleAll',
-        'sidebar:toggle-notes': 'toggleAll'
+        'sidebar:toggle-notes': 'toggleAll',
+        'updated:misc-settings': 'updateTransp'
       }
     },
     notes: {},
     toggle: null,
+    autoinit: function autoinit() {
+      this.updateTransp();
+    },
     add: function add(mark) {
       return this.notes[mark.id] = new _note2.default(mark);
     },
@@ -1567,6 +1630,12 @@ exports.default = function () {
           note[meth]();
         }
       }
+    },
+    updateTransp: function updateTransp() {
+      var bodyClasses = DOC.body.classList;
+      _store2.default.get('notetransp').then(function (transp) {
+        if (transp) bodyClasses.add('tmnotes--0_8');else bodyClasses.remove('tmnotes--0_8');
+      });
     },
     isEmpty: function isEmpty(obj) {
       return !Object.keys(obj).length;
