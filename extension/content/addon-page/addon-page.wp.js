@@ -1032,6 +1032,7 @@ exports.default = function () {
         text = '',
         l = names.length,
         i = 0,
+        noteText = void 0,
         entry = void 0,
         marks = void 0,
         mark = void 0,
@@ -1068,7 +1069,8 @@ exports.default = function () {
             text += mark.text.replace(/\n/g, '\r\n') + newLines;
 
             if (all_marks_plus_meta_and_notes && mark.note) {
-              text += '  ' + note + ':' + newLine + '  ' + mark.note.replace(/\n/g, '\r\n  ') + newLines;
+              noteText = mark.note.text || mark.note;
+              text += '  ' + note + ':' + newLine + '  ' + noteText.replace(/\n/g, '\r\n  ') + newLines;
             }
           }
         }
