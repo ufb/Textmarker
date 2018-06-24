@@ -5,6 +5,7 @@ import { _COPY } from './utils'
 export default new _MODULE({
 
   initialized: false,
+  initializing: false,
   area_settings: _DEFAULT_STORAGE.sync.settings ? 'sync' : 'local',
   area_history: _DEFAULT_STORAGE.sync.history ? 'sync' : 'local',
 
@@ -18,12 +19,19 @@ export default new _MODULE({
   },
 
   get(field = 'storage') {
+    if (this.initializing) {
+      return (new Promise(r => window.setTimeout(() => r(this.get(field)), 10)));
+    }
     const meth = this['_get_' + field];
     if (!meth) throw('field ' + field + ' doesn\'t exist');
 
     if (!this.initialized) {
+      this.initializing = true;
       this.initialized = true;
-      return this.init().then(() => this['_get_' + field]());
+      return this.init().then(() => {
+        this.initializing = false;
+        return this['_get_' + field]();
+      });
     }
     return this['_get_' + field]();
   },
