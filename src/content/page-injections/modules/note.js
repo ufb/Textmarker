@@ -57,7 +57,7 @@ export default function(mark) {
       const minText = document.createTextNode(String.fromCharCode(0x2013));
       const gearText = document.createTextNode(String.fromCharCode(0x2699));
 
-      ['green', 'white', 'yellow', 'orange', 'red', 'pink', 'blue', 'turquoise'].forEach(c => {
+      ['green', 'white', 'yellow', 'orange', 'red', 'purple', 'blue', 'turquoise'].forEach(c => {
         let color = document.createElement('tmnotecolor');
         color.className = 'tmnotecolor--' + c;
         color.setAttribute('data-color', c);

@@ -1367,7 +1367,7 @@ exports.default = function (mark) {
       var minText = document.createTextNode(String.fromCharCode(0x2013));
       var gearText = document.createTextNode(String.fromCharCode(0x2699));
 
-      ['green', 'white', 'yellow', 'orange', 'red', 'pink', 'blue', 'turquoise'].forEach(function (c) {
+      ['green', 'white', 'yellow', 'orange', 'red', 'purple', 'blue', 'turquoise'].forEach(function (c) {
         var color = document.createElement('tmnotecolor');
         color.className = 'tmnotecolor--' + c;
         color.setAttribute('data-color', c);

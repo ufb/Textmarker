@@ -89,23 +89,23 @@ span.textmarker-highlight {
   background-image: linear-gradient(#ffe, #ffd); }
 
 .tmnote--orange tmnotepalette {
-  background: #fed; }
+  background: #fec; }
 
 .tmnote--orange tmnotedelete,
 .tmnote--orange tmnoteminimize,
 .tmnote--orange tmnotecustomize {
-  background: #fff6ee; }
+  background: #fed; }
   .tmnote--orange tmnotedelete:hover,
   .tmnote--orange tmnoteminimize:hover,
   .tmnote--orange tmnotecustomize:hover {
-    background: #fed; }
+    background: #fec; }
 
 .tmnote--orange textarea {
-  background-image: linear-gradient(#fff6ee, #fed) !important; }
+  background-image: linear-gradient(#fed, #fec) !important; }
 
 .tmnotecolor--orange {
-  border-color: #fed;
-  background-image: linear-gradient(#fff6ee, #fed); }
+  border-color: #fec;
+  background-image: linear-gradient(#fed, #fec); }
 
 .tmnote--red tmnotepalette {
   background: #fdd; }
@@ -126,24 +126,24 @@ span.textmarker-highlight {
   border-color: #fdd;
   background-image: linear-gradient(#fee, #fdd); }
 
-.tmnote--pink tmnotepalette {
-  background: #fdf; }
+.tmnote--purple tmnotepalette {
+  background: #edf; }
 
-.tmnote--pink tmnotedelete,
-.tmnote--pink tmnoteminimize,
-.tmnote--pink tmnotecustomize {
-  background: #fef; }
-  .tmnote--pink tmnotedelete:hover,
-  .tmnote--pink tmnoteminimize:hover,
-  .tmnote--pink tmnotecustomize:hover {
-    background: #fdf; }
+.tmnote--purple tmnotedelete,
+.tmnote--purple tmnoteminimize,
+.tmnote--purple tmnotecustomize {
+  background: #eef; }
+  .tmnote--purple tmnotedelete:hover,
+  .tmnote--purple tmnoteminimize:hover,
+  .tmnote--purple tmnotecustomize:hover {
+    background: #edf; }
 
-.tmnote--pink textarea {
-  background-image: linear-gradient(#fef, #fdf) !important; }
+.tmnote--purple textarea {
+  background-image: linear-gradient(#eef, #edf) !important; }
 
-.tmnotecolor--pink {
-  border-color: #fdf;
-  background-image: linear-gradient(#fef, #fdf); }
+.tmnotecolor--purple {
+  border-color: #edf;
+  background-image: linear-gradient(#eef, #edf); }
 
 .tmnote--blue tmnotepalette {
   background: #cef; }
