@@ -159,6 +159,7 @@ exports.default = new _utils._MODULE({
     }
   },
   initialized: false,
+  initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
 
@@ -177,12 +178,21 @@ exports.default = new _utils._MODULE({
 
     var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
 
+    if (this.initializing) {
+      return new Promise(function (r) {
+        return window.setTimeout(function () {
+          return r(_this2.get(field));
+        }, 10);
+      });
+    }
     var meth = this['_get_' + field];
     if (!meth) throw 'field ' + field + ' doesn\'t exist';
 
     if (!this.initialized) {
+      this.initializing = true;
       this.initialized = true;
       return this.setAreas().then(function () {
+        _this2.initializing = false;
         return _this2['_get_' + field]();
       });
     }
@@ -1994,6 +2004,7 @@ exports.default = function () {
       document.getElementById('misc-bm').checked = miscSettings.bmicon;
       document.getElementById('misc-noteicon').checked = miscSettings.noteicon;
       document.getElementById('misc-noteonclick').checked = miscSettings.noteonclick;
+      document.getElementById('misc-notetransp').checked = miscSettings.notetransp;
       document.getElementById('notes-restoration-failure').checked = miscSettings.failureNote;
       document.getElementById('notes-restoration-success').checked = miscSettings.successNote;
       document.getElementById('notes-pbm').checked = miscSettings.pbmNote;

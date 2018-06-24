@@ -14,11 +14,15 @@ export default function() {
         'restore:notes': 'restore',
         'removed:mark': 'removeNote',
         'toggle:notes': 'toggleAll',
-        'sidebar:toggle-notes': 'toggleAll'
+        'sidebar:toggle-notes': 'toggleAll',
+        'updated:misc-settings': 'updateTransp'
       }
     },
     notes: {},
     toggle: null,
+    autoinit() {
+        this.updateTransp();
+    },
     add(mark) {
       return this.notes[mark.id] = new _NOTE(mark);
     },
@@ -53,6 +57,13 @@ export default function() {
           note[meth]();
         }
       }
+    },
+    updateTransp() {
+      const bodyClasses = DOC.body.classList;
+      _STORE.get('notetransp').then(transp => {
+        if (transp) bodyClasses.add('tmnotes--0_8');
+        else bodyClasses.remove('tmnotes--0_8');
+      });
     },
     isEmpty(obj) {
       return !Object.keys(obj).length;

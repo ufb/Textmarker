@@ -1176,6 +1176,9 @@ new _utils._MODULE({
       if (!settings.misc.tmuipos) {
         settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }
+      if (typeof settings.misc.notetransp !== 'boolean') {
+        settings.misc.notetransp = defaultSettings.misc.notetransp;
+      }
     }
     return settings;
   },
@@ -1451,6 +1454,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 exports.default = new _utils._MODULE({
 
   initialized: false,
+  initializing: false,
   area_settings: _defaultStorage2.default.sync.settings ? 'sync' : 'local',
   area_history: _defaultStorage2.default.sync.history ? 'sync' : 'local',
 
@@ -1469,12 +1473,21 @@ exports.default = new _utils._MODULE({
 
     var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
 
+    if (this.initializing) {
+      return new Promise(function (r) {
+        return window.setTimeout(function () {
+          return r(_this2.get(field));
+        }, 10);
+      });
+    }
     var meth = this['_get_' + field];
     if (!meth) throw 'field ' + field + ' doesn\'t exist';
 
     if (!this.initialized) {
+      this.initializing = true;
       this.initialized = true;
       return this.init().then(function () {
+        _this2.initializing = false;
         return _this2['_get_' + field]();
       });
     }
@@ -1805,6 +1818,7 @@ exports.default = {
       bmicon: true,
       noteicon: true,
       noteonclick: true,
+      notetransp: false,
       overwrite: false,
       failureNote: true,
       successNote: true,

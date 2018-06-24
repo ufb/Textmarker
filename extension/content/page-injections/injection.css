@@ -31,45 +31,234 @@ span.textmarker-highlight {
   background-position: -2px 0, 0 0;
   background-size: unset, 100%; }
 
+.tmnote--green tmnotepalette {
+  background: #dfd; }
+
+.tmnote--green tmnotedelete,
+.tmnote--green tmnoteminimize,
+.tmnote--green tmnotecustomize {
+  background: #efe; }
+  .tmnote--green tmnotedelete:hover,
+  .tmnote--green tmnoteminimize:hover,
+  .tmnote--green tmnotecustomize:hover {
+    background: #dfd; }
+
+.tmnote--green textarea {
+  background-image: linear-gradient(#efe, #dfd) !important; }
+
+.tmnotecolor--green {
+  border-color: #dfd;
+  background-image: linear-gradient(#efe, #dfd); }
+
+.tmnote--white tmnotepalette {
+  background: #eee; }
+
+.tmnote--white tmnotedelete,
+.tmnote--white tmnoteminimize,
+.tmnote--white tmnotecustomize {
+  background: #fff; }
+  .tmnote--white tmnotedelete:hover,
+  .tmnote--white tmnoteminimize:hover,
+  .tmnote--white tmnotecustomize:hover {
+    background: #eee; }
+
+.tmnote--white textarea {
+  background-image: linear-gradient(#fff, #eee) !important; }
+
+.tmnotecolor--white {
+  border-color: #eee;
+  background-image: linear-gradient(#fff, #eee); }
+
+.tmnote--yellow tmnotepalette {
+  background: #ffd; }
+
+.tmnote--yellow tmnotedelete,
+.tmnote--yellow tmnoteminimize,
+.tmnote--yellow tmnotecustomize {
+  background: #ffe; }
+  .tmnote--yellow tmnotedelete:hover,
+  .tmnote--yellow tmnoteminimize:hover,
+  .tmnote--yellow tmnotecustomize:hover {
+    background: #ffd; }
+
+.tmnote--yellow textarea {
+  background-image: linear-gradient(#ffe, #ffd) !important; }
+
+.tmnotecolor--yellow {
+  border-color: #ffd;
+  background-image: linear-gradient(#ffe, #ffd); }
+
+.tmnote--orange tmnotepalette {
+  background: #fed; }
+
+.tmnote--orange tmnotedelete,
+.tmnote--orange tmnoteminimize,
+.tmnote--orange tmnotecustomize {
+  background: #fff6ee; }
+  .tmnote--orange tmnotedelete:hover,
+  .tmnote--orange tmnoteminimize:hover,
+  .tmnote--orange tmnotecustomize:hover {
+    background: #fed; }
+
+.tmnote--orange textarea {
+  background-image: linear-gradient(#fff6ee, #fed) !important; }
+
+.tmnotecolor--orange {
+  border-color: #fed;
+  background-image: linear-gradient(#fff6ee, #fed); }
+
+.tmnote--red tmnotepalette {
+  background: #fdd; }
+
+.tmnote--red tmnotedelete,
+.tmnote--red tmnoteminimize,
+.tmnote--red tmnotecustomize {
+  background: #fee; }
+  .tmnote--red tmnotedelete:hover,
+  .tmnote--red tmnoteminimize:hover,
+  .tmnote--red tmnotecustomize:hover {
+    background: #fdd; }
+
+.tmnote--red textarea {
+  background-image: linear-gradient(#fee, #fdd) !important; }
+
+.tmnotecolor--red {
+  border-color: #fdd;
+  background-image: linear-gradient(#fee, #fdd); }
+
+.tmnote--pink tmnotepalette {
+  background: #fdf; }
+
+.tmnote--pink tmnotedelete,
+.tmnote--pink tmnoteminimize,
+.tmnote--pink tmnotecustomize {
+  background: #fef; }
+  .tmnote--pink tmnotedelete:hover,
+  .tmnote--pink tmnoteminimize:hover,
+  .tmnote--pink tmnotecustomize:hover {
+    background: #fdf; }
+
+.tmnote--pink textarea {
+  background-image: linear-gradient(#fef, #fdf) !important; }
+
+.tmnotecolor--pink {
+  border-color: #fdf;
+  background-image: linear-gradient(#fef, #fdf); }
+
+.tmnote--blue tmnotepalette {
+  background: #cef; }
+
+.tmnote--blue tmnotedelete,
+.tmnote--blue tmnoteminimize,
+.tmnote--blue tmnotecustomize {
+  background: #def; }
+  .tmnote--blue tmnotedelete:hover,
+  .tmnote--blue tmnoteminimize:hover,
+  .tmnote--blue tmnotecustomize:hover {
+    background: #cef; }
+
+.tmnote--blue textarea {
+  background-image: linear-gradient(#def, #cef) !important; }
+
+.tmnotecolor--blue {
+  border-color: #cef;
+  background-image: linear-gradient(#def, #cef); }
+
+.tmnote--turquoise tmnotepalette {
+  background: #c1e9f2; }
+
+.tmnote--turquoise tmnotedelete,
+.tmnote--turquoise tmnoteminimize,
+.tmnote--turquoise tmnotecustomize {
+  background: #d5f0f7; }
+  .tmnote--turquoise tmnotedelete:hover,
+  .tmnote--turquoise tmnoteminimize:hover,
+  .tmnote--turquoise tmnotecustomize:hover {
+    background: #c1e9f2; }
+
+.tmnote--turquoise textarea {
+  background-image: linear-gradient(#d5f0f7, #c1e9f2) !important; }
+
+.tmnotecolor--turquoise {
+  border-color: #c1e9f2;
+  background-image: linear-gradient(#d5f0f7, #c1e9f2); }
+
 tmnote {
   display: none;
   position: absolute;
   font-family: Verdana, sans-serif;
   font-size: 12px;
-  color: #37414b;
+  color: #555;
   line-height: 1.4;
   margin: 0;
   z-index: 2147483646;
   box-sizing: border-box !important; }
+  .tmnotes--0_8 tmnote {
+    opacity: 0.8; }
+  tmnote:hover {
+    opacity: 1 !important; }
+
+tmnotepalette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 26px;
+  padding: 4px 0 6px;
+  text-align: center;
+  box-sizing: border-box;
+  border-bottom: 1px solid #e1e2e3;
+  z-index: 1; }
+
+tmnotecolor {
+  width: 22px;
+  height: 14px;
+  position: relative;
+  display: inline-block;
+  margin: 0 7px;
+  border-top: 2px solid;
+  cursor: pointer;
+  box-shadow: 0 1px 3px #c8c8c8; }
+  tmnotecolor:hover {
+    top: -1px;
+    box-shadow: 0 1px 3px #aaa;
+    filter: brightness(1.02); }
 
 tmnotedelete,
-tmnoteminimize {
+tmnoteminimize,
+tmnotecustomize {
   position: absolute;
   display: block;
   font-size: 14px;
-  background: #ffe;
   right: -20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   border-radius: 0 2px 2px 0;
   cursor: pointer;
-  color: #777;
+  color: #c8c8c8;
   line-height: 1;
   height: 20px;
   box-sizing: border-box !important; }
-
-tmnotedelete:hover,
-tmnoteminimize:hover {
-  color: #37414b;
-  background: #ffc; }
+  tmnotedelete:hover,
+  tmnoteminimize:hover,
+  tmnotecustomize:hover {
+    color: #37414b; }
 
 tmnotedelete {
-  top: 2px;
-  font-size: 12px;
-  padding: 4px 6px 0 10px; }
+  top: 22px;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 5px 6px 0 10px; }
 
 tmnoteminimize {
-  top: 24px;
-  padding: 0 6px 4px 10px; }
+  top: 44px;
+  font-size: 18px;
+  padding: 0px 4px 0 10px; }
+
+tmnotecustomize {
+  top: 0;
+  font-size: 16px;
+  padding: 1px 3px 2px 10px; }
 
 body > tmnote > textarea[data-tm-note] {
   display: block !important;
@@ -77,7 +266,6 @@ body > tmnote > textarea[data-tm-note] {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
   position: relative !important;
   min-width: 300px !important;
-  background-image: linear-gradient(#ffe, #ffd) !important;
   min-height: 100px !important;
   font-family: Verdana, sans-serif !important;
   font-size: 12px !important;

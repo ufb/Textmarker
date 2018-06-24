@@ -62,15 +62,17 @@ table {
   border-collapse: collapse; }
   table td {
     padding: 2px 15px 2px 0; }
-  table.table--bordered col {
-    width: 50%; }
-  table.table--bordered td, table.table--bordered th {
-    border: 1px solid #c8c8c8; }
-  table.table--bordered th {
-    padding: 5px 10px;
-    text-align: left; }
-  table.table--bordered td {
-    padding: 10px; }
+  table.table--bordered {
+    width: 100%; }
+    table.table--bordered col {
+      width: 50%; }
+    table.table--bordered td, table.table--bordered th {
+      border: 1px solid #c8c8c8; }
+    table.table--bordered th {
+      padding: 5px 10px;
+      text-align: left; }
+    table.table--bordered td {
+      padding: 10px; }
   .no-notes table col:first-child {
     width: 100%; }
   .no-notes table col:last-child {
