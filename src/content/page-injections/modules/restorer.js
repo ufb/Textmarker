@@ -35,7 +35,7 @@ class Restorer extends _MODULE {
     return this;
   }
   squeeze(text) {
-    return text.replace(/\t|\s|\n|\r/g, '');
+    return (typeof text === 'string') ? text.replace(/\t|\s|\n|\r/g, '') : undefined;
   }
   whichChild(parent, child, context) {
 		if (!parent || !child) return null;

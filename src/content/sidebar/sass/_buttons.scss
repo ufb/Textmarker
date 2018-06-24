@@ -9,10 +9,15 @@ button {
   background-repeat: no-repeat;
   background-position: center, 0 0;
   opacity: 0.75;
-}
-button:hover {
-  opacity: 1;
-}
-button:last-child {
-  margin: 0;
+
+  &:hover {
+    opacity: 1;
+  }
+  &:last-child {
+    margin: 0;
+  }
+  &[disabled] {
+    opacity: 0.2 !important;
+    cursor: default;
+  }
 }
