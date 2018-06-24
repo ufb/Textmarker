@@ -8,9 +8,12 @@
     "webpack": "^4.12.0"
   },
   "devDependencies": {
-    "babel-core": "6.26.0",
-    "babel-loader": "7.1.1",
-    "babel-preset-es2015": "6.24.1",
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.0-beta.0",
+    "babel-preset-env": "^1.7.0",
     "css-loader": "^0.28.11",
     "duplicate-package-checker-webpack-plugin": "^3.0.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",

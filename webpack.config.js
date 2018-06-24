@@ -26,10 +26,13 @@ module.exports = {
     module: {
       rules: [{
         test: /\.js$/,
-        loader: 'babel-loader',
         include: [path.resolve(__dirname, 'src')],
-        query: {
-          presets: ['es2015']
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
         }
       }, {
         test: /\.png$/,
