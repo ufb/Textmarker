@@ -317,7 +317,7 @@ export default function() {
           text = '',
           l = names.length,
           i = 0,
-          entry, marks, mark, lost, name, m, n, j;
+          noteText, entry, marks, mark, lost, name, m, n, j;
 
       return _STORE.get('history').then(history => {
         let entries = history.entries;
@@ -351,7 +351,8 @@ export default function() {
               text += mark.text.replace(/\n/g, '\r\n') + newLines;
 
               if (all_marks_plus_meta_and_notes && mark.note) {
-                text += '  ' + note + ':' + newLine + '  ' + mark.note.replace(/\n/g, '\r\n  ') + newLines;
+                noteText = mark.note.text || mark.note;
+                text += '  ' + note + ':' + newLine + '  ' + noteText.replace(/\n/g, '\r\n  ') + newLines;
               }
             }
           }

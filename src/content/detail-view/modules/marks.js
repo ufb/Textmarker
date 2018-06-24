@@ -42,7 +42,7 @@ new _DOMMODULE({
     td_text.setAttribute('style', mark.style);
     if (mark.note) {
       this.notes = true;
-      td_note.innerText = mark.note;
+      td_note.innerText = mark.note.text || mark.note;
     }
     markEl.id = 'mark-' + mark.id;
     this.tbody.appendChild(markEl);
