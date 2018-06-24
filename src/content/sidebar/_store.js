@@ -7,6 +7,7 @@ export default new _MODULE({
     }
   },
   initialized: false,
+  initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
 
@@ -20,12 +21,19 @@ export default new _MODULE({
   },
 
   get(field = 'storage') {
+    if (this.initializing) {
+      return (new Promise(r => window.setTimeout(() => r(this.get(field)), 10)));
+    }
     const meth = this['_get_' + field];
     if (!meth) throw('field ' + field + ' doesn\'t exist');
 
     if (!this.initialized) {
+      this.initializing = true;
       this.initialized = true;
-      return this.setAreas().then(() => this['_get_' + field]());
+      return this.setAreas().then(() => {
+        this.initializing = false;
+        return this['_get_' + field]();
+      });
     }
     return this['_get_' + field]();
   },
