@@ -19,6 +19,6 @@ export default class _TOGGLER {
     if (roles) {
       roles.forEach((role, i) => document.getElementById(targets[i]).classList[role]('open'));
     }
-    else target.disabled = !this.checked;
+    else document.getElementById(targets[0]).disabled = !this.checked;
   }
 }
