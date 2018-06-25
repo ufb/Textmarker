@@ -7,6 +7,14 @@
   &__label {
     display: inline-block;
   }
+  &__text {
+    float: right;
+    position: relative;
+    left: 26px;
+    top: 2px;
+    color: $color-text--dark;
+    font-size: 11px !important;
+  }
   &__color {
     padding: 0;
     width: 44px;

@@ -39,7 +39,7 @@ new _DOMMODULE({
       if (!markers) return this;
       const inputs = document.getElementById('markers-container');
       let frag = document.createDocumentFragment(),
-          m, box, label, input, button, color;
+          m, box, label, input, exampleText, button, color;
 
       inputs.innerText = '';
 
@@ -47,6 +47,7 @@ new _DOMMODULE({
         box = document.createElement('div');
         label = document.createElement('label');
         input = document.createElement('input');
+        exampleText = document.createElement('label');
         button = document.createElement('button');
         color = this.extractBgColor(markers[m]);
 
@@ -58,6 +59,9 @@ new _DOMMODULE({
         input.name = m;
         input.type = 'color';
         input.value = color;
+        exampleText.className = 'marker__text';
+        exampleText.setAttribute('style', markers[m]);
+        exampleText.setAttribute('for', 'marker-' + m);
         button.className = 'marker__apply';
         button.setAttribute('disabled', true);
         button.setAttribute('data-key', m);
@@ -65,9 +69,11 @@ new _DOMMODULE({
         box.appendChild(label);
         box.appendChild(button);
         box.appendChild(input);
+        box.appendChild(exampleText);
         frag.appendChild(box);
 
         label.innerText = 'Marker ' + m.toUpperCase();
+        exampleText.innerText = 'A';
         if (!color) input.setAttribute('disabled', true);
       }
       inputs.appendChild(frag);
