@@ -46,7 +46,6 @@ export default function(mark) {
       const bmBtn = this.bmBtn = DOC.createElement('tmbm');
       notesBtn.title = browser.i18n.getMessage('toggle_notes');
       bmBtn.title = browser.i18n.getMessage('bm_scroll');
-      if (_STORE.pdf) bm.className = 'textmarker-bookmark-control';
     },
     addBtn(btn) {
       this.el.appendChild(btn);

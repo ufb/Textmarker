@@ -196,7 +196,6 @@ var _default = new _utils._MODULE({
   area_settings: 'sync',
   area_history: 'sync',
   area_entry: 'sync',
-  pdf: false,
   iframe: false,
   name: undefined,
   isNew: true,
@@ -775,13 +774,6 @@ function () {
   }, {
     key: "describe",
     value: function describe() {
-      if (_store.default.pdf) return this._describe_PDF();
-
-      this._describe();
-    }
-  }, {
-    key: "_describe",
-    value: function _describe() {
       var range = this.range,
           selection = this.selection,
           start = range.startContainer,
@@ -801,49 +793,6 @@ function () {
         p2: this.whichChild(grampa, parent),
         p3: grandgrampa ? this.whichChild(grandgrampa, grampa) : undefined,
         p4: grandgrampa && grandgrampa.parentNode ? this.whichChild(grandgrampa.parentNode, grandgrampa) : undefined
-      };
-      return this.keyData.conds;
-    }
-  }, {
-    key: "_describe_PDF",
-    value: function _describe_PDF() {
-      var M = this,
-          rg = this.range,
-          start = this.wrappers[0],
-          end = this.wrappers[this.wrappers.length - 1],
-          singleNode = this.simple,
-          extremes = singleNode ? [start] : [start, end],
-          startOffset = this.startOffset,
-          endOffset = this.endOffset,
-          nodes = [this.anchorNodePosition, this.focusNodePosition],
-          offsets = [startOffset, endOffset],
-          containers = [],
-          pages = [],
-          parent,
-          className,
-          isText;
-      extremes.forEach(function (node, i) {
-        parent = node.parentNode;
-        if (parent.hasAttribute('data-tm-id')) containers[i] = parent.getAttribute('data-tm-id');else {
-          parent = parent.parentNode;
-          node = node.parentNode;
-          containers[i] = M.whichChild(parent, node, 'DIV');
-        }
-
-        while (pages[i] === undefined && parent.parentNode) {
-          if ((className = parent.className) && className === 'page') pages[i] = parent.getAttribute('data-page-number') * 1;else parent = parent.parentNode;
-        }
-
-        if (pages[i] === undefined) pages[i] = containers[i] = offsets[i] = i * -1;
-        if (containers[i] === undefined) containers[i] = i * -1;
-        pages[i] = pages[i] || 1;
-      });
-      this.keyData.conds = {
-        pageIntersection: !singleNode && pages[0] !== pages[1],
-        offsets: offsets,
-        containers: containers,
-        nodes: nodes,
-        pages: pages
       };
       return this.keyData.conds;
     }
@@ -1246,8 +1195,7 @@ function _default() {
       return this.collectMarks().then(function (marks) {
         entry.marks = marks;
         entry.last = new Date().getTime();
-        entry.bookmarked = !!_this4.bookmark; //entry.url = bookmarked && _STORE.pdf ? this.bookmark.createURL() : window.document.URL;
-
+        entry.bookmarked = !!_this4.bookmark;
         entry.title = window.document.title;
         entry.count = entry.marks.length;
         entry.idcount = _this4.idcount;
@@ -1278,15 +1226,6 @@ function _default() {
           kD = done[m].keyData;
           marks.push(kD);
           ids.push(kD.id);
-        }
-
-        if (_store.default.pdf && oldMarks) {
-          m = 0;
-          l = oldMarks.length;
-
-          for (; m < l; m++) {
-            if (ids.indexOf(oldMarks[m].id) === -1) marks.push(oldMarks[m]);
-          }
         }
 
         return marks;
@@ -1712,11 +1651,8 @@ function _default() {
 
       _store.default.get('mode').then(function (active) {
         _this.active = active;
-        if (_this.set || !active) return false;
-
-        var pdf = _store.default.pdf = _this.isPdf();
-
-        if (!pdf && window.document.readyState !== 'complete') return _this.addListener('load', function () {
+        if (_this.set || !active || _this.isPdf()) return false;
+        if (window.document.readyState !== 'complete') return _this.addListener('load', function () {
           return _this.setup();
         }, window);
         _store.default.iframe = _this.isIFrame();
@@ -1962,7 +1898,7 @@ function (_MODULE2) {
 }(_utils._MODULE);
 
 function _default() {
-  return [new Restorer({
+  return new Restorer({
     events: {
       ENV: {
         'restore:marks': 'init'
@@ -2439,171 +2375,7 @@ function _default() {
         }
       }
     }
-  }), new Restorer({
-    events: {
-      ENV: {
-        'restore:marks': 'init'
-      }
-    },
-    sel: null,
-    trimmedText: '',
-    lost: [],
-    restored: [],
-    init: function init(entry) {
-      if (!_store.default.pdf) return false;
-      _store.default.name = entry.name;
-      _store.default.entry = entry;
-      this.area = entry.synced ? 'sync' : 'local';
-      this.restore(entry.marks, entry.count);
-    },
-    restore: function restore(marks, idCount) {
-      //Mark.prototype.count = idCount;
-      var m = marks.length,
-          R = this,
-          selection = this.selection,
-          pageContainers = window.document.getElementsByClassName('page'),
-          pages = {},
-          markedPages = [],
-          currPage,
-          currContainer,
-          mark,
-          conds,
-          startPage,
-          endPage,
-          p,
-          i;
-
-      for (i = 0; i < m; i++) {
-        mark = marks[i];
-        conds = mark.conds;
-        startPage = conds.pages[0];
-        markedPages.push(startPage);
-        pages[startPage] = pages[startPage] || [];
-        pages[startPage].push(mark);
-
-        if (conds.pageIntersection) {
-          endPage = conds.pages[1];
-
-          do {
-            pages[endPage] = pages[endPage] || [];
-            pages[endPage].push(mark);
-            markedPages.push(endPage);
-          } while (--endPage > startPage);
-        }
-      }
-
-      markedPages = unique(markedPages.sort(function (a, b) {
-        return a - b;
-      }));
-
-      function unique(arr) {
-        var len = arr.length,
-            res = [],
-            i = 0;
-
-        for (; i < len; i++) {
-          if (i === len - 1 || arr[i] !== arr[i + 1]) res.push(arr[i]);
-        }
-
-        return res;
-      }
-
-      function process(mark) {
-        var text = mark.text,
-            //currContainer = window.document.getElementById('pageContainer' + currPage),
-        selection,
-            range;
-        R.setBodySelection(currContainer);
-        selection = R.selection;
-        range = R.range;
-
-        if (!R.textExistsOnPage(currContainer, text)) {
-          delete mark.conds;
-          R.lost.push(mark);
-          return true;
-        }
-
-        var conds = mark.conds,
-            start = conds.containers[0],
-            end = conds.containers[1],
-            extremes = end === undefined ? [start, start] : [start, end],
-            offsets = conds.offsets,
-            divsOnPage,
-            d,
-            last;
-
-        if (conds.pageIntersection) {
-          if (conds.pages[0] === currPage) {
-            extremes[1] = -1;
-            offsets[1] = -1;
-          } else {
-            extremes[0] = 0;
-            offsets[0] = 0;
-          }
-        }
-
-        extremes.forEach(function (pos, i) {
-          if (typeof pos === 'string') {
-            extremes[i] = currContainer.querySelector('span[data-tm-id="' + pos + '"]');
-          } else {
-            divsOnPage = divsOnPage || currContainer.getElementsByClassName('textLayer')[0].querySelectorAll('div');
-            d = d || divsOnPage.length;
-
-            if (pos < 0) {
-              last = extremes[1] = divsOnPage[d - 1];
-              offsets[1] = last.lastChild.data.length;
-            } else {
-              extremes[i] = divsOnPage[pos];
-            }
-          }
-        });
-        extremes[1] = extremes[1] || extremes[0];
-
-        try {
-          range.setStart(extremes[0].childNodes[conds.nodes[0]], offsets[0]);
-          range.setEnd(extremes[1].childNodes[conds.nodes[1]], offsets[1]);
-          selection.resume(range);
-          R.emit('restored:range', selection, mark);
-          R.restored.push(mark);
-        } catch (e) {
-          delete mark.conds;
-          R.lost.push(mark);
-        }
-
-        return true;
-      }
-
-      var monitorLoadingProcess = window.setInterval(function () {
-        var l = markedPages.length,
-            idx,
-            k,
-            box,
-            textBoxes,
-            t;
-        pageContainers = window.document.getElementsByClassName('page');
-
-        if (!l) {
-          window.clearInterval(monitorLoadingProcess);
-          return false;
-        }
-
-        while (l--) {
-          k = markedPages[l] - 1;
-
-          if ((box = pageContainers[k]) && box.hasAttribute('data-loaded') && (textBoxes = box.querySelectorAll('.textLayer div')) && (t = textBoxes.length) && textBoxes[t - 2].firstChild && textBoxes[t - 2].firstChild.data.length) {
-            currPage = markedPages.splice(l, 1)[0];
-            currContainer = box;
-            R.processPeuAPeu(pages[currPage], process, R.proxy(R, R.report));
-          }
-        }
-      }, 100);
-    },
-    textExistsOnPage: function textExistsOnPage(page, text) {
-      var pageText = this.trimmedSelectionText;
-      text = this.trimmedText = this.squeeze(text);
-      return pageText.indexOf(text) !== -1;
-    }
-  })];
+  });
 }
 
 /***/ }),
@@ -2647,7 +2419,6 @@ function () {
         this.defined = node;
         this.create(node).reduceToOneRange().update().collectNodes(true).retrieveText();
       } else {
-        if (_store.default.pdf) this.adjust_PDF();
         this.collectNodes().reduceToOneRange().update().adjust().update().retrieveText();
       }
 
@@ -2692,30 +2463,6 @@ function () {
           anchor = this.anchorNode,
           focus = this.focusNode;
       if (this.isBackwards(anchor, focus)) this.reverse(anchor, focus);else this.normalize(anchor, focus);
-      return this;
-    }
-  }, {
-    key: "adjust_PDF",
-    value: function adjust_PDF() {
-      var selection = this.self,
-          range = this.range,
-          anchor = range.startContainer;
-
-      while (anchor = anchor.parentNode) {
-        if (anchor.id && anchor.id === 'viewer') return this;
-      }
-
-      try {
-        anchor = window.document.getElementsByClassName('textLayer')[0].children[0].children[0];
-      } finally {
-        try {
-          anchor = window.document.getElementsByClassName('textLayer')[0].children[0];
-        } finally {
-          anchor = window.document.getElementsByClassName('textLayer')[0];
-        }
-      }
-
-      selection.getRangeAt(0).setStart(anchor, 0);
       return this;
     }
   }, {
@@ -2974,7 +2721,6 @@ function _default(mark) {
       var bmBtn = this.bmBtn = DOC.createElement('tmbm');
       notesBtn.title = browser.i18n.getMessage('toggle_notes');
       bmBtn.title = browser.i18n.getMessage('bm_scroll');
-      if (_store.default.pdf) bm.className = 'textmarker-bookmark-control';
     },
     addBtn: function addBtn(btn) {
       this.el.appendChild(btn);

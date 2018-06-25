@@ -45,11 +45,9 @@ export default function() {
       _STORE.get('mode').then(active => {
         this.active = active;
 
-        if (this.set || !active) return false;
+        if (this.set || !active || this.isPdf()) return false;
 
-        let pdf = _STORE.pdf = this.isPdf();
-
-        if (!pdf && window.document.readyState !== 'complete')
+        if (window.document.readyState !== 'complete')
           return this.addListener('load', () => this.setup(), window);
 
         _STORE.iframe = this.isIFrame();

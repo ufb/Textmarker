@@ -176,11 +176,6 @@ export default class _MARK {
 		return wrappers;
 	}
   describe() {
-    if (_STORE.pdf) return this._describe_PDF();
-
-    this._describe();
-  }
-  _describe() {
 		let range = this.range,
       selection = this.selection,
 			start = range.startContainer,
@@ -202,57 +197,6 @@ export default class _MARK {
 			p3: grandgrampa ? this.whichChild(grandgrampa, grampa) : undefined,
 			p4: grandgrampa && grandgrampa.parentNode ? this.whichChild(grandgrampa.parentNode, grandgrampa) : undefined
 		};
-    return this.keyData.conds;
-	}
-	_describe_PDF() {
-		let M = this,
-        rg = this.range,
-				start = this.wrappers[0],
-				end = this.wrappers[this.wrappers.length - 1],
-				singleNode = this.simple,
-				extremes = singleNode ? [start] : [start, end],
-        startOffset = this.startOffset,
-				endOffset = this.endOffset,
-				nodes = [this.anchorNodePosition, this.focusNodePosition],
-				offsets = [startOffset, endOffset],
-				containers = [],
-				pages = [],
-				parent, className, isText;
-
-		extremes.forEach(function(node, i) {
-			parent = node.parentNode;
-
-			if (parent.hasAttribute('data-tm-id'))
-				containers[i] = parent.getAttribute('data-tm-id');
-			else {
-        parent = parent.parentNode;
-  			node = node.parentNode;
-        containers[i] = M.whichChild(parent, node, 'DIV');
-			}
-
-			while (pages[i] === undefined && parent.parentNode) {
-				if ((className = parent.className) && className === 'page')
-					pages[i] = parent.getAttribute('data-page-number') * 1;
-				else
-					parent = parent.parentNode;
-			}
-			if (pages[i] === undefined)
-				pages[i] = containers[i] = offsets[i] = i * -1;
-
-			if (containers[i] === undefined)
-				containers[i] = i * -1;
-
-			pages[i] = pages[i] || 1;
-		});
-
-		this.keyData.conds = {
-			pageIntersection: !singleNode && pages[0] !== pages[1],
-			offsets: offsets,
-			containers: containers,
-			nodes: nodes,
-			pages: pages
-		};
-
     return this.keyData.conds;
 	}
 }
