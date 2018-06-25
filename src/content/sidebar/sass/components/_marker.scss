@@ -14,5 +14,10 @@
     -moz-appearance: none;
     cursor: pointer;
     float: right;
+
+    &[disabled] {
+      opacity: .2;
+      cursor: default;
+    }
   }
 }

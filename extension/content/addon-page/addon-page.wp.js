@@ -2269,7 +2269,7 @@ function () {
         roles.forEach(function (role, i) {
           return document.getElementById(targets[i]).classList[role]('open');
         });
-      } else target.disabled = !this.checked;
+      } else document.getElementById(targets[0]).disabled = !this.checked;
     }
   }]);
 

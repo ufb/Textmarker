@@ -300,6 +300,8 @@ button {
     -moz-appearance: none;
     cursor: pointer;
     float: right; }
+    .marker__color[disabled] {
+      opacity: .2; }
 
 a, .link {
   color: inherit;

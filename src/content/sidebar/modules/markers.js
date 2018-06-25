@@ -68,7 +68,7 @@ new _DOMMODULE({
         frag.appendChild(box);
 
         label.innerText = 'Marker ' + m.toUpperCase();
-        if (!color) input.setAttribute('disabled', 'disabled');
+        if (!color) input.setAttribute('disabled', true);
       }
       inputs.appendChild(frag);
     });
