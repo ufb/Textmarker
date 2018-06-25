@@ -18,28 +18,6 @@ h2 {
   font-weight: normal;
   position: relative;
 }
-h2 .i {
-  cursor: pointer;
-  color: $color-text--turquoise;
-  float: right;
-  text-decoration: underline;
-  border-radius: 50%;
-  display: inline-block;
-  line-height: 1;
-  width: 15px;
-  height: 15px;
-  text-align: center;
-  font-size: 11px;
-  padding: 1px 2px 2px 1px;
-  font-family: Georgia, serif;
-  margin-top: 3px;
-}
-h2 .i:hover {
-  text-decoration: none;
-  color: #fff;
-  background: $color-bg--turquoise;
-  border: 0;
-}
 h2 .i.active + small {
   display: inline-block;
 }

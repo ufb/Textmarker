@@ -32,25 +32,25 @@ body {
   font-size: 15px; }
 
 .u-color--default {
-  color: #37414b; }
+  color: #37414b !important; }
 
 .u-color--white {
-  color: #fbfbfb; }
+  color: #fbfbfb !important; }
 
 .u-color--grey {
-  color: #777; }
+  color: #777 !important; }
 
 .u-color--grey-light {
-  color: #c8c8c8; }
+  color: #c8c8c8 !important; }
 
 .u-color--turquoise {
-  color: #2ba5b7; }
+  color: #2ba5b7 !important; }
 
 .u-color--red {
-  color: #ad3a3a; }
+  color: #ad3a3a !important; }
 
 .u-color--green {
-  color: #3aad74; }
+  color: #3aad74 !important; }
 
 .u-size--s5 {
   font-size: 0.6667rem; }
@@ -123,6 +123,15 @@ body {
 
 .u-display--inline-block {
   display: inline-block; }
+
+.u-align--top {
+  vertical-align: top; }
+
+.u-align--middle {
+  vertical-align: middle; }
+
+.u-align--bottom {
+  vertical-align: bottom; }
 
 button, .btn {
   border: 1px solid #c8c8c8;
@@ -296,6 +305,26 @@ input[type="number"] {
     margin-left: 0; }
   .switch.active:hover .switch__indicator {
     background-color: #2ba5b7; }
+
+.i {
+  cursor: pointer;
+  color: #2ba5b7;
+  text-decoration: underline;
+  border-radius: 50%;
+  display: inline-block;
+  line-height: 1;
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  font-size: 11px;
+  padding: 1px 2px 2px 1px;
+  font-family: Georgia, serif;
+  margin-top: 3px; }
+  .i:hover {
+    text-decoration: none;
+    color: #fff;
+    background: #2ba5b7;
+    border: 0; }
 
 body, html, body > div {
   height: 100%; }
@@ -522,7 +551,7 @@ button--small, .btn--small {
   margin-left: 5px; }
 
 .option-row {
-  margin-top: 10px; }
+  margin-top: 13px; }
   .option-row button {
     float: right;
     padding: 0 7px; }
@@ -561,7 +590,7 @@ button--small, .btn--small {
   #preview button {
     position: absolute;
     right: 0;
-    top: -30px; }
+    top: -26px; }
 
 #example {
   padding: 0 5px;

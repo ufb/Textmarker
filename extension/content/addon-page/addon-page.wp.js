@@ -1584,6 +1584,7 @@ function () {
     this.styles = {
       'background-color': customBgColor,
       'color': undefined,
+      'border-bottom': undefined,
       'font-size': undefined,
       'font-family': undefined,
       'font-weight': undefined,
@@ -1640,10 +1641,12 @@ function () {
     value: function inject() {
       var marker = this,
           styles = this.styles,
-          bg = styles['background-color'],
           bgInput = document.getElementById('bg-color'),
           colorInput = document.getElementById('text-color'),
+          borderInput = document.getElementById('border-color'),
+          bg = styles['background-color'],
           color = styles['color'],
+          border = styles['border-bottom'],
           shadow,
           shadowSelect,
           i;
@@ -1653,6 +1656,9 @@ function () {
       document.getElementById('text-color-checkbox').checked = !!color;
       colorInput.value = color || '#000000';
       colorInput.disabled = !color;
+      document.getElementById('border-color-checkbox').checked = !!border;
+      borderInput.value = border || '1px solid #ff0000';
+      borderInput.disabled = !border;
       ['font-size', 'font-family', 'font-weight', 'font-style', 'text-decoration'].forEach(function (prop) {
         document.getElementById(prop).value = styles[prop] || 'default';
       });
@@ -1683,8 +1689,10 @@ function () {
         if (el.checked) {
           val = document.getElementById(el.getAttribute('data-target')).value;
           if (!this.isValid(prop, val)) return false;
-          this.styles[prop] = val;
-        } else this.styles[prop] = undefined;
+          this.styles[prop] = prop === 'border-bottom' ? '1px solid ' + val : val;
+        } else {
+          this.styles[prop] = undefined;
+        }
       } else if (classes.contains('shadow')) {
         val = el.value;
         if (val === 'default' || !this.isValid(prop, val)) this.styles[prop] = '';else {
@@ -1714,6 +1722,9 @@ function () {
           this.shadow[prop] = val;
           this.setShadow();
         }
+      } else if (prop === 'border-bottom') {
+        val = '1px solid ' + el.value;
+        this.styles[prop] = val;
       } else {
         val = el.value;
         if (val === 'default' || !this.isValid(prop, val)) this.styles[prop] = '';else this.styles[prop] = val;
@@ -1732,6 +1743,10 @@ function () {
           break;
 
         case 'color':
+          valid = /^#[0-9A-F]{6}$/i.test(val);
+          break;
+
+        case 'border-bottom':
           valid = /^#[0-9A-F]{6}$/i.test(val);
           break;
 
