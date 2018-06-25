@@ -22,13 +22,13 @@ export default function(mark) {
 		},
     addListenersManually: true,
     el: null,
-    mark: mark,
+    mark,
+    color: 'yellow',
     markClickHandler: null,
     text: '',
     visible: false,
     recentlyUpdated: false,
     settingsMode: false,
-    color: 'yellow',
 
     autoinit() {
       this.adjustNoteDataObject();
@@ -42,6 +42,9 @@ export default function(mark) {
       if (typeof noteData === 'string') {
         this.mark.keyData.note = { text: noteData, color: 'yellow' };
       }
+      else if (!noteData) {
+        this.mark.keyData.note = { text: noteData, color: _STORE.noteColor };
+      }
     },
     createNoteElement() {
       const note = this.el = document.createElement('tmnote');
@@ -51,8 +54,8 @@ export default function(mark) {
       const palette = this.palette = document.createElement('tmnotepalette');
       const p = this.textElement = document.createElement('textarea');
       const text = this.mark.keyData.note.text;
-      const color = this.color = this.mark.keyData.note.color || 'yellow';
-
+      const color = this.color = this.mark.keyData.note.color || _STORE.noteColor;
+      _STORE.noteColor = color;
       const delText = document.createTextNode(String.fromCharCode(10005));
       const minText = document.createTextNode(String.fromCharCode(0x2013));
       const gearText = document.createTextNode(String.fromCharCode(0x2699));
@@ -132,7 +135,7 @@ export default function(mark) {
     },
     changeColor(e, el) {
       this.el.classList.remove('tmnote--' + this.color);
-      const color = this.color = el.getAttribute('data-color');
+      const color = this.color = _STORE.noteColor = el.getAttribute('data-color');
       this.el.classList.add('tmnote--' + color);
       this.mark.keyData.note.color = color;
       this.togglePalette();

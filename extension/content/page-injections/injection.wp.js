@@ -201,6 +201,7 @@ var _default = new _utils._MODULE({
   isNew: true,
   entry: null,
   tmid: '',
+  noteColor: 'yellow',
   setAreas: function setAreas() {
     var _this = this;
 
@@ -582,7 +583,7 @@ function () {
       bookmark: false,
       conds: null,
       text: selection.text,
-      note: ''
+      note: null
     };
 
     for (var d in defaults) {
@@ -1277,12 +1278,12 @@ function _default(mark) {
     addListenersManually: true,
     el: null,
     mark: mark,
+    color: 'yellow',
     markClickHandler: null,
     text: '',
     visible: false,
     recentlyUpdated: false,
     settingsMode: false,
-    color: 'yellow',
     autoinit: function autoinit() {
       this.adjustNoteDataObject();
       this.createNoteElement();
@@ -1297,6 +1298,11 @@ function _default(mark) {
           text: noteData,
           color: 'yellow'
         };
+      } else if (!noteData) {
+        this.mark.keyData.note = {
+          text: noteData,
+          color: _store.default.noteColor
+        };
       }
     },
     createNoteElement: function createNoteElement() {
@@ -1309,7 +1315,8 @@ function _default(mark) {
       var palette = this.palette = document.createElement('tmnotepalette');
       var p = this.textElement = document.createElement('textarea');
       var text = this.mark.keyData.note.text;
-      var color = this.color = this.mark.keyData.note.color || 'yellow';
+      var color = this.color = this.mark.keyData.note.color || _store.default.noteColor;
+      _store.default.noteColor = color;
       var delText = document.createTextNode(String.fromCharCode(10005));
       var minText = document.createTextNode(String.fromCharCode(0x2013));
       var gearText = document.createTextNode(String.fromCharCode(0x2699));
@@ -1395,7 +1402,7 @@ function _default(mark) {
     },
     changeColor: function changeColor(e, el) {
       this.el.classList.remove('tmnote--' + this.color);
-      var color = this.color = el.getAttribute('data-color');
+      var color = this.color = _store.default.noteColor = el.getAttribute('data-color');
       this.el.classList.add('tmnote--' + color);
       this.mark.keyData.note.color = color;
       this.togglePalette();
