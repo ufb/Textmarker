@@ -17,6 +17,7 @@ export default new _MODULE({
   isNew: true,
   entry: null,
   tmid: '',
+  noteColor: 'yellow',
 
   setAreas() {
     return browser.storage.sync.get().then(storage => {

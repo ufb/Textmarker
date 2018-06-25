@@ -13,7 +13,7 @@ export default class _MARK {
       bookmark: false,
       conds: null,
       text: selection.text,
-      note: ''
+      note: null
     };
     for (let d in defaults) {
       if (!preSettings.hasOwnProperty(d)) {
