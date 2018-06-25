@@ -204,6 +204,8 @@
 "h411":{"message":"Personnalisation du style du surligneur"},
 "t411":{"message":"Couleur du fond :"},
 "t412":{"message":"Couleur du texte :"},
+"t4124":{"message":"Souligner :"},
+"t4125":{"message":"When used together with a background color underlinings are not visible in each line if the highlighted text passage has low line spacing."},
 "t413":{"message":"Taille du texte :"},
 "t414":{"message":"Police :"},
 "t415":{"message":"Graisse :"},

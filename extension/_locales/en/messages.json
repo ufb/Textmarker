@@ -204,6 +204,8 @@
 "h411":{"message":"Customize styling for key"},
 "t411":{"message":"Background color:"},
 "t412":{"message":"Text color:"},
+"t4124":{"message":"Underline:"},
+"t4125":{"message":"When used together with a background color underlinings are not visible in each line if the highlighted text passage has low line spacing."},
 "t413":{"message":"Text size:"},
 "t414":{"message":"Font:"},
 "t415":{"message":"Font weight:"},
