@@ -1,0 +1,22 @@
+.i {
+  cursor: pointer;
+  color: $color-text--turquoise;
+  text-decoration: underline;
+  border-radius: 50%;
+  display: inline-block;
+  line-height: 1;
+  width: 15px;
+  height: 15px;
+  text-align: center;
+  font-size: 11px;
+  padding: 1px 2px 2px 1px;
+  font-family: Georgia, serif;
+  margin-top: 3px;
+
+  &:hover {
+    text-decoration: none;
+    color: #fff;
+    background: $color-bg--turquoise;
+    border: 0;
+  }
+}

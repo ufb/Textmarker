@@ -1,25 +1,25 @@
 // colors
 .u-color {
   &--default {
-    color: $color-text--dark;
+    color: $color-text--dark !important;
   }
   &--white {
-    color: $color-text--light;
+    color: $color-text--light !important;
   }
   &--grey {
-    color: $color-text--grey;
+    color: $color-text--grey !important;
   }
   &--grey-light {
-    color: $color-text--disabled;
+    color: $color-text--disabled !important;
   }
   &--turquoise {
-    color: $color-text--turquoise;
+    color: $color-text--turquoise !important;
   }
   &--red {
-    color: $color-text--red;
+    color: $color-text--red !important;
   }
   &--green {
-    color: $color-text--green;
+    color: $color-text--green !important;
   }
 }
 // font-sizes
@@ -140,6 +140,19 @@
   }
   &--inline-block {
     display: inline-block;
+  }
+}
+
+// alignment
+.u-align {
+  &--top {
+    vertical-align: top;
+  }
+  &--middle {
+    vertical-align: middle;
+  }
+  &--bottom {
+    vertical-align: bottom;
   }
 }
 
