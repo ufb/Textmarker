@@ -323,76 +323,93 @@
               <option value="2">2</option>
               <option value="3">3</option>
             </select>
-            <br><br>
-            <input type="checkbox" checked id="bg-color-checkbox" class="toggle-button css css-color" data-target="bg-color" name="background-color">
-            <label for="bg-color-checkbox" class="fake-cb"><span>&#10003;</span></label>
-            <label for="bg-color" data-l10n-id="t411"></label>
-            <input class="css" id="bg-color" type="color" value="" name="background-color">
-            <br><br>
-            <input type="checkbox" id="text-color-checkbox" class="toggle-button css css-color" data-target="text-color" name="color">
-            <label for="text-color-checkbox" class="fake-cb"><span>&#10003;</span></label>
-            <label for="text-color" data-l10n-id="t412"></label>
-            <input class="css" id="text-color" type="color" value="#000000" name="color" disabled>
-            <br><br>
-            <label for="font-size" data-l10n-id="t413"></label>
-            <select id="font-size" class="big css" name="font-size">
-              <option value="default" selected>default</option>
-              <option value="7px">7px</option>
-              <option value="8px">8px</option>
-              <option value="9px">9px</option>
-              <option value="10px">10px</option>
-              <option value="11px">11px</option>
-              <option value="12px">12px</option>
-              <option value="13px">13px</option>
-              <option value="14px">14px</option>
-              <option value="15px">15px</option>
-              <option value="16px">16px</option>
-              <option value="17px">17px</option>
-              <option value="19px">19px</option>
-              <option value="23px">23px</option>
-              <option value="29px">29px</option>
-              <option value="37px">37px</option>
-            </select>
-            <br><br>
-            <label for="font-family" data-l10n-id="t414"></label>
-            <select id="font-family" class="big css" name="font-family">
-              <option value="default" selected>default</option>
-              <option value="Verdana, Arial, sans-serif">Verdana</option>
-              <option value="Arial, sans-serif">Arial</option>
-              <option value="Helvetica, Arial, sans-serif">Helvetica</option>
-              <option value="Tahoma, Verdana, Arial, sans-serif">Tahoma</option>
-              <option value="Georgia, times, serif">Georgia</option>
-              <option value="Times, serif">Times</option>
-            </select>
-            <br><br>
-            <label for="font-weight" data-l10n-id="t415"></label>
-            <select id="font-weight" class="big css" name="font-weight">
-              <option value="default" selected>default</option>
-              <option value="bold" data-l10n-id="t416"></option>
-              <option value="normal">normal</option>
-            </select>
-            <br><br>
-            <label for="font-style" data-l10n-id="t417"></label>
-            <select id="font-style" class="big css" name="font-style">
-              <option value="default" selected>default</option>
-              <option value="italic" data-l10n-id="t418"></option>
-              <option value="normal">normal</option>
-            </select>
-            <br><br>
-            <label for="text-decoration" data-l10n-id="t419"></label>
-            <select id="text-decoration" class="big css" name="text-decoration">
-              <option value="default" selected>default</option>
-              <option value="underline" data-l10n-id="t4110"></option>
-              <option value="line-through" data-l10n-id="t4111"></option>
-              <option value="overline" data-l10n-id="t4112"></option>
-            </select>
-            <br><br>
-            <label for="text-shadow" data-l10n-id="t4113"></label>
-            <select id="text-shadow" class="big css shadow" name="text-shadow">
-              <option value="default" id="text-shadow-option-default" class="toggle-button" data-target="shadow-settings" data-toggle="remove" selected>default</option>
-              <option value="shadow" id="text-shadow-option-shadow" class="toggle-button" data-target="shadow-settings" data-toggle="add" data-l10n-id="t4114"></option>
-              <option value="none" id="text-shadow-option-none" class="toggle-button" data-target="shadow-settings" data-toggle="remove" data-l10n-id="t4115"></option>
-            </select>
+            <br>
+            <div class="option-row">
+              <input type="checkbox" checked id="bg-color-checkbox" class="toggle-button css css-color" data-target="bg-color" name="background-color">
+              <label for="bg-color-checkbox" class="fake-cb"><span>&#10003;</span></label>
+              <label for="bg-color" data-l10n-id="t411"></label>
+              <input class="css" id="bg-color" type="color" value="" name="background-color">
+            </div>
+            <div class="option-row">
+              <input type="checkbox" id="text-color-checkbox" class="toggle-button css css-color" data-target="text-color" name="color">
+              <label for="text-color-checkbox" class="fake-cb"><span>&#10003;</span></label>
+              <label for="text-color" data-l10n-id="t412"></label>
+              <input class="css" id="text-color" type="color" value="#000000" name="color" disabled>
+            </div>
+            <div class="option-row">
+              <input type="checkbox" id="border-color-checkbox" class="toggle-button css css-color" data-target="border-color" name="border-bottom">
+              <label for="border-color-checkbox" class="fake-cb"><span>&#10003;</span></label>
+              <label for="border-color" data-l10n-id="t4124"></label>
+              <input class="css" id="border-color" type="color" value="#ff0000" name="border-bottom" disabled>
+              <span class="i toggle-button" data-target="i--underline" data-toggle="toggle">i</span>
+              <span id="i--underline" class="u-display--none u-color--turquoise" data-l10n-id="t4125"></span>
+            </div>
+            <div class="option-row">
+              <label for="font-size" data-l10n-id="t413"></label>
+              <select id="font-size" class="big css" name="font-size">
+                <option value="default" selected>default</option>
+                <option value="7px">7px</option>
+                <option value="8px">8px</option>
+                <option value="9px">9px</option>
+                <option value="10px">10px</option>
+                <option value="11px">11px</option>
+                <option value="12px">12px</option>
+                <option value="13px">13px</option>
+                <option value="14px">14px</option>
+                <option value="15px">15px</option>
+                <option value="16px">16px</option>
+                <option value="17px">17px</option>
+                <option value="19px">19px</option>
+                <option value="23px">23px</option>
+                <option value="29px">29px</option>
+                <option value="37px">37px</option>
+              </select>
+            </div>
+            <div class="option-row">
+              <label for="font-family" data-l10n-id="t414"></label>
+              <select id="font-family" class="big css" name="font-family">
+                <option value="default" selected>default</option>
+                <option value="Verdana, Arial, sans-serif">Verdana</option>
+                <option value="Arial, sans-serif">Arial</option>
+                <option value="Helvetica, Arial, sans-serif">Helvetica</option>
+                <option value="Tahoma, Verdana, Arial, sans-serif">Tahoma</option>
+                <option value="Georgia, times, serif">Georgia</option>
+                <option value="Times, serif">Times</option>
+              </select>
+            </div>
+            <div class="option-row">
+              <label for="font-weight" data-l10n-id="t415"></label>
+              <select id="font-weight" class="big css" name="font-weight">
+                <option value="default" selected>default</option>
+                <option value="bold" data-l10n-id="t416"></option>
+                <option value="normal">normal</option>
+              </select>
+            </div>
+            <div class="option-row">
+              <label for="font-style" data-l10n-id="t417"></label>
+              <select id="font-style" class="big css" name="font-style">
+                <option value="default" selected>default</option>
+                <option value="italic" data-l10n-id="t418"></option>
+                <option value="normal">normal</option>
+              </select>
+            </div>
+            <div class="option-row">
+              <label for="text-decoration" data-l10n-id="t419"></label>
+              <select id="text-decoration" class="big css" name="text-decoration">
+                <option value="default" selected>default</option>
+                <option value="underline" data-l10n-id="t4110"></option>
+                <option value="line-through" data-l10n-id="t4111"></option>
+                <option value="overline" data-l10n-id="t4112"></option>
+              </select>
+            </div>
+            <div class="option-row">
+              <label for="text-shadow" data-l10n-id="t4113"></label>
+              <select id="text-shadow" class="big css shadow" name="text-shadow">
+                <option value="default" id="text-shadow-option-default" class="toggle-button" data-target="shadow-settings" data-toggle="remove" selected>default</option>
+                <option value="shadow" id="text-shadow-option-shadow" class="toggle-button" data-target="shadow-settings" data-toggle="add" data-l10n-id="t4114"></option>
+                <option value="none" id="text-shadow-option-none" class="toggle-button" data-target="shadow-settings" data-toggle="remove" data-l10n-id="t4115"></option>
+              </select>
+            </div>
             <div id="shadow-settings" class="u-cf accordion">
               <h4 data-l10n-id="h412"></h4>
       				<div id="shadow-values">

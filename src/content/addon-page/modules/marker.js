@@ -8,6 +8,7 @@ export default class _MARKER {
     this.styles = {
       'background-color': customBgColor,
       'color': undefined,
+      'border-bottom': undefined,
       'font-size': undefined,
       'font-family': undefined,
       'font-weight': undefined,
@@ -57,10 +58,12 @@ export default class _MARKER {
   inject() {
     let marker = this,
         styles = this.styles,
-        bg = styles['background-color'],
         bgInput = document.getElementById('bg-color'),
         colorInput = document.getElementById('text-color'),
+        borderInput = document.getElementById('border-color'),
+        bg = styles['background-color'],
         color = styles['color'],
+        border = styles['border-bottom'],
         shadow, shadowSelect, i;
 
     document.getElementById('bg-color-checkbox').checked = !!bg;
@@ -69,6 +72,9 @@ export default class _MARKER {
     document.getElementById('text-color-checkbox').checked = !!color;
     colorInput.value = color || '#000000';
     colorInput.disabled = !color;
+    document.getElementById('border-color-checkbox').checked = !!border;
+    borderInput.value = border || '1px solid #ff0000';
+    borderInput.disabled = !border;
 
     ['font-size', 'font-family', 'font-weight', 'font-style', 'text-decoration'].forEach(prop => {
       document.getElementById(prop).value = styles[prop] || 'default';
@@ -99,13 +105,14 @@ export default class _MARKER {
 
     if (classes.contains('css-color')) {
       if (el.checked) {
-          val = document.getElementById(el.getAttribute('data-target')).value;
+        val = document.getElementById(el.getAttribute('data-target')).value;
 
-          if (!this.isValid(prop, val)) return false;
+        if (!this.isValid(prop, val)) return false;
 
-          this.styles[prop] = val;
-      } else
-          this.styles[prop] = undefined;
+        this.styles[prop] = prop === 'border-bottom' ? '1px solid ' + val : val;
+      } else {
+        this.styles[prop] = undefined;
+      }
     }
     else if (classes.contains('shadow')) {
       val = el.value;
@@ -136,6 +143,10 @@ export default class _MARKER {
         this.setShadow();
       }
     }
+    else if (prop === 'border-bottom') {
+      val = '1px solid ' + el.value;
+      this.styles[prop] = val;
+    }
     else {
       val = el.value;
 
@@ -153,6 +164,7 @@ export default class _MARKER {
     switch(prop) {
       case 'background-color': valid = /^#[0-9A-F]{6}$/i.test(val); break;
       case 'color': valid = /^#[0-9A-F]{6}$/i.test(val); break;
+      case 'border-bottom': valid = /^#[0-9A-F]{6}$/i.test(val); break;
       case 'font-size': valid = /^[0-9]{1,2}px$/.test(val); break;
       case 'font-family': valid = /^[a-z,\s-]{5,40}$/i.test(val); break;
       case 'font-weight': valid = /^[a-z]{4,7}$/i.test(val); break;
