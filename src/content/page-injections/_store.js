@@ -12,7 +12,6 @@ export default new _MODULE({
   area_history: 'sync',
   area_entry: 'sync',
 
-  pdf: false,
   iframe: false,
   name: undefined,
   isNew: true,

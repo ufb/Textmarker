@@ -346,8 +346,7 @@ export default function() {
         entry.marks = marks;
   			entry.last = new Date().getTime();
         entry.bookmarked = !!this.bookmark;
-        //entry.url = bookmarked && _STORE.pdf ? this.bookmark.createURL() : window.document.URL;
-  			entry.title = window.document.title;
+        entry.title = window.document.title;
   			entry.count = entry.marks.length;
 				entry.idcount = this.idcount;
         if (_STORE.isNew) {
@@ -373,15 +372,6 @@ export default function() {
   				kD = done[m].keyData;
   				marks.push(kD);
   				ids.push(kD.id);
-  			}
-  			if (_STORE.pdf && oldMarks) {
-  				m = 0;
-  				l = oldMarks.length;
-
-  				for (; m < l; m++) {
-  					if (ids.indexOf(oldMarks[m].id) === -1)
-  						marks.push(oldMarks[m]);
-  				}
   			}
         return marks;
       });

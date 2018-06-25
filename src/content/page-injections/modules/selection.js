@@ -18,8 +18,6 @@ export default class _SELECTION {
             .collectNodes(true)
             .retrieveText();
       } else {
-        if (_STORE.pdf) this.adjust_PDF();
-
         this.collectNodes()
             .reduceToOneRange()
             .update()
@@ -67,27 +65,6 @@ export default class _SELECTION {
     else this.normalize(anchor, focus);
 
     return this;
-  }
-  adjust_PDF() {
-    let selection = this.self,
-        range = this.range,
-        anchor = range.startContainer;
-
-    while((anchor = anchor.parentNode)) {
-      if (anchor.id && anchor.id === 'viewer') return this;
-    }
-
-    try { anchor = window.document.getElementsByClassName('textLayer')[0].children[0].children[0]; }
-    finally {
-      try { anchor = window.document.getElementsByClassName('textLayer')[0].children[0]; }
-      finally {
-        anchor = window.document.getElementsByClassName('textLayer')[0];
-      }
-    }
-
-    selection.getRangeAt(0).setStart(anchor, 0);
-
-		return this;
   }
   normalize(anchor, focus) {
     let selection = this.self,
