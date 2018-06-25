@@ -300,6 +300,13 @@ button {
     margin: 0 0 0 10px; }
   .marker__label {
     display: inline-block; }
+  .marker__text {
+    float: right;
+    position: relative;
+    left: 26px;
+    top: 2px;
+    color: #37414b;
+    font-size: 11px !important; }
   .marker__color {
     padding: 0;
     width: 44px;
