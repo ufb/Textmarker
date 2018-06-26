@@ -462,27 +462,29 @@ new _utils._DOMMODULE({
       });
     }).then(function (markers) {
       if (!markers) return _this;
-      var inputs = document.getElementById('markers-container');
-      var frag = document.createDocumentFragment(),
+      var leftContainer = document.getElementById('markers-container--left');
+      var rightContainer = document.getElementById('markers-container--right');
+      var fragRight = document.createDocumentFragment();
+      var fragLeft = document.createDocumentFragment();
+      var s = Math.ceil(Object.keys(markers).length / 2);
+      var count = 0,
           m,
           box,
-          label,
           input,
           exampleText,
           button,
           color;
-      inputs.innerText = '';
+      leftContainer.innerText = '';
+      rightContainer.innerText = '';
 
       for (m in markers) {
+        count++;
         box = document.createElement('div');
-        label = document.createElement('label');
         input = document.createElement('input');
         exampleText = document.createElement('label');
         button = document.createElement('button');
         color = _this.extractBgColor(markers[m]);
         box.className = 'marker u-cf';
-        label.setAttribute('for', 'marker-' + m);
-        label.className = 'marker__label';
         input.className = 'marker__color';
         input.id = 'marker-' + m;
         input.name = m;
@@ -494,17 +496,22 @@ new _utils._DOMMODULE({
         button.className = 'marker__apply';
         button.setAttribute('disabled', true);
         button.setAttribute('data-key', m);
-        box.appendChild(label);
         box.appendChild(button);
         box.appendChild(input);
         box.appendChild(exampleText);
-        frag.appendChild(box);
-        label.innerText = 'Marker ' + m.toUpperCase();
-        exampleText.innerText = 'A';
+
+        if (count > 3 && count > s) {
+          fragLeft.appendChild(box);
+        } else {
+          fragRight.appendChild(box);
+        }
+
+        exampleText.innerText = m.toUpperCase();
         if (!color) input.setAttribute('disabled', true);
       }
 
-      inputs.appendChild(frag);
+      rightContainer.appendChild(fragRight);
+      leftContainer.appendChild(fragLeft);
     });
   },
   extractBgColor: function extractBgColor(styles) {
