@@ -37,23 +37,26 @@ new _DOMMODULE({
     })
     .then(markers => {
       if (!markers) return this;
-      const inputs = document.getElementById('markers-container');
-      let frag = document.createDocumentFragment(),
-          m, box, label, input, exampleText, button, color;
+      const leftContainer = document.getElementById('markers-container--left');
+      const rightContainer = document.getElementById('markers-container--right');
+      const fragRight = document.createDocumentFragment();
+      const fragLeft = document.createDocumentFragment();
+      const s = Math.ceil(Object.keys(markers).length / 2);
+      let count = 0, m, box, input, exampleText, button, color;
 
-      inputs.innerText = '';
+      leftContainer.innerText = '';
+      rightContainer.innerText = '';
 
       for (m in markers) {
+        count++;
+
         box = document.createElement('div');
-        label = document.createElement('label');
         input = document.createElement('input');
         exampleText = document.createElement('label');
         button = document.createElement('button');
         color = this.extractBgColor(markers[m]);
 
         box.className = 'marker u-cf';
-        label.setAttribute('for', 'marker-' + m);
-        label.className = 'marker__label';
         input.className = 'marker__color';
         input.id = 'marker-' + m;
         input.name = m;
@@ -66,17 +69,21 @@ new _DOMMODULE({
         button.setAttribute('disabled', true);
         button.setAttribute('data-key', m);
 
-        box.appendChild(label);
         box.appendChild(button);
         box.appendChild(input);
         box.appendChild(exampleText);
-        frag.appendChild(box);
 
-        label.innerText = 'Marker ' + m.toUpperCase();
-        exampleText.innerText = 'A';
+        if (count > 3 && count > s) {
+          fragLeft.appendChild(box);
+        } else {
+          fragRight.appendChild(box);
+        }
+
+        exampleText.innerText = m.toUpperCase();
         if (!color) input.setAttribute('disabled', true);
       }
-      inputs.appendChild(frag);
+      rightContainer.appendChild(fragRight);
+      leftContainer.appendChild(fragLeft);
     });
   },
   extractBgColor(styles) {

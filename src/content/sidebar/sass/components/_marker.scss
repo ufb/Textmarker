@@ -1,5 +1,6 @@
 .marker {
   margin-bottom: 8px;
+  width: 78px;
 
   &__apply {
     margin: 0 0 0 10px;
@@ -8,10 +9,9 @@
     display: inline-block;
   }
   &__text {
-    float: right;
     position: relative;
-    left: 26px;
-    top: 2px;
+    margin-top: -24px;
+    left: 10px;
     color: $color-text--dark;
     font-size: 11px !important;
   }
@@ -21,7 +21,6 @@
     border: 0;
     -moz-appearance: none;
     cursor: pointer;
-    float: right;
 
     &[disabled] {
       opacity: .2;

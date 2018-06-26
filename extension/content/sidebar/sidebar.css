@@ -187,7 +187,7 @@ body {
 
 section {
   margin-bottom: 5px;
-  padding: 10px 20px 30px;
+  padding: 10px 20px 15px;
   border-bottom: 1px solid #e1e2e3; }
 
 section:last-child {
@@ -295,16 +295,16 @@ button {
     background-image: url(../../icons/highlight.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
 .marker {
-  margin-bottom: 8px; }
+  margin-bottom: 8px;
+  width: 78px; }
   .marker__apply {
     margin: 0 0 0 10px; }
   .marker__label {
     display: inline-block; }
   .marker__text {
-    float: right;
     position: relative;
-    left: 26px;
-    top: 2px;
+    margin-top: -24px;
+    left: 10px;
     color: #37414b;
     font-size: 11px !important; }
   .marker__color {
@@ -312,8 +312,7 @@ button {
     width: 44px;
     border: 0;
     -moz-appearance: none;
-    cursor: pointer;
-    float: right; }
+    cursor: pointer; }
     .marker__color[disabled] {
       opacity: .2;
       cursor: default; }
