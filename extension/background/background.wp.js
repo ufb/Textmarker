@@ -1177,6 +1177,11 @@ new _utils._MODULE({
         settings.misc.noteonclick = defaultSettings.misc.noteonclick;
       }
 
+      if (!settings.shortcuts.arrowup) {
+        settings.shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
+        settings.shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
+      }
+
       if (!settings.misc.tmuipos) {
         settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }
@@ -1844,7 +1849,9 @@ var _default = {
       w: ['', true, true],
       n: ['', '', true],
       '2': ['', true],
-      '3': ['', true]
+      '3': ['', true],
+      arrowup: ['altKey', false, false],
+      arrowdown: ['altKey', false, false]
     },
     markers: {
       '2': 'background-color:#ffcc00;',

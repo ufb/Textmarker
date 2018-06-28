@@ -39,6 +39,10 @@ new _MODULE({
         settings.misc.noteicon = defaultSettings.misc.noteicon;
         settings.misc.noteonclick = defaultSettings.misc.noteonclick;
       }
+      if (!settings.shortcuts.arrowup) {
+        settings.shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
+        settings.shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
+      }
       if (!settings.misc.tmuipos) {
         settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }

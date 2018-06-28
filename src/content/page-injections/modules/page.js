@@ -85,7 +85,8 @@ export default function() {
     delegate(e) {
       const key = e.key.toLowerCase(),
           modKey = (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey),
-          functionKeys = ['b', 's', 'y', 'z'],
+          arrowKeys = ['arrowdown', 'arrowup'],
+          functionKeys = ['b', 's', 'y', 'z'].concat(arrowKeys),
           defaultMarkers = ['m', '2', '3'];
 
       if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
