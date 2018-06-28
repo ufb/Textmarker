@@ -38,9 +38,11 @@ export default function() {
 		selection: null,
 		done: [],
 		undone: [],
+		visuallyOrderedMarks: [],
     bookmark: null,
     removedBookmark: null,
 		idcount: 0,
+		markScrollPos: -1,
 
     updateID: function updateID() {
       const entry = _STORE.entry;
@@ -206,6 +208,7 @@ export default function() {
 		store(mark, text, save) {
 			this.done.push(mark);
       if (save !== false) this.autosave();
+			this.orderMarksVisually();
 		},
     recreate(selection, mark) {
       this.selection = selection;
@@ -219,6 +222,17 @@ export default function() {
     addNote(id) {
       this.emit('add:note', this.findMark(id));
     },
+		scrollToMark(dir) {
+			const marks = this.visuallyOrderedMarks;
+			const l = marks.length;
+			let mark;
+			this.markScrollPos += dir;
+			if (this.markScrollPos < 0) this.markScrollPos = l - 1;
+			else if (this.markScrollPos >= l) this.markScrollPos = 0;
+			mark = marks[this.markScrollPos];
+			mark.scrollIntoView();
+			mark.click();
+		},
     setBookmark(m, save) {
       let bookmark = this.bookmark,
           mark = this.findMark(m);
@@ -286,6 +300,21 @@ export default function() {
         return id1 < id2 ? -1 : 1;
       });
     },
+		orderMarksVisually() {
+			this.visuallyOrderedMarks = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id$="_0"]')).sort((m1, m2) => {
+				let bb1 = m1.getBoundingClientRect(),
+						bb2 = m2.getBoundingClientRect(),
+						top1 = bb1.top,
+						top2 = bb2.top;
+
+				if (top1 < top2) return -1;
+				else if (top2 < top1) return 1;
+				else {
+					if (bb1.left < bb2.left) return -1;
+					return 1;
+				}
+			});
+		},
     marksIntersect(mark1, mark2) {
 			let wrappers1 = mark1.wrappers,
           w1 = wrappers1.length,
@@ -330,6 +359,8 @@ export default function() {
         case 'y': self.redo(); break;
         case 's': self.save(); break;
         case 'b': self.setBookmark(); break;
+				case 'arrowup': self.scrollToMark(-1); break;
+				case 'arrowdown': self.scrollToMark(1); break;
       }
     },
     preventDefault(e) {
