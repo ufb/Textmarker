@@ -205,7 +205,7 @@
 "t411":{"message":"Couleur du fond :"},
 "t412":{"message":"Couleur du texte :"},
 "t4124":{"message":"Soulignement :"},
-"t4125":{"message":"Avec une couleur de fond, les soulignements ne sont pas visibles à chaque ligne si le passage surligné a un faible interlignage."},
+"t4125":{"message":"Avec une couleur de fond, le soulignement n’est pas visible sur toutes les lignes si le passage surligné a un faible interlignage."},
 "t413":{"message":"Taille du texte :"},
 "t414":{"message":"Police :"},
 "t415":{"message":"Graisse :"},
