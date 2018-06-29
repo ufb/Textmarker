@@ -861,6 +861,7 @@ function _default() {
         'sidebar:save-changes': 'save',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
+        'sidebar:next-mark': 'scrollToMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark'
       }

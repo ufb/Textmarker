@@ -289,10 +289,23 @@ button {
   #page-action--notes:hover {
     background-image: url(../../icons/note2.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
+#nav-action--up {
+  background-image: url(../../icons/up.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
+  #nav-action--up:hover {
+    background-image: url(../../icons/up.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+
+#nav-action--down {
+  background-image: url(../../icons/down.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
+  #nav-action--down:hover {
+    background-image: url(../../icons/down.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+
 .marker__apply {
   background-image: url(../../icons/highlight.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
   .marker__apply:hover {
     background-image: url(../../icons/highlight.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+
+#nav-action--up, #nav-action--down {
+  background-size: 12px, 100%; }
 
 .marker {
   margin-bottom: 8px;

@@ -18,6 +18,7 @@ export default new _PORT({
       'sidebar:redo',
       'sidebar:scroll-to-bookmark',
       'sidebar:toggle-notes',
+      'sidebar:next-mark',
       'open:addon-page'
     ]
   }
