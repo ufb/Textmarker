@@ -8,7 +8,6 @@ import _STORE from './_store'
 import './modules/markers'
 import './modules/mark-actions'
 import './modules/page-actions'
-import './modules/mark-navigation'
 import './modules/links'
 
 _L10N();

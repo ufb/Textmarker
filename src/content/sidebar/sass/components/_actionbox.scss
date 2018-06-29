@@ -1,5 +1,6 @@
 .action-box {
   margin: 0 0 6px 0;
+  position: relative;
 
   &.disabled {
     color: $color-text--disabled;

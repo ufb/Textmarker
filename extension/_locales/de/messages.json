@@ -378,7 +378,7 @@
 "tbb_mitem_9_tt":{"message":" Öffnet in neuem Reiter"},
 "sb_paused":{"message":"Textmarker wurde pausiert"},
 "sb_h1":{"message":"Ausgewählte Markierung"},
-"sb_h1b":{"message":"Klicke auf eine Markierung, um sie auszuwählen."},
+"sb_h1b":{"message":"Navigiere mit den Pfeiltasten durch deine Textmarkierungen oder klicke direkt auf eine Markierung, um diese auszuwählen."},
 "sb_b1":{"message":"Autosave"},
 "sb_b2":{"message":"Speichern"},
 "sb_b3":{"message":"Rückgängig"},
