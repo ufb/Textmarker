@@ -31,9 +31,10 @@ export default function() {
         'sidebar:save-changes': 'save',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
-        'sidebar:next-mark': 'scrollToMark',
+        'sidebar:next-mark': 'gotoNextMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
-        'scroll-to-bookmark': 'scrollToBookmark'
+        'scroll-to-bookmark': 'scrollToBookmark',
+        'clicked:mark': 'gotoMark'
 			}
 		},
 		selection: null,
@@ -223,16 +224,27 @@ export default function() {
     addNote(id) {
       this.emit('add:note', this.findMark(id));
     },
-		scrollToMark(dir) {
-			const marks = this.visuallyOrderedMarks;
-			const l = marks.length;
-			let mark;
+    gotoMark(mark) {
+      const markElements = this.visuallyOrderedMarks;
+      let el, pos;
+      if (mark) {
+        el = document.querySelector('.textmarker-highlight[data-tm-id="' + mark.id + '_0"]');
+        pos = this.markScrollPos = markElements.indexOf(el);
+      } else {
+        pos = this.markScrollPos;
+        el = markElements[pos];
+      }
+      el.scrollIntoView();
+			el.click();
+    },
+		gotoNextMark(dir) {
+			const l = this.visuallyOrderedMarks.length;
+
 			this.markScrollPos += dir;
 			if (this.markScrollPos < 0) this.markScrollPos = l - 1;
 			else if (this.markScrollPos >= l) this.markScrollPos = 0;
-			mark = marks[this.markScrollPos];
-			mark.scrollIntoView();
-			mark.click();
+
+			this.gotoMark();
 		},
     setBookmark(m, save) {
       let bookmark = this.bookmark,
@@ -360,8 +372,8 @@ export default function() {
         case 'y': self.redo(); break;
         case 's': self.save(); break;
         case 'b': self.setBookmark(); break;
-				case 'arrowup': self.scrollToMark(-1); break;
-				case 'arrowdown': self.scrollToMark(1); break;
+				case 'arrowup': self.gotoNextMark(-1); break;
+				case 'arrowdown': self.gotoNextMark(1); break;
       }
     },
     preventDefault(e) {
