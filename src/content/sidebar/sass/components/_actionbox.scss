@@ -24,6 +24,8 @@ $action-buttons: (
   '#page-action--redo': 'redo',
   '#page-action--scroll': 'to-bm',
   '#page-action--notes': 'note2',
+  '#nav-action--up': 'up',
+  '#nav-action--down': 'down',
 
   '.marker__apply': 'highlight'
 );
@@ -32,4 +34,8 @@ $action-buttons: (
   #{$selector} {
     @include button_icon($icon, $gradient: true);
   }
+}
+
+#nav-action--up, #nav-action--down {
+  background-size: 12px, 100%;
 }

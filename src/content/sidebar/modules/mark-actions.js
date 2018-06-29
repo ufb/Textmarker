@@ -9,8 +9,7 @@ new _DOMMODULE({
     },
     DOM: {
       click: {
-        '.action-box__action--mark': 'markAction',
-        '.i': 'toggleInfo'
+        '.action-box__action--mark': 'markAction'
       }
     }
   },
@@ -42,8 +41,5 @@ new _DOMMODULE({
       btn.setAttribute('disabled', true);
       btn.parentNode.classList.add('disabled');
     });
-  },
-  toggleInfo(e, el) {
-    el.classList.toggle('active');
   }
 });

@@ -41,12 +41,22 @@
         <button type="button" id="page-action--notes" data-action="toggle-notes" class="action-box__action action-box__action--page" disabled></button>
       </div>
   	</section>
-    <section id="mark-actions">
+    <section id="mark-nav">
       <h2>
         <span data-l10n-id="sb_h1"></span>
         <span class="i u-float--right">i</span>
         <small data-l10n-id="sb_h1b"></small>
       </h2>
+      <div class="action-box u-cf">
+        <label data-l10n-id="" for="nav-action--up"></label>
+        <button type="button" id="nav-action--up" data-action="next-mark" data-value="-1" class="action-box__action action-box__action--nav"></button>
+      </div>
+      <div class="action-box u-cf">
+        <label data-l10n-id="" for="nav-action--down"></label>
+        <button type="button" id="nav-action--down" data-action="next-mark" data-value="1" class="action-box__action action-box__action--nav"></button>
+      </div>
+    </section>
+    <section id="mark-actions">
       <div class="action-box u-cf disabled">
         <label data-l10n-id="sb_b7" for="mark-action--delete-highlight"></label>
         <button type="button" id="mark-action--delete-highlight" data-action="delete-highlight" class="action-box__action action-box__action--mark" disabled></button>
