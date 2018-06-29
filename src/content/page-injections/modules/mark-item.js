@@ -88,6 +88,7 @@ export default class _MARK {
         e.preventDefault();
         _STORE.tmid = e.target.getAttribute('data-tm-id');
         this.marker.emit('clicked:mark', {
+          id: this.id,
           bookmark: !!this.keyData.bookmark,
           note: !!this.keyData.note
         });

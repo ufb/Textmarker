@@ -660,6 +660,7 @@ function () {
             _store.default.tmid = e.target.getAttribute('data-tm-id');
 
             _this.marker.emit('clicked:mark', {
+              id: _this.id,
               bookmark: !!_this.keyData.bookmark,
               note: !!_this.keyData.note
             });
@@ -861,9 +862,10 @@ function _default() {
         'sidebar:save-changes': 'save',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
-        'sidebar:next-mark': 'scrollToMark',
+        'sidebar:next-mark': 'gotoNextMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
-        'scroll-to-bookmark': 'scrollToBookmark'
+        'scroll-to-bookmark': 'scrollToBookmark',
+        'clicked:mark': 'gotoMark'
       }
     },
     selection: null,
@@ -1060,15 +1062,26 @@ function _default() {
     addNote: function addNote(id) {
       this.emit('add:note', this.findMark(id));
     },
-    scrollToMark: function scrollToMark(dir) {
-      var marks = this.visuallyOrderedMarks;
-      var l = marks.length;
-      var mark;
+    gotoMark: function gotoMark(mark) {
+      var markElements = this.visuallyOrderedMarks;
+      var el, pos;
+
+      if (mark) {
+        el = document.querySelector('.textmarker-highlight[data-tm-id="' + mark.id + '_0"]');
+        pos = this.markScrollPos = markElements.indexOf(el);
+      } else {
+        pos = this.markScrollPos;
+        el = markElements[pos];
+      }
+
+      el.scrollIntoView();
+      el.click();
+    },
+    gotoNextMark: function gotoNextMark(dir) {
+      var l = this.visuallyOrderedMarks.length;
       this.markScrollPos += dir;
       if (this.markScrollPos < 0) this.markScrollPos = l - 1;else if (this.markScrollPos >= l) this.markScrollPos = 0;
-      mark = marks[this.markScrollPos];
-      mark.scrollIntoView();
-      mark.click();
+      this.gotoMark();
     },
     setBookmark: function setBookmark(m, save) {
       var bookmark = this.bookmark,
@@ -1208,11 +1221,11 @@ function _default() {
           break;
 
         case 'arrowup':
-          self.scrollToMark(-1);
+          self.gotoNextMark(-1);
           break;
 
         case 'arrowdown':
-          self.scrollToMark(1);
+          self.gotoNextMark(1);
           break;
       }
     },
