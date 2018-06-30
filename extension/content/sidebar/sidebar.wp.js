@@ -370,6 +370,7 @@ new _utils._DOMMODULE({
     DOM: {
       click: {
         '.action-box__action--mark': 'markAction',
+        '.action-box__action--nav': 'nav',
         '.i': 'toggleInfo'
       }
     }
@@ -386,8 +387,7 @@ new _utils._DOMMODULE({
       return _this.emit('sidebar:' + el.getAttribute('data-action'), null, null, {
         tab: tab.id
       });
-    });
-    this.deactivate();
+    }); //this.deactivate();
   },
   activate: function activate(markInfos) {
     this.buttons.forEach(function (btn) {
@@ -403,6 +403,15 @@ new _utils._DOMMODULE({
     this.buttons.forEach(function (btn) {
       btn.setAttribute('disabled', true);
       btn.parentNode.classList.add('disabled');
+    });
+  },
+  nav: function nav(e, el) {
+    var _this2 = this;
+
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      return _this2.emit('sidebar:' + el.getAttribute('data-action'), 1 * el.getAttribute('data-value'), null, {
+        tab: tab.id
+      });
     });
   },
   toggleInfo: function toggleInfo(e, el) {
@@ -680,7 +689,7 @@ var _default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'open:addon-page']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'open:addon-page']
   }
 });
 

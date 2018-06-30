@@ -13,6 +13,35 @@
       <div id="markers-container--left" class="u-float--left u-cf"></div>
       <div id="markers-container--right" class="u-float--right u-cf"></div>
     </section>
+    <section id="mark-actions">
+      <div class="action-box u-cf">
+        <div class="info-box">
+          <span class="i u-float--right">i</span>
+          <div class="info-box__content" data-l10n-id="sb_h1b"></div>
+        </div>
+        <button type="button" id="nav-action--up" data-action="next-mark" data-value="-1" class="action-box__action action-box__action--nav"></button>
+      </div>
+      <div class="action-box u-cf">
+        <button type="button" id="nav-action--down" data-action="next-mark" data-value="1" class="action-box__action action-box__action--nav"></button>
+      </div>
+      <br>
+      <div class="action-box u-cf disabled">
+        <label data-l10n-id="sb_b7" for="mark-action--delete-highlight"></label>
+        <button type="button" id="mark-action--delete-highlight" data-action="delete-highlight" class="action-box__action action-box__action--mark" disabled></button>
+      </div>
+      <div class="action-box u-cf disabled">
+        <label data-l10n-id="sb_b8" for="mark-action--bookmark"></label>
+        <button type="button" id="mark-action--bookmark" data-action="bookmark" class="action-box__action action-box__action--mark" disabled></button>
+      </div>
+      <div class="action-box u-cf disabled">
+        <label data-l10n-id="sb_b9" for="mark-action--delete-bookmark"></label>
+        <button type="button" id="mark-action--delete-bookmark" data-action="delete-bookmark" class="action-box__action action-box__action--mark" disabled></button>
+      </div>
+      <div class="action-box u-cf disabled">
+        <label data-l10n-id="sb_b10" for="mark-action--add-note"></label>
+        <button type="button" id="mark-action--add-note" data-action="note" class="action-box__action action-box__action--mark" disabled></button>
+      </div>
+  	</section>
     <section id="page-actions">
       <div class="action-box u-cf">
         <label data-l10n-id="sb_b1" class="autosave-label"></label>
@@ -39,29 +68,6 @@
       <div class="action-box u-cf disabled">
         <label data-l10n-id="sb_b6" for="page-action--notes"></label>
         <button type="button" id="page-action--notes" data-action="toggle-notes" class="action-box__action action-box__action--page" disabled></button>
-      </div>
-  	</section>
-    <section id="mark-actions">
-      <h2>
-        <span data-l10n-id="sb_h1"></span>
-        <span class="i u-float--right">i</span>
-        <small data-l10n-id="sb_h1b"></small>
-      </h2>
-      <div class="action-box u-cf disabled">
-        <label data-l10n-id="sb_b7" for="mark-action--delete-highlight"></label>
-        <button type="button" id="mark-action--delete-highlight" data-action="delete-highlight" class="action-box__action action-box__action--mark" disabled></button>
-      </div>
-      <div class="action-box u-cf disabled">
-        <label data-l10n-id="sb_b8" for="mark-action--bookmark"></label>
-        <button type="button" id="mark-action--bookmark" data-action="bookmark" class="action-box__action action-box__action--mark" disabled></button>
-      </div>
-      <div class="action-box u-cf disabled">
-        <label data-l10n-id="sb_b9" for="mark-action--delete-bookmark"></label>
-        <button type="button" id="mark-action--delete-bookmark" data-action="delete-bookmark" class="action-box__action action-box__action--mark" disabled></button>
-      </div>
-      <div class="action-box u-cf disabled">
-        <label data-l10n-id="sb_b10" for="mark-action--add-note"></label>
-        <button type="button" id="mark-action--add-note" data-action="note" class="action-box__action action-box__action--mark" disabled></button>
       </div>
   	</section>
     <section id="links">

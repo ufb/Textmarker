@@ -10,6 +10,7 @@ new _DOMMODULE({
     DOM: {
       click: {
         '.action-box__action--mark': 'markAction',
+        '.action-box__action--nav': 'nav',
         '.i': 'toggleInfo'
       }
     }
@@ -22,7 +23,7 @@ new _DOMMODULE({
   markAction(e, el) {
     if (el.hasAttribute('disabled')) return;
     _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: tab.id }));
-    this.deactivate();
+    //this.deactivate();
   },
   activate(markInfos) {
     this.buttons.forEach(btn => {
@@ -42,6 +43,9 @@ new _DOMMODULE({
       btn.setAttribute('disabled', true);
       btn.parentNode.classList.add('disabled');
     });
+  },
+  nav(e, el) {
+    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), 1*el.getAttribute('data-value'), null, { tab: tab.id }));
   },
   toggleInfo(e, el) {
     el.classList.toggle('active');

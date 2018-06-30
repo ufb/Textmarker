@@ -656,9 +656,11 @@ function () {
         for (var _iterator = wrappers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var wrapper = _step.value;
           wrapper.addEventListener('click', function (e) {
+            e.preventDefault();
             _store.default.tmid = e.target.getAttribute('data-tm-id');
 
             _this.marker.emit('clicked:mark', {
+              id: _this.id,
               bookmark: !!_this.keyData.bookmark,
               note: !!_this.keyData.note
             });
@@ -860,16 +862,20 @@ function _default() {
         'sidebar:save-changes': 'save',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
+        'sidebar:next-mark': 'gotoNextMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
-        'scroll-to-bookmark': 'scrollToBookmark'
+        'scroll-to-bookmark': 'scrollToBookmark',
+        'clicked:mark': 'gotoMark'
       }
     },
     selection: null,
     done: [],
     undone: [],
+    visuallyOrderedMarks: [],
     bookmark: null,
     removedBookmark: null,
     idcount: 0,
+    markScrollPos: -1,
     updateID: function updateID() {
       var entry = _store.default.entry;
 
@@ -1042,6 +1048,7 @@ function _default() {
     store: function store(mark, text, save) {
       this.done.push(mark);
       if (save !== false) this.autosave();
+      this.orderMarksVisually();
     },
     recreate: function recreate(selection, mark) {
       this.selection = selection;
@@ -1054,6 +1061,27 @@ function _default() {
     },
     addNote: function addNote(id) {
       this.emit('add:note', this.findMark(id));
+    },
+    gotoMark: function gotoMark(mark) {
+      var markElements = this.visuallyOrderedMarks;
+      var el, pos;
+
+      if (mark) {
+        el = document.querySelector('.textmarker-highlight[data-tm-id="' + mark.id + '_0"]');
+        pos = this.markScrollPos = markElements.indexOf(el);
+      } else {
+        pos = this.markScrollPos;
+        el = markElements[pos];
+      }
+
+      el.scrollIntoView();
+      el.click();
+    },
+    gotoNextMark: function gotoNextMark(dir) {
+      var l = this.visuallyOrderedMarks.length;
+      this.markScrollPos += dir;
+      if (this.markScrollPos < 0) this.markScrollPos = l - 1;else if (this.markScrollPos >= l) this.markScrollPos = 0;
+      this.gotoMark();
     },
     setBookmark: function setBookmark(m, save) {
       var bookmark = this.bookmark,
@@ -1117,6 +1145,18 @@ function _default() {
         return id1 < id2 ? -1 : 1;
       });
     },
+    orderMarksVisually: function orderMarksVisually() {
+      this.visuallyOrderedMarks = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id$="_0"]')).sort(function (m1, m2) {
+        var bb1 = m1.getBoundingClientRect(),
+            bb2 = m2.getBoundingClientRect(),
+            top1 = bb1.top,
+            top2 = bb2.top;
+        if (top1 < top2) return -1;else if (top2 < top1) return 1;else {
+          if (bb1.left < bb2.left) return -1;
+          return 1;
+        }
+      });
+    },
     marksIntersect: function marksIntersect(mark1, mark2) {
       var wrappers1 = mark1.wrappers,
           w1 = wrappers1.length,
@@ -1178,6 +1218,14 @@ function _default() {
 
         case 'b':
           self.setBookmark();
+          break;
+
+        case 'arrowup':
+          self.gotoNextMark(-1);
+          break;
+
+        case 'arrowdown':
+          self.gotoNextMark(1);
           break;
       }
     },
@@ -1699,7 +1747,8 @@ function _default() {
 
       var key = e.key.toLowerCase(),
           modKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey,
-          functionKeys = ['b', 's', 'y', 'z'],
+          arrowKeys = ['arrowdown', 'arrowup'],
+          functionKeys = ['b', 's', 'y', 'z'].concat(arrowKeys),
           defaultMarkers = ['m', '2', '3'];
       if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
       if (this.isEditable(e.target)) return true;
