@@ -119,8 +119,8 @@ new _MODULE({
       }
       return _STORAGE.set('storage', 'sync');
     })
-    .then(() => { if (prevVersion < '4') { _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'); }})
-    .then(() => { if (prevVersion < '4') { _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'); }})
+    .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'))
+    .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'))
     .then(() => { if (prevVersion < '3') { _STORAGE.update('history', history => this.updateHistory(history), 'sync'); }})
     .then(() => _STORAGE.set('storage', 'local'))
     .then(() => this.emit('initialized:storage', prevVersion))
