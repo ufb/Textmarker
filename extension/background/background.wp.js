@@ -1267,17 +1267,13 @@ new _utils._MODULE({
 
       return _storage.default.set('storage', 'sync');
     }).then(function () {
-      if (prevVersion < '4') {
-        _storage.default.update('settings', function (settings) {
-          return _this.updateSettings(settings);
-        }, 'sync');
-      }
+      return _storage.default.update('settings', function (settings) {
+        return _this.updateSettings(settings);
+      }, 'sync');
     }).then(function () {
-      if (prevVersion < '4') {
-        _storage.default.update('settings', function (settings) {
-          return _this.updateSettings(settings);
-        }, 'local');
-      }
+      return _storage.default.update('settings', function (settings) {
+        return _this.updateSettings(settings);
+      }, 'local');
     }).then(function () {
       if (prevVersion < '3') {
         _storage.default.update('history', function (history) {
