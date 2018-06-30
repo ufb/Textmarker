@@ -90,9 +90,9 @@ label.fake-rb {
 label sup {
   font-size: inherit;
 	vertical-align: 0;
+  width: calc(100% - 40px);
 }
 label.fake-cb:not(.pull-right) sup {
-	width: calc(100% - 40px);
 	display: inline-block;
 	vertical-align: middle;
 }
