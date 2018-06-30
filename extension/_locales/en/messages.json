@@ -378,7 +378,7 @@
 "tbb_mitem_9_tt":{"message":"Opens in new tab"},
 "sb_paused":{"message":"Textmarker is paused"},
 "sb_h1":{"message":"Actions on selected mark"},
-"sb_h1b":{"message":"click a textmark to select it"},
+"sb_h1b":{"message":"Use arrow keys to jump through your highlights or just click on a highlight to select it."},
 "sb_b1":{"message":"Autosave"},
 "sb_b2":{"message":"Save"},
 "sb_b3":{"message":"Undo"},

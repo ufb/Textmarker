@@ -85,8 +85,10 @@ export default class _MARK {
     const wrappers = this.wrappers;
     for (let wrapper of wrappers) {
       wrapper.addEventListener('click', e => {
+        e.preventDefault();
         _STORE.tmid = e.target.getAttribute('data-tm-id');
         this.marker.emit('clicked:mark', {
+          id: this.id,
           bookmark: !!this.keyData.bookmark,
           note: !!this.keyData.note
         });

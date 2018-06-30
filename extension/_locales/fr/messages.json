@@ -378,7 +378,7 @@
 "tbb_mitem_9_tt":{"message":"Ouvrir dans un nouvel onglet"},
 "sb_paused":{"message":"Textmarker désactivé"},
 "sb_h1":{"message":"Actions sur le surlignage sélectionné"},
-"sb_h1b":{"message":"Cliquer sur un surlignage pour le sélectionner"},
+"sb_h1b":{"message":"Utiliser les flèches du clavier pour parcourir les surlignages ou cliquer sur un surlignage pour le sélectionner."},
 "sb_b1":{"message":"Enregistrer automatiquement"},
 "sb_b2":{"message":"Enregistrer"},
 "sb_b3":{"message":"Annuler"},
