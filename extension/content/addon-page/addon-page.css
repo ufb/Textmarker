@@ -887,6 +887,15 @@ a .at {
 #contact a:hover {
   font-style: italic; }
 
+.nologs #no-logs {
+  display: block !important; }
+
+.nologs #clear-logs {
+  display: none; }
+
+.nologs #logs-table {
+  display: none; }
+
 #logs-table {
   border-collapse: collapse; }
   #logs-table th {

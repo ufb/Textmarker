@@ -1,3 +1,15 @@
+.nologs {
+  #no-logs {
+    display: block !important;
+  }
+  #clear-logs {
+    display: none;
+  }
+  #logs-table {
+    display: none;
+  }
+}
+
 #logs-table {
   border-collapse: collapse;
 
