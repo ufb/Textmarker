@@ -1745,11 +1745,13 @@ function _default() {
     delegate: function delegate(e) {
       var _this2 = this;
 
-      var key = e.key.toLowerCase(),
+      var key = e.key.toLowerCase();
+      var keyCode = e.keyCode,
           modKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey,
           arrowKeys = ['arrowdown', 'arrowup'],
           functionKeys = ['b', 's', 'y', 'z'].concat(arrowKeys),
           defaultMarkers = ['m', '2', '3'];
+      if (keyCode === 50) key = '2';else if (keyCode === 51) key = '3';
       if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
       if (this.isEditable(e.target)) return true;
 
