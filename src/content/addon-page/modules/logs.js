@@ -21,18 +21,13 @@ export default function() {
     log() {
       _STORE.get('logs').then(logs => {
         logs = logs || [];
-        let logsTable = document.getElementById('logs-table'),
-            tableBody = logsTable.getElementsByTagName('tbody')[0],
-            noLogs = document.getElementById('no-logs'),
-            clearBtn = document.getElementById('clear-logs'),
+        let tableBody = this.el.getElementsByTagName('tbody')[0],
             l = logs.length,
             frag = document.createDocumentFragment(),
             tr, td_date, td_msg, node_date, node_msg, log, time, msg;
 
         if (l) {
-          noLogs.classList.add('u-display--none');
-          logsTable.classList.remove('u-display--none');
-          clearBtn.classList.remove('u-display--none');
+          this.el.classList.remove('nologs');
           while(l--) {
             log = logs[l];
             msg = log[1];
@@ -54,9 +49,7 @@ export default function() {
           tableBody.innerText = '';
           tableBody.appendChild(frag);
         } else {
-          noLogs.classList.remove('u-display--none');
-          logsTable.classList.add('u-display--none');
-          clearBtn.classList.add('u-display--none');
+          this.el.classList.add('nologs');
         }
       });
     },

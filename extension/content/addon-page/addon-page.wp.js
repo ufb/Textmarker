@@ -1485,10 +1485,8 @@ function _default() {
 
       _store.default.get('logs').then(function (logs) {
         logs = logs || [];
-        var logsTable = document.getElementById('logs-table'),
-            tableBody = logsTable.getElementsByTagName('tbody')[0],
-            noLogs = document.getElementById('no-logs'),
-            clearBtn = document.getElementById('clear-logs'),
+
+        var tableBody = _this.el.getElementsByTagName('tbody')[0],
             l = logs.length,
             frag = document.createDocumentFragment(),
             tr,
@@ -1501,9 +1499,7 @@ function _default() {
             msg;
 
         if (l) {
-          noLogs.classList.add('u-display--none');
-          logsTable.classList.remove('u-display--none');
-          clearBtn.classList.remove('u-display--none');
+          _this.el.classList.remove('nologs');
 
           while (l--) {
             log = logs[l];
@@ -1526,9 +1522,7 @@ function _default() {
           tableBody.innerText = '';
           tableBody.appendChild(frag);
         } else {
-          noLogs.classList.remove('u-display--none');
-          logsTable.classList.add('u-display--none');
-          clearBtn.classList.add('u-display--none');
+          _this.el.classList.add('nologs');
         }
       });
     },
