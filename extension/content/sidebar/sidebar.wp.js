@@ -515,7 +515,9 @@ new _utils._DOMMODULE({
           fragRight.appendChild(box);
         }
 
-        exampleText.innerText = m.toUpperCase();
+        m = m.toUpperCase();
+        m = m === 'ENTER' ? String.fromCharCode(0x21B5) : m;
+        exampleText.innerText = m;
         if (!color) input.setAttribute('disabled', true);
       }
 
