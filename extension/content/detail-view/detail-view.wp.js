@@ -297,12 +297,21 @@ new _utils._DOMMODULE({
     var td_text = markEl.getElementsByClassName('mark-text')[0];
     var td_note = markEl.getElementsByClassName('mark-note')[0];
     var text = document.createElement('p');
+    var note;
     td_text.innerText = mark.text;
     td_text.setAttribute('style', mark.style);
 
     if (mark.note) {
-      this.notes = true;
-      td_note.innerText = mark.note.text || mark.note;
+      if (typeof mark.note === 'string') {
+        note = mark.note;
+      } else {
+        note = mark.note.text || '';
+      }
+
+      if (note) {
+        td_note.innerText = note;
+        this.notes = true;
+      }
     }
 
     markEl.id = 'mark-' + mark.id;
