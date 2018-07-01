@@ -458,7 +458,6 @@ new _utils._MODULE({
 
     return browser.windows.getLastFocused().then(function (windowInfo) {
       var priv = windowInfo.incognito;
-      if (priv) _this2.emit('failed:pbm');
       if (!priv) sendResponse(!priv);else {
         _storage.default.get('privsave').then(function (saveInPriv) {
           if (!saveInPriv) _this2.emit('failed:pbm');else sendResponse(saveInPriv);
