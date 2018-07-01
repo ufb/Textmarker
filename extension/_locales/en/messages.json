@@ -328,6 +328,7 @@
 "t617":{"message":"Export synced data"},
 "t618":{"message":"Import file (to local storage)"},
 "t619":{"message":"Import file (to synced storage)"},
+"t620":{"message":"An entry will not be imported if the history already contains an entry with the same name or URL."},
 "h70":{"message":"Contact / Support"},
 "t711":{"message":"Something is not working?"},
 "t712":{"message":"Please check the Manual under 'Troubleshooting' for an answer."},

@@ -90,26 +90,49 @@ new _MODULE({
     return history;
   },
   mergeHistories(newHistory, area) {
-    return _STORAGE.update('history', history => {
+    return _STORAGE.get('history').then(oldHistory => {
 
       let order = newHistory.order,
           entries = newHistory.entries,
           l = order.length,
           i = 0,
-          oldOrder = history.order,
-          oldEntries = history.entries,
-          name;
+          oldOrder = oldHistory.order,
+          oldEntries = oldHistory.entries,
+          acceptedEntries = {},
+          name, entry, url, urlExists, e;
 
       for (; i < l; i++) {
         name = order[i];
+        urlExists = false;
+
         if (!oldOrder.includes(name)) {
-          oldOrder.push(name);
-          oldEntries[name] = entries[name];
-          oldEntries[name].synced = area === 'sync';
+          entry = entries[name];
+          url = entry.url;
+
+          for (e in oldEntries) {
+            if (oldEntries[e].url === url) {
+              urlExists = true;
+              break;
+            }
+          }
+          if (!urlExists) {
+            entry.synced = area === 'sync';
+            acceptedEntries[name] = entry;
+          }
         }
       }
-      return history;
-    }, area);
+
+      return _STORAGE.update('history', history => {
+        const _order = history.order;
+        const _entries = history.entries;
+
+        for (let a in acceptedEntries) {
+          _entries[a] = acceptedEntries[a];
+          _order.push(a);
+        }console.log(area, history);
+        return history;
+      }, area);
+    });
   },
 
   setStorageOnUpgrade(prevVersion = '2', loadReason) {

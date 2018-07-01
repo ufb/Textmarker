@@ -328,6 +328,7 @@
 "t617":{"message":"Exportiere gesyncte Daten"},
 "t618":{"message":"Importiere Datei (in lokalen Speicher)"},
 "t619":{"message":"Importiere Datei (in Sync-Speicher)"},
+"t620":{"message":"Einträge werden nicht übernommen, wenn die Chronik bereits Einträge mit demselben Namen oder derselben URL enthält."},
 "h70":{"message":"Kontakt / Support"},
 "t711":{"message":"Etwas funktioniert nicht?"},
 "t712":{"message":"Schau bitte in der Anleitung unter 'Fehlerdiagnosen' nach einer Antwort."},
