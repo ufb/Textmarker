@@ -558,9 +558,6 @@ button--small, .btn--small {
   .option-row > div {
     display: inline-block; }
 
-.function {
-  width: 190px; }
-
 .key {
   background: #37414b;
   color: #fbfbfb;
@@ -602,6 +599,15 @@ button--small, .btn--small {
   vertical-align: bottom; }
 
 /* shortcuts */
+#customize-shortcuts table {
+  border-collapse: collapse; }
+  #customize-shortcuts table td {
+    padding: 12px 10px 0 0; }
+
+#customize-shortcuts label {
+  width: auto;
+  white-space: nowrap; }
+
 #overwrite-hint {
   text-indent: -9px;
   display: inline-block;

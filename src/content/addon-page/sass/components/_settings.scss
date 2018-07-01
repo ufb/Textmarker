@@ -9,9 +9,6 @@
     display: inline-block;
   }
 }
-.function {
-  width: 190px;
-}
 .key {
   background: $color-bg--dark;
   color: $color-text--light;
@@ -56,6 +53,18 @@
 }
 
 /* shortcuts */
+#customize-shortcuts {
+  table {
+    border-collapse: collapse;
+    td {
+      padding: 12px 10px 0 0;
+    }
+  }
+  label {
+    width: auto;
+    white-space: nowrap;
+  }
+}
 #overwrite-hint {
   text-indent: -9px;
   display: inline-block;
