@@ -1183,6 +1183,10 @@ new _utils._MODULE({
         settings.shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
       }
 
+      if (!settings.shortcuts.d[0]) {
+        settings.shortcuts.d[0] = defaultSettings.shortcuts.d[0];
+      }
+
       if (!settings.misc.tmuipos) {
         settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }
@@ -1852,7 +1856,7 @@ var _default = {
       s: ['ctrlKey-altKey', true],
       c: ['ctrlKey-altKey', false],
       b: ['ctrlKey-altKey', true, true],
-      d: ['', '', true],
+      d: ['shiftKey', false, true],
       '-b': ['', '', true],
       m: ['', true, true],
       w: ['', true, true],

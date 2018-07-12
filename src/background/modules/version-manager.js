@@ -43,6 +43,9 @@ new _MODULE({
         settings.shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
         settings.shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
       }
+      if (!settings.shortcuts.d[0]) {
+        settings.shortcuts.d[0] = defaultSettings.shortcuts.d[0];
+      }
       if (!settings.misc.tmuipos) {
         settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }
