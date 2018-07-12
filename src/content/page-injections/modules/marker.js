@@ -374,6 +374,7 @@ export default function() {
         case 'b': self.setBookmark(); break;
 				case 'arrowup': self.gotoNextMark(-1); break;
 				case 'arrowdown': self.gotoNextMark(1); break;
+				case 'd': self.remove(); break;
       }
     },
     preventDefault(e) {

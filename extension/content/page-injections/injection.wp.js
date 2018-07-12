@@ -963,6 +963,7 @@ function _default() {
     },
     remove: function remove(id) {
       id = id ? id : _store.default.tmid ? _store.default.tmid : '';
+      console.log('Remove', id);
       if (!id) return this.undo();
       var mark = this.getById(id.split('_')[0]),
           done = this.done,
@@ -1200,6 +1201,7 @@ function _default() {
       });
     },
     onHotkey: function onHotkey(key) {
+      console.log('hotkey', key);
       var self = this;
 
       switch (key) {
@@ -1225,6 +1227,10 @@ function _default() {
 
         case 'arrowdown':
           self.gotoNextMark(1);
+          break;
+
+        case 'd':
+          self.remove();
           break;
       }
     },
@@ -1748,7 +1754,7 @@ function _default() {
       var keyCode = e.keyCode,
           modKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey,
           arrowKeys = ['arrowdown', 'arrowup'],
-          functionKeys = ['b', 's', 'y', 'z'].concat(arrowKeys),
+          functionKeys = ['b', 's', 'y', 'z', 'd'].concat(arrowKeys),
           defaultMarkers = ['m', '2', '3'];
       if (keyCode === 50) key = '2';else if (keyCode === 51) key = '3';
       if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
