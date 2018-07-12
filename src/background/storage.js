@@ -55,12 +55,12 @@ export default new _MODULE({
         if (val && syncedEntry) syncedEntry.synced = val;
         else if (val && !syncedEntry) {
           storage.history.entries[name] = _COPY(entry);
-          storage.history.order.push(name);
+          //storage.history.order.push(name);
           storage.history.entries[name].synced = val;
         }
         else if (!val && syncedEntry) {
           delete storage.history.entries[name];
-          storage.history.order.splice(storage.history.order.indexOf(name), 1);
+          //storage.history.order.splice(storage.history.order.indexOf(name), 1);
         }
         return browser.storage.sync.set({ history: storage.history });
       })
@@ -71,12 +71,12 @@ export default new _MODULE({
           if (!val && localEntry) localEntry.synced = val;
           else if (!val && !localEntry) {
             localStorage.history.entries[name] = _COPY(entry);
-            localStorage.history.order.push(name);
+            //localStorage.history.order.push(name);
             localStorage.history.entries[name].synced = val;
           }
           else if (val && localEntry) {
             delete localStorage.history.entries[name];
-            localStorage.history.order.splice(localStorage.history.order.indexOf(name), 1);
+            //localStorage.history.order.splice(localStorage.history.order.indexOf(name), 1);
           }
           return browser.storage.local.set({ history: localStorage.history });
         })
@@ -120,7 +120,7 @@ export default new _MODULE({
         if (!syncedHistory) return localHistory;
         if (!localHistory) return syncedHistory;
 
-        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
+        //syncedHistory.order = syncedHistory.order.concat(localHistory.order);
         for (let e in localHistory.entries) syncedHistory.entries[e] = localHistory.entries[e];
 
         return syncedHistory;
@@ -207,8 +207,8 @@ export default new _MODULE({
   _set_entry(entry) {
     return browser.storage[this.area_history].get().then(storage => {
       let history = storage.history;
-      if (history.order.includes(entry.name)) return this._update_entry(entry);
-      history.order.push(entry.name);
+      if (Object.keys(history.entries).includes(entry.name)) return this._update_entry(entry);
+      //history.order.push(entry.name);
       history.entries[entry.name] = entry;
       return browser.storage[this.area_history].set({ history: history });
     });

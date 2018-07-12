@@ -32,7 +32,7 @@ export default function() {
       .catch(() => this.emit('error', 'error_naming'));
     },
     getDoubleNameCount(history) {
-      let existingNames = history.order,
+      let existingNames = Object.keys(history.entries),
           l = existingNames.length,
           counter = 0,
           checkpoint;
