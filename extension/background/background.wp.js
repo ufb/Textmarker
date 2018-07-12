@@ -553,7 +553,7 @@ function _default() {
       });
     },
     getDoubleNameCount: function getDoubleNameCount(history) {
-      var existingNames = history.order,
+      var existingNames = Object.keys(history.entries),
           l = existingNames.length,
           counter = 0,
           checkpoint;
@@ -971,9 +971,11 @@ new _utils._MODULE({
 
       while (names.length) {
         name = names.pop();
-        i = history.order.indexOf(name);
-        delete history.entries[name];
-        if (i !== -1) history.order.splice(i, 1);else names_local.push(name);
+        i = Object.keys(history.entries).indexOf(name);
+        delete history.entries[name]; //if (i !== -1) history.order.splice(i, 1);
+        //else names_local.push(name);
+
+        if (i === -1) names_local.push(name);
 
         _this6.emit('deleted:entry', name);
       }
@@ -1192,16 +1194,20 @@ new _utils._MODULE({
 
     return settings;
   },
-  updateHistory: function updateHistory(history) {
-    var entries = history.entries,
-        order = history.order,
-        l = order ? order.length : 0,
-        entry;
-    if (!l) return history;
+  updateHistory: function updateHistory(history, includingDates) {
+    delete history.order;
 
-    while (l--) {
-      entry = this.fixHistoryDates(entries[order[l]]);
-      entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
+    if (includingDates) {
+      var entries = history.entries,
+          names = Object.keys(entries),
+          l = names.length,
+          entry;
+      if (!l) return history;
+
+      while (l--) {
+        entry = this.fixHistoryDates(entries[names[l]]);
+        entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
+      }
     }
 
     return history;
@@ -1212,32 +1218,14 @@ new _utils._MODULE({
     if (typeof entry.last !== 'number') entry.last = new Date((entry.last[lang] || entry.last.en || entry.last.de || entry.last).replace(/\./g, ' ')).getTime();
     return entry;
   },
-  fixHistory: function fixHistory(history) {
-    history = history || {};
-    var entries = history.entries || {},
-        order = history.order || [],
-        l = order.length;
-
-    if (l) {
-      while (l--) {
-        if (!entries[order[l]]) order.splice(l, 1);
-      }
-    }
-
-    for (var name in entries) {
-      if (!order.includes(name)) order.push(name);
-    }
-
-    return history;
-  },
   mergeHistories: function mergeHistories(newHistory, area) {
     return _storage.default.get('history').then(function (oldHistory) {
-      var order = newHistory.order,
-          entries = newHistory.entries,
-          l = order.length,
+      var entries = newHistory.entries,
+          names = Object.keys(entries),
+          l = names.length,
           i = 0,
-          oldOrder = oldHistory.order,
           oldEntries = oldHistory.entries,
+          oldNames = Object.keys(oldEntries),
           acceptedEntries = {},
           name,
           entry,
@@ -1246,10 +1234,10 @@ new _utils._MODULE({
           e;
 
       for (; i < l; i++) {
-        name = order[i];
+        name = names[i];
         urlExists = false;
 
-        if (!oldOrder.includes(name)) {
+        if (!oldNames.includes(name)) {
           entry = entries[name];
           url = entry.url;
 
@@ -1268,16 +1256,12 @@ new _utils._MODULE({
       }
 
       return _storage.default.update('history', function (history) {
-        var _order = history.order;
         var _entries = history.entries;
 
         for (var a in acceptedEntries) {
           _entries[a] = acceptedEntries[a];
-
-          _order.push(a);
         }
 
-        console.log(area, history);
         return history;
       }, area);
     });
@@ -1303,11 +1287,15 @@ new _utils._MODULE({
         return _this.updateSettings(settings);
       }, 'local');
     }).then(function () {
-      if (prevVersion < '3') {
-        _storage.default.update('history', function (history) {
-          return _this.updateHistory(history);
-        }, 'sync');
-      }
+      return _storage.default.update('history', function (history) {
+        return _this.updateHistory(history, prevVersion < '3');
+      }, 'sync');
+    }).then(function () {
+      return _storage.default.update('history', function (history) {
+        return _this.updateHistory(history, prevVersion < '3');
+      }, 'local');
+    }).then(function () {
+      return _storage.default.set('storage', 'sync');
     }).then(function () {
       return _storage.default.set('storage', 'local');
     }).then(function () {
@@ -1385,7 +1373,7 @@ new _utils._MODULE({
     });
   },
   importHistory: function importHistory(history, area) {
-    return this.mergeHistories(this.updateHistory(this.fixHistory(history)), area).then(function () {
+    return this.mergeHistories(this.updateHistory(history, true), area).then(function () {
       return true;
     }).catch(function () {
       return false;
@@ -1544,12 +1532,11 @@ var _default = new _utils._MODULE({
         var syncedEntry;
         if (storage.history.entries.hasOwnProperty(name)) syncedEntry = storage.history.entries[name];
         if (val && syncedEntry) syncedEntry.synced = val;else if (val && !syncedEntry) {
-          storage.history.entries[name] = (0, _utils._COPY)(entry);
-          storage.history.order.push(name);
+          storage.history.entries[name] = (0, _utils._COPY)(entry); //storage.history.order.push(name);
+
           storage.history.entries[name].synced = val;
         } else if (!val && syncedEntry) {
-          delete storage.history.entries[name];
-          storage.history.order.splice(storage.history.order.indexOf(name), 1);
+          delete storage.history.entries[name]; //storage.history.order.splice(storage.history.order.indexOf(name), 1);
         }
         return browser.storage.sync.set({
           history: storage.history
@@ -1559,12 +1546,11 @@ var _default = new _utils._MODULE({
           var localEntry;
           if (localStorage.history.entries.hasOwnProperty(name)) localEntry = localStorage.history.entries[name];
           if (!val && localEntry) localEntry.synced = val;else if (!val && !localEntry) {
-            localStorage.history.entries[name] = (0, _utils._COPY)(entry);
-            localStorage.history.order.push(name);
+            localStorage.history.entries[name] = (0, _utils._COPY)(entry); //localStorage.history.order.push(name);
+
             localStorage.history.entries[name].synced = val;
           } else if (val && localEntry) {
-            delete localStorage.history.entries[name];
-            localStorage.history.order.splice(localStorage.history.order.indexOf(name), 1);
+            delete localStorage.history.entries[name]; //localStorage.history.order.splice(localStorage.history.order.indexOf(name), 1);
           }
           return browser.storage.local.set({
             history: localStorage.history
@@ -1608,8 +1594,7 @@ var _default = new _utils._MODULE({
       return browser.storage.local.get().then(function (localStorage) {
         var localHistory = localStorage.history;
         if (!syncedHistory) return localHistory;
-        if (!localHistory) return syncedHistory;
-        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
+        if (!localHistory) return syncedHistory; //syncedHistory.order = syncedHistory.order.concat(localHistory.order);
 
         for (var e in localHistory.entries) {
           syncedHistory.entries[e] = localHistory.entries[e];
@@ -1736,8 +1721,8 @@ var _default = new _utils._MODULE({
 
     return browser.storage[this.area_history].get().then(function (storage) {
       var history = storage.history;
-      if (history.order.includes(entry.name)) return _this6._update_entry(entry);
-      history.order.push(entry.name);
+      if (Object.keys(history.entries).includes(entry.name)) return _this6._update_entry(entry); //history.order.push(entry.name);
+
       history.entries[entry.name] = entry;
       return browser.storage[_this6.area_history].set({
         history: history

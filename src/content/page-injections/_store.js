@@ -55,7 +55,7 @@ export default new _MODULE({
         if (!syncedHistory) return localHistory;
         if (!localHistory) return syncedHistory;
 
-        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
+        //syncedHistory.order = syncedHistory.order.concat(localHistory.order);
         for (let e in localHistory.entries) syncedHistory.entries[e] = localHistory.entries[e];
 
         return syncedHistory;

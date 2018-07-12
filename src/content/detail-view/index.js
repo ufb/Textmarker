@@ -13,9 +13,9 @@ new _MODULE({
     const name = decodeURIComponent(window.location.hash).slice(1);
 
     browser.storage.sync.get().then(storage => {
-      if (storage.history.order.includes(name)) return storage.history.entries[name];
+      if (Object.keys(storage.history.entries).includes(name)) return storage.history.entries[name];
       return browser.storage.local.get().then(storage => {
-        if (storage.history.order.includes(name)) return storage.history.entries[name];
+        if (Object.keys(storage.history.entries).includes(name)) return storage.history.entries[name];
       });
     })
       .then(entry => {

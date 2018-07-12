@@ -260,8 +260,7 @@ var _default = new _utils._MODULE({
       return browser.storage.local.get().then(function (localStorage) {
         var localHistory = localStorage.history;
         if (!syncedHistory) return localHistory;
-        if (!localHistory) return syncedHistory;
-        syncedHistory.order = syncedHistory.order.concat(localHistory.order);
+        if (!localHistory) return syncedHistory; //syncedHistory.order = syncedHistory.order.concat(localHistory.order);
 
         for (var e in localHistory.entries) {
           syncedHistory.entries[e] = localHistory.entries[e];
@@ -597,7 +596,7 @@ function _default() {
         return _this.perPage = settings.history.pp || 10;
       }).then(function () {
         return _store.default.get('history').then(function (history) {
-          return _this.update(history.order.length);
+          return _this.update(Object.keys(history.entries).length);
         });
       });
     },

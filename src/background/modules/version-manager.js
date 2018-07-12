@@ -52,17 +52,21 @@ new _MODULE({
     }
     return settings;
   },
-  updateHistory(history) {
-    let entries = history.entries,
-        order = history.order,
-        l = order ? order.length : 0,
-        entry;
+  updateHistory(history, includingDates) {
+    delete history.order;
 
-    if (!l) return history;
+    if (includingDates) {
+      let entries = history.entries,
+          names = Object.keys(entries),
+          l = names.length,
+          entry;
 
-    while (l--) {
-      entry = this.fixHistoryDates(entries[order[l]]);
-      entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
+      if (!l) return history;
+
+      while (l--) {
+        entry = this.fixHistoryDates(entries[names[l]]);
+        entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
+      }
     }
     return history;
   },
@@ -72,40 +76,23 @@ new _MODULE({
     if (typeof entry.last !== 'number') entry.last = new Date((entry.last[lang] || entry.last.en || entry.last.de || entry.last).replace(/\./g,' ')).getTime();
     return entry;
   },
-  fixHistory(history) {
-    history = history || {};
-
-    var entries = history.entries || {},
-        order = history.order || [],
-        l = order.length;
-
-    if (l) {
-      while (l--)
-        if (!entries[order[l]]) order.splice(l, 1);
-    }
-
-    for (var name in entries)
-      if (!order.includes(name)) order.push(name);
-
-    return history;
-  },
   mergeHistories(newHistory, area) {
     return _STORAGE.get('history').then(oldHistory => {
 
-      let order = newHistory.order,
-          entries = newHistory.entries,
-          l = order.length,
+      let entries = newHistory.entries,
+          names = Object.keys(entries),
+          l = names.length,
           i = 0,
-          oldOrder = oldHistory.order,
           oldEntries = oldHistory.entries,
+          oldNames = Object.keys(oldEntries),
           acceptedEntries = {},
           name, entry, url, urlExists, e;
 
       for (; i < l; i++) {
-        name = order[i];
+        name = names[i];
         urlExists = false;
 
-        if (!oldOrder.includes(name)) {
+        if (!oldNames.includes(name)) {
           entry = entries[name];
           url = entry.url;
 
@@ -123,13 +110,11 @@ new _MODULE({
       }
 
       return _STORAGE.update('history', history => {
-        const _order = history.order;
         const _entries = history.entries;
 
         for (let a in acceptedEntries) {
           _entries[a] = acceptedEntries[a];
-          _order.push(a);
-        }console.log(area, history);
+        }
         return history;
       }, area);
     });
@@ -144,7 +129,9 @@ new _MODULE({
     })
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'))
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'))
-    .then(() => { if (prevVersion < '3') { _STORAGE.update('history', history => this.updateHistory(history), 'sync'); }})
+    .then(() => _STORAGE.update('history', history => this.updateHistory(history, prevVersion < '3'), 'sync'))
+    .then(() => _STORAGE.update('history', history => this.updateHistory(history, prevVersion < '3'), 'local'))
+    .then(() => _STORAGE.set('storage', 'sync'))
     .then(() => _STORAGE.set('storage', 'local'))
     .then(() => this.emit('initialized:storage', prevVersion))
     .catch(() => {
@@ -214,7 +201,7 @@ new _MODULE({
       .catch(() => false)
   },
   importHistory(history, area) {
-    return this.mergeHistories(this.updateHistory(this.fixHistory(history)), area)
+    return this.mergeHistories(this.updateHistory(history, true), area)
       .then(() => true)
       .catch(() => false)
   }

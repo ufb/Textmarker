@@ -195,9 +195,9 @@ new _utils._MODULE({
 
     var name = decodeURIComponent(window.location.hash).slice(1);
     browser.storage.sync.get().then(function (storage) {
-      if (storage.history.order.includes(name)) return storage.history.entries[name];
+      if (Object.keys(storage.history.entries).includes(name)) return storage.history.entries[name];
       return browser.storage.local.get().then(function (storage) {
-        if (storage.history.order.includes(name)) return storage.history.entries[name];
+        if (Object.keys(storage.history.entries).includes(name)) return storage.history.entries[name];
       });
     }).then(function (entry) {
       _this.emit('entry', entry);

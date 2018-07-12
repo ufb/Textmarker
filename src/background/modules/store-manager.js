@@ -253,11 +253,12 @@ new _MODULE({
 
       while (names.length) {
         name = names.pop();
-        i = history.order.indexOf(name);
+        i = Object.keys(history.entries).indexOf(name);
 
         delete history.entries[name];
-        if (i !== -1) history.order.splice(i, 1);
-        else names_local.push(name);
+        //if (i !== -1) history.order.splice(i, 1);
+        //else names_local.push(name);
+        if (i === -1) names_local.push(name);
 
         this.emit('deleted:entry', name);
       }

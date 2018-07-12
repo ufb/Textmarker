@@ -55,7 +55,7 @@ export default function() {
     },
     updateFromStorage() {
       _STORE.get('settings').then(settings => this.perPage = settings.history.pp || 10)
-        .then(() => _STORE.get('history').then(history => this.update(history.order.length)));
+        .then(() => _STORE.get('history').then(history => this.update(Object.keys(history.entries).length)));
     },
     update(l, silent) {
       this.numberEntries = l;
