@@ -1901,8 +1901,7 @@ var _default = {
     }
   },
   history: {
-    entries: {},
-    order: []
+    entries: {}
   },
   sync: {
     settings: false,

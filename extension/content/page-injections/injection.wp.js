@@ -963,7 +963,6 @@ function _default() {
     },
     remove: function remove(id) {
       id = id ? id : _store.default.tmid ? _store.default.tmid : '';
-      console.log('Remove', id);
       if (!id) return this.undo();
       var mark = this.getById(id.split('_')[0]),
           done = this.done,
@@ -1201,7 +1200,6 @@ function _default() {
       });
     },
     onHotkey: function onHotkey(key) {
-      console.log('hotkey', key);
       var self = this;
 
       switch (key) {
