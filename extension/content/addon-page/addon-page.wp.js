@@ -823,12 +823,10 @@ function _default() {
   }), _defineProperty(_ref, "export", function _export(names) {
     var backup = {
       history: {
-        entries: {},
-        order: []
+        entries: {}
       }
     },
         entries = backup.history.entries,
-        order = backup.history.order,
         link = document.createElement('a');
 
     _store.default.get('history').then(function (history) {
@@ -837,7 +835,6 @@ function _default() {
       while (names.length) {
         name = names.pop();
         entries[name] = history.entries[name];
-        order.push(name);
       }
 
       backup = encodeURIComponent(JSON.stringify(backup));

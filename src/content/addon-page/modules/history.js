@@ -87,9 +87,8 @@ export default function() {
       });
     },
     export(names) {
-      let backup = { history: { entries: {}, order: [] } },
+      let backup = { history: { entries: {} } },
           entries = backup.history.entries,
-          order = backup.history.order,
           link = document.createElement('a');
 
       _STORE.get('history').then(history => {
@@ -97,7 +96,6 @@ export default function() {
         while (names.length) {
           name = names.pop();
           entries[name] = history.entries[name];
-          order.push(name);
         }
         backup = encodeURIComponent(JSON.stringify(backup));
         link.setAttribute('download',

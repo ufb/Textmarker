@@ -52,8 +52,7 @@ export default {
     }
   },
   history: {
-    entries: {},
-    order: []
+    entries: {}
   },
   sync: {
     settings: false,
