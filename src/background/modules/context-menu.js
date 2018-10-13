@@ -13,10 +13,10 @@ export default function() {
     items: {
       m: { contexts: ['selection'] },
       w: { contexts: ['selection'] },
-      d: { contexts: ['page'] },
-      b: { contexts: ['page'] },
-      '-b': { contexts: ['page'] },
-      n: { contexts: ['page'] }
+      d: { contexts: ['frame', 'link', 'page'] },
+      b: { contexts: ['frame', 'link', 'page'] },
+      '-b': { contexts: ['frame', 'link', 'page'] },
+      n: { contexts: ['frame', 'link', 'page'] }
     },
     created: [],
 
