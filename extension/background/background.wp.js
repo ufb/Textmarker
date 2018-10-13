@@ -267,16 +267,16 @@ function _default() {
         contexts: ['selection']
       },
       d: {
-        contexts: ['page']
+        contexts: ['frame', 'link', 'page']
       },
       b: {
-        contexts: ['page']
+        contexts: ['frame', 'link', 'page']
       },
       '-b': {
-        contexts: ['page']
+        contexts: ['frame', 'link', 'page']
       },
       n: {
-        contexts: ['page']
+        contexts: ['frame', 'link', 'page']
       }
     },
     created: [],
