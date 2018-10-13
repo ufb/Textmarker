@@ -234,7 +234,7 @@ export default function() {
         pos = this.markScrollPos;
         el = markElements[pos];
       }
-      el.scrollIntoView();
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 			el.click();
     },
 		gotoNextMark(dir) {

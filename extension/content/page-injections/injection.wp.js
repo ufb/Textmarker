@@ -477,7 +477,10 @@ function () {
   }, {
     key: "scrollIntoView",
     value: function scrollIntoView(bm) {
-      if (bm || (bm = window.document.getElementById('textmarker-bookmark-anchor'))) bm.scrollIntoView();
+      if (bm || (bm = window.document.getElementById('textmarker-bookmark-anchor'))) bm.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
     }
   }]);
 
@@ -1073,7 +1076,10 @@ function _default() {
         el = markElements[pos];
       }
 
-      el.scrollIntoView();
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
       el.click();
     },
     gotoNextMark: function gotoNextMark(dir) {

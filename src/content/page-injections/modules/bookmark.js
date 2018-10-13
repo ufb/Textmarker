@@ -39,6 +39,6 @@ export default class _BOOKMARK {
   }
   scrollIntoView(bm) {
     if (bm || (bm = window.document.getElementById('textmarker-bookmark-anchor')))
-      bm.scrollIntoView();
+      bm.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }
