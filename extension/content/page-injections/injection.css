@@ -262,16 +262,13 @@ body > tmnote > textarea[data-tm-note] {
   box-sizing: border-box !important; }
 
 tmui {
-  display: none;
+  display: block;
   z-index: 2147483646;
   position: fixed;
   background: #fbfbfb;
   border: 1px solid #e1e2e3;
   padding-top: 3px;
   box-sizing: border-box !important; }
-
-tmui.active {
-  display: block; }
 
 tmbm, tmnotestoggle {
   display: inline-block;

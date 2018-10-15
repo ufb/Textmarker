@@ -8,93 +8,140 @@ export default function(mark) {
   return new _DOMMODULE({
 		events: {
       ENV: {
-        'updated:misc-settings': 'updatePosition',
+        'updated:misc-settings': 'updateState',
         'added:note': 'onNoteAdded',
         'added:bookmark': 'onBookmarkAdded',
         'removed:last-note': 'onLastNoteRemoved',
         'removed:bookmark': 'onBookmarkRemoved'
-      },
-      DOM: {
-        click: {
-          'tmnotestoggle': 'toggleNotes',
-          'tmbm': 'scrollToBookmark'
-        }
       }
 		},
     addListenersManually: true,
     el: null,
-    notesBtn: null,
-    bmBtn: null,
-    notesBtnActive: false,
-    bmBtnActive: false,
+
+    attached: false,
+
+    buttons: {
+      notes: {
+        el: null,
+        show: false,
+        shown: false
+      },
+      bookmark: {
+        el: null,
+        show: false,
+        shown: false
+      }
+    },
+
     bookmark: false,
     notes: false,
 
     autoinit() {
-      this.createEl();
-      this.createBtns();
-      this.addListeners();
+      this.createButtons();
+      this.updateState();
     },
+    updateState() {
+      _STORE.get('bmicon').then(bmicon => {
+        this.buttons.bookmark.show = bmicon;
+        return _STORE.get('noteicon').then(noteicon => this.buttons.notes.show = noteicon);
+      })
+        .then(() => this.update());
+    },
+    update() {
+      const shouldAttach =
+        (this.buttons.bookmark.show && this.bookmark) ||
+        (this.buttons.notes.show && this.notes);
 
-    createEl() {
-      const el = this.el = DOC.createElement('tmui');
-      DOC.body.appendChild(el);
-      this.updatePosition();
-    },
-    createBtns() {
-      const notesBtn = this.notesBtn = DOC.createElement('tmnotestoggle');
-      const bmBtn = this.bmBtn = DOC.createElement('tmbm');
-      notesBtn.title = browser.i18n.getMessage('toggle_notes');
-      bmBtn.title = browser.i18n.getMessage('bm_scroll');
-    },
-    addBtn(btn) {
-      this.el.appendChild(btn);
-      this.el.classList.add('active');
-    },
-    removeBtn(btn) {
-      this.el.removeChild(btn);
-      if (!this.el.children.length) {
-        this.el.classList.remove('active');
+      if (shouldAttach) {
+        this.render();
+      }
+      else if (this.attached && !shouldAttach) {
+        this.remove();
       }
     },
+    render() {
+      let buttons = this.buttons, btn;
+
+      if (!this.attached) {
+        const el = this.el = DOC.createElement('tmui');
+        DOC.body.appendChild(el);
+      }
+      for (let b in buttons) {
+        btn = buttons[b];
+        if (btn.show && !btn.shown && this[b]) this.addButton(b);
+        else if (btn.shown && (!this[b] || !btn.show)) this.removeButton(b);
+      }
+      if (!buttons.notes.shown && !buttons.bookmark.shown) {
+        this.remove();
+      } else {
+        this.updatePosition();
+        this.addListeners();
+      }
+
+      this.attached = true;
+    },
+    remove() {
+      if (this.attached) {
+        const tmui = this.el;
+        const buttons = this.buttons;
+
+        for (let b in buttons) {
+          if (buttons[b].shown) {
+            this.removeButton(b);
+          }
+        }
+
+        DOC.body.removeChild(tmui);
+        this.attached = false;
+      }
+    },
+    createButtons() {
+      const notesButton = this.buttons.notes.el = DOC.createElement('tmnotestoggle');
+      const bookmarkButton = this.buttons.bookmark.el = DOC.createElement('tmbm');
+      notesButton.title = browser.i18n.getMessage('toggle_notes');
+      bookmarkButton.title = browser.i18n.getMessage('bm_scroll');
+    },
+    addButton(type) {
+      const tmui = this.el;
+      const btn = this.buttons[type];
+      const self = this;
+      const handler = btn.handler = type === 'notes' ?
+        this.toggleNotes.bind(this) :
+        this.scrollToBookmark.bind(this);
+
+      tmui.appendChild(btn.el);
+      btn.shown = true;
+
+      btn.el.addEventListener('click', handler, false);
+    },
+    removeButton(type) {
+      const tmui = this.el;
+      const btn = this.buttons[type];
+
+      tmui.removeChild(btn.el);
+      btn.shown = false;
+
+      btn.el.removeEventListener('click', btn.handler, false);
+    },
     updatePosition() {
-      _STORE.get('tmuipos').then(pos => this.el.setAttribute('style', pos.split('-').map(p => p + ':1px;').join(' ')));
+      _STORE.get('tmuipos')
+        .then(pos => this.el.setAttribute('style', pos.split('-').map(p => p + ':1px;').join(' ')));
     },
     onNoteAdded() {
       this.notes = true;
-      if (!this.notesBtnActive) {
-        _STORE.get('noteicon').then(noteicon => {
-          if (noteicon) {
-            this.addBtn(this.notesBtn);
-            this.notesBtnActive = true;
-          }
-        });
-      }
+      this.update();
     },
     onLastNoteRemoved() {
       this.notes = false;
-      if (this.notesBtnActive) {
-        this.removeBtn(this.notesBtn);
-        this.notesBtnActive = false;
-      }
+      this.update();
     },
     onBookmarkAdded() {
       this.bookmark = true;
-      if (!this.bmBtnActive) {
-        _STORE.get('bmicon').then(bmicon => {
-          if (bmicon) {
-            this.addBtn(this.bmBtn);
-            this.bmBtnActive = true;
-          }
-        });
-      }
+      this.update();
     },
     onBookmarkRemoved() {
       this.bookmark = false;
-      if (this.bmBtnActive) {
-        this.removeBtn(this.bmBtn);
-        this.bmBtnActive = false;
-      }
+      this.update();
     },
     toggleNotes() {
       this.emit('toggle:notes');
