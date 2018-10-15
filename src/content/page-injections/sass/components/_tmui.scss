@@ -1,14 +1,11 @@
 tmui {
-  display: none;
+  display: block;
   z-index: $layer--max;
   position: fixed;
   background: $color-bg--light;
   border: 1px solid $color-border--light;
   padding-top: 3px;
   box-sizing: border-box !important;
-}
-tmui.active {
-  display: block;
 }
 tmbm, tmnotestoggle {
   display: inline-block;
