@@ -169,7 +169,7 @@ export default class _MARK {
 		for ( ; i < number; i++) {
 			wrapper = window.document.createElement('span');
       wrapper.classList.add('textmarker-highlight');
-			wrapper.setAttribute('style', style);
+			wrapper.setAttribute('style', style.replace(/;/g, '!important;'));
 			wrapper.setAttribute('data-tm-id', this.id + '_' + i);
       if (hasNote) wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note'));
       //wrapper.setAttribute('contextmenu', 'textmarker-ctm');
