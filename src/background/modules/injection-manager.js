@@ -12,14 +12,18 @@ new _MODULE({
   },
   checkUrl(url, sender, sendResponse) {
     _STORAGE.get('history').then(history => {
-      let entries = history.entries, entry;
+      let entries = history.entries,
+          matches = [],
+          locked = false,
+          entry;
       for (let e in entries) {
         entry = entries[e];
         if (url === this.getHashlessURL(entry.url)) {
-          sendResponse(entry);
-          break;
+          matches.push(entry);
         }
       }
+      if (!matches.length) sendResponse(null);
+      else sendResponse(matches);
     });
   },
   onNamingRequest(sender, sendResponse) {
