@@ -86,6 +86,8 @@ export default function() {
     phase: 1,
 
     init(entry) {
+      this.resume();
+
       let now = [], postponed = [],
           marks = entry.marks,
           l = marks.length,
@@ -109,6 +111,12 @@ export default function() {
         this.queue.push([postponed[i]]);
 
       this.restore().report();
+    },
+    resume() {
+      this.queue = [];
+      this.cache = [];
+      this.lost = [];
+      this.restored = [];
     },
     convertDescription(mark) {
       if (typeof mark.conds.o === 'undefined') {
