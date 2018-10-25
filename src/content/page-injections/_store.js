@@ -3,7 +3,8 @@ import { _MODULE } from './../_shared/utils'
 export default new _MODULE({
   events: {
     ENV: {
-      'toggled:sync': 'setAreas'
+      'toggled:sync': 'setAreas',
+      'updated:naming-settings': 'updateLockedStatus'
     }
   },
   initialized: false,
@@ -16,8 +17,17 @@ export default new _MODULE({
   name: undefined,
   isNew: true,
   entry: null,
+  locked: false,
   tmid: '',
   noteColor: 'yellow',
+
+  autoinit() {
+    this.updateLockedStatus();
+  },
+
+  updateLockedStatus() {
+    this.get('naming').then(naming => this.locked = (naming === 'mark'));
+  },
 
   setAreas() {
     return browser.storage.sync.get().then(storage => {
