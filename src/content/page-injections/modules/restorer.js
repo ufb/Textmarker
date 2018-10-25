@@ -67,7 +67,7 @@ class Restorer extends _MODULE {
     }else {
       this.emit('succeeded:restoration');
     }
-    this.emit('finished:restoration', _STORE.name, this.restored, this.lost, this.area);
+    this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
   }
 }
 
@@ -86,16 +86,12 @@ export default function() {
     phase: 1,
 
     init(entry) {
-      if (_STORE.pdf) return false;
-
-      _STORE.name = entry.name;
-      _STORE.entry = entry;
-
       let now = [], postponed = [],
           marks = entry.marks,
           l = marks.length,
           i = 0, mark;
 
+      this.entry = entry;
       this.area = entry.synced ? 'sync' : 'local';
 
       for (; i < l; i++) {
