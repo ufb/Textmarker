@@ -47,6 +47,8 @@ export default function() {
 		markScrollPos: -1,
 
     updateID: function updateID() {
+      if (_STORE.locked) return;
+
       const entry = _STORE.entry;
 
       if (entry.idcount) {
@@ -177,27 +179,28 @@ export default function() {
     },
     save() {
       const iframe = _STORE.iframe;
+      const locked = _STORE.locked;
 
       _STORE.get('naming').then(naming => {
-        if (_STORE.isNew && naming === 'custom') {
-          this.request('name:entry?').then(granted => {
-            if (granted) {
-              const sub = iframe ? browser.i18n.getMessage('nm_message_iframe') : '';
+        if (_STORE.isNew || locked) {
+          if (!locked && naming === 'custom') {
+            this.request('name:entry?').then(granted => {
+              if (granted) {
+                const sub = iframe ? browser.i18n.getMessage('nm_message_iframe') : '';
 
-              _STORE.name = window.prompt(browser.i18n.getMessage('nm_message', sub));
-              if (_STORE.name) this.retrieveEntry().then(entry => this.emit('save:entry?', entry));
-            }
-          });
-        } else {
-					if (_STORE.isNew) {
-						let confirmed = true;
+                _STORE.name = window.prompt(browser.i18n.getMessage('nm_message', sub));
+                if (_STORE.name) this.emit('save:entry?', this.retrieveEntry());
+              }
+            });
+          } else {
+            let confirmed = true;
 	          if (iframe) confirmed = window.confirm(browser.i18n.getMessage('nm_message_iframe'));
 	          if (confirmed) {
-	            this.retrieveEntry().then(entry => this.emit('save:entry?', entry));
+              this.emit('save:entry?', this.retrieveEntry());
 	          }
-					} else {
-						this.retrieveEntry().then(entry => this.emit('update:entry?', entry));
-					}
+          }
+        } else {
+          this.emit('update:entry?', this.retrieveEntry());
         }
       });
 		},
@@ -387,39 +390,40 @@ export default function() {
 		retrieveEntry() {
       let entry = _STORE.entry || {};
 
-      return this.collectMarks().then(marks => {
-        entry.marks = marks;
-  			entry.last = new Date().getTime();
-        entry.bookmarked = !!this.bookmark;
-        entry.title = window.document.title;
-  			entry.count = entry.marks.length;
-				entry.idcount = this.idcount;
-        if (_STORE.isNew) {
-          entry.name = _STORE.name;
-          entry.first = entry.last;
-          entry.url = window.document.URL;
-          entry.synced = _STORE.area_history === 'sync';
-        }
-  			return entry;
-      });
+      entry.marks = this.collectMarks();
+			entry.last = new Date().getTime();
+      entry.bookmarked = !!this.bookmark;
+      entry.title = window.document.title;
+			entry.count = entry.marks.length;
+			entry.idcount = this.idcount;
+
+      if (_STORE.isNew || _STORE.locked) {
+        entry.first = entry.last;
+        entry.url = window.document.URL;
+        entry.synced = _STORE.area_history === 'sync';
+        entry.locked = _STORE.locked;
+      }
+
+      entry.name = _STORE.locked ? entry.marks[0].text.trim() : _STORE.isNew ? _STORE.name : entry.name;
+
+			return entry;
 		},
     collectMarks() {
-      return _STORE.get('history').then(history => {
-        let marks = [],
-            ids = [],
-            done = this.done,
-            oldMarks = _STORE.isNew ? null : history.entries[_STORE.name] ? history.entries[_STORE.name].marks : null,
-            l = done.length,
-            m = 0,
-            kD;
+      let done = this.done;
+      let l = done.length;
+      const marks = [];
 
-        for (; m < l; m++) {
-  				kD = done[m].keyData;
-  				marks.push(kD);
-  				ids.push(kD.id);
-  			}
-        return marks;
-      });
+      if (_STORE.locked) {
+        done = [done[l-1]];
+      }
+
+      l = done.length;
+
+      for (let m = 0, kD; m < l; m++) {
+				kD = done[m].keyData;
+				marks.push(kD);
+			}
+      return marks;
     }
 	});
 }
