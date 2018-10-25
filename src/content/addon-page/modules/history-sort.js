@@ -8,12 +8,7 @@ export default {
         return this._sort(object, 'last');
       },
       _sort(object, field) {
-        return Object.keys(object).sort((a, b) => {
-          a = new Date(object[a][field]),
-          b = new Date(object[b][field]);
-          if (a == b) return 0;
-          return a < b ? 1 : -1;
-        });
+        return Object.keys(object).sort((a, b) => (new Date(object[b][field])) - (new Date(object[a][field])));
       }
     },
     name: {
