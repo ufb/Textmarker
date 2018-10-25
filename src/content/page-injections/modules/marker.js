@@ -74,6 +74,8 @@ export default function() {
 			return new _MARK(this, key, data).create();
 		},
 		undo(noAutosave) {
+      if (_STORE.locked) return;
+
 			let done = this.done;
 
 			if (done.length) {
@@ -90,6 +92,8 @@ export default function() {
       noAutosave || this.autosave();
 		},
 		redo(noAutosave) {
+      if (_STORE.locked) return;
+      
       let undone = this.undone;
 
 			if (undone.length) {
@@ -135,6 +139,8 @@ export default function() {
       return smallestID;
     },
     remove(id) {
+      if (_STORE.locked) return;
+
       id = id ? id : _STORE.tmid ? _STORE.tmid : '';
 
       if (!id) return this.undo();
@@ -250,6 +256,8 @@ export default function() {
 			this.gotoMark();
 		},
     setBookmark(m, save) {
+      if (_STORE.locked) return;
+
       let bookmark = this.bookmark,
           mark = this.findMark(m);
 
@@ -270,6 +278,8 @@ export default function() {
       this.emit('removed:bookmark');
     },
     removeBookmark() {
+      if (_STORE.locked) return;
+
       let bookmark = this.bookmark;
 
       if (!bookmark) return false;
