@@ -17,6 +17,7 @@ new _PORT({
       'updated:logs',
       'updated:ctm-settings',
       'updated:misc-settings',
+      'updated:naming-settings',
       'updated:bg-color-settings',
       'updated:custom-search-settings',
       'updated:saveopt-settings',
