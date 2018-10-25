@@ -87,8 +87,11 @@ export default function() {
       const keyCode = e.keyCode,
           modKey = (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey),
           arrowKeys = ['arrowdown', 'arrowup'],
-          functionKeys = ['b', 's', 'y', 'z', 'd'].concat(arrowKeys),
+          lockedActions = ['b', 's', 'y', 'z', 'd'],
+          functionKeys = lockedActions.concat(arrowKeys),
           defaultMarkers = ['m', '2', '3'];
+
+      if (_STORE.locked && lockedActions.includes(key)) return true;
 
       if (keyCode === 50) key = '2';
       else if (keyCode === 51) key ='3';
