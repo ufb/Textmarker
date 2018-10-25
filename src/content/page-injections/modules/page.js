@@ -147,7 +147,7 @@ export default function() {
     },
     checkURL() {
       this.request('check:url', this.url)
-        .then(entry => { if (entry) this.onUrlFound(entry); });
+        .then(entries => { if (entries) this.onUrlFound(this.filterEntries(entries)); });
     },
     unset(name) {
       if (_STORE.name && _STORE.name === name) {
@@ -156,7 +156,9 @@ export default function() {
         this.emit('unset:entry');
       }
     },
-    update(entry, force) {
+    update(entries, force) {
+      let entry = Array.isArray(entries) ? entries[0] : entries;
+
       if (force || entry.url.split('#')[0] === this.url) {
         _STORE.name = entry.name;
         _STORE.isNew = false;
@@ -167,16 +169,38 @@ export default function() {
     onHotkey(key) {
       if (key === 'w') this.lookup();
     },
-    onUrlFound(entry) {
-      this.update(entry, true);
+    onUrlFound(entries) {
+      this.update(entries, true);
 
       if (this.active && !this.initialized && !document.querySelector('[data-tm-id]')) {
         this.initialized = true;
         /*if (_READER)
           window.setTimeout(() => this.emit('restore:marks', name), 500);*/
         //else
-          this.emit('restore:marks', entry);
+        entries.forEach(entry => this.emit('restore:marks', entry));
       }
+    },
+    filterEntries(entries) {
+      let lockedEntries = [],
+          l = entries.length;
+
+      for (let i = 0, entry; i < l; i++) {
+        entry = entries[i];
+        if (entry.locked) {
+          lockedEntries.push(entry);
+        } else {
+          lockedEntries = [];
+          entries = [entry];
+          break;
+        }
+      }
+
+      if (lockedEntries.length) {
+        _STORE.locked = true;
+        entries = lockedEntries.sort((a, b) => (new Date(a.last)) - (new Date(b.last)));
+      }
+
+      return entries;
     },
     onSelectionChange() {
       this.emit('changed:selection', !window.getSelection().isCollapsed);
