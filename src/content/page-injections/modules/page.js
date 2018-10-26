@@ -150,7 +150,9 @@ export default function() {
     },
     checkURL() {
       this.request('check:url', this.url)
-        .then(entries => { if (entries) this.onUrlFound(this.filterEntries(entries)); });
+        .then(data => {
+          if (data) this.onUrlFound(this.filterEntries(data.entries), data.recentlyOpenedEntry);
+        });
     },
     unset(name) {
       if (_STORE.name && _STORE.name === name) {
@@ -163,7 +165,7 @@ export default function() {
       let entry = Array.isArray(entries) ? entries[0] : entries;
 
       if (force || entry.url.split('#')[0] === this.url) {
-        _STORE.name = entry.name;
+        if (!_STORE.locked) _STORE.name = entry.name;
         _STORE.isNew = false;
         _STORE.entry = entry;
         this.emit('set:entry');
@@ -172,11 +174,15 @@ export default function() {
     onHotkey(key) {
       if (key === 'w') this.lookup();
     },
-    onUrlFound(entries) {
+    onUrlFound(entries, recentlyOpenedEntry) {
       this.update(entries, true);
 
       if (this.active && !this.initialized && !document.querySelector('[data-tm-id]')) {
         this.initialized = true;
+
+        if (recentlyOpenedEntry.url.split('#')[0] === this.url) {
+          _STORE.name = recentlyOpenedEntry.name;
+        }
         /*if (_READER)
           window.setTimeout(() => this.emit('restore:marks', name), 500);*/
         //else

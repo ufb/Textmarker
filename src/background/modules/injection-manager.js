@@ -7,9 +7,12 @@ new _MODULE({
       'check:url': 'checkUrl',
       'save:entry?': 'onSaveNewRequest',
       'update:entry?': 'onUpdateRequest',
-      'name:entry?': 'onNamingRequest'
+      'name:entry?': 'onNamingRequest',
+      'opened:entry': 'tempSaveEntryMetaData'
     }
   },
+  recentlyOpenedEntry: null,
+
   checkUrl(url, sender, sendResponse) {
     _STORAGE.get('history').then(history => {
       let entries = history.entries,
@@ -23,7 +26,10 @@ new _MODULE({
         }
       }
       if (!matches.length) sendResponse(null);
-      else sendResponse(matches);
+      else {
+        sendResponse({ entries: matches, recentlyOpenedEntry: this.recentlyOpenedEntry });
+        this.recentlyOpenedEntry = null;
+      }
     });
   },
   onNamingRequest(sender, sendResponse) {
@@ -67,5 +73,8 @@ new _MODULE({
     const h = url.lastIndexOf('#');
     if (h === -1) return url;
     else return url.substr(0, h);
+  },
+  tempSaveEntryMetaData(data) {
+    this.recentlyOpenedEntry = data;
   }
 });
