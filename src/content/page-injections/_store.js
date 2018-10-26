@@ -26,6 +26,7 @@ export default new _MODULE({
   },
 
   updateLockedStatus() {
+    if (!this.isNew || document.querySelector('[data-tm-id]')) return;//show notification
     this.get('naming').then(naming => this.locked = (naming === 'mark'));
   },
 
