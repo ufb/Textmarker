@@ -23,14 +23,25 @@ export default function() {
       sync: 'content/addon-page/addon-page.html#page=sync'
     },
 
-    open(urls) {
+    open(urls, names) {
       urls = typeof urls === 'string' ? [urls] : urls;
+      names = typeof names === 'string' ? [names] : names;
       let l = urls.length,
-          securityWarning = false;
-      while (l--) browser.tabs.create({ url: urls[l] }).catch(() => {
-        if (!securityWarning) this.emit('failed:open-tab');
-        securityWarning = true;
-      });
+          securityWarning = false,
+          url;
+      while (l--) {
+        (function(self, l) {
+          url = urls[l];
+          browser.tabs.create({ url: urls[l] })
+            .catch(() => {
+              if (!securityWarning) self.emit('failed:open-tab');
+              securityWarning = true;
+            })
+            .then(() => {
+              if (names) self.emit('opened:entry', { url: url, name: names[l] });
+            });
+        })(this, l);
+      }
     },
     openAddonPage(id) {
       this.open(this.urls[id]);

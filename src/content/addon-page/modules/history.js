@@ -114,10 +114,10 @@ export default function() {
       this.emit('sync:entry', name[0], el.classList.contains('active'));
     },
     visit(names) {
-      this.getURLs(names).then(urls => this.emit('open:entries', urls));
+      this.getURLs(names).then(urls => this.emit('open:entries', urls, names));
     },
     open(e, el) {
-      this.emit('open:entries', el.getAttribute('data-url'));
+      this.emit('open:entries', el.getAttribute('data-url'), el.getAttribute('data-name'));
     },
     view(e, el) {
       this.emit('view:entry', el.getAttribute('data-name'));
@@ -200,6 +200,7 @@ export default function() {
             }
             nameField.innerText = name;
             nameField.setAttribute('data-url', entry.url);
+            nameField.setAttribute('data-name', name);
             input.className = 'entry-cb';
             input.id = 'entry-cb-' + j;
             input.setAttribute('data-name', name);
