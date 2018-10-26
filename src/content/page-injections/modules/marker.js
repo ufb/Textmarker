@@ -93,7 +93,7 @@ export default function() {
 		},
 		redo(noAutosave) {
       if (_STORE.locked) return;
-      
+
       let undone = this.undone;
 
 			if (undone.length) {
@@ -229,6 +229,12 @@ export default function() {
       this.emit('restore:notes', this.done);
       this.sortById();
       this.scrollToBookmark();
+      if (_STORE.locked) {
+        const mark = this.done[this.done.length - 1];
+        if (_STORE.name === mark.keyData.text.trim()) {
+          this.gotoMark(mark);
+        }
+      }
     },
     addNote(id) {
       this.emit('add:note', this.findMark(id));
