@@ -161,7 +161,7 @@ export default function() {
           names = searched ? this.searched : this.names,
           l = searched ? names.length : this.page * this.perPage,
           i = searched ? 0 : l - this.perPage,
-          clone, entry, name, nameField, input, label, infoButton, details, buttons, view, tag, tagEl, b, j;
+          clone, entry, name, nameField, input, label, infoButton, details, buttons, view, tag, locked, lockedEl, tagEl, b, j;
 
       if (this.filtered) {
         names = names.filter(n => !!entries[n]);
@@ -181,6 +181,7 @@ export default function() {
           entry = entries[name];
           if (entry) {
             tag = entry.tag || '';
+            locked = entry.locked;
             clone = template.cloneNode(true);
             container.appendChild(clone);
             clone.id = 'entry-' + j;
@@ -193,6 +194,7 @@ export default function() {
             buttons = clone.getElementsByClassName('quick-action');
             view = clone.getElementsByClassName('view')[0];
             tagEl = clone.getElementsByClassName('tag')[0];
+            lockedEl = clone.getElementsByClassName('locked')[0];
             b = buttons.length;
 
             while(b--) {
@@ -206,6 +208,8 @@ export default function() {
             input.setAttribute('data-name', name);
             view.setAttribute('data-name', name);
             label.setAttribute('for', 'entry-cb-' + j);
+
+            if (locked) lockedEl.classList.remove('u-display--none');
 
             tagEl.innerText = tag ? tag : browser.i18n.getMessage('detail_notag');
 
