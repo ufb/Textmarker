@@ -10,7 +10,6 @@ export default function() {
 		events: {
 			ENV: {
 				'set:entry': 'updateID',
-        'unset:entry': 'resetID',
 				'pressed:marker-key': 'onMarkerKey',
         'pressed:hotkey': 'onHotkey',
         'restored:range': 'recreate',
@@ -64,9 +63,6 @@ export default function() {
 					this.idcount = Math.max.apply(null, ids);
         }
       }
-    },
-    resetID: function resetID() {
-      this.idcount = 0;
     },
 		mark(key, data) {
 			this.undone.length = 0;

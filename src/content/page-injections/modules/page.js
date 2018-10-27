@@ -158,7 +158,6 @@ export default function() {
       if (_STORE.name && _STORE.name === name) {
         _STORE.name = undefined;
         _STORE.entry = null;
-        this.emit('unset:entry');
       }
     },
     update(entries, force) {
