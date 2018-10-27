@@ -186,7 +186,7 @@ export default function() {
         /*if (_READER)
           window.setTimeout(() => this.emit('restore:marks', name), 500);*/
         //else
-        entries.forEach(entry => this.emit('restore:marks', entry));
+        this.emit('restore:marks', entries);
       }
     },
     filterEntries(entries) {
