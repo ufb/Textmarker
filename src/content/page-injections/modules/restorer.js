@@ -525,9 +525,7 @@ class Restorer extends _MODULE {
       while(ll--) {
         delete this.lost[ll].temp;
       }
-      this.emit('failed:restoration');
-    } else {
-      this.emit('succeeded:restoration');
+      this.emit('lost:marks');
     }
     this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
   }
@@ -539,21 +537,28 @@ export default function() {
     events: {
       ENV: {
         'restore:marks': 'restore',
+        'lost:marks': 'onFailure',
         'finished:restoration': 'onFinishedRestoration'
       }
     },
 
     count: 0,
     restored: 0,
+    failed: 0,
 
     restore(entries) {
       this.count = entries.length;
 
       entries.forEach(entry => (new Restorer(entry)));
     },
+    onFailure() {
+      this.failed++;
+    },
     onFinishedRestoration() {
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
+        if (this.failed) this.emit('failed:restoration');
+        else this.emit('succeeded:restoration');
       }
     }
   });
