@@ -19,7 +19,9 @@ export default new _PORT({
       'added:bookmark',
       'removed:bookmark',
       'added:note',
-      'removed:last-note'
+      'removed:last-note',
+      'warn:mixed-entry-types',
+      'warn:multiple-unlocked-entries'
     ]
   }
 });

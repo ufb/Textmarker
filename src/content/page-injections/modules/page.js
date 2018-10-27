@@ -192,17 +192,27 @@ export default function() {
     },
     filterEntries(entries) {
       let lockedEntries = [],
-          l = entries.length;
+          l = entries.length,
+          lockedEntriesExist = false,
+          nonLockedEntries = 0;
 
       for (let i = 0, entry; i < l; i++) {
         entry = entries[i];
         if (entry.locked) {
           lockedEntries.push(entry);
+          lockedEntriesExist = true;
         } else {
           lockedEntries = [];
           entries = [entry];
-          break;
+          nonLockedEntries++;
         }
+      }
+
+      if (lockedEntriesExist && nonLockedEntries) {
+        this.emit('warn:mixed-entry-types');
+      }
+      else if (nonLockedEntries > 1) {
+        this.emit('warn:multiple-unlocked-entries');
       }
 
       if (lockedEntries.length) {

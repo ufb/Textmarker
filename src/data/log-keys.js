@@ -31,6 +31,8 @@ export default {
   error_empty_local_storage_onupdate: 30,
   error_toggle_sync: 31,
   error_save_priv: 32,
+  note_restoration_warning_1: 33,
+  note_restoration_warning_2: 34,
 
   getKeyByValue(val) {
     for (let key in this) {
