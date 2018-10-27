@@ -14,7 +14,7 @@ export default function() {
 				'pressed:marker-key': 'onMarkerKey',
         'pressed:hotkey': 'onHotkey',
         'restored:range': 'recreate',
-        'finished:restoration': 'onFinishedRestoration',
+        'finished:all-restorations': 'onFinishedRestoration',
         'ctx:b': 'setBookmark',
         'ctx:-b': 'removeBookmark',
         'ctx:d': 'remove',
@@ -227,13 +227,15 @@ export default function() {
     },
     onFinishedRestoration() {
       this.emit('restore:notes', this.done);
-      this.sortById();
-      this.scrollToBookmark();
+
       if (_STORE.locked) {
         const mark = this.done[this.done.length - 1];
         if (_STORE.name === mark.keyData.text.trim()) {
           this.gotoMark(mark);
         }
+      } else {
+        this.sortById();
+        this.scrollToBookmark();
       }
     },
     addNote(id) {
