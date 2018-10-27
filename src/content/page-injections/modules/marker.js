@@ -9,7 +9,7 @@ export default function() {
 	return new _MODULE({
 		events: {
 			ENV: {
-				'set:entry': 'updateID',
+				'set:entries': 'updateID',
 				'pressed:marker-key': 'onMarkerKey',
         'pressed:hotkey': 'onHotkey',
         'restored:range': 'recreate',
@@ -45,24 +45,29 @@ export default function() {
 		idcount: 0,
 		markScrollPos: -1,
 
-    updateID: function updateID() {
-      if (_STORE.locked) return;
+    updateID(entries) {
+      const l = entries.length;
+      const locked = _STORE.locked;
+      const ids = [];
 
-      const entry = _STORE.entry;
+      for (let i = 0, entry; i < l; i++) {
 
-      if (entry.idcount) {
-        this.idcount = entry.idcount;
-      } else {
-        let marks = (entry.marks || []).concat(entry.lost || []),
-            d = marks.length,
-            ids = [];
-        if (d) {
-          while (d--) {
-            ids.push(marks[d].id);
+        entry = entries[i];
+
+        if (!locked && entry.idcount) {
+          return this.idcount = entry.idcount;
+        } else {
+          let marks = (entry.marks || []).concat(entry.lost || []),
+              d = marks.length;
+
+          if (d) {
+            while (d--) {
+              ids.push(marks[d].id);
+            }
           }
-					this.idcount = Math.max.apply(null, ids);
         }
       }
+      this.idcount = Math.max.apply(null, ids);
     },
 		mark(key, data) {
 			this.undone.length = 0;

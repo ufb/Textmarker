@@ -161,13 +161,15 @@ export default function() {
       }
     },
     update(entries, force) {
-      let entry = Array.isArray(entries) ? entries[0] : entries;
+      force = force === true ? true : false;
+      entries = Array.isArray(entries) ? entries : [entries];
+      let entry = entries[0];
 
       if (force || entry.url.split('#')[0] === this.url) {
         if (!_STORE.locked) _STORE.name = entry.name;
         _STORE.isNew = false;
         _STORE.entry = entry;
-        this.emit('set:entry');
+        if (force) this.emit('set:entries', entries);
       }
     },
     onHotkey(key) {
