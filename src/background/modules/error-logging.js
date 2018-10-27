@@ -11,6 +11,8 @@ new _MODULE({
       'failed:update-entry': 'log',
       'failed:delete-entry': 'log',
       'failed:restoration': 'onFailedRestoration',
+      'warn:mixed-entry-types': 'onMixedEntryTypes',
+      'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries',
       'failed:pbm': 'onFailedPBM',
       'failed:open-tab': 'onOpenTabFailure',
       'error:import': 'log',
@@ -30,6 +32,12 @@ new _MODULE({
   },
   clear() {
     _STORAGE.set('log', { clear: true }).then(() => this.emit('updated:logs'));
+  },
+  onMixedEntryTypes() {
+    this.log('note_restoration_warning_1');
+  },
+  onMultipleUnlockedEntries() {
+    this.log('note_restoration_warning_2');
   },
   onFailedRestoration() {
     this.log('note_restoration_failure');

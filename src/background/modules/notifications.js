@@ -17,7 +17,9 @@ export default function() {
         'failed:import': 'onFailedImport',
         'error:import': 'onImportError',
         'imported:storage': 'onImportSuccess',
-        'error': 'onError'
+        'error': 'onError',
+        'warn:mixed-entry-types': 'onMixedEntryTypes',
+        'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries'
       }
     },
 
@@ -89,6 +91,22 @@ export default function() {
         settings => settings.misc.changedNote,
         browser.i18n.getMessage('note_updated_entry'),
         'success'
+      );
+    },
+
+    onMixedEntryTypes() {
+      this.notify(
+        settings => settings.misc.failureNote,
+        browser.i18n.getMessage('note_restoration_warning_1'),
+        'warning'
+      );
+    },
+
+    onMultipleUnlockedEntries() {
+      this.notify(
+        settings => settings.misc.failureNote,
+        browser.i18n.getMessage('note_restoration_warning_2'),
+        'warning'
       );
     },
 
