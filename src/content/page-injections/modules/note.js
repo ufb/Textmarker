@@ -100,7 +100,7 @@ export default function(mark) {
     },
     update(el) {
       this.mark.keyData.note.text = el.value;
-      this.emit('updated:note');
+      this.emit('updated:note', this.mark.id);
       this.recentlyUpdated = false;
     },
     show() {
@@ -139,7 +139,7 @@ export default function(mark) {
       this.el.classList.add('tmnote--' + color);
       this.mark.keyData.note.color = color;
       this.togglePalette();
-      this.emit('changed:note-color');
+      this.emit('changed:note-color', this.mark.id);
     },
     addMarkListeners() {
       _STORE.get('noteonclick').then(noteonclick => {
