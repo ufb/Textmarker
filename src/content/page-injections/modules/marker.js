@@ -19,9 +19,9 @@ export default function() {
         'ctx:d': 'remove',
         'ctx:m': 'onMarkerKey',
         'ctx:n': 'addNote',
-        'updated:note': 'autosave',
-        'removed:note': 'autosave',
-				'changed:note-color': 'autosave',
+        'updated:note': 'saveNote',
+        'removed:note': 'saveNote',
+				'changed:note-color': 'saveNote',
 				'sidebar:highlight': 'onMarkerKey',
         'sidebar:delete-highlight': 'remove',
         'sidebar:bookmark': 'setBookmark',
@@ -242,6 +242,9 @@ export default function() {
     addNote(id) {
       this.emit('add:note', this.findMark(id));
     },
+    saveNote(id) {
+      this.emit('update:entry?', this.retrieveEntry(this.getById(id)));
+    },
     gotoMark(mark) {
       const markElements = this.visuallyOrderedMarks;
       let el, pos;
@@ -406,10 +409,10 @@ export default function() {
 			}
 			return this;
 		},
-		retrieveEntry() {
+		retrieveEntry(mark) {
       let entry = _STORE.entry || {};
 
-      entry.marks = this.collectMarks();
+      entry.marks = mark ? [mark.keyData] : this.collectMarks();
 			entry.last = new Date().getTime();
       entry.bookmarked = !!this.bookmark;
       entry.title = window.document.title;
