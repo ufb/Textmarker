@@ -542,7 +542,7 @@ function _default() {
       name = name.substring(0, this.maxChars - 1);
 
       _storage.default.get('history').then(function (history) {
-        var counter = _this2.getDoubleNameCount(history);
+        var counter = _this2.getDoubleNameCount(history, name);
 
         if (counter) name += ' (' + (counter + 1) + ')';
         entry.name = name;
@@ -552,7 +552,7 @@ function _default() {
         return _this2.emit('error', 'error_naming');
       });
     },
-    getDoubleNameCount: function getDoubleNameCount(history) {
+    getDoubleNameCount: function getDoubleNameCount(history, name) {
       var existingNames = Object.keys(history.entries),
           l = existingNames.length,
           counter = 0,
