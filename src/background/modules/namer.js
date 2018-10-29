@@ -24,14 +24,14 @@ export default function() {
       name = name.substring(0, this.maxChars - 1);
 
       _STORAGE.get('history').then(history => {
-        let counter = this.getDoubleNameCount(history);
+        let counter = this.getDoubleNameCount(history, name);
         if (counter) name += ' (' + (counter + 1) + ')';
         entry.name = name;
         this.emit('named:entry', entry);
       })
       .catch(() => this.emit('error', 'error_naming'));
     },
-    getDoubleNameCount(history) {
+    getDoubleNameCount(history, name) {
       let existingNames = Object.keys(history.entries),
           l = existingNames.length,
           counter = 0,
