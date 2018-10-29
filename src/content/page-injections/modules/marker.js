@@ -258,7 +258,7 @@ export default function() {
         el = markElements[pos];
       }
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-			el.click();
+			if (!mark) el.click();
     },
 		gotoNextMark(dir) {
 			const l = this.visuallyOrderedMarks.length;

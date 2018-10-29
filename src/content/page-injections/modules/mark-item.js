@@ -162,7 +162,6 @@ export default class _MARK {
 	}
 	createWrappers(style, number) {
 		let wrappers = [],
-        hasNote = this.keyData.note,
         i = 0,
         wrapper;
 
@@ -171,7 +170,6 @@ export default class _MARK {
       wrapper.classList.add('textmarker-highlight');
 			wrapper.setAttribute('style', style.replace(/;/g, '!important;'));
 			wrapper.setAttribute('data-tm-id', this.id + '_' + i);
-      if (hasNote) wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note'));
       //wrapper.setAttribute('contextmenu', 'textmarker-ctm');
 			wrappers.push(wrapper);
 		}

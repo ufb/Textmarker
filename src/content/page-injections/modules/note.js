@@ -7,6 +7,9 @@ export default function(mark) {
 
   return new _DOMMODULE({
 		events: {
+      ENV: {
+        'updated:misc-settings': 'addMarkListeners'
+      },
       DOM: {
         click: {
           'tmnotedelete': '_delete',
@@ -125,6 +128,10 @@ export default function(mark) {
       BODY.removeChild(this.el);
       this.visible = false;
     },
+    toggle() {
+      if (this.visible) this.hide();
+      else this.show();
+    },
     togglePalette() {
       if (this.settingsMode) {
         this.el.removeChild(this.palette);
@@ -141,15 +148,20 @@ export default function(mark) {
       this.togglePalette();
       this.emit('changed:note-color', this.mark.id);
     },
+
     addMarkListeners() {
       _STORE.get('noteonclick').then(noteonclick => {
         if (noteonclick) {
-          const handler = this.markClickHandler = () => this.show();
+          if (!!this.markClickHandler) return;
+
+          const handler = this.markClickHandler = () => this.toggle();
 
           for (let wrapper of this.mark.wrappers) {
             wrapper.addEventListener('click', handler, false);
             wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note'));
           }
+        } else {
+          this.removeMarkListeners();
         }
       });
     },
