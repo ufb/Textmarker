@@ -231,9 +231,16 @@ new _MODULE({
     _STORAGE.update('history', history => {
       let name = entry.name,
           currentEntry = history.entries[name],
-          lost = currentEntry.lost;
+          lost = currentEntry.lost,
+          receivedCompleteEntry = !!entry.url;
 
-      history.entries[name] = entry;
+      if (receivedCompleteEntry) {
+        history.entries[name] = entry;
+      } else {
+        for (let e in entry) {
+          history.entries[name][e] = entry[e];
+        }
+      }
       history.entries[name].lost = lost || [];
 
       return history;
