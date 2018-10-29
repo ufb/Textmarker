@@ -243,7 +243,9 @@ export default function() {
       this.emit('add:note', this.findMark(id));
     },
     saveNote(id) {
-      this.emit('update:entry?', this.retrieveEntry(this.getById(id)));
+      const mark = this.getById(id).keyData;
+      const entry = { marks: [mark], name: mark.text.trim() };
+      this.emit('update:entry?', entry);
     },
     gotoMark(mark) {
       const markElements = this.visuallyOrderedMarks;
@@ -409,10 +411,10 @@ export default function() {
 			}
 			return this;
 		},
-		retrieveEntry(mark) {
+		retrieveEntry() {
       let entry = _STORE.entry || {};
 
-      entry.marks = mark ? [mark.keyData] : this.collectMarks();
+      entry.marks = this.collectMarks();
 			entry.last = new Date().getTime();
       entry.bookmarked = !!this.bookmark;
       entry.title = window.document.title;
