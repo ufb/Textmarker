@@ -181,7 +181,7 @@ export default function() {
       if (this.active && !this.initialized && !document.querySelector('[data-tm-id]')) {
         this.initialized = true;
 
-        if (recentlyOpenedEntry.url.split('#')[0] === this.url) {
+        if (recentlyOpenedEntry && recentlyOpenedEntry.url.split('#')[0] === this.url) {
           _STORE.name = recentlyOpenedEntry.name;
         }
         /*if (_READER)
