@@ -207,7 +207,6 @@ export default function() {
           nonLockedEntries++;
         }
       }
-
       if (lockedEntriesExist && nonLockedEntries) {
         this.emit('warn:mixed-entry-types');
       }
@@ -218,6 +217,8 @@ export default function() {
       if (lockedEntries.length) {
         _STORE.locked = true;
         entries = lockedEntries.sort((a, b) => (new Date(a.last)) - (new Date(b.last)));
+      } else {
+        _STORE.locked = false;
       }
 
       return entries;
