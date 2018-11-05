@@ -333,12 +333,7 @@ export default function() {
 			return mark;
 		},
     sortById() {
-      this.done.sort((mark1, mark2) => {
-        const id1 = mark1.id;
-        const id2 = mark2.id;
-        if (id1 === id2) return 0;
-        return id1 < id2 ? -1 : 1;
-      });
+      this.done.sort((mark1, mark2) => mark1.id - mark2.id);
     },
 		orderMarksVisually() {
 			this.visuallyOrderedMarks = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id$="_0"]')).sort((m1, m2) => {
