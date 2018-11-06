@@ -180,19 +180,23 @@ class Restorer extends _MODULE {
     let positions = this.allPossibleStartPositions,
         p = positions.length,
         postponed = [],
-        pos1, pos2, i, m1, m2, id;
+        pos1, pos2, i, m1, m2, id1, id2, id;
 
     if (p > 1) {
       while (p-- > 1) {
         pos1 = positions[p - 1];
         pos2 = positions[p];
+        m1 = pos1[2];
+        m2 = pos2[2];
+        id1 = m1.id;
+        id2 = m2.id;
+
+        if (id1 === id2) continue;
 
         if (pos1[1] > pos2[0] && pos1[0] < pos2[1]) {
-          m1 = pos1[2];
-          m2 = pos2[2];
 
-          if (m1.id < m2.id) {
-            id = m2.id;
+          if (id1 < id2) {
+            id = id2;
 
             if (!postponed.includes(id)) {
               this.postpone(m2);
@@ -200,7 +204,7 @@ class Restorer extends _MODULE {
             }
           }
           else {
-            id = m1.id;
+            id = id1;
 
             if (!postponed.includes(id)) {
               this.postpone(m1);
