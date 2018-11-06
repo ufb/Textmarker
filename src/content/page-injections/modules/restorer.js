@@ -66,6 +66,7 @@ class Restorer extends _MODULE {
       trimmedText: trimmedText,
       trimmedTextLength: trimmedText.length,
       possiblePositions: [],
+      possibleEndPositions: [],
       possibleStartNodes: [],
       possibleEnds: {},
       possibleFocusOffsets: []
@@ -133,24 +134,34 @@ class Restorer extends _MODULE {
         continue;
       }
 
-      trimmedText = markTemp.trimmedText;
-      trimmedTextLength = markTemp.trimmedTextLength;
+      if (markTemp.possiblePositions.length) {
 
-      while (p !== -1) {
-        if (p === undefined) p = -1;
-        p = trimmedSelectionText.indexOf(trimmedText, p + 1);
-        endPosition = p + trimmedTextLength;
-        markTemp.possiblePositions.push(p);
-        allPossibleStartPositions.push([p, endPosition, mark]);
-        endPositions.push(endPosition);
+        allPossibleStartPositions = allPossibleStartPositions.concat(markTemp.possiblePositions);
+        endPositions = endPositions.concat(markTemp.possibleEndPositions);
+        
+      } else {
+
+        trimmedText = markTemp.trimmedText;
+        trimmedTextLength = markTemp.trimmedTextLength;
+
+        while (p !== -1) {
+          if (p === undefined) p = -1;
+          p = trimmedSelectionText.indexOf(trimmedText, p + 1);
+          endPosition = p + trimmedTextLength;
+          markTemp.possiblePositions.push([p, endPosition, mark]);
+          markTemp.possibleEndPositions.push(endPosition);
+          allPossibleStartPositions.push([p, endPosition, mark]);
+          endPositions.push(endPosition);
+        }
+
+        markTemp.possiblePositions.pop();
+        allPossibleStartPositions.pop();
+        endPositions.pop();
+
+        if (!markTemp.possiblePositions.length) {
+          this.lost.push(mark);
+        }
       }
-
-      markTemp.possiblePositions.pop();
-      allPossibleStartPositions.pop();
-      endPositions.pop();
-
-      if (!markTemp.possiblePositions.length)
-        this.lost.push(mark);
     }
     this.sortPossibleStartPositions(allPossibleStartPositions);
     this.maxPosition = Math.max.apply(null, endPositions);
@@ -493,7 +504,9 @@ class Restorer extends _MODULE {
   setBodySelection(el) {
     let selection = this.selection = new _SELECTION(el);
 
-    this.trimmedSelectionText = this.squeeze(selection.text);
+    if (this.phase === 1) {
+      this.trimmedSelectionText = this.squeeze(selection.text);
+    }
 
     this.bodyTextNodes = selection.nodes;
     this.range = selection.range;
