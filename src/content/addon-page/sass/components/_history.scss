@@ -80,9 +80,6 @@
     color: $color-text--disabled;
 
     .tag {
-      @include icon('folder', 0 4px);
-      padding-left: 17px;
-      background-size: 12px;
       margin: 3px 0;
       display: inline-block;
     }
