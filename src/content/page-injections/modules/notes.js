@@ -24,19 +24,20 @@ export default function() {
         this.updateTransp();
     },
     add(mark) {
+      const note = this.notes[mark.id];
+      if (note) return note;
+      this.emit('added:note');
       return this.notes[mark.id] = new _NOTE(mark);
     },
     restore(marks) {
       for (let mark of marks) {
         if (mark.keyData.note) {
           this.add(mark);
-          this.emit('added:note');
         }
       }
     },
     addAndShow(mark) {
       this.add(mark).show();
-      this.emit('added:note');
     },
     removeNoteStorage(id) {
       delete this.notes[id];
