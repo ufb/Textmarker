@@ -375,6 +375,7 @@
 "ctx_db":{"message":"Lesezeichen löschen"},
 "ctx_w":{"message":"Wort nachschlagen"},
 "ctx_n":{"message":"Notiz hinzufügen"},
+"ctx_sb":{"message":"Sidebar öffnen"},
 "detail_tag":{"message":"Tag"},
 "detail_notag":{"message":"Kein Tag zugeordnet"},
 "detail_meta":{"message":"Metadaten"},

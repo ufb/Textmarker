@@ -46,6 +46,9 @@ new _MODULE({
       if (!settings.shortcuts.d[0]) {
         settings.shortcuts.d[0] = defaultSettings.shortcuts.d[0];
       }
+      if (!settings.shortcuts.sb) {
+        settings.shortcuts.sb = defaultSettings.shortcuts.sb;
+      }
       if (!settings.misc.tmuipos) {
         settings.misc.tmuipos = defaultSettings.misc.tmuipos;
       }

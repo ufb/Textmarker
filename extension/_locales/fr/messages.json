@@ -375,6 +375,7 @@
 "ctx_db":{"message":"Supprimer le signet"},
 "ctx_w":{"message":"Rechercher le mot"},
 "ctx_n":{"message":"Joindre une note"},
+"ctx_sb":{"message":""},
 "detail_tag":{"message":"Étiquette "},
 "detail_notag":{"message":"pas d’étiquette attribuée"},
 "detail_meta":{"message":"Métadonnées"},
