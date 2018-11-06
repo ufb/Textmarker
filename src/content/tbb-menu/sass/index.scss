@@ -1,5 +1,6 @@
 @import '../../_shared/sass/vars';
 @import '../../_shared/sass/reset';
+@import '../../_shared/sass/icons';
 
 body {
 	width: 185px;
@@ -11,7 +12,8 @@ ul {
 	padding: 5px 0;
 }
 li {
-	padding: 3px 10px;
+	padding: 5px 10px 5px 35px;
+  background-position: 8px 5px !important;
 }
 li:hover {
 	background: transparentize($color-bg--turquoise, .9);
@@ -24,4 +26,29 @@ li:hover {
 }
 .partingline:hover {
   background: $color-border--light;
+}
+
+#news {
+  @include icon('forklift');
+}
+#help {
+  @include icon('book');
+}
+#settings {
+  @include icon('tools');
+}
+#history {
+  @include icon('clock');
+}
+#sync {
+  @include icon('sync2');
+}
+#export {
+  @include icon('export');
+}
+#contact {
+  @include icon('ghost');
+}
+#logs {
+  @include icon('dna');
 }
