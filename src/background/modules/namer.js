@@ -1,5 +1,6 @@
 import _STORAGE from './../storage'
 import { _MODULE } from './../utils'
+import _GLOBAL_SETTINGS from './../../data/global-settings'
 
 export default function() {
   return new _MODULE({
@@ -8,7 +9,6 @@ export default function() {
         'granted:save-entry': 'name'
       }
     },
-    maxChars: 70,
 
     name(entry) {
       if (entry.name) return this.adjustName(entry.name, entry);
@@ -21,7 +21,7 @@ export default function() {
              method === 'title' ? entry.title :
              method === 'date' ? (new Date(entry.first).toLocaleString()) : '';
 
-      name = name.substring(0, this.maxChars - 1);
+      name = name.substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1);
 
       _STORAGE.get('history').then(history => {
         let counter = this.getDoubleNameCount(history, name);
