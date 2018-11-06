@@ -200,7 +200,7 @@ export default function() {
             while(b--) {
                 buttons[b].setAttribute('data-name', name);
             }
-            nameField.innerText = name;
+            nameField.appendChild(document.createTextNode(name));
             nameField.setAttribute('data-url', entry.url);
             nameField.setAttribute('data-name', name);
             input.className = 'entry-cb';
