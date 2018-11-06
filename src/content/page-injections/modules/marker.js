@@ -243,6 +243,8 @@ export default function() {
       this.emit('add:note', this.findMark(id));
     },
     saveNote(id) {
+      if (!_STORE.locked) return this.autosave();
+
       const mark = this.getById(id).keyData;
       const entry = { marks: [mark], name: mark.text.trim() };
       this.emit('update:entry?', entry);
