@@ -376,6 +376,7 @@
 "ctx_db":{"message":"Delete Bookmark"},
 "ctx_w":{"message":"Look up selected word"},
 "ctx_n":{"message":"Add note"},
+"ctx_sb":{"message":"Open sidebar"},
 "detail_tag":{"message":"Tag"},
 "detail_notag":{"message":"No tag assigned"},
 "detail_meta":{"message":"Meta Data"},

@@ -16,7 +16,8 @@ export default function() {
       d: { contexts: ['frame', 'link', 'page'] },
       b: { contexts: ['frame', 'link', 'page'] },
       '-b': { contexts: ['frame', 'link', 'page'] },
-      n: { contexts: ['frame', 'link', 'page'] }
+      n: { contexts: ['frame', 'link', 'page'] },
+      sb: { contexts: ['all', 'tab'] }
     },
     created: [],
 
@@ -65,6 +66,7 @@ export default function() {
     onClick(infos, tab) {
       const id = infos.menuItemId;
       if (id === 'w') this.emit('lookup:word', infos.selectionText);
+      else if (id === 'sb') browser.sidebarAction.open();
       else this.emit('ctx:' + id, null, null, { tab: tab.id });
     }
   });
