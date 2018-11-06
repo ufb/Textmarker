@@ -1,4 +1,5 @@
 import { _MODULE } from './../../_shared/utils'
+import _GLOBAL_SETTINGS from './../../../data/global-settings'
 import _STORE from './../_store'
 import _MARK from './mark-item'
 import _BOOKMARK from './bookmark'
@@ -231,7 +232,7 @@ export default function() {
 
       if (_STORE.locked) {
         const mark = this.done[this.done.length - 1];
-        if (_STORE.name === mark.keyData.text.trim()) {
+        if (_STORE.name === mark.keyData.text.trim().substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1)) {
           this.gotoMark(mark);
         }
       } else {
@@ -246,7 +247,7 @@ export default function() {
       if (!_STORE.locked) return this.autosave();
 
       const mark = this.getById(id).keyData;
-      const entry = { marks: [mark], name: mark.text.trim() };
+      const entry = { marks: [mark], name: mark.text.trim().substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1) };
       this.emit('update:entry?', entry);
     },
     gotoMark(mark) {
@@ -425,7 +426,9 @@ export default function() {
         entry.locked = _STORE.locked;
       }
 
-      entry.name = _STORE.locked ? entry.marks[0].text.trim() : _STORE.isNew ? _STORE.name : entry.name;
+      entry.name = _STORE.locked ?
+        entry.marks[0].text.trim().substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1) :
+        _STORE.isNew ? _STORE.name : entry.name;
 
 			return entry;
 		},
