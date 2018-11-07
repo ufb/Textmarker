@@ -16,8 +16,7 @@ export default function() {
         'toggle:notes': 'toggleAll',
         'sidebar:toggle-notes': 'toggleAll',
         'updated:misc-settings': 'updateTransp',
-        'start:drag': 'startDraggingNote',
-        'stop:drag': 'stopDraggingNote'
+        'start:drag': 'startDraggingNote'
       }
     },
 
@@ -89,7 +88,7 @@ export default function() {
       DOC.removeEventListener('touchmove', this.dragHandler, false);
       DOC.removeEventListener('touchend', this.dragStopHandler, false);
 
-      this.emit('dragstop: note', note, e);
+      this.emit('dragstop:note', note, e);
     },
     emitDragEvent(note, e) {
       e.preventDefault();
