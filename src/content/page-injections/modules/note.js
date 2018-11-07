@@ -10,7 +10,7 @@ export default function(mark) {
       ENV: {
         'updated:misc-settings': 'addMarkListeners',
         'drag:note': 'onDrag',
-        'dragstop: note': 'onDragEnd'
+        'dragstop:note': 'onDragEnd'
       },
       DOM: {
         click: {
@@ -45,7 +45,6 @@ export default function(mark) {
     dragDY: 0,
 
     autoinit() {
-      this.pos = this.mark.keyData.note.pos || this.pos;
       this.adjustNoteDataObject();
       this.createNoteElement();
       this.addListeners();
@@ -59,6 +58,8 @@ export default function(mark) {
       }
       else if (!noteData) {
         this.mark.keyData.note = { text: noteData, color: _STORE.noteColor };
+      } else {
+        this.pos = this.mark.keyData.note.pos || this.pos;
       }
     },
     createNoteElement() {
@@ -125,11 +126,13 @@ export default function(mark) {
       const innerWindowWidth = window.innerWidth;
 
       let pos, left, top;
+
       if (this.pos.l !== null) {
         pos = this.pos;
         top = pos.t;
       } else {
         pos = this.getPosition();
+
         left = this.pos.l = pos.l;
         top = this.pos.t = pos.t + pos.offset;
       }
@@ -138,7 +141,6 @@ export default function(mark) {
       if (left + 340 > innerWindowWidth) {
         left = this.pos.l = innerWindowWidth - 340;
       }
-      console.log(left, top);
       BODY.appendChild(el);
       el.setAttribute('style', 'display:block;top:' + top + 'px;left:' + left + 'px;');
       this.visible = true;
@@ -211,11 +213,6 @@ export default function(mark) {
       this.dragDY = e.pageY - this.pos.t;
       this.emit('start:drag', this.mark.id);
     },
-    onDragEnd() {
-      this.emit('stop:drag');
-      this.mark.keyData.note.pos = this.pos;
-      this.emit('changed:note-pos', this.mark.id);
-    },
     onDrag(note, e) {
       if (note === this.mark.id) {
         const el = this.el;
@@ -224,6 +221,10 @@ export default function(mark) {
         el.style.left = left + 'px';
         el.style.top = top + 'px';
       }
+    },
+    onDragEnd() {console.log('end');
+      this.mark.keyData.note.pos = this.pos;
+      this.emit('changed:note-pos', this.mark.id);
     }
 	});
 }
