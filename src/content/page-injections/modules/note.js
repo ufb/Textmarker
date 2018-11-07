@@ -8,7 +8,9 @@ export default function(mark) {
   return new _DOMMODULE({
 		events: {
       ENV: {
-        'updated:misc-settings': 'addMarkListeners'
+        'updated:misc-settings': 'addMarkListeners',
+        'drag:note': 'onDrag',
+        'dragstop: note': 'onDragEnd'
       },
       DOM: {
         click: {
@@ -20,6 +22,12 @@ export default function(mark) {
         },
         keyup: {
           'textarea': 'attemptUpdate'
+        },
+        mousedown: {
+          'tmnoteheader': 'onDragStart'
+        },
+        touchstart: {
+          'tmnoteheader': 'onDragStart'
         }
       }
 		},
@@ -32,8 +40,12 @@ export default function(mark) {
     visible: false,
     recentlyUpdated: false,
     settingsMode: false,
+    pos: { l: null, t: null },
+    dragDX: 0,
+    dragDY: 0,
 
     autoinit() {
+      this.pos = this.mark.keyData.note.pos || this.pos;
       this.adjustNoteDataObject();
       this.createNoteElement();
       this.addListeners();
@@ -51,6 +63,7 @@ export default function(mark) {
     },
     createNoteElement() {
       const note = this.el = document.createElement('tmnote');
+      const header = this.header = document.createElement('tmnoteheader');
       const del = this.del = document.createElement('tmnotedelete');
       const min = this.min = document.createElement('tmnoteminimize');
       const gear = document.createElement('tmnotecustomize');
@@ -74,6 +87,7 @@ export default function(mark) {
       del.appendChild(delText);
       min.appendChild(minText);
       gear.appendChild(gearText);
+      note.append(header);
       note.appendChild(gear);
       note.appendChild(del);
       note.appendChild(min);
@@ -108,14 +122,25 @@ export default function(mark) {
     },
     show() {
       const el = this.el;
-      const pos = this.getPosition();
       const innerWindowWidth = window.innerWidth;
-      let left = pos.left;
-      if (left + 340 > innerWindowWidth) {
-        left = innerWindowWidth - 340;
+
+      let pos, left, top;
+      if (this.pos.l !== null) {
+        pos = this.pos;
+        top = pos.t;
+      } else {
+        pos = this.getPosition();
+        left = this.pos.l = pos.l;
+        top = this.pos.t = pos.t + pos.offset;
       }
+      left = this.pos.l = pos.l;
+
+      if (left + 340 > innerWindowWidth) {
+        left = this.pos.l = innerWindowWidth - 340;
+      }
+      console.log(left, top);
       BODY.appendChild(el);
-      el.setAttribute('style', 'display:block;top:' + (pos.top + pos.offset) + 'px;left:' + left + 'px;');
+      el.setAttribute('style', 'display:block;top:' + top + 'px;left:' + left + 'px;');
       this.visible = true;
     },
     bringUpFront() {
@@ -175,10 +200,30 @@ export default function(mark) {
     getPosition() {
       const rect = this.mark.wrappers[this.mark.wrappers.length - 1].getBoundingClientRect();
       return {
-        top: rect.top + window.pageYOffset - BODY.clientTop,
-        left: rect.left + window.pageXOffset - BODY.clientLeft,
+        t: rect.top + window.pageYOffset - BODY.clientTop,
+        l: rect.left + window.pageXOffset - BODY.clientLeft,
         offset: rect.height
       };
+    },
+    onDragStart(e, el) {
+      e.preventDefault();
+      this.dragDX = e.pageX - this.pos.l;
+      this.dragDY = e.pageY - this.pos.t;
+      this.emit('start:drag', this.mark.id);
+    },
+    onDragEnd() {
+      this.emit('stop:drag');
+      this.mark.keyData.note.pos = this.pos;
+      this.emit('changed:note-pos', this.mark.id);
+    },
+    onDrag(note, e) {
+      if (note === this.mark.id) {
+        const el = this.el;
+        let left = this.pos.l = e.pageX - this.dragDX;
+        let top = this.pos.t = e.pageY - this.dragDY;
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+      }
     }
 	});
 }

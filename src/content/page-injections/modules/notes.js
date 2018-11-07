@@ -15,11 +15,17 @@ export default function() {
         'removed:mark': 'removeNote',
         'toggle:notes': 'toggleAll',
         'sidebar:toggle-notes': 'toggleAll',
-        'updated:misc-settings': 'updateTransp'
+        'updated:misc-settings': 'updateTransp',
+        'start:drag': 'startDraggingNote',
+        'stop:drag': 'stopDraggingNote'
       }
     },
+
     notes: {},
     toggle: null,
+    dragHandler: null,
+    dragStopHandler: null,
+
     autoinit() {
         this.updateTransp();
     },
@@ -68,6 +74,26 @@ export default function() {
     },
     isEmpty(obj) {
       return !Object.keys(obj).length;
+    },
+    startDraggingNote(note) {
+      const dragHandler = this.dragHandler = (e) => this.emitDragEvent(note, e);
+      const dragStopHandler = this.dragStopHandler = (e) => this.stopDraggingNote(note, e);
+      DOC.addEventListener('mousemove', dragHandler, false);
+      DOC.addEventListener('mouseup', dragStopHandler, false);
+      DOC.addEventListener('touchmove', dragHandler, false);
+      DOC.addEventListener('touchend', dragStopHandler, false);
+    },
+    stopDraggingNote(note, e) {
+      DOC.removeEventListener('mousemove', this.dragHandler, false);
+      DOC.removeEventListener('mouseup', this.dragStopHandler, false);
+      DOC.removeEventListener('touchmove', this.dragHandler, false);
+      DOC.removeEventListener('touchend', this.dragStopHandler, false);
+
+      this.emit('dragstop: note', note, e);
+    },
+    emitDragEvent(note, e) {
+      e.preventDefault();
+      this.emit('drag:note', note, e);
     }
   });
 }
