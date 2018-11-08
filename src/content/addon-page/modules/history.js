@@ -20,7 +20,8 @@ export default function() {
           '.name': 'open',
           '.view': 'view',
           '#search-toggle': 'toggleSearch',
-          '#remove-filter': 'removeFilter'
+          '#remove-filter': 'removeFilter',
+          '.tags__item': 'filter'
         },
         change: {
           '.checkmark-all': 'checkmarkAll',
@@ -56,6 +57,10 @@ export default function() {
       if (tab !== 'history') return;
       if (!this.initialized) this.render();
       this.initialized = true;
+    },
+    resume() {
+      this.filterOptionsSet = false;
+      this.tags = [];
     },
 
     ['delete'](names) {
@@ -122,14 +127,17 @@ export default function() {
     view(e, el) {
       this.emit('view:entry', el.getAttribute('data-name'));
     },
-    tag(names, tag) {
+    tag(names, tag, force) {
+      if (!tag && !force) return;
       const o = { sync: [], local: [] };
       names.forEach(name => {
         if (this.origEntries[name].synced) o.sync.push(name);
         else o.local.push(name);
       });
       this.emit('tag:entries', o, tag);
-      this.addFilterOpt(tag, tag);
+    },
+    removeTags(names) {
+      this.tag(names, '', true);
     },
     processSelection() {
       let checked = document.querySelectorAll('.entry-cb:checked'),
@@ -161,7 +169,7 @@ export default function() {
           names = searched ? this.searched : this.names,
           l = searched ? names.length : this.page * this.perPage,
           i = searched ? 0 : l - this.perPage,
-          clone, entry, name, nameField, input, label, infoButton, details, buttons, view, tag, locked, lockedEl, tagEl, b, j;
+          clone, entry, name, nameField, input, label, infoButton, details, buttons, view, tags, locked, lockedEl, tagEl, b, j;
 
       if (this.filtered) {
         names = names.filter(n => !!entries[n]);
@@ -180,7 +188,7 @@ export default function() {
           name = names[i];
           entry = entries[name];
           if (entry) {
-            tag = entry.tag || '';
+            tags = entry.tag ? entry.tag.split(' ') : null;
             locked = entry.locked;
             clone = template.cloneNode(true);
             container.appendChild(clone);
@@ -193,7 +201,7 @@ export default function() {
             details = clone.getElementsByClassName('details')[0];
             buttons = clone.getElementsByClassName('quick-action');
             view = clone.getElementsByClassName('view')[0];
-            tagEl = clone.getElementsByClassName('tag')[0];
+            tagEl = clone.getElementsByClassName('tags')[0];
             lockedEl = clone.getElementsByClassName('locked')[0];
             b = buttons.length;
 
@@ -211,7 +219,17 @@ export default function() {
 
             if (locked) lockedEl.classList.remove('u-display--none');
 
-            tagEl.innerText = tag ? tag : browser.i18n.getMessage('detail_notag');
+            if (tags) {
+              tags.forEach(tag => {
+                let el = document.createElement('span');
+                tagEl.appendChild(el);
+                el.className = 'tags__item';
+                el.appendChild(document.createTextNode(tag));
+                el.setAttribute('title', browser.i18n.getMessage('title_filter'));
+              });
+            } else {
+              tagEl.innerText = browser.i18n.getMessage('detail_notag');
+            }
 
             clone.getElementsByClassName('created')[0].innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
             clone.getElementsByClassName('last')[0].innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
@@ -260,18 +278,30 @@ export default function() {
     setFilterOptions() {
       if (this.filterOptionsSet) return this;
 
-      const tags = [];
+      const select = document.getElementById('filter-entries');
+      const placeholderOption = document.createElement('option');
+      const allTags = [];
       const entries = this.origEntries;
-      let tag;
+      let tags;
+
+      select.innerText = '';
+      select.appendChild(placeholderOption);
+      placeholderOption.setAttribute('selected', '');
+      placeholderOption.setAttribute('hidden', '');
+      placeholderOption.innerText = browser.i18n.getMessage('t5124');
 
       for (let name in entries) {
-        tag = entries[name].tag || null;
-        if (tag && !tags.includes(tag)) tags.push(tag);
+        tags = entries[name].tag;
+        tags = tags ? tags.split(' ') : [];
+        tags.forEach(tag => {
+          if (!allTags.includes(tag)) allTags.push(tag);
+        });
       }
-      if (!tags.length && !document.getElementById('filter-opt-notag')) {
+
+      if (!allTags.length && !document.getElementById('filter-opt-notag')) {
         this.addFilterOpt('', browser.i18n.getMessage('detail_notag'), { disabled: true, id: 'filter-opt-notag' });
       } else {
-        tags.forEach(tag => this.addFilterOpt(tag, tag));
+        allTags.forEach(tag => this.addFilterOpt(tag, tag));
         if (!document.getElementById('filter-opt-tagless')) {
           this.addFilterOpt('', browser.i18n.getMessage('t5125'), { id: 'filter-opt-tagless' });
         }
@@ -479,14 +509,15 @@ export default function() {
       return this;
     },
     filter(e, el) {
-      const filter = el.value;
+      const filter = el.nodeName === 'SPAN' ? el.firstChild.data : el.value;
       const entries = this.origEntries;
       const filteredEntries = {};
-      let entry, c = 0;
+      let entry, rx, c = 0;
       el.parentNode.classList.add('active');
       for (let name in entries) {
         entry = entries[name];
-        if ((entry.tag && entry.tag === filter) || (!entry.tag && filter == '')) {
+        rx = new RegExp('^'+filter+'|\\s'+filter, 'g');
+        if ((filter && entry.tag && entry.tag.search(rx) !== -1) || (!entry.tag && filter == '')) {
           filteredEntries[name] = entry;
           c++;
         }
@@ -543,6 +574,8 @@ export default function() {
       document.querySelector('.switch--sync[data-name="' + name + '"]').classList.toggle('active');
     },
     render() {
+      this.resume();
+
       _STORE.get().then(storage => {
         let entries = this.entries = this.origEntries = storage.history.entries,
             sorted = storage.settings.history.sorted || this.sorted,
