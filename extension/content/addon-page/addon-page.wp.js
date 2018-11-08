@@ -688,9 +688,7 @@ var _default = {
       },
       _sort: function _sort(object, field) {
         return Object.keys(object).sort(function (a, b) {
-          a = new Date(object[a][field]), b = new Date(object[b][field]);
-          if (a == b) return 0;
-          return a < b ? 1 : -1;
+          return new Date(object[b][field]) - new Date(object[a][field]);
         });
       }
     },
@@ -759,7 +757,8 @@ function _default() {
           '.name': 'open',
           '.view': 'view',
           '#search-toggle': 'toggleSearch',
-          '#remove-filter': 'removeFilter'
+          '#remove-filter': 'removeFilter',
+          '.tags__item': 'filter'
         },
         change: {
           '.checkmark-all': 'checkmarkAll',
@@ -792,6 +791,10 @@ function _default() {
       if (tab !== 'history') return;
       if (!this.initialized) this.render();
       this.initialized = true;
+    },
+    resume: function resume() {
+      this.filterOptionsSet = false;
+      this.tags = [];
     }
   }, _defineProperty(_ref, 'delete', function _delete(names) {
     var confirmed = window.confirm(browser.i18n.getMessage('del_confirm'));
@@ -850,15 +853,16 @@ function _default() {
     var _this2 = this;
 
     this.getURLs(names).then(function (urls) {
-      return _this2.emit('open:entries', urls);
+      return _this2.emit('open:entries', urls, names);
     });
   }), _defineProperty(_ref, "open", function open(e, el) {
-    this.emit('open:entries', el.getAttribute('data-url'));
+    this.emit('open:entries', el.getAttribute('data-url'), el.getAttribute('data-name'));
   }), _defineProperty(_ref, "view", function view(e, el) {
     this.emit('view:entry', el.getAttribute('data-name'));
-  }), _defineProperty(_ref, "tag", function tag(names, _tag) {
+  }), _defineProperty(_ref, "tag", function tag(names, _tag, force) {
     var _this3 = this;
 
+    if (!_tag && !force) return;
     var o = {
       sync: [],
       local: []
@@ -867,7 +871,8 @@ function _default() {
       if (_this3.origEntries[name].synced) o.sync.push(name);else o.local.push(name);
     });
     this.emit('tag:entries', o, _tag);
-    this.addFilterOpt(_tag, _tag);
+  }), _defineProperty(_ref, "removeTags", function removeTags(names) {
+    this.tag(names, '', true);
   }), _defineProperty(_ref, "processSelection", function processSelection() {
     var checked = document.querySelectorAll('.entry-cb:checked'),
         i = checked.length;
@@ -908,7 +913,9 @@ function _default() {
         details,
         buttons,
         view,
-        tag,
+        tags,
+        locked,
+        lockedEl,
         tagEl,
         b,
         j;
@@ -930,7 +937,8 @@ function _default() {
         entry = entries[name];
 
         if (entry) {
-          tag = entry.tag || '';
+          tags = entry.tag ? entry.tag.split(' ') : null;
+          locked = entry.locked;
           clone = template.cloneNode(true);
           container.appendChild(clone);
           clone.id = 'entry-' + j;
@@ -942,21 +950,36 @@ function _default() {
           details = clone.getElementsByClassName('details')[0];
           buttons = clone.getElementsByClassName('quick-action');
           view = clone.getElementsByClassName('view')[0];
-          tagEl = clone.getElementsByClassName('tag')[0];
+          tagEl = clone.getElementsByClassName('tags')[0];
+          lockedEl = clone.getElementsByClassName('locked')[0];
           b = buttons.length;
 
           while (b--) {
             buttons[b].setAttribute('data-name', name);
           }
 
-          nameField.innerText = name;
+          nameField.appendChild(document.createTextNode(name));
           nameField.setAttribute('data-url', entry.url);
+          nameField.setAttribute('data-name', name);
           input.className = 'entry-cb';
           input.id = 'entry-cb-' + j;
           input.setAttribute('data-name', name);
           view.setAttribute('data-name', name);
           label.setAttribute('for', 'entry-cb-' + j);
-          tagEl.innerText = tag ? tag : browser.i18n.getMessage('detail_notag');
+          if (locked) lockedEl.classList.remove('u-display--none');
+
+          if (tags) {
+            tags.forEach(function (tag) {
+              var el = document.createElement('span');
+              tagEl.appendChild(el);
+              el.className = 'tags__item';
+              el.appendChild(document.createTextNode(tag));
+              el.setAttribute('title', browser.i18n.getMessage('title_filter'));
+            });
+          } else {
+            tagEl.innerText = browser.i18n.getMessage('detail_notag');
+          }
+
           clone.getElementsByClassName('created')[0].innerText = _this4.optimizeDateString(new Date(entry.first).toLocaleString());
           clone.getElementsByClassName('last')[0].innerText = _this4.optimizeDateString(new Date(entry.last).toLocaleString());
           clone.getElementsByClassName('count')[0].innerText = entry.marks.length; //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
@@ -1002,22 +1025,32 @@ function _default() {
     var _this6 = this;
 
     if (this.filterOptionsSet) return this;
-    var tags = [];
+    var select = document.getElementById('filter-entries');
+    var placeholderOption = document.createElement('option');
+    var allTags = [];
     var entries = this.origEntries;
-    var tag;
+    var tags;
+    select.innerText = '';
+    select.appendChild(placeholderOption);
+    placeholderOption.setAttribute('selected', '');
+    placeholderOption.setAttribute('hidden', '');
+    placeholderOption.innerText = browser.i18n.getMessage('t5124');
 
     for (var name in entries) {
-      tag = entries[name].tag || null;
-      if (tag && !tags.includes(tag)) tags.push(tag);
+      tags = entries[name].tag;
+      tags = tags ? tags.split(' ') : [];
+      tags.forEach(function (tag) {
+        if (!allTags.includes(tag)) allTags.push(tag);
+      });
     }
 
-    if (!tags.length && !document.getElementById('filter-opt-notag')) {
+    if (!allTags.length && !document.getElementById('filter-opt-notag')) {
       this.addFilterOpt('', browser.i18n.getMessage('detail_notag'), {
         disabled: true,
         id: 'filter-opt-notag'
       });
     } else {
-      tags.forEach(function (tag) {
+      allTags.forEach(function (tag) {
         return _this6.addFilterOpt(tag, tag);
       });
 
@@ -1240,17 +1273,19 @@ function _default() {
     this.sortSearchResults();
     return this;
   }), _defineProperty(_ref, "filter", function filter(e, el) {
-    var filter = el.value;
+    var filter = el.nodeName === 'SPAN' ? el.firstChild.data : el.value;
     var entries = this.origEntries;
     var filteredEntries = {};
     var entry,
+        rx,
         c = 0;
     el.parentNode.classList.add('active');
 
     for (var name in entries) {
       entry = entries[name];
+      rx = new RegExp('^' + filter + '|\\s' + filter, 'g');
 
-      if (entry.tag && entry.tag === filter || !entry.tag && filter == '') {
+      if (filter && entry.tag && entry.tag.search(rx) !== -1 || !entry.tag && filter == '') {
         filteredEntries[name] = entry;
         c++;
       }
@@ -1302,6 +1337,8 @@ function _default() {
     document.querySelector('.switch--sync[data-name="' + name + '"]').classList.toggle('active');
   }), _defineProperty(_ref, "render", function render() {
     var _this9 = this;
+
+    this.resume();
 
     _store.default.get().then(function (storage) {
       var entries = _this9.entries = _this9.origEntries = storage.history.entries,
@@ -2372,6 +2409,8 @@ var _default = {
   error_empty_local_storage_onupdate: 30,
   error_toggle_sync: 31,
   error_save_priv: 32,
+  note_restoration_warning_1: 33,
+  note_restoration_warning_2: 34,
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {

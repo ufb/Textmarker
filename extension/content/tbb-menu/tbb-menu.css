@@ -26,7 +26,8 @@ ul {
   padding: 5px 0; }
 
 li {
-  padding: 3px 10px; }
+  padding: 5px 10px 5px 35px;
+  background-position: 8px 5px !important; }
 
 li:hover {
   background: rgba(43, 165, 183, 0.1); }
@@ -39,3 +40,51 @@ li:hover {
 
 .partingline:hover {
   background: #e1e2e3; }
+
+#news {
+  background-image: url(../../icons/forklift.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#help {
+  background-image: url(../../icons/book.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#settings {
+  background-image: url(../../icons/tools.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#history {
+  background-image: url(../../icons/clock.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#sync {
+  background-image: url(../../icons/sync2.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#export {
+  background-image: url(../../icons/export.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#contact {
+  background-image: url(../../icons/ghost.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#logs {
+  background-image: url(../../icons/dna.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }

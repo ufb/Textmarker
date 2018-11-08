@@ -19,8 +19,9 @@ span.textmarker-highlight {
   background-position: -2px 0, 0 0;
   background-size: unset, 100%; }
 
-.tmnote--green tmnotepalette {
-  background: #dfd; }
+.tmnote--green tmnotepalette,
+.tmnote--green tmnoteheader {
+  background: #cfc; }
 
 .tmnote--green tmnotedelete,
 .tmnote--green tmnoteminimize,
@@ -38,7 +39,8 @@ span.textmarker-highlight {
   border-color: #dfd;
   background-image: linear-gradient(#efe, #dfd); }
 
-.tmnote--white tmnotepalette {
+.tmnote--white tmnotepalette,
+.tmnote--white tmnoteheader {
   background: #eee; }
 
 .tmnote--white tmnotedelete,
@@ -57,8 +59,9 @@ span.textmarker-highlight {
   border-color: #eee;
   background-image: linear-gradient(#fff, #eee); }
 
-.tmnote--yellow tmnotepalette {
-  background: #ffd; }
+.tmnote--yellow tmnotepalette,
+.tmnote--yellow tmnoteheader {
+  background: #ffc; }
 
 .tmnote--yellow tmnotedelete,
 .tmnote--yellow tmnoteminimize,
@@ -76,8 +79,9 @@ span.textmarker-highlight {
   border-color: #ffd;
   background-image: linear-gradient(#ffe, #ffd); }
 
-.tmnote--orange tmnotepalette {
-  background: #fec; }
+.tmnote--orange tmnotepalette,
+.tmnote--orange tmnoteheader {
+  background: #feb; }
 
 .tmnote--orange tmnotedelete,
 .tmnote--orange tmnoteminimize,
@@ -95,8 +99,9 @@ span.textmarker-highlight {
   border-color: #fec;
   background-image: linear-gradient(#fed, #fec); }
 
-.tmnote--red tmnotepalette {
-  background: #fdd; }
+.tmnote--red tmnotepalette,
+.tmnote--red tmnoteheader {
+  background: #fcc; }
 
 .tmnote--red tmnotedelete,
 .tmnote--red tmnoteminimize,
@@ -114,8 +119,9 @@ span.textmarker-highlight {
   border-color: #fdd;
   background-image: linear-gradient(#fee, #fdd); }
 
-.tmnote--purple tmnotepalette {
-  background: #edf; }
+.tmnote--purple tmnotepalette,
+.tmnote--purple tmnoteheader {
+  background: #ecf; }
 
 .tmnote--purple tmnotedelete,
 .tmnote--purple tmnoteminimize,
@@ -133,8 +139,9 @@ span.textmarker-highlight {
   border-color: #edf;
   background-image: linear-gradient(#eef, #edf); }
 
-.tmnote--blue tmnotepalette {
-  background: #cef; }
+.tmnote--blue tmnotepalette,
+.tmnote--blue tmnoteheader {
+  background: #bef; }
 
 .tmnote--blue tmnotedelete,
 .tmnote--blue tmnoteminimize,
@@ -152,8 +159,9 @@ span.textmarker-highlight {
   border-color: #cef;
   background-image: linear-gradient(#def, #cef); }
 
-.tmnote--turquoise tmnotepalette {
-  background: #c1e9f2; }
+.tmnote--turquoise tmnotepalette,
+.tmnote--turquoise tmnoteheader {
+  background: #b9e4ec; }
 
 .tmnote--turquoise tmnotedelete,
 .tmnote--turquoise tmnoteminimize,
@@ -186,13 +194,19 @@ tmnote {
   tmnote:hover {
     opacity: 1 !important; }
 
+tmnoteheader {
+  height: 22px;
+  position: relative;
+  z-index: 1;
+  display: block;
+  cursor: move; }
+
 tmnotepalette {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 1;
   width: 100%;
-  height: 26px;
   padding: 4px 0 6px;
   text-align: center;
   box-sizing: border-box;
@@ -233,18 +247,18 @@ tmnotecustomize {
     color: #37414b; }
 
 tmnotedelete {
-  top: 22px;
+  top: 44px;
   font-size: 10px;
   font-weight: bold;
   padding: 5px 6px 0 10px; }
 
 tmnoteminimize {
-  top: 44px;
+  top: 66px;
   font-size: 18px;
   padding: 0px 4px 0 10px; }
 
 tmnotecustomize {
-  top: 0;
+  top: 22px;
   font-size: 16px;
   padding: 1px 3px 2px 10px; }
 
@@ -253,7 +267,7 @@ body > tmnote > textarea[data-tm-note] {
   padding: 10px !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
   position: relative !important;
-  min-width: 300px !important;
+  width: 300px;
   min-height: 100px !important;
   font-family: Verdana, sans-serif !important;
   font-size: 12px !important;

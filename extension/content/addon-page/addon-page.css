@@ -578,8 +578,7 @@ ol {
   border-right: 0 !important; }
 
 .open {
-  display: block !important;
-  max-height: 1000px !important; }
+  display: block !important; }
 
 @media only screen and (max-width: 768px) {
   .toggle-button {
@@ -841,7 +840,7 @@ button--small, .btn--small {
   .entry .name {
     cursor: pointer;
     display: inline-block;
-    max-width: calc(100% - 180px);
+    max-width: calc(100% - 200px);
     padding-right: 3px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -862,6 +861,15 @@ button--small, .btn--small {
     opacity: .5; }
     .entry .view:hover {
       opacity: 1; }
+  .entry .locked {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: 0 3px -1px -1px;
+    background-image: url(../../icons/lock.png);
+    background-repeat: no-repeat;
+    background-position: 0 0, 0 0;
+    background-size: 12px, 100%; }
   .entry .quick-buttons {
     float: right;
     position: relative;
@@ -878,16 +886,18 @@ button--small, .btn--small {
   .entry .details {
     display: none;
     margin-left: 34px;
-    width: calc(100% - 130px);
+    width: calc(100% - 165px);
     color: #c8c8c8; }
-    .entry .details .tag {
-      background-image: url(../../icons/folder.png);
-      background-repeat: no-repeat;
-      background-position: 0 4px, 0 0;
-      background-size: unset, 100%;
-      padding-left: 17px;
-      background-size: 12px;
-      margin: 3px 0; }
+    .entry .details .tags {
+      margin: 3px 0;
+      display: inline-block; }
+      .entry .details .tags__item {
+        border: 1px solid rgba(43, 165, 183, 0.25);
+        border-radius: 2px;
+        padding: 0 2px;
+        margin-right: 5px; }
+        .entry .details .tags__item:hover {
+          background: rgba(43, 165, 183, 0.25); }
     .entry .details li {
       list-style-type: none;
       float: left;
