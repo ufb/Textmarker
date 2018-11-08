@@ -188,7 +188,8 @@ var _utils = __webpack_require__(/*! ./../_shared/utils */ "./content/_shared/ut
 var _default = new _utils._MODULE({
   events: {
     ENV: {
-      'toggled:sync': 'setAreas'
+      'toggled:sync': 'setAreas',
+      'updated:naming-settings': 'updateLockedStatus'
     }
   },
   initialized: false,
@@ -200,27 +201,40 @@ var _default = new _utils._MODULE({
   name: undefined,
   isNew: true,
   entry: null,
+  locked: false,
   tmid: '',
   noteColor: 'yellow',
-  setAreas: function setAreas() {
+  autoinit: function autoinit() {
+    this.updateLockedStatus();
+  },
+  updateLockedStatus: function updateLockedStatus() {
     var _this = this;
+
+    if (!this.isNew || document.querySelector('[data-tm-id]')) return; //show notification
+
+    this.get('naming').then(function (naming) {
+      return _this.locked = naming === 'mark';
+    });
+  },
+  setAreas: function setAreas() {
+    var _this2 = this;
 
     return browser.storage.sync.get().then(function (storage) {
       if (storage && storage.sync) {
-        _this.area_settings = storage.sync.settings ? 'sync' : 'local';
-        _this.area_history = storage.sync.history ? 'sync' : 'local';
+        _this2.area_settings = storage.sync.settings ? 'sync' : 'local';
+        _this2.area_history = storage.sync.history ? 'sync' : 'local';
       }
     });
   },
   get: function get() {
-    var _this2 = this;
+    var _this3 = this;
 
     var field = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'storage';
 
     if (this.initializing) {
       return new Promise(function (r) {
         return window.setTimeout(function () {
-          return r(_this2.get(field));
+          return r(_this3.get(field));
         }, 10);
       });
     }
@@ -232,8 +246,8 @@ var _default = new _utils._MODULE({
       this.initializing = true;
       this.initialized = true;
       return this.setAreas().then(function () {
-        _this2.initializing = false;
-        return _this2['_get_' + field]();
+        _this3.initializing = false;
+        return _this3['_get_' + field]();
       });
     }
 
@@ -689,15 +703,20 @@ function () {
       var wrappers = this.wrappers;
       n = typeof n === 'number' ? n : wrappers.length - 1;
       var firstWrapper = wrappers[0],
-          lastWrapper = wrappers[n];
+          lastWrapper = wrappers[n],
+          anchorPrev,
+          focusPrev;
       this.anchorNodePosition = this.whichChild(firstWrapper.parentNode, firstWrapper, true) - 1;
       this.focusNodePosition = this.whichChild(lastWrapper.parentNode, lastWrapper, true);
-      if (!lastWrapper.previousSibling || lastWrapper.previousSibling.nodeType === 3) this.focusNodePosition -= 1;
+      anchorPrev = firstWrapper.previousSibling;
+      focusPrev = lastWrapper.previousSibling;
+      if (anchorPrev && anchorPrev.nodeType === 1) this.anchorNodePosition += 1;
+      if (!focusPrev || focusPrev.nodeType === 3) this.focusNodePosition -= 1;
       if (this.anchorNodePosition < 0) this.anchorNodePosition = 0;
       if (this.focusNodePosition < 0) this.focusNodePosition = 0;
 
       if (includingOffsets) {
-        this.startOffset = firstWrapper.previousSibling && firstWrapper.previousSibling.data ? firstWrapper.previousSibling.data.length : 0;
+        this.startOffset = anchorPrev && anchorPrev.data ? anchorPrev.data.length : 0;
         this.endOffset = this.simple ? this.startOffset + this.keyData.text.length : this.endOffset;
       }
 
@@ -753,14 +772,15 @@ function () {
           i = 0;
 
       for (; i < c; i++) {
-        if (children[i] === child) return i;
+        if (children[i] === child) {
+          return i;
+        }
       }
     }
   }, {
     key: "createWrappers",
     value: function createWrappers(style, number) {
       var wrappers = [],
-          hasNote = this.keyData.note,
           i = 0,
           wrapper;
 
@@ -768,8 +788,7 @@ function () {
         wrapper = window.document.createElement('span');
         wrapper.classList.add('textmarker-highlight');
         wrapper.setAttribute('style', style.replace(/;/g, '!important;'));
-        wrapper.setAttribute('data-tm-id', this.id + '_' + i);
-        if (hasNote) wrapper.setAttribute('title', browser.i18n.getMessage('toggle_note')); //wrapper.setAttribute('contextmenu', 'textmarker-ctm');
+        wrapper.setAttribute('data-tm-id', this.id + '_' + i); //wrapper.setAttribute('contextmenu', 'textmarker-ctm');
 
         wrappers.push(wrapper);
       }
@@ -827,6 +846,8 @@ exports.default = _default;
 
 var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
+var _globalSettings = _interopRequireDefault(__webpack_require__(/*! ./../../../data/global-settings */ "./data/global-settings.js"));
+
 var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/page-injections/_store.js"));
 
 var _markItem = _interopRequireDefault(__webpack_require__(/*! ./mark-item */ "./content/page-injections/modules/mark-item.js"));
@@ -842,20 +863,20 @@ function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
-        'set:entry': 'updateID',
-        'unset:entry': 'resetID',
+        'set:entries': 'updateID',
         'pressed:marker-key': 'onMarkerKey',
         'pressed:hotkey': 'onHotkey',
         'restored:range': 'recreate',
-        'finished:restoration': 'onFinishedRestoration',
+        'finished:all-restorations': 'onFinishedRestoration',
         'ctx:b': 'setBookmark',
         'ctx:-b': 'removeBookmark',
         'ctx:d': 'remove',
         'ctx:m': 'onMarkerKey',
         'ctx:n': 'addNote',
-        'updated:note': 'autosave',
-        'removed:note': 'autosave',
-        'changed:note-color': 'autosave',
+        'updated:note': 'saveNote',
+        'removed:note': 'saveNote',
+        'changed:note-color': 'saveNote',
+        'changed:note-pos': 'saveNote',
         'sidebar:highlight': 'onMarkerKey',
         'sidebar:delete-highlight': 'remove',
         'sidebar:bookmark': 'setBookmark',
@@ -878,33 +899,36 @@ function _default() {
     removedBookmark: null,
     idcount: 0,
     markScrollPos: -1,
-    updateID: function updateID() {
-      var entry = _store.default.entry;
+    updateID: function updateID(entries) {
+      var l = entries.length;
+      var locked = _store.default.locked;
+      var ids = [];
 
-      if (entry.idcount) {
-        this.idcount = entry.idcount;
-      } else {
-        var marks = (entry.marks || []).concat(entry.lost || []),
-            d = marks.length,
-            ids = [];
+      for (var i = 0, entry; i < l; i++) {
+        entry = entries[i];
 
-        if (d) {
-          while (d--) {
-            ids.push(marks[d].id);
+        if (!locked && entry.idcount) {
+          return this.idcount = entry.idcount;
+        } else {
+          var marks = (entry.marks || []).concat(entry.lost || []),
+              d = marks.length;
+
+          if (d) {
+            while (d--) {
+              ids.push(marks[d].id);
+            }
           }
-
-          this.idcount = Math.max.apply(null, ids);
         }
       }
-    },
-    resetID: function resetID() {
-      this.idcount = 0;
+
+      this.idcount = Math.max.apply(null, ids);
     },
     mark: function mark(key, data) {
       this.undone.length = 0;
       return new _markItem.default(this, key, data).create();
     },
     undo: function undo(noAutosave) {
+      if (_store.default.locked) return;
       var done = this.done;
 
       if (done.length) {
@@ -918,6 +942,7 @@ function _default() {
       noAutosave || this.autosave();
     },
     redo: function redo(noAutosave) {
+      if (_store.default.locked) return;
       var undone = this.undone;
 
       if (undone.length) {
@@ -965,6 +990,7 @@ function _default() {
       return smallestID;
     },
     remove: function remove(id) {
+      if (_store.default.locked) return;
       id = id ? id : _store.default.tmid ? _store.default.tmid : '';
       if (!id) return this.undo();
       var mark = this.getById(id.split('_')[0]),
@@ -1010,33 +1036,28 @@ function _default() {
       var _this = this;
 
       var iframe = _store.default.iframe;
+      var locked = _store.default.locked;
 
       _store.default.get('naming').then(function (naming) {
-        if (_store.default.isNew && naming === 'custom') {
-          _this.request('name:entry?').then(function (granted) {
-            if (granted) {
-              var sub = iframe ? browser.i18n.getMessage('nm_message_iframe') : '';
-              _store.default.name = window.prompt(browser.i18n.getMessage('nm_message', sub));
-              if (_store.default.name) _this.retrieveEntry().then(function (entry) {
-                return _this.emit('save:entry?', entry);
-              });
-            }
-          });
-        } else {
-          if (_store.default.isNew) {
+        if (_store.default.isNew || locked) {
+          if (!locked && naming === 'custom') {
+            _this.request('name:entry?').then(function (granted) {
+              if (granted) {
+                var sub = iframe ? browser.i18n.getMessage('nm_message_iframe') : '';
+                _store.default.name = window.prompt(browser.i18n.getMessage('nm_message', sub));
+                if (_store.default.name) _this.emit('save:entry?', _this.retrieveEntry());
+              }
+            });
+          } else {
             var confirmed = true;
             if (iframe) confirmed = window.confirm(browser.i18n.getMessage('nm_message_iframe'));
 
             if (confirmed) {
-              _this.retrieveEntry().then(function (entry) {
-                return _this.emit('save:entry?', entry);
-              });
+              _this.emit('save:entry?', _this.retrieveEntry());
             }
-          } else {
-            _this.retrieveEntry().then(function (entry) {
-              return _this.emit('update:entry?', entry);
-            });
           }
+        } else {
+          _this.emit('update:entry?', _this.retrieveEntry());
         }
       });
     },
@@ -1058,11 +1079,29 @@ function _default() {
     },
     onFinishedRestoration: function onFinishedRestoration() {
       this.emit('restore:notes', this.done);
-      this.sortById();
-      this.scrollToBookmark();
+
+      if (_store.default.locked) {
+        var mark = this.done[this.done.length - 1];
+
+        if (_store.default.name === mark.keyData.text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1)) {
+          this.gotoMark(mark);
+        }
+      } else {
+        this.sortById();
+        this.scrollToBookmark();
+      }
     },
     addNote: function addNote(id) {
       this.emit('add:note', this.findMark(id));
+    },
+    saveNote: function saveNote(id) {
+      if (!_store.default.locked) return this.autosave();
+      var mark = this.getById(id).keyData;
+      var entry = {
+        marks: [mark],
+        name: mark.text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1)
+      };
+      this.emit('update:entry?', entry);
     },
     gotoMark: function gotoMark(mark) {
       var markElements = this.visuallyOrderedMarks;
@@ -1080,7 +1119,7 @@ function _default() {
         behavior: 'smooth',
         block: 'center'
       });
-      el.click();
+      if (!mark) el.click();
     },
     gotoNextMark: function gotoNextMark(dir) {
       var l = this.visuallyOrderedMarks.length;
@@ -1089,6 +1128,7 @@ function _default() {
       this.gotoMark();
     },
     setBookmark: function setBookmark(m, save) {
+      if (_store.default.locked) return;
       var bookmark = this.bookmark,
           mark = this.findMark(m);
       if (!mark) return false;
@@ -1107,6 +1147,7 @@ function _default() {
       this.emit('removed:bookmark');
     },
     removeBookmark: function removeBookmark() {
+      if (_store.default.locked) return;
       var bookmark = this.bookmark;
       if (!bookmark) return false;
       bookmark.remove();
@@ -1144,10 +1185,7 @@ function _default() {
     },
     sortById: function sortById() {
       this.done.sort(function (mark1, mark2) {
-        var id1 = mark1.id;
-        var id2 = mark2.id;
-        if (id1 === id2) return 0;
-        return id1 < id2 ? -1 : 1;
+        return mark1.id - mark2.id;
       });
     },
     orderMarksVisually: function orderMarksVisually() {
@@ -1247,47 +1285,41 @@ function _default() {
       return this;
     },
     retrieveEntry: function retrieveEntry() {
-      var _this4 = this;
-
       var entry = _store.default.entry || {};
-      return this.collectMarks().then(function (marks) {
-        entry.marks = marks;
-        entry.last = new Date().getTime();
-        entry.bookmarked = !!_this4.bookmark;
-        entry.title = window.document.title;
-        entry.count = entry.marks.length;
-        entry.idcount = _this4.idcount;
+      entry.marks = this.collectMarks();
+      entry.last = new Date().getTime();
+      entry.bookmarked = !!this.bookmark;
+      entry.title = window.document.title;
+      entry.count = entry.marks.length;
+      entry.idcount = this.idcount;
 
-        if (_store.default.isNew) {
-          entry.name = _store.default.name;
-          entry.first = entry.last;
-          entry.url = window.document.URL;
-          entry.synced = _store.default.area_history === 'sync';
-        }
+      if (_store.default.isNew || _store.default.locked) {
+        entry.first = entry.last;
+        entry.url = window.document.URL;
+        entry.synced = _store.default.area_history === 'sync';
+        entry.locked = _store.default.locked;
+      }
 
-        return entry;
-      });
+      entry.name = _store.default.locked ? entry.marks[0].text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1) : _store.default.isNew ? _store.default.name : entry.name;
+      return entry;
     },
     collectMarks: function collectMarks() {
-      var _this5 = this;
+      var done = this.done;
+      var l = done.length;
+      var marks = [];
 
-      return _store.default.get('history').then(function (history) {
-        var marks = [],
-            ids = [],
-            done = _this5.done,
-            oldMarks = _store.default.isNew ? null : history.entries[_store.default.name] ? history.entries[_store.default.name].marks : null,
-            l = done.length,
-            m = 0,
-            kD;
+      if (_store.default.locked) {
+        done = [done[l - 1]];
+      }
 
-        for (; m < l; m++) {
-          kD = done[m].keyData;
-          marks.push(kD);
-          ids.push(kD.id);
-        }
+      l = done.length;
 
-        return marks;
-      });
+      for (var m = 0, kD; m < l; m++) {
+        kD = done[m].keyData;
+        marks.push(kD);
+      }
+
+      return marks;
     }
   });
 }
@@ -1319,6 +1351,11 @@ function _default(mark) {
   var BODY = window.document.body;
   return new _utils._DOMMODULE({
     events: {
+      ENV: {
+        'updated:misc-settings': 'addMarkListeners',
+        'drag:note': 'onDrag',
+        'dragstop:note': 'onDragEnd'
+      },
       DOM: {
         click: {
           'tmnotedelete': '_delete',
@@ -1329,6 +1366,12 @@ function _default(mark) {
         },
         keyup: {
           'textarea': 'attemptUpdate'
+        },
+        mousedown: {
+          'tmnoteheader': 'onDragStart'
+        },
+        touchstart: {
+          'tmnoteheader': 'onDragStart'
         }
       }
     },
@@ -1341,6 +1384,12 @@ function _default(mark) {
     visible: false,
     recentlyUpdated: false,
     settingsMode: false,
+    pos: {
+      l: null,
+      t: null
+    },
+    dragDX: 0,
+    dragDY: 0,
     autoinit: function autoinit() {
       this.adjustNoteDataObject();
       this.createNoteElement();
@@ -1360,12 +1409,15 @@ function _default(mark) {
           text: noteData,
           color: _store.default.noteColor
         };
+      } else {
+        this.pos = this.mark.keyData.note.pos || this.pos;
       }
     },
     createNoteElement: function createNoteElement() {
       var _this = this;
 
       var note = this.el = document.createElement('tmnote');
+      var header = this.header = document.createElement('tmnoteheader');
       var del = this.del = document.createElement('tmnotedelete');
       var min = this.min = document.createElement('tmnoteminimize');
       var gear = document.createElement('tmnotecustomize');
@@ -1387,6 +1439,7 @@ function _default(mark) {
       del.appendChild(delText);
       min.appendChild(minText);
       gear.appendChild(gearText);
+      note.append(header);
       note.appendChild(gear);
       note.appendChild(del);
       note.appendChild(min);
@@ -1420,21 +1473,31 @@ function _default(mark) {
     },
     update: function update(el) {
       this.mark.keyData.note.text = el.value;
-      this.emit('updated:note');
+      this.emit('updated:note', this.mark.id);
       this.recentlyUpdated = false;
     },
     show: function show() {
       var el = this.el;
-      var pos = this.getPosition();
       var innerWindowWidth = window.innerWidth;
-      var left = pos.left;
+      var pos, left, top;
+
+      if (this.pos.l !== null) {
+        pos = this.pos;
+        top = pos.t;
+      } else {
+        pos = this.getPosition();
+        left = this.pos.l = pos.l;
+        top = this.pos.t = pos.t + pos.offset;
+      }
+
+      left = this.pos.l = pos.l;
 
       if (left + 340 > innerWindowWidth) {
-        left = innerWindowWidth - 340;
+        left = this.pos.l = innerWindowWidth - 340;
       }
 
       BODY.appendChild(el);
-      el.setAttribute('style', 'display:block;top:' + (pos.top + pos.offset) + 'px;left:' + left + 'px;');
+      el.setAttribute('style', 'display:block;top:' + top + 'px;left:' + left + 'px;');
       this.visible = true;
     },
     bringUpFront: function bringUpFront() {
@@ -1447,6 +1510,9 @@ function _default(mark) {
     hide: function hide() {
       BODY.removeChild(this.el);
       this.visible = false;
+    },
+    toggle: function toggle() {
+      if (this.visible) this.hide();else this.show();
     },
     togglePalette: function togglePalette() {
       if (this.settingsMode) {
@@ -1463,15 +1529,17 @@ function _default(mark) {
       this.el.classList.add('tmnote--' + color);
       this.mark.keyData.note.color = color;
       this.togglePalette();
-      this.emit('changed:note-color');
+      this.emit('changed:note-color', this.mark.id);
     },
     addMarkListeners: function addMarkListeners() {
       var _this4 = this;
 
       _store.default.get('noteonclick').then(function (noteonclick) {
         if (noteonclick) {
+          if (!!_this4.markClickHandler) return;
+
           var handler = _this4.markClickHandler = function () {
-            return _this4.show();
+            return _this4.toggle();
           };
 
           var _iteratorNormalCompletion = true;
@@ -1498,6 +1566,8 @@ function _default(mark) {
               }
             }
           }
+        } else {
+          _this4.removeMarkListeners();
         }
       });
     },
@@ -1531,10 +1601,29 @@ function _default(mark) {
     getPosition: function getPosition() {
       var rect = this.mark.wrappers[this.mark.wrappers.length - 1].getBoundingClientRect();
       return {
-        top: rect.top + window.pageYOffset - BODY.clientTop,
-        left: rect.left + window.pageXOffset - BODY.clientLeft,
+        t: rect.top + window.pageYOffset - BODY.clientTop,
+        l: rect.left + window.pageXOffset - BODY.clientLeft,
         offset: rect.height
       };
+    },
+    onDragStart: function onDragStart(e, el) {
+      e.preventDefault();
+      this.dragDX = e.pageX - this.pos.l;
+      this.dragDY = e.pageY - this.pos.t;
+      this.emit('start:drag', this.mark.id);
+    },
+    onDrag: function onDrag(note, e) {
+      if (note === this.mark.id) {
+        var el = this.el;
+        var left = this.pos.l = e.pageX - this.dragDX;
+        var top = this.pos.t = e.pageY - this.dragDY;
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+      }
+    },
+    onDragEnd: function onDragEnd() {
+      this.mark.keyData.note.pos = this.pos;
+      this.emit('changed:note-pos', this.mark.id);
     }
   });
 }
@@ -1575,15 +1664,21 @@ function _default() {
         'removed:mark': 'removeNote',
         'toggle:notes': 'toggleAll',
         'sidebar:toggle-notes': 'toggleAll',
-        'updated:misc-settings': 'updateTransp'
+        'updated:misc-settings': 'updateTransp',
+        'start:drag': 'startDraggingNote'
       }
     },
     notes: {},
     toggle: null,
+    dragHandler: null,
+    dragStopHandler: null,
     autoinit: function autoinit() {
       this.updateTransp();
     },
     add: function add(mark) {
+      var note = this.notes[mark.id];
+      if (note) return note;
+      this.emit('added:note');
       return this.notes[mark.id] = new _note.default(mark);
     },
     restore: function restore(marks) {
@@ -1597,7 +1692,6 @@ function _default() {
 
           if (mark.keyData.note) {
             this.add(mark);
-            this.emit('added:note');
           }
         }
       } catch (err) {
@@ -1617,7 +1711,6 @@ function _default() {
     },
     addAndShow: function addAndShow(mark) {
       this.add(mark).show();
-      this.emit('added:note');
     },
     removeNoteStorage: function removeNoteStorage(id) {
       delete this.notes[id];
@@ -1650,6 +1743,33 @@ function _default() {
     },
     isEmpty: function isEmpty(obj) {
       return !Object.keys(obj).length;
+    },
+    startDraggingNote: function startDraggingNote(note) {
+      var _this = this;
+
+      var dragHandler = this.dragHandler = function (e) {
+        return _this.emitDragEvent(note, e);
+      };
+
+      var dragStopHandler = this.dragStopHandler = function (e) {
+        return _this.stopDraggingNote(note, e);
+      };
+
+      DOC.addEventListener('mousemove', dragHandler, false);
+      DOC.addEventListener('mouseup', dragStopHandler, false);
+      DOC.addEventListener('touchmove', dragHandler, false);
+      DOC.addEventListener('touchend', dragStopHandler, false);
+    },
+    stopDraggingNote: function stopDraggingNote(note, e) {
+      DOC.removeEventListener('mousemove', this.dragHandler, false);
+      DOC.removeEventListener('mouseup', this.dragStopHandler, false);
+      DOC.removeEventListener('touchmove', this.dragHandler, false);
+      DOC.removeEventListener('touchend', this.dragStopHandler, false);
+      this.emit('dragstop:note', note, e);
+    },
+    emitDragEvent: function emitDragEvent(note, e) {
+      e.preventDefault();
+      this.emit('drag:note', note, e);
     }
   });
 }
@@ -1758,8 +1878,10 @@ function _default() {
       var keyCode = e.keyCode,
           modKey = e.metaKey || e.ctrlKey || e.altKey || e.shiftKey,
           arrowKeys = ['arrowdown', 'arrowup'],
-          functionKeys = ['b', 's', 'y', 'z', 'd'].concat(arrowKeys),
+          lockedActions = ['b', 's', 'y', 'z', 'd'],
+          functionKeys = lockedActions.concat(arrowKeys),
           defaultMarkers = ['m', '2', '3'];
+      if (_store.default.locked && lockedActions.includes(key)) return true;
       if (keyCode === 50) key = '2';else if (keyCode === 51) key = '3';
       if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
       if (this.isEditable(e.target)) return true;
@@ -1793,39 +1915,83 @@ function _default() {
     checkURL: function checkURL() {
       var _this3 = this;
 
-      this.request('check:url', this.url).then(function (entry) {
-        if (entry) _this3.onUrlFound(entry);
+      this.request('check:url', this.url).then(function (data) {
+        if (data) _this3.onUrlFound(_this3.filterEntries(data.entries), data.recentlyOpenedEntry);
       });
     },
     unset: function unset(name) {
       if (_store.default.name && _store.default.name === name) {
         _store.default.name = undefined;
         _store.default.entry = null;
-        this.emit('unset:entry');
       }
     },
-    update: function update(entry, force) {
+    update: function update(entries, force) {
+      force = force === true ? true : false;
+      entries = Array.isArray(entries) ? entries : [entries];
+      var entry = entries[0];
+
       if (force || entry.url.split('#')[0] === this.url) {
-        _store.default.name = entry.name;
+        if (!_store.default.locked) _store.default.name = entry.name;
         _store.default.isNew = false;
         _store.default.entry = entry;
-        this.emit('set:entry');
+        if (force) this.emit('set:entries', entries);
       }
     },
     onHotkey: function onHotkey(key) {
       if (key === 'w') this.lookup();
     },
-    onUrlFound: function onUrlFound(entry) {
-      this.update(entry, true);
+    onUrlFound: function onUrlFound(entries, recentlyOpenedEntry) {
+      this.update(entries, true);
 
       if (this.active && !this.initialized && !document.querySelector('[data-tm-id]')) {
         this.initialized = true;
+
+        if (recentlyOpenedEntry && recentlyOpenedEntry.url.split('#')[0] === this.url) {
+          _store.default.name = recentlyOpenedEntry.name;
+        }
         /*if (_READER)
           window.setTimeout(() => this.emit('restore:marks', name), 500);*/
         //else
 
-        this.emit('restore:marks', entry);
+
+        this.emit('restore:marks', entries);
       }
+    },
+    filterEntries: function filterEntries(entries) {
+      var lockedEntries = [],
+          l = entries.length,
+          lockedEntriesExist = false,
+          nonLockedEntries = 0;
+
+      for (var i = 0, entry; i < l; i++) {
+        entry = entries[i];
+
+        if (entry.locked) {
+          lockedEntries.push(entry);
+          lockedEntriesExist = true;
+        } else {
+          lockedEntries = [];
+          entries = [entry];
+          nonLockedEntries++;
+        }
+      }
+
+      if (lockedEntriesExist && nonLockedEntries) {
+        this.emit('warn:mixed-entry-types');
+      } else if (nonLockedEntries > 1) {
+        this.emit('warn:multiple-unlocked-entries');
+      }
+
+      if (lockedEntries.length) {
+        _store.default.locked = true;
+        entries = lockedEntries.sort(function (a, b) {
+          return new Date(a.last) - new Date(b.last);
+        });
+      } else {
+        _store.default.locked = false;
+      }
+
+      return entries;
     },
     onSelectionChange: function onSelectionChange() {
       this.emit('changed:selection', !window.getSelection().isCollapsed);
@@ -1881,113 +2047,35 @@ var Restorer =
 function (_MODULE2) {
   _inherits(Restorer, _MODULE2);
 
-  function Restorer(obj) {
+  function Restorer(entry) {
+    var _this;
+
     _classCallCheck(this, Restorer);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Restorer).call(this, obj));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Restorer).call(this, entry));
+    _this.entry = entry;
+    _this.queue = [];
+    _this.cache = [];
+    _this.lost = [];
+    _this.restored = [];
+    _this.area = entry.synced ? 'sync' : 'local';
+    _this.phase = 1;
+
+    _this.init();
+
+    return _this;
   }
 
   _createClass(Restorer, [{
-    key: "processPeuAPeu",
-    value: function processPeuAPeu(data, func, cb) {
-      var d = Array.prototype.slice.call(data),
-          done,
-          time0;
-
-      (function rec() {
-        var max = +new Date() + 500;
-
-        do {
-          done = func(d[0]);
-          if (done) d.shift();
-        } while (d.length > 0 && max > +new Date());
-
-        if (d.length > 0) window.setTimeout(function () {
-          return rec();
-        }, 25);else cb();
-      })();
-    }
-  }, {
-    key: "setBodySelection",
-    value: function setBodySelection(el) {
-      var selection = this.selection = new _selection.default(el);
-      this.trimmedSelectionText = this.squeeze(selection.text);
-      this.bodyTextNodes = selection.nodes;
-      this.range = selection.range;
-      return this;
-    }
-  }, {
-    key: "squeeze",
-    value: function squeeze(text) {
-      return typeof text === 'string' ? text.replace(/\t|\s|\n|\r/g, '') : undefined;
-    }
-  }, {
-    key: "whichChild",
-    value: function whichChild(parent, child, context) {
-      if (!parent || !child) return null;
-      var children = child.nodeType === 3 ? parent.childNodes : parent.children,
-          c = children.length,
-          pos = 0,
-          i = 0,
-          currentChild;
-
-      for (; i < c; i++) {
-        currentChild = children[i];
-        if (currentChild === child) return pos;
-
-        if (context) {
-          if (currentChild.nodeName === context) pos++;
-        } else {
-          if (!(currentChild.nodeType === 3 && !currentChild.data)) pos++;
-        }
-      }
-    }
-  }, {
-    key: "report",
-    value: function report() {
-      var ll = this.lost.length;
-
-      if (ll) {
-        while (ll--) {
-          delete this.lost[ll].temp;
-        }
-
-        this.emit('failed:restoration');
-      } else {
-        this.emit('succeeded:restoration');
-      }
-
-      this.emit('finished:restoration', _store.default.name, this.restored, this.lost, this.area);
-    }
-  }]);
-
-  return Restorer;
-}(_utils._MODULE);
-
-function _default() {
-  return new Restorer({
-    events: {
-      ENV: {
-        'restore:marks': 'init'
-      }
-    },
-    queue: [],
-    cache: [],
-    lost: [],
-    restored: [],
-    area: 'sync',
-    phase: 1,
-    init: function init(entry) {
-      if (_store.default.pdf) return false;
-      _store.default.name = entry.name;
-      _store.default.entry = entry;
-      var now = [],
+    key: "init",
+    value: function init() {
+      var entry = this.entry,
+          now = [],
           postponed = [],
           marks = entry.marks,
           l = marks.length,
           i = 0,
           mark;
-      this.area = entry.synced ? 'sync' : 'local';
 
       for (; i < l; i++) {
         mark = marks[i];
@@ -2002,8 +2090,10 @@ function _default() {
       }
 
       this.restore().report();
-    },
-    convertDescription: function convertDescription(mark) {
+    }
+  }, {
+    key: "convertDescription",
+    value: function convertDescription(mark) {
       if (typeof mark.conds.o === 'undefined') {
         var conds = mark.conds,
             convertedConds = {
@@ -2020,19 +2110,29 @@ function _default() {
       }
 
       return this;
-    },
-    createTempObject: function createTempObject(mark) {
-      var trimmedText = this.squeeze(mark.text);
+    }
+  }, {
+    key: "createTempObject",
+    value: function createTempObject(mark) {
+      var text = mark.text,
+          trimmedText = text.trim(),
+          squeezedText = this.squeeze(mark.text);
       mark.temp = {
+        textLength: text.length,
         trimmedText: trimmedText,
         trimmedTextLength: trimmedText.length,
+        squeezedText: squeezedText,
+        squeezedTextLength: squeezedText.length,
         possiblePositions: [],
+        possibleEndPositions: [],
         possibleStartNodes: [],
         possibleEnds: {},
         possibleFocusOffsets: []
       };
-    },
-    restore: function restore() {
+    }
+  }, {
+    key: "restore",
+    value: function restore() {
       if (this.phase === 2) this.sortQueueById();
       var marks = this.marks = this.queue.shift(),
           length = marks ? marks.length : 0;
@@ -2047,8 +2147,10 @@ function _default() {
       this.phase++;
       if (this.queue.length) this.restore();
       return this;
-    },
-    sortQueueById: function sortQueueById() {
+    }
+  }, {
+    key: "sortQueueById",
+    value: function sortQueueById() {
       var marks = this.queue,
           l = marks ? marks.length : 0,
           temp = [],
@@ -2070,15 +2172,17 @@ function _default() {
       }
 
       return this;
-    },
-    getTextPositions: function getTextPositions(marks, l) {
+    }
+  }, {
+    key: "getTextPositions",
+    value: function getTextPositions(marks, l) {
       var trimmedSelectionText = this.trimmedSelectionText,
           allPossibleStartPositions = this.allPossibleStartPositions = [],
           endPositions = [],
           mark,
           markTemp,
-          trimmedText,
-          trimmedTextLength,
+          squeezedText,
+          squeezedTextLength,
           p,
           endPosition;
 
@@ -2092,29 +2196,40 @@ function _default() {
           continue;
         }
 
-        trimmedText = markTemp.trimmedText;
-        trimmedTextLength = markTemp.trimmedTextLength;
+        if (markTemp.possiblePositions.length) {
+          allPossibleStartPositions = allPossibleStartPositions.concat(markTemp.possiblePositions);
+          endPositions = endPositions.concat(markTemp.possibleEndPositions);
+        } else {
+          squeezedText = markTemp.squeezedText;
+          squeezedTextLength = markTemp.squeezedTextLength;
 
-        while (p !== -1) {
-          if (p === undefined) p = -1;
-          p = trimmedSelectionText.indexOf(trimmedText, p + 1);
-          endPosition = p + trimmedTextLength;
-          markTemp.possiblePositions.push(p);
-          allPossibleStartPositions.push([p, endPosition, mark]);
-          endPositions.push(endPosition);
+          while (p !== -1) {
+            if (p === undefined) p = -1;
+            p = trimmedSelectionText.indexOf(squeezedText, p + 1);
+            endPosition = p + squeezedTextLength;
+            markTemp.possiblePositions.push([p, endPosition, mark]);
+            markTemp.possibleEndPositions.push(endPosition);
+            allPossibleStartPositions.push([p, endPosition, mark]);
+            endPositions.push(endPosition);
+          }
+
+          markTemp.possiblePositions.pop();
+          allPossibleStartPositions.pop();
+          endPositions.pop();
+
+          if (!markTemp.possiblePositions.length) {
+            this.lost.push(mark);
+          }
         }
-
-        markTemp.possiblePositions.pop();
-        allPossibleStartPositions.pop();
-        endPositions.pop();
-        if (!markTemp.possiblePositions.length) this.lost.push(mark);
       }
 
       this.sortPossibleStartPositions(allPossibleStartPositions);
       this.maxPosition = Math.max.apply(null, endPositions);
       return this;
-    },
-    sortPossibleStartPositions: function sortPossibleStartPositions(positions) {
+    }
+  }, {
+    key: "sortPossibleStartPositions",
+    value: function sortPossibleStartPositions(positions) {
       var l = positions.length,
           temp = [],
           i = 0,
@@ -2134,8 +2249,10 @@ function _default() {
       for (; i < t; i++) {
         if (temp[i]) this.allPossibleStartPositions.push(temp[i]);
       }
-    },
-    postponeOverlappings: function postponeOverlappings() {
+    }
+  }, {
+    key: "postponeOverlappings",
+    value: function postponeOverlappings() {
       var positions = this.allPossibleStartPositions,
           p = positions.length,
           postponed = [],
@@ -2144,26 +2261,30 @@ function _default() {
           i,
           m1,
           m2,
+          id1,
+          id2,
           id;
 
       if (p > 1) {
         while (p-- > 1) {
           pos1 = positions[p - 1];
           pos2 = positions[p];
+          m1 = pos1[2];
+          m2 = pos2[2];
+          id1 = m1.id;
+          id2 = m2.id;
+          if (id1 === id2) continue;
 
           if (pos1[1] > pos2[0] && pos1[0] < pos2[1]) {
-            m1 = pos1[2];
-            m2 = pos2[2];
-
-            if (m1.id < m2.id) {
-              id = m2.id;
+            if (id1 < id2) {
+              id = id2;
 
               if (!postponed.includes(id)) {
                 this.postpone(m2);
                 postponed.push(id);
               }
             } else {
-              id = m1.id;
+              id = id1;
 
               if (!postponed.includes(id)) {
                 this.postpone(m1);
@@ -2181,16 +2302,20 @@ function _default() {
       }
 
       return this;
-    },
-    cutOutFor: function cutOutFor(id) {
+    }
+  }, {
+    key: "cutOutFor",
+    value: function cutOutFor(id) {
       var positions = this.allPossibleStartPositions,
           p = positions.length;
 
       while (p--) {
         if (positions[p][2].id === id) this.allPossibleStartPositions.splice(p, 1);
       }
-    },
-    postpone: function postpone(mark) {
+    }
+  }, {
+    key: "postpone",
+    value: function postpone(mark) {
       var queue = this.queue,
           l = queue.length,
           alreadyIncluded = false;
@@ -2203,8 +2328,10 @@ function _default() {
       }
 
       if (!alreadyIncluded) this.queue.push([mark]);
-    },
-    findPossibleExtrema: function findPossibleExtrema() {
+    }
+  }, {
+    key: "findPossibleExtrema",
+    value: function findPossibleExtrema() {
       var selection = this.selection,
           range = this.range,
           nodes = this.bodyTextNodes,
@@ -2323,32 +2450,52 @@ function _default() {
       }
 
       return this;
-    },
-    ruleOutMultiples: function ruleOutMultiples() {
+    }
+  }, {
+    key: "ruleOutMultiples",
+    value: function ruleOutMultiples() {
       var cache = this.cache,
           i = cache.length,
           mark,
           possibleStartNodes,
           p,
+          node,
           parent,
           grampa,
           grandgrampa,
+          grandgrandgrampa,
           matches,
           failed,
-          q;
+          q,
+          possibleEnds,
+          startFoundFor,
+          conds,
+          startOffset,
+          temp,
+          textLength;
 
       while (i--) {
         mark = cache[i];
         matches = [];
         failed = false;
-        possibleStartNodes = mark.temp.possibleStartNodes;
+        temp = mark.temp;
+        possibleStartNodes = temp.possibleStartNodes;
+        possibleEnds = temp.possibleEnds;
+        startFoundFor = temp.startFoundFor;
         p = possibleStartNodes.length;
+        conds = mark.conds;
+        startOffset = conds.o;
+        textLength = temp.textLength;
 
         if (p > 1) {
           while (p--) {
-            parent = possibleStartNodes[p].parentNode.parentNode;
+            node = possibleStartNodes[p];
+            parent = node.parentNode.parentNode;
             grampa = parent.parentNode || 0;
-            if (!grampa || mark.conds.p3 === this.whichChild(grampa, parent)) matches.push(p);
+
+            if (!grampa || conds.p3 === this.whichChild(grampa, parent)) {
+              matches.push(p);
+            }
           }
 
           if (!matches.length) p = 0;else {
@@ -2360,8 +2507,9 @@ function _default() {
                 parent = possibleStartNodes[q].parentNode;
                 grampa = parent.parentNode || 0;
                 grandgrampa = grampa && grampa.parentNode ? grampa.parentNode : 0;
+                grandgrandgrampa = grandgrampa && grandgrampa.parentNode ? grandgrampa.parentNode : 0;
 
-                if (!grandgrampa || mark.conds.p4 === this.whichChild(grandgrampa, grampa)) {
+                if ((!grandgrandgrampa || conds.p4 === this.whichChild(grandgrandgrampa, grandgrampa)) && possibleEnds[startFoundFor[q]].offset - startOffset === textLength) {
                   p = q;
                   break;
                 }
@@ -2378,14 +2526,18 @@ function _default() {
       }
 
       return this;
-    },
-    setMatchingEnd: function setMatchingEnd(mark, p) {
+    }
+  }, {
+    key: "setMatchingEnd",
+    value: function setMatchingEnd(mark, p) {
       var startPosition = mark.temp.startFoundFor[p],
           end = mark.temp.possibleEnds[startPosition];
       mark.temp.endNode = end.node;
       mark.temp.focusOffset = end.offset;
-    },
-    satisfiesDescription: function satisfiesDescription(mark, node) {
+    }
+  }, {
+    key: "satisfiesDescription",
+    value: function satisfiesDescription(mark, node) {
       var description = mark.conds,
           parentNode = node.parentNode,
           grampa = parentNode.parentNode,
@@ -2393,13 +2545,15 @@ function _default() {
           startOffset = description.o,
           relevantNodeText = node.data.substring(startOffset).trim(),
           l = relevantNodeText.length,
-          markText = mark.text.trim(),
-          m = markText.length,
+          markText = mark.temp.trimmedText,
+          m = mark.temp.trimmedTextLength,
           textsMatch;
       if (m <= l) textsMatch = this.squeeze(relevantNodeText).indexOf(this.squeeze(markText)) === 0;else textsMatch = this.squeeze(markText).indexOf(this.squeeze(relevantNodeText)) === 0;
       return textsMatch && (parentNode.nodeName === description.n1 || description.n1 === 'TM' && parentNode.hasAttribute('data-tm-id')) && (!grampa || grampa.nodeName === description.n2) && this.whichChild(parentNode, node) === description.p1;
-    },
-    findFocusOffset: function findFocusOffset(mark, node, n) {
+    }
+  }, {
+    key: "findFocusOffset",
+    value: function findFocusOffset(mark, node, n) {
       var nodeText = node.data,
           l = nodeText.length,
           i = 0,
@@ -2409,8 +2563,10 @@ function _default() {
         if (this.squeeze(nodeText[i])) counter++;
         if (counter === n) return /\s$/.test(mark.text) ? i + 2 : i + 1;
       }
-    },
-    recreateMarks: function recreateMarks() {
+    }
+  }, {
+    key: "recreateMarks",
+    value: function recreateMarks() {
       var range = this.range,
           selection = this.selection,
           marks = this.cache,
@@ -2440,6 +2596,112 @@ function _default() {
 
           delete mark.temp;
         }
+      }
+    }
+  }, {
+    key: "processPeuAPeu",
+    value: function processPeuAPeu(data, func, cb) {
+      var d = Array.prototype.slice.call(data),
+          done,
+          time0;
+
+      (function rec() {
+        var max = +new Date() + 500;
+
+        do {
+          done = func(d[0]);
+          if (done) d.shift();
+        } while (d.length > 0 && max > +new Date());
+
+        if (d.length > 0) window.setTimeout(function () {
+          return rec();
+        }, 25);else cb();
+      })();
+    }
+  }, {
+    key: "setBodySelection",
+    value: function setBodySelection(el) {
+      var selection = this.selection = new _selection.default(el);
+
+      if (this.phase === 1) {
+        this.trimmedSelectionText = this.squeeze(selection.text);
+      }
+
+      this.bodyTextNodes = selection.nodes;
+      this.range = selection.range;
+      return this;
+    }
+  }, {
+    key: "squeeze",
+    value: function squeeze(text) {
+      return typeof text === 'string' ? text.replace(/\t|\s|\n|\r/g, '') : undefined;
+    }
+  }, {
+    key: "whichChild",
+    value: function whichChild(parent, child, context) {
+      if (!parent || !child) return null;
+      var children = child.nodeType === 3 ? parent.childNodes : parent.children,
+          c = children.length,
+          pos = 0,
+          i = 0,
+          currentChild;
+
+      for (; i < c; i++) {
+        currentChild = children[i];
+        if (currentChild === child) return pos;
+
+        if (context) {
+          if (currentChild.nodeName === context) pos++;
+        } else {
+          if (!(currentChild.nodeType === 3 && !currentChild.data)) pos++;
+        }
+      }
+    }
+  }, {
+    key: "report",
+    value: function report() {
+      var ll = this.lost.length;
+
+      if (ll) {
+        while (ll--) {
+          delete this.lost[ll].temp;
+        }
+
+        this.emit('lost:marks');
+      }
+
+      this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
+    }
+  }]);
+
+  return Restorer;
+}(_utils._MODULE);
+
+function _default() {
+  return new _utils._MODULE({
+    events: {
+      ENV: {
+        'restore:marks': 'restore',
+        'lost:marks': 'onFailure',
+        'finished:restoration': 'onFinishedRestoration'
+      }
+    },
+    count: 0,
+    restored: 0,
+    failed: 0,
+    restore: function restore(entries) {
+      this.count = entries.length;
+      entries.forEach(function (entry) {
+        return new Restorer(entry);
+      });
+    },
+    onFailure: function onFailure() {
+      this.failed++;
+    },
+    onFinishedRestoration: function onFinishedRestoration() {
+      if (++this.restored === this.count) {
+        this.emit('finished:all-restorations');
+        if (this.failed) this.emit('failed:restoration');else this.emit('succeeded:restoration');
       }
     }
   });
@@ -2918,7 +3180,7 @@ var _default = new _utils._PORT({
   name: 'injection',
   type: 'content',
   events: {
-    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note']
+    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries']
   }
 });
 
@@ -2934,6 +3196,27 @@ exports.default = _default;
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ "./data/global-settings.js":
+/*!*********************************!*\
+  !*** ./data/global-settings.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  MAX_ENTRY_NAME_CHARS: 70
+};
+exports.default = _default;
 
 /***/ }),
 

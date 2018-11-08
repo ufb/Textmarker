@@ -277,6 +277,9 @@ function _default() {
       },
       n: {
         contexts: ['frame', 'link', 'page']
+      },
+      sb: {
+        contexts: ['all', 'tab']
       }
     },
     created: [],
@@ -331,7 +334,7 @@ function _default() {
     },
     onClick: function onClick(infos, tab) {
       var id = infos.menuItemId;
-      if (id === 'w') this.emit('lookup:word', infos.selectionText);else this.emit('ctx:' + id, null, null, {
+      if (id === 'w') this.emit('lookup:word', infos.selectionText);else if (id === 'sb') browser.sidebarAction.open();else this.emit('ctx:' + id, null, null, {
         tab: tab.id
       });
     }
@@ -367,6 +370,8 @@ new _utils._MODULE({
       'failed:update-entry': 'log',
       'failed:delete-entry': 'log',
       'failed:restoration': 'onFailedRestoration',
+      'warn:mixed-entry-types': 'onMixedEntryTypes',
+      'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries',
       'failed:pbm': 'onFailedPBM',
       'failed:open-tab': 'onOpenTabFailure',
       'error:import': 'log',
@@ -397,6 +402,12 @@ new _utils._MODULE({
     }).then(function () {
       return _this2.emit('updated:logs');
     });
+  },
+  onMixedEntryTypes: function onMixedEntryTypes() {
+    this.log('note_restoration_warning_1');
+  },
+  onMultipleUnlockedEntries: function onMultipleUnlockedEntries() {
+    this.log('note_restoration_warning_2');
   },
   onFailedRestoration: function onFailedRestoration() {
     this.log('note_restoration_failure');
@@ -433,23 +444,34 @@ new _utils._MODULE({
       'check:url': 'checkUrl',
       'save:entry?': 'onSaveNewRequest',
       'update:entry?': 'onUpdateRequest',
-      'name:entry?': 'onNamingRequest'
+      'name:entry?': 'onNamingRequest',
+      'opened:entry': 'tempSaveEntryMetaData'
     }
   },
+  recentlyOpenedEntry: null,
   checkUrl: function checkUrl(url, sender, sendResponse) {
     var _this = this;
 
     _storage.default.get('history').then(function (history) {
       var entries = history.entries,
+          matches = [],
+          locked = false,
           entry;
 
       for (var e in entries) {
         entry = entries[e];
 
         if (url === _this.getHashlessURL(entry.url)) {
-          sendResponse(entry);
-          break;
+          matches.push(entry);
         }
+      }
+
+      if (!matches.length) sendResponse(null);else {
+        sendResponse({
+          entries: matches,
+          recentlyOpenedEntry: _this.recentlyOpenedEntry
+        });
+        _this.recentlyOpenedEntry = null;
       }
     });
   },
@@ -490,6 +512,9 @@ new _utils._MODULE({
   getHashlessURL: function getHashlessURL(url) {
     var h = url.lastIndexOf('#');
     if (h === -1) return url;else return url.substr(0, h);
+  },
+  tempSaveEntryMetaData: function tempSaveEntryMetaData(data) {
+    this.recentlyOpenedEntry = data;
   }
 });
 
@@ -514,6 +539,8 @@ var _storage = _interopRequireDefault(__webpack_require__(/*! ./../storage */ ".
 
 var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
 
+var _globalSettings = _interopRequireDefault(__webpack_require__(/*! ./../../data/global-settings */ "./data/global-settings.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _default() {
@@ -523,7 +550,6 @@ function _default() {
         'granted:save-entry': 'name'
       }
     },
-    maxChars: 70,
     name: function name(entry) {
       var _this = this;
 
@@ -539,7 +565,7 @@ function _default() {
       var _this2 = this;
 
       name = name ? name : method === 'title' ? entry.title : method === 'date' ? new Date(entry.first).toLocaleString() : '';
-      name = name.substring(0, this.maxChars - 1);
+      name = name.substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1);
 
       _storage.default.get('history').then(function (history) {
         var counter = _this2.getDoubleNameCount(history, name);
@@ -617,7 +643,9 @@ function _default() {
         'failed:import': 'onFailedImport',
         'error:import': 'onImportError',
         'imported:storage': 'onImportSuccess',
-        'error': 'onError'
+        'error': 'onError',
+        'warn:mixed-entry-types': 'onMixedEntryTypes',
+        'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries'
       }
     },
     notify: function notify(condition, message, type) {
@@ -668,6 +696,16 @@ function _default() {
       this.notify(function (settings) {
         return settings.misc.changedNote;
       }, browser.i18n.getMessage('note_updated_entry'), 'success');
+    },
+    onMixedEntryTypes: function onMixedEntryTypes() {
+      this.notify(function (settings) {
+        return settings.misc.failureNote;
+      }, browser.i18n.getMessage('note_restoration_warning_1'), 'warning');
+    },
+    onMultipleUnlockedEntries: function onMultipleUnlockedEntries() {
+      this.notify(function (settings) {
+        return settings.misc.failureNote;
+      }, browser.i18n.getMessage('note_restoration_warning_2'), 'warning');
     },
     onSuccessfulRestoration: function onSuccessfulRestoration() {
       this.notify(function (settings) {
@@ -950,8 +988,17 @@ new _utils._MODULE({
     _storage.default.update('history', function (history) {
       var name = entry.name,
           currentEntry = history.entries[name],
-          lost = currentEntry.lost;
-      history.entries[name] = entry;
+          lost = currentEntry.lost,
+          receivedCompleteEntry = !!entry.url;
+
+      if (receivedCompleteEntry) {
+        history.entries[name] = entry;
+      } else {
+        for (var e in entry) {
+          history.entries[name][e] = entry[e];
+        }
+      }
+
       history.entries[name].lost = lost || [];
       return history;
     }, entry.synced ? 'sync' : 'local').then(function () {
@@ -1009,24 +1056,20 @@ new _utils._MODULE({
     });
   },
   tagEntries: function tagEntries(names, tag) {
-    var _this8 = this;
-
     _storage.default.update('history', function (history) {
       var entries = history.entries;
       names.sync.forEach(function (name) {
-        return entries[name].tag = tag;
+        if (!tag) entries[name].tag = '';else if (!entries[name].tag) entries[name].tag = tag;else entries[name].tag += ' ' + tag;
       });
       return history;
     }, 'sync').then(function () {
       return _storage.default.update('history', function (history) {
         var entries = history.entries;
         names.local.forEach(function (name) {
-          return entries[name].tag = tag;
+          if (!tag) entries[name].tag = '';else if (!entries[name].tag) entries[name].tag = tag;else entries[name].tag += ' ' + tag;
         });
         return history;
       }, 'local');
-    }).then(function () {
-      return _this8.emit('tagged:entries');
     });
   },
   registerStorageChangedHandler: function registerStorageChangedHandler() {
@@ -1082,20 +1125,28 @@ function _default() {
       export: 'content/addon-page/addon-page.html#page=export',
       sync: 'content/addon-page/addon-page.html#page=sync'
     },
-    open: function open(urls) {
-      var _this = this;
-
+    open: function open(urls, names) {
       urls = typeof urls === 'string' ? [urls] : urls;
+      names = typeof names === 'string' ? [names] : names;
       var l = urls.length,
-          securityWarning = false;
+          securityWarning = false,
+          url;
 
       while (l--) {
-        browser.tabs.create({
-          url: urls[l]
-        }).catch(function () {
-          if (!securityWarning) _this.emit('failed:open-tab');
-          securityWarning = true;
-        });
+        (function (self, l) {
+          url = urls[l];
+          browser.tabs.create({
+            url: urls[l]
+          }).catch(function () {
+            if (!securityWarning) self.emit('failed:open-tab');
+            securityWarning = true;
+          }).then(function () {
+            if (names) self.emit('opened:entry', {
+              url: url,
+              name: names[l]
+            });
+          });
+        })(this, l);
       }
     },
     openAddonPage: function openAddonPage(id) {
@@ -1105,14 +1156,14 @@ function _default() {
       if (version && version < '3') this.openAddonPage('help');else if (loadReason && loadReason === 'install') this.openAddonPage('help');
     },
     openSearch: function openSearch(word) {
-      var _this2 = this;
+      var _this = this;
 
       _storage.default.get('settings').then(function (settings) {
         var custom = settings.misc.customSearch,
             url;
         if (custom) url = 'https://' + custom[0] + word + custom[1];else url = 'https://' + browser.i18n.getMessage('lng') + '.wikipedia.org/wiki/' + word;
 
-        _this2.open(url);
+        _this.open(url);
       });
     }
   });
@@ -1185,6 +1236,10 @@ new _utils._MODULE({
 
       if (!settings.shortcuts.d[0]) {
         settings.shortcuts.d[0] = defaultSettings.shortcuts.d[0];
+      }
+
+      if (!settings.shortcuts.sb) {
+        settings.shortcuts.sb = defaultSettings.shortcuts.sb;
       }
 
       if (!settings.misc.tmuipos) {
@@ -1449,7 +1504,7 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark'],
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark'],
     CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note']
   }
 });
@@ -1864,7 +1919,8 @@ var _default = {
       '2': ['', true],
       '3': ['', true],
       arrowup: ['altKey', false, false],
-      arrowdown: ['altKey', false, false]
+      arrowdown: ['altKey', false, false],
+      sb: ['', '', true]
     },
     markers: {
       '2': 'background-color:#ffcc00;',
@@ -1907,6 +1963,27 @@ var _default = {
     settings: false,
     history: false
   }
+};
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./data/global-settings.js":
+/*!*********************************!*\
+  !*** ./data/global-settings.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  MAX_ENTRY_NAME_CHARS: 70
 };
 exports.default = _default;
 
@@ -1959,6 +2036,8 @@ var _default = {
   error_empty_local_storage_onupdate: 30,
   error_toggle_sync: 31,
   error_save_priv: 32,
+  note_restoration_warning_1: 33,
+  note_restoration_warning_2: 34,
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {
