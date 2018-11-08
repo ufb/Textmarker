@@ -222,7 +222,7 @@ export default function(mark) {
         el.style.top = top + 'px';
       }
     },
-    onDragEnd() {console.log('end');
+    onDragEnd() {
       this.mark.keyData.note.pos = this.pos;
       this.emit('changed:note-pos', this.mark.id);
     }
