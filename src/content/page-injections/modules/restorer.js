@@ -60,11 +60,16 @@ class Restorer extends _MODULE {
     return this;
   }
   createTempObject(mark) {
-    let trimmedText = this.squeeze(mark.text);
+    let text = mark.text,
+        trimmedText = text.trim(),
+        squeezedText = this.squeeze(mark.text);
 
     mark.temp = {
+      textLength: text.length,
       trimmedText: trimmedText,
       trimmedTextLength: trimmedText.length,
+      squeezedText: squeezedText,
+      squeezedTextLength: squeezedText.length,
       possiblePositions: [],
       possibleEndPositions: [],
       possibleStartNodes: [],
@@ -122,7 +127,7 @@ class Restorer extends _MODULE {
     let trimmedSelectionText = this.trimmedSelectionText,
         allPossibleStartPositions = this.allPossibleStartPositions = [],
         endPositions = [],
-        mark, markTemp, trimmedText, trimmedTextLength, p, endPosition;
+        mark, markTemp, squeezedText, squeezedTextLength, p, endPosition;
 
     while (l--) {
       p = undefined;
@@ -138,16 +143,16 @@ class Restorer extends _MODULE {
 
         allPossibleStartPositions = allPossibleStartPositions.concat(markTemp.possiblePositions);
         endPositions = endPositions.concat(markTemp.possibleEndPositions);
-        
+
       } else {
 
-        trimmedText = markTemp.trimmedText;
-        trimmedTextLength = markTemp.trimmedTextLength;
+        squeezedText = markTemp.squeezedText;
+        squeezedTextLength = markTemp.squeezedTextLength;
 
         while (p !== -1) {
           if (p === undefined) p = -1;
-          p = trimmedSelectionText.indexOf(trimmedText, p + 1);
-          endPosition = p + trimmedTextLength;
+          p = trimmedSelectionText.indexOf(squeezedText, p + 1);
+          endPosition = p + squeezedTextLength;
           markTemp.possiblePositions.push([p, endPosition, mark]);
           markTemp.possibleEndPositions.push(endPosition);
           allPossibleStartPositions.push([p, endPosition, mark]);
@@ -363,25 +368,34 @@ class Restorer extends _MODULE {
   ruleOutMultiples() {
     let cache = this.cache,
         i = cache.length,
-        mark, possibleStartNodes, p, parent, grampa, grandgrampa, matches, failed, q;
+        mark, possibleStartNodes, p, node, parent, grampa, grandgrampa, grandgrandgrampa, matches, failed, q,
+        possibleEnds, startFoundFor, conds, startOffset, temp, textLength;
 
     while (i--) {
       mark = cache[i];
       matches = [];
       failed = false;
-      possibleStartNodes = mark.temp.possibleStartNodes;
+      temp = mark.temp;
+      possibleStartNodes = temp.possibleStartNodes;
+      possibleEnds = temp.possibleEnds;
+      startFoundFor = temp.startFoundFor
       p = possibleStartNodes.length;
+      conds = mark.conds;
+      startOffset = conds.o;
+      textLength = temp.textLength;
 
       if (p > 1) {
         while (p--) {
-          parent = possibleStartNodes[p].parentNode.parentNode;
+          node = possibleStartNodes[p];
+          parent = node.parentNode.parentNode;
           grampa = parent.parentNode || 0;
 
-          if (!grampa || mark.conds.p3 === this.whichChild(grampa, parent))
+          if (!grampa || conds.p3 === this.whichChild(grampa, parent)) {
             matches.push(p);
+          }
         }
-        if (!matches.length)
-          p = 0;
+
+        if (!matches.length) p = 0;
         else {
           if (matches.length === 1) p = matches[0];
           else {
@@ -392,12 +406,17 @@ class Restorer extends _MODULE {
               parent = possibleStartNodes[q].parentNode;
               grampa = parent.parentNode || 0;
               grandgrampa = grampa && grampa.parentNode ? grampa.parentNode : 0;
+              grandgrandgrampa = grandgrampa && grandgrampa.parentNode ? grandgrampa.parentNode : 0;
 
-              if (!grandgrampa || mark.conds.p4 === this.whichChild(grandgrampa, grampa)) {
-                p = q;
-                break;
+              if (
+                  (!grandgrandgrampa || conds.p4 === this.whichChild(grandgrandgrampa, grandgrampa)) &&
+                  (possibleEnds[startFoundFor[q]].offset - startOffset) === textLength
+                ) {
+                  p = q;
+                  break;
               }
             }
+
             if (!p) p = 0;
           }
         }
@@ -426,8 +445,8 @@ class Restorer extends _MODULE {
         startOffset = description.o,
         relevantNodeText = node.data.substring(startOffset).trim(),
         l = relevantNodeText.length,
-        markText = mark.text.trim(),
-        m = markText.length,
+        markText = mark.temp.trimmedText,
+        m = mark.temp.trimmedTextLength,
         textsMatch;
 
     if (m <= l)
