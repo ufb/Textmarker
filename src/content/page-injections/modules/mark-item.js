@@ -99,18 +99,23 @@ export default class _MARK {
     let wrappers = this.wrappers;
     n = typeof n === 'number' ? n : wrappers.length - 1;
     let firstWrapper = wrappers[0],
-        lastWrapper = wrappers[n];
+        lastWrapper = wrappers[n],
+        anchorPrev, focusPrev;
 
     this.anchorNodePosition = this.whichChild(firstWrapper.parentNode, firstWrapper, true) - 1;
     this.focusNodePosition = this.whichChild(lastWrapper.parentNode, lastWrapper, true);
 
-    if (!lastWrapper.previousSibling || lastWrapper.previousSibling.nodeType === 3) this.focusNodePosition -= 1;
+    anchorPrev = firstWrapper.previousSibling;
+    focusPrev = lastWrapper.previousSibling;
+
+    if (anchorPrev && anchorPrev.nodeType === 1) this.anchorNodePosition += 1;
+    if (!focusPrev || focusPrev.nodeType === 3) this.focusNodePosition -= 1;
 
     if (this.anchorNodePosition < 0) this.anchorNodePosition = 0;
     if (this.focusNodePosition < 0) this.focusNodePosition = 0;
 
     if (includingOffsets) {
-      this.startOffset = firstWrapper.previousSibling && firstWrapper.previousSibling.data ? firstWrapper.previousSibling.data.length : 0;
+      this.startOffset = anchorPrev && anchorPrev.data ? anchorPrev.data.length : 0;
       this.endOffset = this.simple ? this.startOffset + this.keyData.text.length : this.endOffset;
     }
     return this;
@@ -157,8 +162,11 @@ export default class _MARK {
 				c = children.length,
 				i = 0;
 
-    for ( ; i < c; i++)
-      if (children[i] === child) return i;
+    for ( ; i < c; i++) {
+      if (children[i] === child) {
+        return i;
+      }
+    }
 	}
 	createWrappers(style, number) {
 		let wrappers = [],
