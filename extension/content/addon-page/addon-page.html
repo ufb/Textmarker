@@ -882,9 +882,7 @@
               </select>
             </div>
             <div id="filter">
-              <select id="filter-entries" class="border-top">
-                <option data-l10n-id="t5124" selected hidden></option>
-              </select>
+              <select id="filter-entries" class="border-top"></select>
               <button type="button" id="remove-filter" class="btn--small u-pull--right">&#10005;</button>
             </div>
             <div id="view">
@@ -898,6 +896,7 @@
               <select id="action" class="action border-top">
                 <option data-l10n-id="t5121" selected hidden></option>
                 <option class="toggle-button" data-target="specification tag" data-toggle="remove add" value="tag" data-l10n-id="t5123"></option>
+                <option class="toggle-button" data-target="specification tag" data-toggle="remove remove" value="removeTags" data-l10n-id="t5129"></option>
                 <option class="toggle-button" data-target="specification tag" data-toggle="remove remove" value="export" data-l10n-id="t5113"></option>
                 <option class="toggle-button" data-target="specification tag" data-toggle="add remove" value="download" data-l10n-id="t513"></option>
                 <option class="toggle-button" data-target="specification tag" data-toggle="remove remove" value="delete" data-l10n-id="t515"></option>
@@ -946,7 +945,7 @@
               <button type="button" class="delete action-button quick-action btn--small u-float--left" data-action="delete" data-l10n-attr data-l10n-title="quickbutton_delete">&#10005;</button>
             </div>
             <div class="details">
-              <div class="tag"></div>
+              <div class="tags"></div>
               <ul class="u-cf">
                 <li><span class="created"></span> &ndash; <span class="last"></span></li>
                 <li><span data-l10n-id="t5111"></span> <span class="count"></span></li>

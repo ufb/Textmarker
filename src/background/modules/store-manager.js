@@ -292,17 +292,24 @@ new _MODULE({
   tagEntries(names, tag) {
     _STORAGE.update('history', history => {
       const entries = history.entries;
-      names.sync.forEach(name => entries[name].tag = tag);
+      names.sync.forEach(name => {
+        if (!tag) entries[name].tag = '';
+        else if (!entries[name].tag) entries[name].tag = tag;
+        else entries[name].tag += ' ' + tag;
+      });
       return history;
     }, 'sync')
       .then(() => {
         return _STORAGE.update('history', history => {
           const entries = history.entries;
-          names.local.forEach(name => entries[name].tag = tag);
+          names.local.forEach(name => {
+            if (!tag) entries[name].tag = '';
+            else if (!entries[name].tag) entries[name].tag = tag;
+            else entries[name].tag += ' ' + tag;
+          });
           return history;
         }, 'local');
-      })
-      .then(() => this.emit('tagged:entries'));
+      });
   },
   registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));

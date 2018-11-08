@@ -76,12 +76,23 @@
   .details {
     display: none;
   	margin-left: 34px;
-  	width: calc(100% - 130px);
+  	width: calc(100% - 165px);
     color: $color-text--disabled;
 
-    .tag {
+    .tags {
       margin: 3px 0;
       display: inline-block;
+
+      &__item {
+        border: 1px solid transparentize($color-bg--turquoise, .75);
+        border-radius: 2px;
+        padding: 0 2px;
+        margin-right: 5px;
+
+        &:hover {
+          background: transparentize($color-bg--turquoise, .75);
+        }
+      }
     }
     li {
       list-style-type: none;
