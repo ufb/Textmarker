@@ -12,11 +12,25 @@ ul {
 	padding: 5px 0;
 }
 li {
-	padding: 5px 10px 5px 35px;
-  background-position: 8px 5px !important;
-}
-li:hover {
-	background: transparentize($color-bg--turquoise, .9);
+	padding: 5px 10px;
+
+	.menu__icon {
+    position: relative;
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+    top: 3px;
+		margin-right: 8px;
+		opacity: .5;
+	}
+
+	&:hover {
+		background: transparentize($color-bg--turquoise, .9);
+
+		.menu__icon {
+			opacity: 1;
+		}
+	}
 }
 .partingline {
   height: 1px;
@@ -28,27 +42,27 @@ li:hover {
   background: $color-border--light;
 }
 
-#news {
+#news .menu__icon {
   @include icon('forklift');
 }
-#help {
+#help .menu__icon {
   @include icon('book');
 }
-#settings {
+#settings .menu__icon {
   @include icon('tools');
 }
-#history {
+#history .menu__icon {
   @include icon('clock');
 }
-#sync {
+#sync .menu__icon {
   @include icon('sync2');
 }
-#export {
+#export .menu__icon {
   @include icon('export');
 }
-#contact {
+#contact .menu__icon {
   @include icon('ghost');
 }
-#logs {
+#logs .menu__icon {
   @include icon('dna');
 }
