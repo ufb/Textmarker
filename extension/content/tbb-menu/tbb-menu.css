@@ -26,11 +26,19 @@ ul {
   padding: 5px 0; }
 
 li {
-  padding: 5px 10px 5px 35px;
-  background-position: 8px 5px !important; }
-
-li:hover {
-  background: rgba(43, 165, 183, 0.1); }
+  padding: 5px 10px; }
+  li .menu__icon {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    top: 3px;
+    margin-right: 8px;
+    opacity: .5; }
+  li:hover {
+    background: rgba(43, 165, 183, 0.1); }
+    li:hover .menu__icon {
+      opacity: 1; }
 
 .partingline {
   height: 1px;
@@ -41,49 +49,49 @@ li:hover {
 .partingline:hover {
   background: #e1e2e3; }
 
-#news {
+#news .menu__icon {
   background-image: url(../../icons/forklift.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#help {
+#help .menu__icon {
   background-image: url(../../icons/book.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#settings {
+#settings .menu__icon {
   background-image: url(../../icons/tools.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#history {
+#history .menu__icon {
   background-image: url(../../icons/clock.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#sync {
+#sync .menu__icon {
   background-image: url(../../icons/sync2.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#export {
+#export .menu__icon {
   background-image: url(../../icons/export.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#contact {
+#contact .menu__icon {
   background-image: url(../../icons/ghost.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#logs {
+#logs .menu__icon {
   background-image: url(../../icons/dna.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
