@@ -18,7 +18,7 @@ export default function() {
     },
     adjustName(name, entry, method) {
       name = name ? name :
-             method === 'title' ? entry.title :
+             method === 'title' ? entry.title.trim() ? entry.title.trim() : entry.url :
              method === 'date' ? (new Date(entry.first).toLocaleString()) : '';
 
       name = name.substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1);
