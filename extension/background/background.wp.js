@@ -564,7 +564,7 @@ function _default() {
     adjustName: function adjustName(name, entry, method) {
       var _this2 = this;
 
-      name = name ? name : method === 'title' ? entry.title : method === 'date' ? new Date(entry.first).toLocaleString() : '';
+      name = name ? name : method === 'title' ? entry.title.trim() ? entry.title.trim() : entry.url : method === 'date' ? new Date(entry.first).toLocaleString() : '';
       name = name.substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1);
 
       _storage.default.get('history').then(function (history) {
