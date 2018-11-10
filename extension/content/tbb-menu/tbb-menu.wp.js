@@ -195,7 +195,9 @@ new _utils._DOMMODULE({
     DOM: {
       click: {
         '#activate': 'toggle',
-        '.send': 'open'
+        'li': 'open',
+        '.menu__icon': 'open',
+        '.menu__text': 'open'
       }
     }
   },
@@ -222,7 +224,8 @@ new _utils._DOMMODULE({
     window.close();
   },
   open: function open(e, el) {
-    this.emit('open:addon-page', el.id);
+    e.stopPropagation();
+    this.emit('open:addon-page', el.getAttribute('data-target'));
     window.close();
   },
   setActivateText: function setActivateText(active) {
