@@ -263,7 +263,7 @@ export default function() {
       actions.classList[meth_1]('u-display--none');
       search.classList[meth_2]('u-display--none');
       sort.classList[meth_2]('u-display--none');
-      filter.classList[meth_2]('u-display--none');
+      filter.classList[meth_1]('u-display--none');
       count.classList[meth_3]('u-display--none');
       view.classList[meth_1]('u-display--none');
       checkall.classList[meth_2]('u-display--none');
@@ -513,10 +513,10 @@ export default function() {
       const entries = this.origEntries;
       const filteredEntries = {};
       let entry, rx, c = 0;
-      el.parentNode.classList.add('active');
+      document.getElementById('filter').classList.add('active');
       for (let name in entries) {
         entry = entries[name];
-        rx = new RegExp('^'+filter+'|\\s'+filter, 'g');
+        rx = new RegExp('^'+filter+'$|^'+filter+'\\s|\\s'+filter+'\\s|\\s'+filter+'$', 'g');
         if ((filter && entry.tag && entry.tag.search(rx) !== -1) || (!entry.tag && filter == '')) {
           filteredEntries[name] = entry;
           c++;

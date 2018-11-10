@@ -292,24 +292,27 @@ new _MODULE({
   tagEntries(names, tag) {
     _STORAGE.update('history', history => {
       const entries = history.entries;
-      names.sync.forEach(name => {
-        if (!tag) entries[name].tag = '';
-        else if (!entries[name].tag) entries[name].tag = tag;
-        else entries[name].tag += ' ' + tag;
-      });
+      names.sync.forEach(name => this.addTagToEntry(entries[name], tag));
       return history;
     }, 'sync')
       .then(() => {
         return _STORAGE.update('history', history => {
           const entries = history.entries;
-          names.local.forEach(name => {
-            if (!tag) entries[name].tag = '';
-            else if (!entries[name].tag) entries[name].tag = tag;
-            else entries[name].tag += ' ' + tag;
-          });
+          names.local.forEach(name => this.addTagToEntry(entries[name], tag));
           return history;
         }, 'local');
       });
+  },
+  addTagToEntry(entry, tag) {
+    if (!tag) entry.tag = '';
+    else if (!entry.tag) entry.tag = tag;
+    else {
+      const rx = new RegExp('^'+tag+'$|^'+tag+'\\s|\\s'+tag+'\\s|\\s'+tag+'$', 'g');
+      if (entry.tag.search(rx) === -1) {
+        entry.tag += ' ' + tag;
+      }
+    }
+    return entry;
   },
   registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));
