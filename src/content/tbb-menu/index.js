@@ -12,9 +12,8 @@ new _DOMMODULE({
     DOM: {
       click: {
         '#activate': 'toggle',
-        'li': 'open',
-        '.menu__icon': 'open',
-        '.menu__text': 'open'
+        '.send': 'open',
+        'span': 'open'
       }
     }
   },
@@ -36,8 +35,8 @@ new _DOMMODULE({
     window.close();
   },
   open(e, el) {
-    e.stopPropagation();
-    this.emit('open:addon-page', el.getAttribute('data-target'));
+    const page = el.nodeName === 'SPAN' ? el.parentNode.id : el.id;
+    this.emit('open:addon-page', page);
     window.close();
   },
   setActivateText(active) {
