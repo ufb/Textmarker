@@ -277,9 +277,28 @@ new _MODULE({
   },
   updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
     _STORAGE.update('history', history => {
-	  let oldLostMarks = history.entries[entryName].lost;
+	    const oldLostMarks = history.entries[entryName].lost || [];
+      const restoredMarksIDs = [];
+      const oldLostMarksIDs = [];
+
       history.entries[entryName].marks = restoredMarks;
-      history.entries[entryName].lost = oldLostMarks.concat(lostMarks);
+
+      restoredMarks.forEach(mark => restoredMarksIDs.push(mark.id));
+
+      let l = oldLostMarks.length, id;
+
+      while (l--) {
+        id = oldLostMarks[l].id;
+        if (restoredMarksIDs.includes(id)) {
+          oldLostMarks.splice(l, 1);
+        } else {
+          oldLostMarksIDs.push(id);
+        }
+      }
+
+      lostMarks.forEach(mark => {
+        if (!oldLostMarksIDs.includes(mark.id)) oldLostMarks.push(mark);
+      });
 
       return history;
     }, area);
