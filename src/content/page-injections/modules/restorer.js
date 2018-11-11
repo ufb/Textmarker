@@ -574,7 +574,8 @@ export default function() {
       ENV: {
         'restore:marks': 'restore',
         'lost:marks': 'onFailure',
-        'finished:restoration': 'onFinishedRestoration'
+        'finished:restoration': 'onFinishedRestoration',
+        'resumed:markers': 'retry'
       }
     },
 
@@ -583,14 +584,23 @@ export default function() {
     failed: 0,
 
     restore(entries) {
+      this.entries = entries;
       this.count = entries.length;
 
       entries.forEach(entry => (new Restorer(entry)));
     },
+    resume() {
+      this.restored = 0;
+      this.failed = 0;
+    },
+    retry() {
+      this.resume();
+      this.restore(this.entries);
+    },
     onFailure() {
       this.failed++;
     },
-    onFinishedRestoration() {
+    onFinishedRestoration(name, restored, lost, area) {
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
         if (this.failed) this.emit('failed:restoration');
