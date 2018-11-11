@@ -14,6 +14,7 @@ export default new _PORT({
       'sidebar:note',
       'sidebar:toggle-autosave',
       'sidebar:save-changes',
+      'sidebar:retry-restoration',
       'sidebar:undo',
       'sidebar:redo',
       'sidebar:scroll-to-bookmark',
