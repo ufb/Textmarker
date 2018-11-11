@@ -83,7 +83,7 @@ new _DOMMODULE({
     _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id }));
   },
   retryRestoration(e, el) {
-    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:retry-restoration', { tab: tab.id }));
+    this.pageAction(e, el);
     el.parentNode.classList.add('u-display--none');
   }
 });
