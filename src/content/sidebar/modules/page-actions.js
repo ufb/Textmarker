@@ -15,12 +15,14 @@ new _DOMMODULE({
       'added:bookmark': 'activateBookmark',
       'removed:bookmark': 'deactivateBookmark',
       'added:note': 'activateNotes',
-      'removed:last-note': 'deactivateNotes'
+      'removed:last-note': 'deactivateNotes',
+      'failed:restoration': 'activateRetry'
     },
     DOM: {
       click: {
         '.switch-toggle': 'onAutosaveSwitch',
-        '.action-box__action--page': 'pageAction'
+        '.action-box__action--page': 'pageAction',
+        '#page-action--retry': 'retryRestoration'
       }
     }
   },
@@ -44,6 +46,9 @@ new _DOMMODULE({
     const meth = on ? 'add' : 'remove';
     document.getElementById('autosave-switch').classList[meth]('active');
     document.getElementById('page-action-box--save').classList[meth]('u-display--none');
+  },
+  activateRetry() {
+    document.getElementById('page-action-box--retry').classList.remove('u-display--none');
   },
   activateSave() {
     this.activate('save', true);
@@ -76,5 +81,9 @@ new _DOMMODULE({
   },
   pageAction(e, el) {
     _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id }));
+  },
+  retryRestoration(e, el) {
+    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:retry-restoration', { tab: tab.id }));
+    el.parentNode.classList.add('u-display--none');
   }
 });
