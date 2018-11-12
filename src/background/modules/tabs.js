@@ -23,6 +23,10 @@ export default function() {
       sync: 'content/addon-page/addon-page.html#page=sync'
     },
 
+    autoinit() {
+      browser.tabs.onActivated.addListener(tab => this.emit('activated:tab', tab.tabId));
+    },
+
     open(urls, names) {
       urls = typeof urls === 'string' ? [urls] : urls;
       names = typeof names === 'string' ? [names] : names;
