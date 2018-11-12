@@ -16,7 +16,8 @@ export default function() {
         'toggle:notes': 'toggleAll',
         'sidebar:toggle-notes': 'toggleAll',
         'updated:misc-settings': 'updateTransp',
-        'start:drag': 'startDraggingNote'
+        'start:drag': 'startDraggingNote',
+        'opened:sidebar': 'sendNotesState'
       }
     },
 
@@ -93,6 +94,9 @@ export default function() {
     emitDragEvent(note, e) {
       e.preventDefault();
       this.emit('drag:note', note, e);
+    },
+    sendNotesState(info) {
+      this.emit('notes-state', !this.isEmpty(this.notes), info);
     }
   });
 }

@@ -20,7 +20,8 @@ export default new _PORT({
       'sidebar:scroll-to-bookmark',
       'sidebar:toggle-notes',
       'sidebar:next-mark',
-      'open:addon-page'
+      'open:addon-page',
+      'opened:sidebar'
     ]
   }
 })

@@ -8,7 +8,8 @@ new _DOMMODULE({
       'started:app': 'render',
       'updated:settings': 'render',
       'toggled:sync-settings': 'render',
-      'changed:selection': 'toggleMarkerButtons'
+      'changed:selection': 'toggleMarkerButtons',
+      'page-state': 'onPageState'
     },
     DOM: {
       change: {
@@ -114,5 +115,8 @@ new _DOMMODULE({
   toggleMarkerButtons(show) {
     const meth = show ? 'removeAttribute' : 'setAttribute';
     Array.from(document.getElementsByClassName('marker__apply')).forEach(btn => btn[meth]('disabled', true));
+  },
+  onPageState(state) {
+    this.toggleMarkerButtons(state.selection);
   }
 });

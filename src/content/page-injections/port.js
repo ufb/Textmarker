@@ -21,7 +21,9 @@ export default new _PORT({
       'added:note',
       'removed:last-note',
       'warn:mixed-entry-types',
-      'warn:multiple-unlocked-entries'
+      'warn:multiple-unlocked-entries',
+      'page-state',
+      'notes-state'
     ]
   }
 });
