@@ -18,6 +18,9 @@ h2 {
   font-weight: normal;
   position: relative;
 }
+label {
+  width: calc(100% - 30px);
+}
 .info-box {
   position: absolute;
   z-index: 1;
