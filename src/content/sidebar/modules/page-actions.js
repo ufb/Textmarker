@@ -98,7 +98,8 @@ new _DOMMODULE({
   },
   retryRestoration(e, el) {
     this.pageAction(e, el);
-    el.parentNode.classList.add('u-display--none');
+    this.deactivateRetry();
+
   },
   onPageState(state) {
     if (state.bookmark) this.activateBookmark();
