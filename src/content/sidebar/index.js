@@ -3,6 +3,7 @@ import './sass/index.scss'
 import _ERRORTRACKER from './../_shared/utils'
 import { _MODULE } from './../_shared/utils'
 import { _L10N } from './../_shared/utils'
+import { _GET_ACTIVE_TAB } from './../_shared/utils'
 import _PORT from './port'
 import _STORE from './_store'
 import './modules/markers'
@@ -18,6 +19,10 @@ new _MODULE({
       'started:app': 'onStart',
       'toggled:addon': 'power'
     }
+  },
+
+  autoinit() {
+    _GET_ACTIVE_TAB().then(tab => this.emit('opened:sidebar', { tab: tab.id }));
   },
 
   power(on) {

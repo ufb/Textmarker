@@ -42,7 +42,8 @@ new _PORT({
       'sidebar:scroll-to-bookmark',
       'sidebar:toggle-notes',
       'sidebar:next-mark',
-      'sidebar:retry-restoration'
+      'sidebar:retry-restoration',
+      'opened:sidebar'
     ],
     CONNECTION: [
       'started:app',
@@ -57,7 +58,9 @@ new _PORT({
       'added:bookmark',
       'removed:bookmark',
       'added:note',
-      'removed:last-note'
+      'removed:last-note',
+      'page-state',
+      'notes-state'
     ]
   }
 });

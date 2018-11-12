@@ -17,7 +17,9 @@ new _DOMMODULE({
       'added:note': 'activateNotes',
       'removed:last-note': 'deactivateNotes',
       'failed:restoration': 'activateRetry',
-      'update:entry?': 'deactivateRetry'
+      'update:entry?': 'deactivateRetry',
+      'page-state': 'onPageState',
+      'notes-state': 'onNotesState'
     },
     DOM: {
       click: {
@@ -51,15 +53,15 @@ new _DOMMODULE({
     document.getElementById('page-action-box--save').classList[meth]('u-display--none');
   },
   activateRetry() {
-    if (!retryBtnShown) {
+    if (!this.retryBtnShown) {
       document.getElementById('page-action-box--retry').classList.remove('u-display--none');
-      retryBtnShown = true;
+      this.retryBtnShown = true;
     }
   },
   deactivateRetry() {
-    if (retryBtnShown) {
+    if (this.retryBtnShown) {
       document.getElementById('page-action-box--retry').classList.add('u-display--none');
-      retryBtnShown = false;
+      this.retryBtnShown = false;
     }
   },
   activateSave() {
@@ -97,5 +99,12 @@ new _DOMMODULE({
   retryRestoration(e, el) {
     this.pageAction(e, el);
     el.parentNode.classList.add('u-display--none');
+  },
+  onPageState(state) {
+    if (state.bookmark) this.activateBookmark();
+    if (state.retryActive) this.activateRetry();
+  },
+  onNotesState(notes) {
+    if (notes) this.activateNotes();
   }
 });

@@ -10,7 +10,11 @@ export default function() {
         'started:app': 'checkURL',
         'toggled:addon': 'power',
         'deleted:entry': 'unset',
-        'saved:entry': 'update'
+        'saved:entry': 'update',
+        'opened:sidebar': 'sendPageState',
+        'failed:restoration': 'activateRetry',
+        'succeeded:restoration': 'deactivateRetry',
+        'update:entry?': 'deactivateRetry'
       },
       DOM: {
         keydown: {
@@ -26,6 +30,7 @@ export default function() {
     active: true,
     set: false,
     initialized: false,
+    retryActive: false,
 
     autoinit() {
 
@@ -158,6 +163,7 @@ export default function() {
       if (_STORE.name && _STORE.name === name) {
         _STORE.name = undefined;
         _STORE.entry = null;
+        _STORE.isNew = true;
       }
     },
     update(entries, force) {
@@ -225,6 +231,19 @@ export default function() {
     },
     onSelectionChange() {
       this.emit('changed:selection', !window.getSelection().isCollapsed);
+    },
+    activateRetry() {
+      this.retryActive = true;
+    },
+    deactivateRetry() {
+      this.retryActive = false;
+    },
+    sendPageState(info) {
+      this.emit('page-state', {
+        selection: !window.getSelection().isCollapsed,
+        bookmark: !!document.getElementById('textmarker-bookmark-anchor'),
+        retryActive: this.retryActive
+      }, info);
     }
   });
 }
