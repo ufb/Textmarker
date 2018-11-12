@@ -16,7 +16,8 @@ new _DOMMODULE({
       'removed:bookmark': 'deactivateBookmark',
       'added:note': 'activateNotes',
       'removed:last-note': 'deactivateNotes',
-      'failed:restoration': 'activateRetry'
+      'failed:restoration': 'activateRetry',
+      'update:entry?': 'deactivateRetry'
     },
     DOM: {
       click: {
@@ -49,6 +50,9 @@ new _DOMMODULE({
   },
   activateRetry() {
     document.getElementById('page-action-box--retry').classList.remove('u-display--none');
+  },
+  deactivateRetry() {
+    document.getElementById('page-action-box--retry').classList.add('u-display--none');
   },
   activateSave() {
     this.activate('save', true);
