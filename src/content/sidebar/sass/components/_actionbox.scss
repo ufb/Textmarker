@@ -13,6 +13,9 @@
       cursor: default;
     }
   }
+  label {
+    width: calc(100% - 30px);
+  }
 }
 
 $action-buttons: (
