@@ -10,7 +10,6 @@ export default function() {
     },
     autoinit() {
       this.setAddonLinks()
-          .setDeveloperLinks()
           .setLogLink();
     },
     setAddonLinks() {
@@ -23,20 +22,6 @@ export default function() {
         aL = addonLinks[a];
         aL.href = addonURL;
         if (aL.id === 'moz-addon--contact') aL.innerText = addonURL;
-      }
-
-      return this;
-    },
-    setDeveloperLinks() {
-      let developerURL = browser.i18n.getMessage('url_moz_developer'),
-          developerLinks = document.getElementsByClassName('moz-developer'),
-          d = developerLinks.length,
-          dL;
-
-      while (d--) {
-        dL = developerLinks[d];
-        dL.href = developerURL;
-        if (dL.id === 'moz-developer--contact') dL.innerText = developerURL;
       }
 
       return this;
