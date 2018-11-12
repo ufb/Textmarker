@@ -28,6 +28,8 @@ new _DOMMODULE({
     }
   },
 
+  retryBtnShown: false,
+
   autoinit() {
     this.update();
   },
@@ -49,10 +51,16 @@ new _DOMMODULE({
     document.getElementById('page-action-box--save').classList[meth]('u-display--none');
   },
   activateRetry() {
-    document.getElementById('page-action-box--retry').classList.remove('u-display--none');
+    if (!retryBtnShown) {
+      document.getElementById('page-action-box--retry').classList.remove('u-display--none');
+      retryBtnShown = true;
+    }
   },
   deactivateRetry() {
-    document.getElementById('page-action-box--retry').classList.add('u-display--none');
+    if (retryBtnShown) {
+      document.getElementById('page-action-box--retry').classList.add('u-display--none');
+      retryBtnShown = false;
+    }
   },
   activateSave() {
     this.activate('save', true);
