@@ -10,7 +10,7 @@ export default function() {
     },
 
     openEntryDetailPage(name) {
-      const popupURL = browser.extension.getURL('content/detail-view/detail-view.html');
+      const popupURL = browser.runtime.getURL('content/detail-view/detail-view.html');
 
       browser.windows.getCurrent().then(currentWindow => {
 
