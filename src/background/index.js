@@ -15,6 +15,7 @@ import './modules/injection-manager'
 import _NOTIFICATIONS from './modules/notifications'
 import _TABS from './modules/tabs'
 import _WINDOWS from './modules/windows'
+import _SIDEBARS from './modules/sidebars'
 import _NAMER from './modules/namer'
 import _CTM from './modules/context-menu'
 //import _IDB from './modules/indexeddb'
@@ -67,6 +68,7 @@ new _MODULE({
     _NAMER();
     _CTM();
     _WINDOWS();
+    _SIDEBARS();
 
     _STORAGE.get('mode').then(mode => this.activate(mode))
       .catch(() => this.activate(true))
