@@ -1,4 +1,3 @@
-import _STORAGE from './../storage'
 import { _MODULE } from './../utils'
 
 export default function() {
