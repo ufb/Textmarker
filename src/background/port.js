@@ -60,7 +60,9 @@ new _PORT({
       'added:note',
       'removed:last-note',
       'page-state',
-      'notes-state'
+      'notes-state',
+      'entry:found',
+      'entry:found-for-tab'
     ]
   }
 });
