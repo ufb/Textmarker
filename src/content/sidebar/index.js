@@ -17,17 +17,10 @@ new _MODULE({
   events: {
     ENV: {
       'started:app': 'onStart',
-      'toggled:addon': 'power',
-      'saved:entry':'test'
+      'toggled:addon': 'power'
     }
   },
-test(a,b,c,d,e){
-  console.log(a);
-    console.log(b);
-      console.log(c);
-        console.log(d);
-          console.log(e);
-},
+
   autoinit() {
     this.emit('opened:sidebar', { tab: 'active' });
   },
