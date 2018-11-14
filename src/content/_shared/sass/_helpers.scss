@@ -144,6 +144,15 @@ $spacing-sizes: (
   }
 }
 
+// overflow
+.u-overflow {
+  &--ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 // alignment
 .u-align {
   &--top {
