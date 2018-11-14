@@ -17,12 +17,19 @@ new _MODULE({
   events: {
     ENV: {
       'started:app': 'onStart',
-      'toggled:addon': 'power'
+      'toggled:addon': 'power',
+      'saved:entry':'test'
     }
   },
-
+test(a,b,c,d,e){
+  console.log(a);
+    console.log(b);
+      console.log(c);
+        console.log(d);
+          console.log(e);
+},
   autoinit() {
-    _GET_ACTIVE_TAB().then(tab => this.emit('opened:sidebar', { tab: tab.id }));
+    this.emit('opened:sidebar', { tab: 'active' });
   },
 
   power(on) {
