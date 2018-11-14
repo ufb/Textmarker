@@ -4,13 +4,19 @@ body {
   color: $color-text--grey;
   font-family: inherit;
 }
-section {
+section, header {
   margin-bottom: 5px;
   padding: 10px 20px 15px;
   border-bottom: 1px solid $color-border--light;
 }
 section:last-child {
   border: 0;
+}
+h1 {
+  width: 100%;
+  font-size: 120%;
+  font-weight: normal;
+  margin: 0 0  10px;
 }
 h2 {
   font-size: 100%;
