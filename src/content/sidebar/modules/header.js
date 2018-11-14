@@ -4,12 +4,17 @@ new _DOMMODULE({
   el: document.getElementById('header'),
   events: {
     ENV: {
-      'saved:entry': 'render'
+      'saved:entry': 'render',
+      'entry:found': 'render',
+      'entry:found-for-tab': 'render'
     }
   },
 
   render(entry) {
-    if (!entry.locked) {
+    if (!entry) {
+      this.el.classList.add('u-display--none');
+    }
+    else if (!entry.locked) {
       this.el.classList.remove('u-display--none');
       document.getElementById('header__name').innerText = entry.name;
     }

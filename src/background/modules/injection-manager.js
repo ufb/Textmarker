@@ -23,13 +23,17 @@ new _MODULE({
         entry = entries[e];
         if (url === this.getHashlessURL(entry.url)) {
           matches.push(entry);
+          if (entry.locked) locked = true;
         }
       }
-      if (!matches.length) sendResponse(null);
-      else {
+      if (!matches.length) {
+        sendResponse(null);
+      } else {
         sendResponse({ entries: matches, recentlyOpenedEntry: this.recentlyOpenedEntry });
         this.recentlyOpenedEntry = null;
       }
+      entry = locked || !matches.length ? null : matches[0];
+      this.emit('entry:found', entry);
     });
   },
   onNamingRequest(sender, sendResponse) {

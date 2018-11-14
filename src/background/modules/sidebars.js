@@ -1,12 +1,17 @@
 import { _MODULE } from './../utils'
+import { _GET_ACTIVE_TAB } from './../utils'
 
 export default function() {
   return new _MODULE({
     events: {
       ENV: {
-        'activated:tab': 'setPanel'
+        'activated:tab': 'setPanel',
+        'entry:found': 'storeEntry',
+        'opened:sidebar':'sendEntry'
       }
     },
+
+    entries: {},
 
     setPanel(tabId) {
       this.isOpen().then(open => {
@@ -20,6 +25,12 @@ export default function() {
     },
     isOpen() {
       return browser.sidebarAction.isOpen({});
+    },
+    storeEntry(entry) {
+      _GET_ACTIVE_TAB().then(tab => this.entries[tab.id] = entry);
+    },
+    sendEntry() {
+      _GET_ACTIVE_TAB().then(tab => this.emit('entry:found-for-tab', this.entries[tab.id]));
     }
   });
 }
