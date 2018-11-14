@@ -1,5 +1,4 @@
 import { _DOMMODULE } from './../../_shared/utils'
-import { _GET_ACTIVE_TAB } from './../../_shared/utils'
 
 new _DOMMODULE({
   el: document.getElementById('mark-actions'),
@@ -22,7 +21,7 @@ new _DOMMODULE({
   },
   markAction(e, el) {
     if (el.hasAttribute('disabled')) return;
-    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: tab.id }));
+    this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: 'active' });
     //this.deactivate();
   },
   activate(markInfos) {
@@ -45,7 +44,7 @@ new _DOMMODULE({
     });
   },
   nav(e, el) {
-    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), 1*el.getAttribute('data-value'), null, { tab: tab.id }));
+    this.emit('sidebar:' + el.getAttribute('data-action'), 1*el.getAttribute('data-value'), null, { tab: 'active' });
   },
   toggleInfo(e, el) {
     el.classList.toggle('active');

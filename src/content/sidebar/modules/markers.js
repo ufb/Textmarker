@@ -1,5 +1,4 @@
 import { _DOMMODULE } from './../../_shared/utils'
-import { _GET_ACTIVE_TAB } from './../../_shared/utils'
 
 new _DOMMODULE({
   el: document.getElementById('markers'),
@@ -110,7 +109,7 @@ new _DOMMODULE({
   },
   applyColor(e, el) {
     if (el.classList.contains('disabled')) return;
-    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: tab.id }));
+    this.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: 'active' });
   },
   toggleMarkerButtons(show) {
     const meth = show ? 'removeAttribute' : 'setAttribute';

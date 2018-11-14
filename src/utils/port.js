@@ -43,8 +43,16 @@ export class _PORT extends _MODULE {
     if (type === 'content') browser.runtime.sendMessage(msg).catch(() => {});
     else if (type === 'background') {
       const lastArg = args[args.length - 1];
-      if (lastArg !== undefined && lastArg.tab) {
-        browser.tabs.sendMessage(lastArg.tab, msg).catch(() => {});
+      let tab;
+      if (lastArg !== undefined && (tab = lastArg.tab)) {
+        if (tab === 'active') {
+          browser.tabs.query({ active: true }).then(tabs => {
+            for (let tab of tabs)
+              browser.tabs.sendMessage(tab.id, msg).catch(() => {});
+          });
+        } else {
+          browser.tabs.sendMessage(lastArg.tab, msg).catch(() => {});
+        }
       } else {
         browser.tabs.query({/* currentWindow: false, active: false */}).then(tabs => {
           for (let tab of tabs)

@@ -1,5 +1,4 @@
 import { _DOMMODULE } from './../../_shared/utils'
-import { _GET_ACTIVE_TAB } from './../../_shared/utils'
 import _STORE from './../_store'
 
 new _DOMMODULE({
@@ -94,7 +93,7 @@ new _DOMMODULE({
     }
   },
   pageAction(e, el) {
-    _GET_ACTIVE_TAB().then(tab => this.emit('sidebar:' + el.getAttribute('data-action'), { tab: tab.id }));
+    this.emit('sidebar:' + el.getAttribute('data-action'), { tab: 'active' });
   },
   retryRestoration(e, el) {
     this.pageAction(e, el);
