@@ -52,6 +52,14 @@
     font-size: $font-size--l3;
   }
 }
+
+// u-width
+.u-width {
+  &--auto {
+    width: auto !important;
+  }
+}
+
 // font-weight
 .u-font-weight {
   &--normal {

@@ -32,7 +32,7 @@ new _MODULE({
         sendResponse({ entries: matches, recentlyOpenedEntry: this.recentlyOpenedEntry });
         this.recentlyOpenedEntry = null;
       }
-      entry = locked || !matches.length ? null : matches[0];
+      entry = locked ? 'locked' : !matches.length ? null : matches[0];
       this.emit('entry:found', entry);
     });
   },

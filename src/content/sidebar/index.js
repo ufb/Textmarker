@@ -17,7 +17,10 @@ new _MODULE({
   events: {
     ENV: {
       'started:app': 'onStart',
-      'toggled:addon': 'power'
+      'toggled:addon': 'power',
+      'saved:entry': 'toggle',
+      'entry:found': 'toggle',
+      'entry:found-for-tab': 'toggle'
     }
   },
 
@@ -39,5 +42,13 @@ new _MODULE({
   },
   onStart() {
     _STORE.get('mode').then(mode => this.power(mode));
+  },
+  toggle(entry) {
+    const sidebar = document.getElementById('textmarker-sidebar');
+    if (entry === 'locked') {
+      sidebar.classList.add('textmarker-sidebar--locked');
+    } else {
+      sidebar.classList.remove('textmarker-sidebar--locked');
+    }
   }
 })

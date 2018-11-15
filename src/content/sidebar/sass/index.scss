@@ -24,3 +24,15 @@
   padding: 10px 20px;
   color: $color-text--red;
 }
+.textmarker-sidebar--locked {
+  #action-box--nav-up,
+  #action-box--nav-down,
+  #action-box--delete,
+  #action-box--bookmark,
+  #action-box--delete-bookmark,
+  #action-box--undo,
+  #action-box--redo,
+  #action-box--scroll {
+    display: none;
+  }
+}
