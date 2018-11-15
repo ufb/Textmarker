@@ -84,16 +84,25 @@ export default class _MARK {
   registerClickListeners() {
     const wrappers = this.wrappers;
     for (let wrapper of wrappers) {
-      wrapper.addEventListener('click', e => {
-        e.preventDefault();
-        _STORE.tmid = e.target.getAttribute('data-tm-id');
-        this.marker.emit('clicked:mark', {
-          id: this.id,
-          bookmark: !!this.keyData.bookmark,
-          note: !!this.keyData.note
-        });
-      }, false);
+      wrapper.addEventListener('click', this.marker.proxy(this, this.onClick), false);
     }
+  }
+  onClick(e) {
+    let event;
+    if (e.target) {
+      e.preventDefault();
+      e.stopPropagation();
+      _STORE.tmid = e.target.getAttribute('data-tm-id');
+      event = 'clicked:mark';
+    } else {
+      _STORE.tmid = e + '_0';
+      event = 'activated:mark';
+    }
+    this.marker.emit(event, {
+      id: this.id,
+      bookmark: !!this.keyData.bookmark,
+      note: !!this.keyData.note
+    });
   }
   definePosition(n, includingOffsets) {
     let wrappers = this.wrappers;

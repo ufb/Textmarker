@@ -267,26 +267,41 @@ export default function() {
     },
     gotoMark(mark) {
       const markElements = this.visuallyOrderedMarks;
-      let el, pos;
+      let el, pos, id;
       if (mark) {
-        el = document.querySelector('.textmarker-highlight[data-tm-id="' + mark.id + '_0"]');
+        id = mark.id;
+        el = document.querySelector('.textmarker-highlight[data-tm-id="' + id + '_0"]');
         pos = this.markScrollPos = markElements.indexOf(el);
       } else {
         pos = this.markScrollPos;
         el = markElements[pos];
+        id = el.getAttribute('data-tm-id').split('_')[0];
       }
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-			if (!mark) el.click();
+
+			if (!mark) this.getById(id).onClick(id);
+      this.indicateMark(id);
     },
 		gotoNextMark(dir) {
 			const l = this.visuallyOrderedMarks.length;
 
 			this.markScrollPos += dir;
+
 			if (this.markScrollPos < 0) this.markScrollPos = l - 1;
 			else if (this.markScrollPos >= l) this.markScrollPos = 0;
 
 			this.gotoMark();
 		},
+    indicateMark(id) {
+      Array.from(document.querySelectorAll('.textmarker-highlight--active'))
+        .forEach(tm => tm.classList.remove('textmarker-highlight--active'));
+
+      const tms = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id*="' + id + '_"]'));
+
+      tms.forEach(tm => tm.classList.add('textmarker-highlight--active'));
+
+      window.setTimeout(() => tms.forEach(tm => tm.classList.remove('textmarker-highlight--active')), 2000);
+    },
     setBookmark(m, save) {
       if (_STORE.locked) return;
 
