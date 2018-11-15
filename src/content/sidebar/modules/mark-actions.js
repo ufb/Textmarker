@@ -4,7 +4,8 @@ new _DOMMODULE({
   el: document.getElementById('mark-actions'),
   events: {
     ENV: {
-      'clicked:mark': 'activate'
+      'clicked:mark': 'activate',
+      'activated:mark': 'activate'
     },
     DOM: {
       click: {

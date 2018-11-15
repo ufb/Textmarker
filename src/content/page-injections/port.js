@@ -16,6 +16,7 @@ export default new _PORT({
       'changed:selection',
       'unsaved-changes',
       'clicked:mark',
+      'activated:mark',
       'added:bookmark',
       'removed:bookmark',
       'added:note',

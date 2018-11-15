@@ -9,6 +9,11 @@ span.textmarker-highlight {
   outline: 0 !important;
   float: none !important;
   cursor: pointer;
+
+  &--active {
+    border-top: 4px groove #2ba5b7 !important;
+    border-bottom: 4px groove #2ba5b7 !important;
+  }
 }
 
 #textmarker-bookmark-anchor {
