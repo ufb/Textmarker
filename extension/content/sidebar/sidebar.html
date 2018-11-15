@@ -12,31 +12,31 @@
     <header id="header" class="u-display--none">
       <h1 id="header__name" class="u-overflow--ellipsis"></h1>
     </header>
-    <section id="markers" class="u-cf">
+    <section id="markers" class="u-cf u-pt">
       <div id="markers-container--left" class="u-float--left u-cf"></div>
       <div id="markers-container--right" class="u-float--right u-cf"></div>
     </section>
     <section id="mark-actions">
-      <div class="action-box u-cf">
+      <div id="action-box--nav-up" class="action-box u-cf">
         <div class="info-box">
           <span class="i u-float--right">i</span>
           <div class="info-box__content" data-l10n-id="sb_h1b"></div>
         </div>
-        <button type="button" id="nav-action--up" data-action="next-mark" data-value="-1" class="action-box__action action-box__action--nav"></button>
+        <button type="button" data-action="next-mark" data-value="-1" class="action-box__action action-box__action--nav"></button>
       </div>
-      <div class="action-box u-cf">
-        <button type="button" id="nav-action--down" data-action="next-mark" data-value="1" class="action-box__action action-box__action--nav"></button>
+      <div id="action-box--nav-down" class="action-box u-cf">
+        <button type="button" data-action="next-mark" data-value="1" class="action-box__action action-box__action--nav"></button>
       </div>
       <br>
-      <div class="action-box u-cf disabled">
+      <div id="action-box--delete" class="action-box u-cf disabled">
         <label data-l10n-id="sb_b7" for="mark-action--delete-highlight"></label>
         <button type="button" id="mark-action--delete-highlight" data-action="delete-highlight" class="action-box__action action-box__action--mark" disabled></button>
       </div>
-      <div class="action-box u-cf disabled">
+      <div id="action-box--bookmark" class="action-box u-cf disabled">
         <label data-l10n-id="sb_b8" for="mark-action--bookmark"></label>
         <button type="button" id="mark-action--bookmark" data-action="bookmark" class="action-box__action action-box__action--mark" disabled></button>
       </div>
-      <div class="action-box u-cf disabled">
+      <div id="action-box--delete-bookmark" class="action-box u-cf disabled">
         <label data-l10n-id="sb_b9" for="mark-action--delete-bookmark"></label>
         <button type="button" id="mark-action--delete-bookmark" data-action="delete-bookmark" class="action-box__action action-box__action--mark" disabled></button>
       </div>
@@ -47,7 +47,7 @@
   	</section>
     <section id="page-actions">
       <div class="action-box u-cf">
-        <label data-l10n-id="sb_b1" class="autosave-label"></label>
+        <label data-l10n-id="sb_b1" class="autosave-label u-width--auto"></label>
         <div id="autosave-switch" class="switch switch--save switch-toggle u-float--right u-cf">
           <div class="switch-toggle switch__indicator"></div>
         </div>
@@ -60,15 +60,15 @@
         <label data-l10n-id="sb_b2" for="page-action--save"></label>
         <button type="button" id="page-action--save" data-action="save-changes" class="action-box__action action-box__action--page" disabled></button>
       </div>
-      <div class="action-box u-cf">
+      <div id="action-box--undo" class="action-box u-cf">
         <label data-l10n-id="sb_b3" for="page-action--undo"></label>
         <button type="button" id="page-action--undo" data-action="undo" class="action-box__action action-box__action--page"></button>
       </div>
-      <div class="action-box u-cf">
+      <div id="action-box--redo" class="action-box u-cf">
         <label data-l10n-id="sb_b4" for="page-action--redo"></label>
         <button type="button" id="page-action--redo" data-action="redo" class="action-box__action action-box__action--page"></button>
       </div>
-      <div class="action-box u-cf disabled">
+      <div id="action-box--scroll" class="action-box u-cf disabled">
         <label data-l10n-id="sb_b5" for="page-action--scroll"></label>
         <button type="button" id="page-action--scroll" data-action="scroll-to-bookmark" class="action-box__action action-box__action--page" disabled></button>
       </div>
