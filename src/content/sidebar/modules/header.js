@@ -11,7 +11,7 @@ new _DOMMODULE({
   },
 
   render(entry) {
-    if (!entry) {
+    if (!entry || entry === 'locked') {
       this.el.classList.add('u-display--none');
     }
     else if (!entry.locked) {
