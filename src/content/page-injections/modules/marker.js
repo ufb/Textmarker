@@ -243,6 +243,8 @@ export default function() {
       this.store(this.mark(mark.key, mark), selection.text, false);
     },
     onFinishedRestoration() {
+      if (!this.done.length) return this;
+
       this.emit('restore:notes', this.done);
 
       if (_STORE.locked) {
