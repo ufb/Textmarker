@@ -661,8 +661,6 @@ function () {
   }, {
     key: "registerClickListeners",
     value: function registerClickListeners() {
-      var _this = this;
-
       var wrappers = this.wrappers;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -671,16 +669,7 @@ function () {
       try {
         for (var _iterator = wrappers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var wrapper = _step.value;
-          wrapper.addEventListener('click', function (e) {
-            e.preventDefault();
-            _store.default.tmid = e.target.getAttribute('data-tm-id');
-
-            _this.marker.emit('clicked:mark', {
-              id: _this.id,
-              bookmark: !!_this.keyData.bookmark,
-              note: !!_this.keyData.note
-            });
-          }, false);
+          wrapper.addEventListener('click', this.marker.proxy(this, this.onClick), false);
         }
       } catch (err) {
         _didIteratorError = true;
@@ -696,6 +685,27 @@ function () {
           }
         }
       }
+    }
+  }, {
+    key: "onClick",
+    value: function onClick(e) {
+      var event;
+
+      if (e.target) {
+        e.preventDefault();
+        e.stopPropagation();
+        _store.default.tmid = e.target.getAttribute('data-tm-id');
+        event = 'clicked:mark';
+      } else {
+        _store.default.tmid = e + '_0';
+        event = 'activated:mark';
+      }
+
+      this.marker.emit(event, {
+        id: this.id,
+        bookmark: !!this.keyData.bookmark,
+        note: !!this.keyData.note
+      });
     }
   }, {
     key: "definePosition",
@@ -883,6 +893,7 @@ function _default() {
         'sidebar:delete-bookmark': 'removeBookmark',
         'sidebar:note': 'addNote',
         'sidebar:save-changes': 'save',
+        'sidebar:retry-restoration': 'resume',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
         'sidebar:next-mark': 'gotoNextMark',
@@ -1032,6 +1043,19 @@ function _default() {
 
       this.emit('removed:mark', id[0]);
     },
+    resume: function resume() {
+      while (this.done.length) {
+        this.undo(true);
+      }
+
+      this.undone = [];
+      this.visuallyOrderedMarks = [];
+      this.bookmark = null;
+      this.removedBookmark = null;
+      this.idcount = 0;
+      this.markScrollPos = -1;
+      this.emit('resumed:markers');
+    },
     save: function save() {
       var _this = this;
 
@@ -1078,6 +1102,7 @@ function _default() {
       this.store(this.mark(mark.key, mark), selection.text, false);
     },
     onFinishedRestoration: function onFinishedRestoration() {
+      if (!this.done.length) return this;
       this.emit('restore:notes', this.done);
 
       if (_store.default.locked) {
@@ -1105,27 +1130,44 @@ function _default() {
     },
     gotoMark: function gotoMark(mark) {
       var markElements = this.visuallyOrderedMarks;
-      var el, pos;
+      var el, pos, id;
 
       if (mark) {
-        el = document.querySelector('.textmarker-highlight[data-tm-id="' + mark.id + '_0"]');
+        id = mark.id;
+        el = document.querySelector('.textmarker-highlight[data-tm-id="' + id + '_0"]');
         pos = this.markScrollPos = markElements.indexOf(el);
       } else {
         pos = this.markScrollPos;
         el = markElements[pos];
+        id = el.getAttribute('data-tm-id').split('_')[0];
       }
 
       el.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
-      if (!mark) el.click();
+      if (!mark) this.getById(id).onClick(id);
+      this.indicateMark(id);
     },
     gotoNextMark: function gotoNextMark(dir) {
       var l = this.visuallyOrderedMarks.length;
       this.markScrollPos += dir;
       if (this.markScrollPos < 0) this.markScrollPos = l - 1;else if (this.markScrollPos >= l) this.markScrollPos = 0;
       this.gotoMark();
+    },
+    indicateMark: function indicateMark(id) {
+      Array.from(document.querySelectorAll('.textmarker-highlight--active')).forEach(function (tm) {
+        return tm.classList.remove('textmarker-highlight--active');
+      });
+      var tms = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id*="' + id + '_"]'));
+      tms.forEach(function (tm) {
+        return tm.classList.add('textmarker-highlight--active');
+      });
+      window.setTimeout(function () {
+        return tms.forEach(function (tm) {
+          return tm.classList.remove('textmarker-highlight--active');
+        });
+      }, 2000);
     },
     setBookmark: function setBookmark(m, save) {
       if (_store.default.locked) return;
@@ -1665,7 +1707,8 @@ function _default() {
         'toggle:notes': 'toggleAll',
         'sidebar:toggle-notes': 'toggleAll',
         'updated:misc-settings': 'updateTransp',
-        'start:drag': 'startDraggingNote'
+        'start:drag': 'startDraggingNote',
+        'opened:sidebar': 'sendNotesState'
       }
     },
     notes: {},
@@ -1770,6 +1813,9 @@ function _default() {
     emitDragEvent: function emitDragEvent(note, e) {
       e.preventDefault();
       this.emit('drag:note', note, e);
+    },
+    sendNotesState: function sendNotesState(info) {
+      this.emit('notes-state', !this.isEmpty(this.notes), info);
     }
   });
 }
@@ -1806,7 +1852,11 @@ function _default() {
         'started:app': 'checkURL',
         'toggled:addon': 'power',
         'deleted:entry': 'unset',
-        'saved:entry': 'update'
+        'saved:entry': 'update',
+        'opened:sidebar': 'sendPageState',
+        'failed:restoration': 'activateRetry',
+        'succeeded:restoration': 'deactivateRetry',
+        'update:entry?': 'deactivateRetry'
       },
       DOM: {
         keydown: {
@@ -1821,6 +1871,7 @@ function _default() {
     active: true,
     set: false,
     initialized: false,
+    retryActive: false,
     autoinit: function autoinit() {
       //_READER = this.readerMode = this.isReaderMode();
       this.setup();
@@ -1923,6 +1974,7 @@ function _default() {
       if (_store.default.name && _store.default.name === name) {
         _store.default.name = undefined;
         _store.default.entry = null;
+        _store.default.isNew = true;
       }
     },
     update: function update(entries, force) {
@@ -1995,6 +2047,19 @@ function _default() {
     },
     onSelectionChange: function onSelectionChange() {
       this.emit('changed:selection', !window.getSelection().isCollapsed);
+    },
+    activateRetry: function activateRetry() {
+      this.retryActive = true;
+    },
+    deactivateRetry: function deactivateRetry() {
+      this.retryActive = false;
+    },
+    sendPageState: function sendPageState(info) {
+      this.emit('page-state', {
+        selection: !window.getSelection().isCollapsed,
+        bookmark: !!document.getElementById('textmarker-bookmark-anchor'),
+        retryActive: this.retryActive
+      }, info);
     }
   });
 }
@@ -2683,22 +2748,32 @@ function _default() {
       ENV: {
         'restore:marks': 'restore',
         'lost:marks': 'onFailure',
-        'finished:restoration': 'onFinishedRestoration'
+        'finished:restoration': 'onFinishedRestoration',
+        'resumed:markers': 'retry'
       }
     },
     count: 0,
     restored: 0,
     failed: 0,
     restore: function restore(entries) {
+      this.entries = entries;
       this.count = entries.length;
       entries.forEach(function (entry) {
         return new Restorer(entry);
       });
     },
+    resume: function resume() {
+      this.restored = 0;
+      this.failed = 0;
+    },
+    retry: function retry() {
+      this.resume();
+      this.restore(this.entries);
+    },
     onFailure: function onFailure() {
       this.failed++;
     },
-    onFinishedRestoration: function onFinishedRestoration() {
+    onFinishedRestoration: function onFinishedRestoration(name, restored, lost, area) {
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
         if (this.failed) this.emit('failed:restoration');else this.emit('succeeded:restoration');
@@ -3180,7 +3255,7 @@ var _default = new _utils._PORT({
   name: 'injection',
   type: 'content',
   events: {
-    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries']
+    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'activated:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries', 'page-state', 'notes-state']
   }
 });
 
@@ -3921,33 +3996,64 @@ function (_MODULE2) {
       };
       if (type === 'content') browser.runtime.sendMessage(msg).catch(function () {});else if (type === 'background') {
         var lastArg = args[args.length - 1];
+        var tab;
 
-        if (lastArg !== undefined && lastArg.tab) {
-          browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
+        if (lastArg !== undefined && (tab = lastArg.tab)) {
+          if (tab === 'active') {
+            browser.tabs.query({
+              active: true
+            }).then(function (tabs) {
+              var _iteratorNormalCompletion3 = true;
+              var _didIteratorError3 = false;
+              var _iteratorError3 = undefined;
+
+              try {
+                for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                  var _tab = _step3.value;
+                  browser.tabs.sendMessage(_tab.id, msg).catch(function () {});
+                }
+              } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                    _iterator3.return();
+                  }
+                } finally {
+                  if (_didIteratorError3) {
+                    throw _iteratorError3;
+                  }
+                }
+              }
+            });
+          } else {
+            browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
+          }
         } else {
           browser.tabs.query({
             /* currentWindow: false, active: false */
           }).then(function (tabs) {
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-              for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var tab = _step3.value;
-                browser.tabs.sendMessage(tab.id, msg).catch(function () {});
+              for (var _iterator4 = tabs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var _tab2 = _step4.value;
+                browser.tabs.sendMessage(_tab2.id, msg).catch(function () {});
               }
             } catch (err) {
-              _didIteratorError3 = true;
-              _iteratorError3 = err;
+              _didIteratorError4 = true;
+              _iteratorError4 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                  _iterator3.return();
+                if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+                  _iterator4.return();
                 }
               } finally {
-                if (_didIteratorError3) {
-                  throw _iteratorError3;
+                if (_didIteratorError4) {
+                  throw _iteratorError4;
                 }
               }
             }

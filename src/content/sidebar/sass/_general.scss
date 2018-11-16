@@ -5,8 +5,11 @@ body {
 }
 section, header {
   margin-bottom: 5px;
-  padding: 10px 20px 15px;
+  padding: 10px 15px 15px;
   border-bottom: 1px solid $color-border--light;
+}
+header {
+  padding: 11px 15px;
 }
 section:last-child {
   border: 0;

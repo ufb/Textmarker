@@ -278,6 +278,8 @@ var _port = _interopRequireDefault(__webpack_require__(/*! ./port */ "./content/
 
 var _store = _interopRequireDefault(__webpack_require__(/*! ./_store */ "./content/sidebar/_store.js"));
 
+__webpack_require__(/*! ./modules/header */ "./content/sidebar/modules/header.js");
+
 __webpack_require__(/*! ./modules/markers */ "./content/sidebar/modules/markers.js");
 
 __webpack_require__(/*! ./modules/mark-actions */ "./content/sidebar/modules/mark-actions.js");
@@ -295,8 +297,16 @@ new _utils._MODULE({
   events: {
     ENV: {
       'started:app': 'onStart',
-      'toggled:addon': 'power'
+      'toggled:addon': 'power',
+      'saved:entry': 'toggle',
+      'entry:found': 'toggle',
+      'entry:found-for-tab': 'toggle'
     }
+  },
+  autoinit: function autoinit() {
+    this.emit('opened:sidebar', {
+      tab: 'active'
+    });
   },
   power: function power(on) {
     var placeholder = document.getElementById('textmarker-sidebar--paused');
@@ -316,6 +326,48 @@ new _utils._MODULE({
     _store.default.get('mode').then(function (mode) {
       return _this.power(mode);
     });
+  },
+  toggle: function toggle(entry) {
+    var sidebar = document.getElementById('textmarker-sidebar');
+
+    if (entry && (entry === 'locked' || entry.locked)) {
+      sidebar.classList.add('textmarker-sidebar--locked');
+    } else {
+      sidebar.classList.remove('textmarker-sidebar--locked');
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./content/sidebar/modules/header.js":
+/*!*******************************************!*\
+  !*** ./content/sidebar/modules/header.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+new _utils._DOMMODULE({
+  el: document.getElementById('header'),
+  events: {
+    ENV: {
+      'saved:entry': 'render',
+      'entry:found': 'render',
+      'entry:found-for-tab': 'render'
+    }
+  },
+  render: function render(entry) {
+    if (!entry || entry === 'locked') {
+      this.el.classList.add('u-display--none');
+    } else if (!entry.locked) {
+      this.el.classList.remove('u-display--none');
+      document.getElementById('header__name').innerText = entry.name;
+    }
   }
 });
 
@@ -365,7 +417,8 @@ new _utils._DOMMODULE({
   el: document.getElementById('mark-actions'),
   events: {
     ENV: {
-      'clicked:mark': 'activate'
+      'clicked:mark': 'activate',
+      'activated:mark': 'activate'
     },
     DOM: {
       click: {
@@ -380,13 +433,9 @@ new _utils._DOMMODULE({
     this.buttons = Array.from(this.el.getElementsByTagName('button'));
   },
   markAction: function markAction(e, el) {
-    var _this = this;
-
     if (el.hasAttribute('disabled')) return;
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this.emit('sidebar:' + el.getAttribute('data-action'), null, null, {
-        tab: tab.id
-      });
+    this.emit('sidebar:' + el.getAttribute('data-action'), null, null, {
+      tab: 'active'
     }); //this.deactivate();
   },
   activate: function activate(markInfos) {
@@ -406,12 +455,8 @@ new _utils._DOMMODULE({
     });
   },
   nav: function nav(e, el) {
-    var _this2 = this;
-
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this2.emit('sidebar:' + el.getAttribute('data-action'), 1 * el.getAttribute('data-value'), null, {
-        tab: tab.id
-      });
+    this.emit('sidebar:' + el.getAttribute('data-action'), 1 * el.getAttribute('data-value'), null, {
+      tab: 'active'
     });
   },
   toggleInfo: function toggleInfo(e, el) {
@@ -440,7 +485,8 @@ new _utils._DOMMODULE({
       'started:app': 'render',
       'updated:settings': 'render',
       'toggled:sync-settings': 'render',
-      'changed:selection': 'toggleMarkerButtons'
+      'changed:selection': 'toggleMarkerButtons',
+      'page-state': 'onPageState'
     },
     DOM: {
       change: {
@@ -547,13 +593,9 @@ new _utils._DOMMODULE({
     this.emit('change:bg-setting', el.name, el.value);
   },
   applyColor: function applyColor(e, el) {
-    var _this2 = this;
-
     if (el.classList.contains('disabled')) return;
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this2.emit('sidebar:highlight', el.getAttribute('data-key'), {
-        tab: tab.id
-      });
+    this.emit('sidebar:highlight', el.getAttribute('data-key'), {
+      tab: 'active'
     });
   },
   toggleMarkerButtons: function toggleMarkerButtons(show) {
@@ -561,6 +603,9 @@ new _utils._DOMMODULE({
     Array.from(document.getElementsByClassName('marker__apply')).forEach(function (btn) {
       return btn[meth]('disabled', true);
     });
+  },
+  onPageState: function onPageState(state) {
+    this.toggleMarkerButtons(state.selection);
   }
 });
 
@@ -595,15 +640,21 @@ new _utils._DOMMODULE({
       'added:bookmark': 'activateBookmark',
       'removed:bookmark': 'deactivateBookmark',
       'added:note': 'activateNotes',
-      'removed:last-note': 'deactivateNotes'
+      'removed:last-note': 'deactivateNotes',
+      'failed:restoration': 'activateRetry',
+      'update:entry?': 'deactivateRetry',
+      'page-state': 'onPageState',
+      'notes-state': 'onNotesState'
     },
     DOM: {
       click: {
         '.switch-toggle': 'onAutosaveSwitch',
-        '.action-box__action--page': 'pageAction'
+        '.action-box__action--page': 'pageAction',
+        '#page-action--retry': 'retryRestoration'
       }
     }
   },
+  retryBtnShown: false,
   autoinit: function autoinit() {
     this.update();
   },
@@ -627,6 +678,18 @@ new _utils._DOMMODULE({
     var meth = on ? 'add' : 'remove';
     document.getElementById('autosave-switch').classList[meth]('active');
     document.getElementById('page-action-box--save').classList[meth]('u-display--none');
+  },
+  activateRetry: function activateRetry() {
+    if (!this.retryBtnShown) {
+      document.getElementById('page-action-box--retry').classList.remove('u-display--none');
+      this.retryBtnShown = true;
+    }
+  },
+  deactivateRetry: function deactivateRetry() {
+    if (this.retryBtnShown) {
+      document.getElementById('page-action-box--retry').classList.add('u-display--none');
+      this.retryBtnShown = false;
+    }
   },
   activateSave: function activateSave() {
     this.activate('save', true);
@@ -658,13 +721,20 @@ new _utils._DOMMODULE({
     }
   },
   pageAction: function pageAction(e, el) {
-    var _this2 = this;
-
-    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-      return _this2.emit('sidebar:' + el.getAttribute('data-action'), {
-        tab: tab.id
-      });
+    this.emit('sidebar:' + el.getAttribute('data-action'), {
+      tab: 'active'
     });
+  },
+  retryRestoration: function retryRestoration(e, el) {
+    this.pageAction(e, el);
+    this.deactivateRetry();
+  },
+  onPageState: function onPageState(state) {
+    if (state.bookmark) this.activateBookmark();
+    if (state.retryActive) this.activateRetry();
+  },
+  onNotesState: function onNotesState(notes) {
+    if (notes) this.activateNotes();
   }
 });
 
@@ -691,7 +761,7 @@ var _default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'open:addon-page']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'open:addon-page', 'opened:sidebar']
   }
 });
 
@@ -1411,33 +1481,64 @@ function (_MODULE2) {
       };
       if (type === 'content') browser.runtime.sendMessage(msg).catch(function () {});else if (type === 'background') {
         var lastArg = args[args.length - 1];
+        var tab;
 
-        if (lastArg !== undefined && lastArg.tab) {
-          browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
+        if (lastArg !== undefined && (tab = lastArg.tab)) {
+          if (tab === 'active') {
+            browser.tabs.query({
+              active: true
+            }).then(function (tabs) {
+              var _iteratorNormalCompletion3 = true;
+              var _didIteratorError3 = false;
+              var _iteratorError3 = undefined;
+
+              try {
+                for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                  var _tab = _step3.value;
+                  browser.tabs.sendMessage(_tab.id, msg).catch(function () {});
+                }
+              } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                    _iterator3.return();
+                  }
+                } finally {
+                  if (_didIteratorError3) {
+                    throw _iteratorError3;
+                  }
+                }
+              }
+            });
+          } else {
+            browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
+          }
         } else {
           browser.tabs.query({
             /* currentWindow: false, active: false */
           }).then(function (tabs) {
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-              for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var tab = _step3.value;
-                browser.tabs.sendMessage(tab.id, msg).catch(function () {});
+              for (var _iterator4 = tabs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var _tab2 = _step4.value;
+                browser.tabs.sendMessage(_tab2.id, msg).catch(function () {});
               }
             } catch (err) {
-              _didIteratorError3 = true;
-              _iteratorError3 = err;
+              _didIteratorError4 = true;
+              _iteratorError4 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                  _iterator3.return();
+                if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+                  _iterator4.return();
                 }
               } finally {
-                if (_didIteratorError3) {
-                  throw _iteratorError3;
+                if (_didIteratorError4) {
+                  throw _iteratorError4;
                 }
               }
             }

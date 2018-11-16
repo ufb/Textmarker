@@ -79,6 +79,9 @@ body {
 .u-size--l3 {
   font-size: 1.467rem; }
 
+.u-width--auto {
+  width: auto !important; }
+
 .u-font-weight--normal {
   font-weight: normal; }
 
@@ -303,6 +306,11 @@ body {
 
 .u-display--inline-block {
   display: inline-block; }
+
+.u-overflow--ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
 
 .u-align--top {
   vertical-align: top; }
