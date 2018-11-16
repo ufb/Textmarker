@@ -95,7 +95,7 @@
 "t132":{"message":"Textmarker stellt Markierungen nach vollständigem Laden der Seite wieder her. Textinhalt, der danach erst per JavaScript gerendert wird, entgeht diesem Prozess."},
 "t133":{"message":"Für solche Fälle gibt es bei misslungener Wiederherstellung jetzt einen Button in der Seitenleiste zum Wiederholen der Wiederherstellung."},
 "h126":{"message":"Tab-spezifische Seitenleiste"},
-"t134":{"message":"Die Aktions-Buttons in der Seitenleiste sind jetzt Tab-spezifisch - z.B. ist der 'Notizen togglen'-Button nur in den Tabs aktiv, auf deren Seiten sich Notizen befinden."},
+"t134":{"message":"Die Aktions-Buttons in der Seitenleiste sind jetzt tab-spezifisch - z.B. ist der 'Notizen togglen'-Button nur in den Tabs aktiv, auf deren Seiten sich Notizen befinden."},
 "h20":{"message":"Anleitung"},
 "h211":{"message":"Textmarker: Kurzanleitung"},
 "t211":{"message":"Rufe eine Website auf und selektiere zunächst Text mit der Maus."},

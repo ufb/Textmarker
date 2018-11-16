@@ -464,7 +464,7 @@ function _default() {
       }
     },
     autoinit: function autoinit() {
-      this.setAddonLinks().setDeveloperLinks().setLogLink();
+      this.setAddonLinks().setLogLink();
     },
     setAddonLinks: function setAddonLinks() {
       var addonURL = browser.i18n.getMessage('url_moz_addon'),
@@ -480,20 +480,6 @@ function _default() {
 
       return this;
     },
-    setDeveloperLinks: function setDeveloperLinks() {
-      var developerURL = browser.i18n.getMessage('url_moz_developer'),
-          developerLinks = document.getElementsByClassName('moz-developer'),
-          d = developerLinks.length,
-          dL;
-
-      while (d--) {
-        dL = developerLinks[d];
-        dL.href = developerURL;
-        if (dL.id === 'moz-developer--contact') dL.innerText = developerURL;
-      }
-
-      return this;
-    },
     setLogLink: function setLogLink() {
       var logLink = document.getElementById('log-mail');
 
@@ -504,7 +490,7 @@ function _default() {
 
         while (l--) {
           log = logs[l];
-          href += encodeURIComponent(new Date(log[0]).toUTCString() + ' --- ' + log[1] + '\n');
+          href += log[1] + ' - ' + encodeURIComponent(new Date(log[0]).toUTCString() + '\n');
         }
 
         logLink.href = href;
@@ -1012,7 +998,7 @@ function _default() {
     actions.classList[meth_1]('u-display--none');
     search.classList[meth_2]('u-display--none');
     sort.classList[meth_2]('u-display--none');
-    filter.classList[meth_2]('u-display--none');
+    filter.classList[meth_1]('u-display--none');
     count.classList[meth_3]('u-display--none');
     view.classList[meth_1]('u-display--none');
     checkall.classList[meth_2]('u-display--none');
@@ -1279,11 +1265,11 @@ function _default() {
     var entry,
         rx,
         c = 0;
-    el.parentNode.classList.add('active');
+    document.getElementById('filter').classList.add('active');
 
     for (var name in entries) {
       entry = entries[name];
-      rx = new RegExp('^' + filter + '|\\s' + filter, 'g');
+      rx = new RegExp('^' + filter + '$|^' + filter + '\\s|\\s' + filter + '\\s|\\s' + filter + '$', 'g');
 
       if (filter && entry.tag && entry.tag.search(rx) !== -1 || !entry.tag && filter == '') {
         filteredEntries[name] = entry;
@@ -3127,33 +3113,64 @@ function (_MODULE2) {
       };
       if (type === 'content') browser.runtime.sendMessage(msg).catch(function () {});else if (type === 'background') {
         var lastArg = args[args.length - 1];
+        var tab;
 
-        if (lastArg !== undefined && lastArg.tab) {
-          browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
+        if (lastArg !== undefined && (tab = lastArg.tab)) {
+          if (tab === 'active') {
+            browser.tabs.query({
+              active: true
+            }).then(function (tabs) {
+              var _iteratorNormalCompletion3 = true;
+              var _didIteratorError3 = false;
+              var _iteratorError3 = undefined;
+
+              try {
+                for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                  var _tab = _step3.value;
+                  browser.tabs.sendMessage(_tab.id, msg).catch(function () {});
+                }
+              } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                    _iterator3.return();
+                  }
+                } finally {
+                  if (_didIteratorError3) {
+                    throw _iteratorError3;
+                  }
+                }
+              }
+            });
+          } else {
+            browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
+          }
         } else {
           browser.tabs.query({
             /* currentWindow: false, active: false */
           }).then(function (tabs) {
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-              for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var tab = _step3.value;
-                browser.tabs.sendMessage(tab.id, msg).catch(function () {});
+              for (var _iterator4 = tabs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var _tab2 = _step4.value;
+                browser.tabs.sendMessage(_tab2.id, msg).catch(function () {});
               }
             } catch (err) {
-              _didIteratorError3 = true;
-              _iteratorError3 = err;
+              _didIteratorError4 = true;
+              _iteratorError4 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                  _iterator3.return();
+                if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+                  _iterator4.return();
                 }
               } finally {
-                if (_didIteratorError3) {
-                  throw _iteratorError3;
+                if (_didIteratorError4) {
+                  throw _iteratorError4;
                 }
               }
             }

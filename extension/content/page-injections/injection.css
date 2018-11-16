@@ -11,6 +11,9 @@ span.textmarker-highlight {
   outline: 0 !important;
   float: none !important;
   cursor: pointer; }
+  span.textmarker-highlight--active {
+    border-top: 4px groove #2ba5b7 !important;
+    border-bottom: 4px groove #2ba5b7 !important; }
 
 #textmarker-bookmark-anchor {
   padding-left: 15px !important;

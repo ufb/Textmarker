@@ -128,6 +128,8 @@ var _tabs = _interopRequireDefault(__webpack_require__(/*! ./modules/tabs */ "./
 
 var _windows = _interopRequireDefault(__webpack_require__(/*! ./modules/windows */ "./background/modules/windows.js"));
 
+var _sidebars = _interopRequireDefault(__webpack_require__(/*! ./modules/sidebars */ "./background/modules/sidebars.js"));
+
 var _namer = _interopRequireDefault(__webpack_require__(/*! ./modules/namer */ "./background/modules/namer.js"));
 
 var _contextMenu = _interopRequireDefault(__webpack_require__(/*! ./modules/context-menu */ "./background/modules/context-menu.js"));
@@ -188,6 +190,7 @@ new _utils._MODULE({
     (0, _namer.default)();
     (0, _contextMenu.default)();
     (0, _windows.default)();
+    (0, _sidebars.default)();
 
     _storage.default.get('mode').then(function (mode) {
       return _this2.activate(mode);
@@ -463,16 +466,23 @@ new _utils._MODULE({
 
         if (url === _this.getHashlessURL(entry.url)) {
           matches.push(entry);
+          if (entry.locked) locked = true;
         }
       }
 
-      if (!matches.length) sendResponse(null);else {
+      if (!matches.length) {
+        sendResponse(null);
+      } else {
         sendResponse({
           entries: matches,
           recentlyOpenedEntry: _this.recentlyOpenedEntry
         });
         _this.recentlyOpenedEntry = null;
       }
+
+      entry = locked ? 'locked' : !matches.length ? null : matches[0];
+
+      _this.emit('entry:found', entry);
     });
   },
   onNamingRequest: function onNamingRequest(sender, sendResponse) {
@@ -655,7 +665,7 @@ function _default() {
             type: 'basic',
             title: 'Textmarker: ' + browser.i18n.getMessage(type),
             message: message,
-            iconUrl: browser.extension.getURL('icons/tm48.png')
+            iconUrl: browser.runtime.getURL('icons/tm48.png')
           });
         }
       });
@@ -731,6 +741,65 @@ function _default() {
       this.notify(function (settings) {
         return settings.misc.errorNote;
       }, browser.i18n.getMessage('note_error', browser.i18n.getMessage(error)), 'error');
+    }
+  });
+}
+
+/***/ }),
+
+/***/ "./background/modules/sidebars.js":
+/*!****************************************!*\
+  !*** ./background/modules/sidebars.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
+
+function _default() {
+  return new _utils._MODULE({
+    events: {
+      ENV: {
+        'activated:tab': 'setPanel',
+        'entry:found': 'storeEntry',
+        'opened:sidebar': 'sendEntry'
+      }
+    },
+    entries: {},
+    setPanel: function setPanel(tabId) {
+      this.isOpen().then(function (open) {
+        if (open) {
+          browser.sidebarAction.setPanel({
+            panel: browser.runtime.getURL('content/sidebar/sidebar.html#' + tabId),
+            tabId: tabId
+          });
+        }
+      });
+    },
+    isOpen: function isOpen() {
+      return browser.sidebarAction.isOpen({});
+    },
+    storeEntry: function storeEntry(entry) {
+      var _this = this;
+
+      (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+        return _this.entries[tab.id] = entry;
+      });
+    },
+    sendEntry: function sendEntry() {
+      var _this2 = this;
+
+      (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+        return _this2.emit('entry:found-for-tab', _this2.entries[tab.id]);
+      });
     }
   });
 }
@@ -1040,9 +1109,29 @@ new _utils._MODULE({
   },
   updateEntryOnRestoration: function updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
     _storage.default.update('history', function (history) {
-      var oldLostMarks = history.entries[entryName].lost;
+      var oldLostMarks = history.entries[entryName].lost || [];
+      var restoredMarksIDs = [];
+      var oldLostMarksIDs = [];
       history.entries[entryName].marks = restoredMarks;
-      history.entries[entryName].lost = oldLostMarks.concat(lostMarks);
+      restoredMarks.forEach(function (mark) {
+        return restoredMarksIDs.push(mark.id);
+      });
+      var l = oldLostMarks.length,
+          id;
+
+      while (l--) {
+        id = oldLostMarks[l].id;
+
+        if (restoredMarksIDs.includes(id)) {
+          oldLostMarks.splice(l, 1);
+        } else {
+          oldLostMarksIDs.push(id);
+        }
+      }
+
+      lostMarks.forEach(function (mark) {
+        if (!oldLostMarksIDs.includes(mark.id)) oldLostMarks.push(mark);
+      });
       return history;
     }, area);
   },
@@ -1056,21 +1145,33 @@ new _utils._MODULE({
     });
   },
   tagEntries: function tagEntries(names, tag) {
+    var _this8 = this;
+
     _storage.default.update('history', function (history) {
       var entries = history.entries;
       names.sync.forEach(function (name) {
-        if (!tag) entries[name].tag = '';else if (!entries[name].tag) entries[name].tag = tag;else entries[name].tag += ' ' + tag;
+        return _this8.addTagToEntry(entries[name], tag);
       });
       return history;
     }, 'sync').then(function () {
       return _storage.default.update('history', function (history) {
         var entries = history.entries;
         names.local.forEach(function (name) {
-          if (!tag) entries[name].tag = '';else if (!entries[name].tag) entries[name].tag = tag;else entries[name].tag += ' ' + tag;
+          return _this8.addTagToEntry(entries[name], tag);
         });
         return history;
       }, 'local');
     });
+  },
+  addTagToEntry: function addTagToEntry(entry, tag) {
+    if (!tag) entry.tag = '';else if (!entry.tag) entry.tag = tag;else {
+      var rx = new RegExp('^' + tag + '$|^' + tag + '\\s|\\s' + tag + '\\s|\\s' + tag + '$', 'g');
+
+      if (entry.tag.search(rx) === -1) {
+        entry.tag += ' ' + tag;
+      }
+    }
+    return entry;
   },
   registerStorageChangedHandler: function registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));
@@ -1125,6 +1226,13 @@ function _default() {
       export: 'content/addon-page/addon-page.html#page=export',
       sync: 'content/addon-page/addon-page.html#page=sync'
     },
+    autoinit: function autoinit() {
+      var _this = this;
+
+      browser.tabs.onActivated.addListener(function (tab) {
+        return _this.emit('activated:tab', tab.tabId);
+      });
+    },
     open: function open(urls, names) {
       urls = typeof urls === 'string' ? [urls] : urls;
       names = typeof names === 'string' ? [names] : names;
@@ -1156,14 +1264,14 @@ function _default() {
       if (version && version < '3') this.openAddonPage('help');else if (loadReason && loadReason === 'install') this.openAddonPage('help');
     },
     openSearch: function openSearch(word) {
-      var _this = this;
+      var _this2 = this;
 
       _storage.default.get('settings').then(function (settings) {
         var custom = settings.misc.customSearch,
             url;
         if (custom) url = 'https://' + custom[0] + word + custom[1];else url = 'https://' + browser.i18n.getMessage('lng') + '.wikipedia.org/wiki/' + word;
 
-        _this.open(url);
+        _this2.open(url);
       });
     }
   });
@@ -1471,7 +1579,7 @@ function _default() {
       }
     },
     openEntryDetailPage: function openEntryDetailPage(name) {
-      var popupURL = browser.extension.getURL('content/detail-view/detail-view.html');
+      var popupURL = browser.runtime.getURL('content/detail-view/detail-view.html');
       browser.windows.getCurrent().then(function (currentWindow) {
         browser.windows.create({
           url: popupURL + '#' + encodeURIComponent(name),
@@ -1504,8 +1612,8 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark'],
-    CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note']
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'opened:sidebar'],
+    CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab']
   }
 });
 
@@ -1855,6 +1963,12 @@ Object.defineProperty(exports, "_EXTEND", {
     return _extend.default;
   }
 });
+Object.defineProperty(exports, "_GET_ACTIVE_TAB", {
+  enumerable: true,
+  get: function get() {
+    return _getActiveTab._GET_ACTIVE_TAB;
+  }
+});
 Object.defineProperty(exports, "_MODULE", {
   enumerable: true,
   get: function get() {
@@ -1877,6 +1991,8 @@ Object.defineProperty(exports, "_ERRORTRACKER", {
 var _copy = __webpack_require__(/*! ./../utils/copy */ "./utils/copy.js");
 
 var _extend = _interopRequireDefault(__webpack_require__(/*! ./../utils/extend */ "./utils/extend.js"));
+
+var _getActiveTab = __webpack_require__(/*! ./../utils/getActiveTab */ "./utils/getActiveTab.js");
 
 var _module = __webpack_require__(/*! ./../utils/module */ "./utils/module.js");
 
@@ -2245,6 +2361,34 @@ function _default(obj1, obj2) {
 
 /***/ }),
 
+/***/ "./utils/getActiveTab.js":
+/*!*******************************!*\
+  !*** ./utils/getActiveTab.js ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._GET_ACTIVE_TAB = void 0;
+
+var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
+  return browser.tabs.query({
+    currentWindow: true,
+    active: true
+  }).then(function (tabs) {
+    return tabs[0];
+  });
+};
+
+exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
+
+/***/ }),
+
 /***/ "./utils/mediator.js":
 /*!***************************!*\
   !*** ./utils/mediator.js ***!
@@ -2554,33 +2698,64 @@ function (_MODULE2) {
       };
       if (type === 'content') browser.runtime.sendMessage(msg).catch(function () {});else if (type === 'background') {
         var lastArg = args[args.length - 1];
+        var tab;
 
-        if (lastArg !== undefined && lastArg.tab) {
-          browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
+        if (lastArg !== undefined && (tab = lastArg.tab)) {
+          if (tab === 'active') {
+            browser.tabs.query({
+              active: true
+            }).then(function (tabs) {
+              var _iteratorNormalCompletion3 = true;
+              var _didIteratorError3 = false;
+              var _iteratorError3 = undefined;
+
+              try {
+                for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                  var _tab = _step3.value;
+                  browser.tabs.sendMessage(_tab.id, msg).catch(function () {});
+                }
+              } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+                    _iterator3.return();
+                  }
+                } finally {
+                  if (_didIteratorError3) {
+                    throw _iteratorError3;
+                  }
+                }
+              }
+            });
+          } else {
+            browser.tabs.sendMessage(lastArg.tab, msg).catch(function () {});
+          }
         } else {
           browser.tabs.query({
             /* currentWindow: false, active: false */
           }).then(function (tabs) {
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-              for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var tab = _step3.value;
-                browser.tabs.sendMessage(tab.id, msg).catch(function () {});
+              for (var _iterator4 = tabs[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var _tab2 = _step4.value;
+                browser.tabs.sendMessage(_tab2.id, msg).catch(function () {});
               }
             } catch (err) {
-              _didIteratorError3 = true;
-              _iteratorError3 = err;
+              _didIteratorError4 = true;
+              _iteratorError4 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
-                  _iterator3.return();
+                if (!_iteratorNormalCompletion4 && _iterator4.return != null) {
+                  _iterator4.return();
                 }
               } finally {
-                if (_didIteratorError3) {
-                  throw _iteratorError3;
+                if (_didIteratorError4) {
+                  throw _iteratorError4;
                 }
               }
             }

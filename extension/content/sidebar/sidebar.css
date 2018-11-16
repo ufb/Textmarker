@@ -61,6 +61,9 @@ body {
 .u-size--l3 {
   font-size: 1.467rem; }
 
+.u-width--auto {
+  width: auto !important; }
+
 .u-font-weight--normal {
   font-weight: normal; }
 
@@ -286,6 +289,11 @@ body {
 .u-display--inline-block {
   display: inline-block; }
 
+.u-overflow--ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+
 .u-align--top {
   vertical-align: top; }
 
@@ -361,17 +369,25 @@ body {
 
 body {
   font-size: 13px;
-  padding-top: 10px;
   color: #777;
   font-family: inherit; }
 
-section {
+section, header {
   margin-bottom: 5px;
-  padding: 10px 20px 15px;
+  padding: 10px 15px 15px;
   border-bottom: 1px solid #e1e2e3; }
+
+header {
+  padding: 11px 15px; }
 
 section:last-child {
   border: 0; }
+
+h1 {
+  width: 100%;
+  font-size: 120%;
+  font-weight: normal;
+  margin: 0; }
 
 h2 {
   font-size: 100%;
@@ -435,6 +451,11 @@ button {
     .action-box__action[disabled] {
       opacity: 0.2 !important;
       cursor: default; }
+  .action-box label {
+    width: calc(100% - 30px);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; }
 
 #mark-action--delete-highlight {
   background-image: url(../../icons/bin.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
@@ -460,6 +481,11 @@ button {
   background-image: url(../../icons/save.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
   #page-action--save:hover {
     background-image: url(../../icons/save.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+
+#page-action--retry {
+  background-image: url(../../icons/retry.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
+  #page-action--retry:hover {
+    background-image: url(../../icons/retry.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
 #page-action--undo {
   background-image: url(../../icons/undo.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
@@ -538,3 +564,11 @@ a, .link {
 #textmarker-sidebar--paused {
   padding: 10px 20px;
   color: #ad3a3a; }
+
+.textmarker-sidebar--locked #action-box--delete,
+.textmarker-sidebar--locked #action-box--bookmark,
+.textmarker-sidebar--locked #action-box--delete-bookmark,
+.textmarker-sidebar--locked #action-box--undo,
+.textmarker-sidebar--locked #action-box--redo,
+.textmarker-sidebar--locked #action-box--scroll {
+  display: none; }
