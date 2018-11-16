@@ -45,7 +45,7 @@ new _MODULE({
   },
   toggle(entry) {
     const sidebar = document.getElementById('textmarker-sidebar');
-    if (entry === 'locked' || entry.locked) {
+    if (entry && (entry === 'locked' || entry.locked)) {
       sidebar.classList.add('textmarker-sidebar--locked');
     } else {
       sidebar.classList.remove('textmarker-sidebar--locked');
