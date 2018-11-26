@@ -1,5 +1,6 @@
 import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
+import _SETTINGS from './../../../data/global-settings'
 
 new _DOMMODULE({
   el: document.getElementById('tab--list'),
@@ -26,7 +27,7 @@ new _DOMMODULE({
   current: -1,
   setFilters: false,
 
-  render() {if (_STORE.entry) console.log('render', _STORE.entry.marks.length);
+  render() {
     const entry = this.entry = _STORE.entry;
     if (entry) {
       this.setMarks();
@@ -34,36 +35,35 @@ new _DOMMODULE({
       this.renderList();
     }
   },
-  setMarks() {console.log('set marks');
+  setMarks() {
     const marks = this.entry.marks;
     const markIDs = this.markIDs;
     this.length = marks.length;
     this.marks = markIDs ? marks.sort((m1, m2) => markIDs.indexOf(m1.id) < markIDs.indexOf(m2.id)) : marks;
   },
-  setMarkIDs(ids) {console.log('set ids', ids.length);
+  setMarkIDs(ids) {
     this.markIDs = ids.reverse();
   },
   renderSVGFilters() {
     const body = document.body;
     const tmpl = document.getElementById('filter-template');
-    const colors = {
-      purple: '0 0 0 0 93 0 0 0 0 .8 0 0 0 0 1 0 0 0 1 0',
-      red: '0 0 0 0 1 0 0 0 0 .8 0 0 0 0 .8 0 0 0 1 0',
-      orange: '0 0 0 0 1 0 0 0 0 .93 0 0 0 0 .73 0 0 0 1 0',
-      yellow: '0 0 0 0 1 0 0 0 0 1 0 0 0 0 .8 0 0 0 1 0',
-      green: '0 0 0 0 .8 0 0 0 0 1 0 0 0 0 .8 0 0 0 1 0',
-      turquoise: '0 0 0 0 .73 0 0 0 0 .89 0 0 0 0 .93 0 0 0 1 0',
-      blue: '0 0 0 0 .8 0 0 0 0 .8 0 0 0 0 1 0 0 0 1 0',
-      white: '0 0 0 0 .93 0 0 0 0 .93 0 0 0 0 .93 0 0 0 1 0'
-    };
+    const colors = {};
+    let i, c;
+    for (i in _SETTINGS.NOTE_COLORS) {
+       c = _SETTINGS.NOTE_COLORS[i];
+      colors[i.toLowerCase()] = '0 0 0 0 ' + this.convertHex(c.substr(1,2)) + ' 0 0 0 0 ' + this.convertHex(c.substr(3,2)) + ' 0 0 0 0 ' + this.convertHex(c.substr(5,2)) + ' 0 0 0 1 0';
+    }
     let filter;
-    for (let i in colors) {
+    for (i in colors) {
       filter = tmpl.cloneNode(true);
       filter.getElementsByTagName('filter')[0].id = 'filter--' + i;
       filter.getElementsByTagName('feColorMatrix')[0].setAttribute('values', colors[i]);
       body.appendChild(filter)
     }
     this.setFilters = true;
+  },
+  convertHex(hex) {
+    return ((16 * Number('0x' + hex[0])) + Number('0x' + hex[1])) / 255;
   },
   renderList() {
     const markTmpl = document.getElementById('mark-template');

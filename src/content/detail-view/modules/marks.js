@@ -1,4 +1,5 @@
 import { _DOMMODULE } from './../../_shared/utils'
+import _SETTINGS from './../../../data/global-settings'
 
 new _DOMMODULE({
   el: document.getElementById('marks'),
@@ -38,17 +39,20 @@ new _DOMMODULE({
     const td_text = markEl.getElementsByClassName('mark-text')[0];
     const td_note = markEl.getElementsByClassName('mark-note')[0];
     const text = document.createElement('p');
-    let note;
+    let noteText, noteColor;
     td_text.innerText = mark.text;
     td_text.setAttribute('style', mark.style);
     if (mark.note) {
       if (typeof mark.note === 'string') {
-        note = mark.note;
+        noteText = mark.note;
+        noteColor = _SETTINGS.NOTE_COLORS.YELLOW;
       } else {
-        note = mark.note.text || '';
+        noteText = mark.note.text || '';
+        noteColor = _SETTINGS.NOTE_COLORS[mark.note.color.toUpperCase()];
       }
-      if (note) {
-        td_note.innerText = note;
+      if (noteText) {
+        td_note.innerText = noteText;
+        td_note.parentNode.style.backgroundColor = noteColor;
         this.notes = true;
       }
     }
