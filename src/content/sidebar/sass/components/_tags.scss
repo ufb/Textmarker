@@ -1,0 +1,30 @@
+.tags {
+
+  &__item {
+    position: relative;
+    margin: 0 5px 5px 0;
+    display: inline-block;
+    border-radius: 2px;
+    padding: 0 20px 2px 4px;
+    background: $color-bg--light;
+    border: 1px solid transparentize($color-bg--turquoise, .75);
+    max-width: 100%;
+  }
+
+  &__remove {
+    position: absolute;
+    right: 4px;
+    top: 3px;
+    font-size: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+
+    &:hover {
+      color: $color-text--red;
+    }
+  }
+}
+
+#add-tag {
+  @include icon('submit', $position: center, $size: 12px, $gradient: false);
+}

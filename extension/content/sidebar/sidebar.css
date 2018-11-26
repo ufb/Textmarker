@@ -4,6 +4,9 @@
 ::-moz-focus-inner {
   border: 0; }
 
+::-moz-color-swatch {
+  border: 0; }
+
 * {
   box-sizing: border-box; }
 
@@ -347,78 +350,264 @@ body {
   .switch.active:hover .switch__indicator {
     background-color: #2ba5b7; }
 
-.i {
-  cursor: pointer;
-  color: #2ba5b7;
-  text-decoration: underline;
-  border-radius: 50%;
-  display: inline-block;
-  line-height: 1;
-  width: 15px;
-  height: 15px;
+.tmnote--green tmnotepalette,
+.tmnote--green tmnoteheader {
+  background: #cfc; }
+
+.tmnote--green tmnotecustomize,
+.tmnote--green tmnoteminimize,
+.tmnote--green tmnotedelete {
+  background: #efe; }
+  .tmnote--green tmnotecustomize:hover,
+  .tmnote--green tmnoteminimize:hover,
+  .tmnote--green tmnotedelete:hover {
+    background: #dfd; }
+
+.tmnote--green textarea {
+  background-image: linear-gradient(#efe, #dfd) !important; }
+
+.tmnotecolor--green {
+  border-color: #dfd;
+  background-image: linear-gradient(#efe, #dfd); }
+
+.tmnote--white tmnotepalette,
+.tmnote--white tmnoteheader {
+  background: #eee; }
+
+.tmnote--white tmnotecustomize,
+.tmnote--white tmnoteminimize,
+.tmnote--white tmnotedelete {
+  background: #fff; }
+  .tmnote--white tmnotecustomize:hover,
+  .tmnote--white tmnoteminimize:hover,
+  .tmnote--white tmnotedelete:hover {
+    background: #eee; }
+
+.tmnote--white textarea {
+  background-image: linear-gradient(#fff, #eee) !important; }
+
+.tmnotecolor--white {
+  border-color: #eee;
+  background-image: linear-gradient(#fff, #eee); }
+
+.tmnote--yellow tmnotepalette,
+.tmnote--yellow tmnoteheader {
+  background: #ffc; }
+
+.tmnote--yellow tmnotecustomize,
+.tmnote--yellow tmnoteminimize,
+.tmnote--yellow tmnotedelete {
+  background: #ffe; }
+  .tmnote--yellow tmnotecustomize:hover,
+  .tmnote--yellow tmnoteminimize:hover,
+  .tmnote--yellow tmnotedelete:hover {
+    background: #ffd; }
+
+.tmnote--yellow textarea {
+  background-image: linear-gradient(#ffe, #ffd) !important; }
+
+.tmnotecolor--yellow {
+  border-color: #ffd;
+  background-image: linear-gradient(#ffe, #ffd); }
+
+.tmnote--orange tmnotepalette,
+.tmnote--orange tmnoteheader {
+  background: #feb; }
+
+.tmnote--orange tmnotecustomize,
+.tmnote--orange tmnoteminimize,
+.tmnote--orange tmnotedelete {
+  background: #fed; }
+  .tmnote--orange tmnotecustomize:hover,
+  .tmnote--orange tmnoteminimize:hover,
+  .tmnote--orange tmnotedelete:hover {
+    background: #fec; }
+
+.tmnote--orange textarea {
+  background-image: linear-gradient(#fed, #fec) !important; }
+
+.tmnotecolor--orange {
+  border-color: #fec;
+  background-image: linear-gradient(#fed, #fec); }
+
+.tmnote--red tmnotepalette,
+.tmnote--red tmnoteheader {
+  background: #fcc; }
+
+.tmnote--red tmnotecustomize,
+.tmnote--red tmnoteminimize,
+.tmnote--red tmnotedelete {
+  background: #fee; }
+  .tmnote--red tmnotecustomize:hover,
+  .tmnote--red tmnoteminimize:hover,
+  .tmnote--red tmnotedelete:hover {
+    background: #fdd; }
+
+.tmnote--red textarea {
+  background-image: linear-gradient(#fee, #fdd) !important; }
+
+.tmnotecolor--red {
+  border-color: #fdd;
+  background-image: linear-gradient(#fee, #fdd); }
+
+.tmnote--purple tmnotepalette,
+.tmnote--purple tmnoteheader {
+  background: #ecf; }
+
+.tmnote--purple tmnotecustomize,
+.tmnote--purple tmnoteminimize,
+.tmnote--purple tmnotedelete {
+  background: #eef; }
+  .tmnote--purple tmnotecustomize:hover,
+  .tmnote--purple tmnoteminimize:hover,
+  .tmnote--purple tmnotedelete:hover {
+    background: #edf; }
+
+.tmnote--purple textarea {
+  background-image: linear-gradient(#eef, #edf) !important; }
+
+.tmnotecolor--purple {
+  border-color: #edf;
+  background-image: linear-gradient(#eef, #edf); }
+
+.tmnote--blue tmnotepalette,
+.tmnote--blue tmnoteheader {
+  background: #bef; }
+
+.tmnote--blue tmnotecustomize,
+.tmnote--blue tmnoteminimize,
+.tmnote--blue tmnotedelete {
+  background: #def; }
+  .tmnote--blue tmnotecustomize:hover,
+  .tmnote--blue tmnoteminimize:hover,
+  .tmnote--blue tmnotedelete:hover {
+    background: #cef; }
+
+.tmnote--blue textarea {
+  background-image: linear-gradient(#def, #cef) !important; }
+
+.tmnotecolor--blue {
+  border-color: #cef;
+  background-image: linear-gradient(#def, #cef); }
+
+.tmnote--turquoise tmnotepalette,
+.tmnote--turquoise tmnoteheader {
+  background: #b9e4ec; }
+
+.tmnote--turquoise tmnotecustomize,
+.tmnote--turquoise tmnoteminimize,
+.tmnote--turquoise tmnotedelete {
+  background: #d5f0f7; }
+  .tmnote--turquoise tmnotecustomize:hover,
+  .tmnote--turquoise tmnoteminimize:hover,
+  .tmnote--turquoise tmnotedelete:hover {
+    background: #c1e9f2; }
+
+.tmnote--turquoise textarea {
+  background-image: linear-gradient(#d5f0f7, #c1e9f2) !important; }
+
+.tmnotecolor--turquoise {
+  border-color: #c1e9f2;
+  background-image: linear-gradient(#d5f0f7, #c1e9f2); }
+
+tmnote {
+  font-family: Verdana, sans-serif;
+  font-size: 12px;
+  line-height: 1.4; }
+
+tmnoteheader {
+  height: 22px;
+  position: relative;
+  z-index: 1;
+  display: block;
+  cursor: move; }
+
+tmnotepalette {
+  z-index: 1;
+  width: 100%;
   text-align: center;
-  font-size: 11px;
-  padding: 2px;
-  font-family: Georgia, serif;
-  margin-top: 3px; }
-  .i:hover {
-    text-decoration: none;
-    color: #fff;
-    background: #2ba5b7;
-    border: 0; }
+  border-bottom: 1px solid #e1e2e3; }
+
+tmnotecolor {
+  position: relative;
+  display: inline-block;
+  border-top: 2px solid;
+  cursor: pointer;
+  box-shadow: 0 1px 3px #c8c8c8; }
+  tmnotecolor:hover {
+    top: -1px;
+    box-shadow: 0 1px 3px #aaa;
+    filter: brightness(1.02); }
+
+tmnotecustomize,
+tmnoteminimize,
+tmnotedelete {
+  position: absolute;
+  display: block;
+  font-size: 14px;
+  right: -20px;
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+  color: #c8c8c8;
+  line-height: 1;
+  height: 20px; }
+  tmnotecustomize:hover,
+  tmnoteminimize:hover,
+  tmnotedelete:hover {
+    color: #37414b; }
+
+tmnotedelete {
+  top: 44px;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 5px 6px 0 10px; }
+
+tmnoteminimize {
+  top: 66px;
+  font-size: 18px;
+  padding: 0px 4px 0 10px; }
+
+tmnotecustomize {
+  top: 22px;
+  font-size: 16px;
+  padding: 1px 3px 2px 10px; }
+
+.__note_textarea, tmnote textarea {
+  display: block !important;
+  position: relative !important;
+  font-family: Verdana, sans-serif !important;
+  font-size: 12px !important;
+  min-height: 100px !important;
+  border: 0 !important; }
 
 body {
   font-size: 13px;
   color: #777;
-  font-family: inherit; }
+  font-family: inherit;
+  padding: 10px 15px 0; }
 
-section, header {
-  margin-bottom: 5px;
-  padding: 10px 15px 15px;
-  border-bottom: 1px solid #e1e2e3; }
-
-header {
-  padding: 11px 15px; }
-
-section:last-child {
-  border: 0; }
+#header {
+  margin-bottom: 15px; }
 
 h1 {
   width: 100%;
   font-size: 120%;
   font-weight: normal;
-  margin: 0; }
+  margin: 0 0 10px; }
 
 h2 {
   font-size: 100%;
-  margin: 0 0 25px;
+  margin: 0 0 8px;
   font-weight: normal;
   position: relative; }
-
-.info-box {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  margin-right: 30px; }
-  .info-box:hover {
-    background: #fbfbfb; }
-  .info-box .i {
-    float: none; }
-  .info-box__content {
-    display: none;
-    font-size: 12px;
-    line-height: 1.2;
-    padding: 2px 2px 5px;
-    margin-top: 5px;
-    color: #2ba5b7; }
-    .info-box:hover .info-box__content {
-      display: block; }
 
 label {
   float: left;
   padding-top: 2px;
   cursor: pointer; }
+
+svg {
+  height: 0; }
 
 button {
   border: 1px solid #c8c8c8;
@@ -439,23 +628,210 @@ button {
     opacity: 0.2 !important;
     cursor: default; }
 
-.action-box {
-  margin: 0 0 6px 0;
+::-moz-placeholder,
+:placeholder-shown {
+  color: #c8c8c8; }
+
+select, input {
+  font-family: inherit !important; }
+
+select {
+  background-image: url(../../icons/arrow-down.png);
+  background-repeat: no-repeat;
+  background-position: right 7px, 0 0;
+  background-size: unset, 100%;
+  background-color: transparent;
+  -moz-appearance: none;
+  border: 1px solid #e1e2e3;
+  height: 24px;
+  width: 100%; }
+
+input[type="text"] {
+  border: 1px solid #e1e2e3;
+  color: inherit;
+  padding: 0;
+  height: 24px;
+  width: calc(100% - 27px);
+  padding: 0 4px; }
+
+.tab__header {
   position: relative; }
-  .action-box.disabled {
-    color: #c8c8c8; }
-  .action-box__action {
+
+.tab__name {
+  border-bottom: 1px solid #e1e2e3; }
+  .tab--folded .tab__name {
+    border-top: 1px solid #e1e2e3;
+    border-bottom: 0; }
+
+.tab__toggle {
+  border: 1px solid #e1e2e3;
+  line-height: 1;
+  position: absolute;
+  bottom: -1px;
+  right: 0;
+  text-align: center;
+  width: 15px; }
+  .tab__toggle:before {
+    content: '\2212';
+    display: inline-block;
+    position: relative;
+    top: -1px; }
+    .tab--folded .tab__toggle:before {
+      content: '+'; }
+  .tab--folded .tab__toggle {
+    top: -1px;
+    bottom: auto; }
+
+.tab__content {
+  padding: 10px 0 25px; }
+  .tab--folded .tab__content {
+    display: none; }
+
+.tags__item {
+  position: relative;
+  margin: 0 5px 5px 0;
+  display: inline-block;
+  border-radius: 2px;
+  padding: 0 20px 2px 4px;
+  background: #fbfbfb;
+  border: 1px solid rgba(43, 165, 183, 0.25);
+  max-width: 100%; }
+
+.tags__remove {
+  position: absolute;
+  right: 4px;
+  top: 3px;
+  font-size: 10px;
+  margin-left: 10px;
+  cursor: pointer; }
+  .tags__remove:hover {
+    color: #ad3a3a; }
+
+#add-tag {
+  background-image: url(../../icons/submit.png);
+  background-repeat: no-repeat;
+  background-position: center, 0 0;
+  background-size: 12px, 100%; }
+
+.mark {
+  position: relative;
+  width: 100%;
+  margin-bottom: 5px; }
+  .mark__text-container {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    border: 1px solid #e1e2e3;
+    border-radius: 2px 0 0 2px; }
+    .mark--note .mark__text-container {
+      width: calc(100% - 16px);
+      float: left; }
+    .mark--active .mark__text-container, .mark__text-container:hover {
+      border: 1px solid #c8c8c8; }
+  .mark__text {
+    border-left: 2px solid;
+    padding: 2px 8px 2px 5px; }
+    #marks[data-folded="2"] .mark__text,
+    #marks[data-folded="4"] .mark__text, .mark__text.unfolded {
+      border-left: 0;
+      border-top: 1px solid;
+      padding-bottom: 10px;
+      text-overflow: inherit;
+      white-space: normal; }
+  .mark__note-btn {
+    background-image: url(../../icons/note4.png);
     background-repeat: no-repeat;
-    background-position: center, 0 0;
-    background-size: unset, 100%; }
-    .action-box__action[disabled] {
-      opacity: 0.2 !important;
+    background-position: 0 0, 0 0;
+    background-size: unset, 100%;
+    position: relative;
+    z-index: 2;
+    float: right;
+    width: 16px;
+    height: 16px; }
+    .mark__note-btn--red {
+      filter: url(#filter--red); }
+      .mark__note-btn--red:hover {
+        filter: url(#filter--red) brightness(0.75); }
+    .mark__note-btn--orange {
+      filter: url(#filter--orange); }
+      .mark__note-btn--orange:hover {
+        filter: url(#filter--orange) brightness(0.75); }
+    .mark__note-btn--yellow {
+      filter: url(#filter--yellow); }
+      .mark__note-btn--yellow:hover {
+        filter: url(#filter--yellow) brightness(0.75); }
+    .mark__note-btn--white {
+      filter: url(#filter--white); }
+      .mark__note-btn--white:hover {
+        filter: url(#filter--white) brightness(0.75); }
+    .mark__note-btn--green {
+      filter: url(#filter--green); }
+      .mark__note-btn--green:hover {
+        filter: url(#filter--green) brightness(0.75); }
+    .mark__note-btn--blue {
+      filter: url(#filter--blue); }
+      .mark__note-btn--blue:hover {
+        filter: url(#filter--blue) brightness(0.75); }
+    .mark__note-btn--purple {
+      filter: url(#filter--purple); }
+      .mark__note-btn--purple:hover {
+        filter: url(#filter--purple) brightness(0.75); }
+    .mark__note-btn--turquoise {
+      filter: url(#filter--turquoise); }
+      .mark__note-btn--turquoise:hover {
+        filter: url(#filter--turquoise) brightness(0.75); }
+  .mark__note {
+    position: relative;
+    top: 2px;
+    padding: 5px;
+    margin-left: 3px;
+    border: 1px solid #e1e2e3; }
+    #marks[data-folded="1"] .mark__note,
+    #marks[data-folded="2"] .mark__note {
+      display: none; }
+    .mark__note--red {
+      background: #fee; }
+    .mark__note--orange {
+      background: #fed; }
+    .mark__note--yellow {
+      background: #ffe; }
+    .mark__note--white {
+      background: #f9f9f9; }
+    .mark__note--green {
+      background: #efe; }
+    .mark__note--blue {
+      background: #def; }
+    .mark__note--purple {
+      background: #eef; }
+    .mark__note--turquoise {
+      background: #d5f0f7; }
+
+.marker {
+  margin-bottom: 8px;
+  width: 78px; }
+  .marker__apply {
+    margin: 0 0 0 10px; }
+  .marker__label {
+    display: inline-block; }
+  .marker__text {
+    position: relative;
+    margin-top: -24px;
+    left: 10px;
+    color: #37414b;
+    font-size: 11px !important; }
+  .marker__color {
+    padding: 0;
+    width: 44px;
+    border: 0;
+    -moz-appearance: none;
+    cursor: pointer; }
+    .marker__color[disabled] {
+      opacity: .2;
       cursor: default; }
-  .action-box label {
-    width: calc(100% - 30px);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis; }
+
+.action-button {
+  width: 28px;
+  height: 28px; }
 
 #mark-action--delete-highlight {
   background-image: url(../../icons/bin.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
@@ -503,9 +879,9 @@ button {
     background-image: url(../../icons/to-bm.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
 #page-action--notes {
-  background-image: url(../../icons/note2.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
+  background-image: url(../../icons/toggle-notes.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
   #page-action--notes:hover {
-    background-image: url(../../icons/note2.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+    background-image: url(../../icons/toggle-notes.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
 #nav-action--up {
   background-image: url(../../icons/up.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
@@ -525,28 +901,30 @@ button {
 #nav-action--up, #nav-action--down {
   background-size: 12px, 100%; }
 
-.marker {
-  margin-bottom: 8px;
-  width: 78px; }
-  .marker__apply {
-    margin: 0 0 0 10px; }
-  .marker__label {
-    display: inline-block; }
-  .marker__text {
-    position: relative;
-    margin-top: -24px;
-    left: 10px;
-    color: #37414b;
-    font-size: 11px !important; }
-  .marker__color {
-    padding: 0;
-    width: 44px;
-    border: 0;
-    -moz-appearance: none;
-    cursor: pointer; }
-    .marker__color[disabled] {
-      opacity: .2;
-      cursor: default; }
+#add-note {
+  font-size: 16px;
+  text-align: center;
+  color: #777; }
+
+tmnote {
+  display: block;
+  position: relative;
+  width: calc(100% - 20px); }
+
+tmnote textarea {
+  padding: 5px;
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid #e1e2e3 !important;
+  border-top: 0 !important; }
+
+tmnotecolor {
+  width: 13px;
+  height: 9px;
+  margin: 0 1px; }
+
+tmnotepalette {
+  display: block; }
 
 a, .link {
   color: inherit;

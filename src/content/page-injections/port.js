@@ -24,7 +24,8 @@ export default new _PORT({
       'warn:mixed-entry-types',
       'warn:multiple-unlocked-entries',
       'page-state',
-      'notes-state'
+      'notes-state',
+      'visually-ordered:marks'
     ]
   }
 });

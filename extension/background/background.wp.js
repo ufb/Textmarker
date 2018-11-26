@@ -770,7 +770,8 @@ function _default() {
       ENV: {
         'activated:tab': 'setPanel',
         'entry:found': 'storeEntry',
-        'opened:sidebar': 'sendEntry'
+        'opened:sidebar': 'sendEntry',
+        'visually-ordered:marks': 'sendOrderedMarks'
       }
     },
     entries: {},
@@ -799,6 +800,13 @@ function _default() {
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
         return _this2.emit('entry:found-for-tab', _this2.entries[tab.id]);
+      });
+    },
+    sendOrderedMarks: function sendOrderedMarks(marks) {
+      var _this3 = this;
+
+      (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+        return _this3.emit('entry:ordered-marks', marks);
       });
     }
   });
@@ -845,7 +853,6 @@ new _utils._MODULE({
       'change:view-setting': 'changeViewOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
-      'sidebar:toggle-autosave': 'changeSaveOpt',
       'remove:custom-marker': 'removeCustomMarker',
       'add:custom-marker': 'addCustomMarker',
       'named:entry': 'saveEntry',
@@ -854,7 +861,9 @@ new _utils._MODULE({
       'finished:restoration': 'updateEntryOnRestoration',
       'clean:entries': 'cleanEntries',
       'sync:entry': 'syncEntry',
-      'tag:entries': 'tagEntries'
+      'tag:entries': 'tagEntries',
+      'remove:tag': 'removeTag',
+      'add:tag': 'addTag'
     }
   },
   updateOnChangedSync: false,
@@ -1071,7 +1080,7 @@ new _utils._MODULE({
       history.entries[name].lost = lost || [];
       return history;
     }, entry.synced ? 'sync' : 'local').then(function () {
-      return _this5.emit('updated:entry');
+      return _this5.emit('updated:entry', entry);
     }).catch(function () {
       return _this5.emit('failed:update-entry', 'error_update_entry');
     });
@@ -1162,6 +1171,31 @@ new _utils._MODULE({
         return history;
       }, 'local');
     });
+  },
+  removeTag: function removeTag(tag, entry) {
+    var area = entry.synced ? 'sync' : 'local';
+
+    _storage.default.update('history', function (history) {
+      var storedEntry = history.entries[entry.name];
+      var rx = new RegExp('^' + tag + '$|^' + tag + '\\s|\\s' + tag + '\\s|\\s' + tag + '$');
+
+      if (storedEntry.tag) {
+        storedEntry.tag = storedEntry.tag.replace(rx, ' ').replace(/^\s|\s$/, '').replace(/\s{2,}/, ' ');
+      }
+
+      return history;
+    }, area);
+  },
+  addTag: function addTag(tag, entry) {
+    var _this9 = this;
+
+    var area = entry.synced ? 'sync' : 'local';
+
+    _storage.default.update('history', function (history) {
+      _this9.addTagToEntry(history.entries[entry.name], tag);
+
+      return history;
+    }, area);
   },
   addTagToEntry: function addTagToEntry(entry, tag) {
     if (!tag) entry.tag = '';else if (!entry.tag) entry.tag = tag;else {
@@ -1613,7 +1647,7 @@ new _utils._PORT({
   postponeConnection: true,
   events: {
     ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'opened:sidebar'],
-    CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab']
+    CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab', 'entry:ordered-marks']
   }
 });
 

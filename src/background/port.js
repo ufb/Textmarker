@@ -62,7 +62,8 @@ new _PORT({
       'page-state',
       'notes-state',
       'entry:found',
-      'entry:found-for-tab'
+      'entry:found-for-tab',
+      'entry:ordered-marks'
     ]
   }
 });

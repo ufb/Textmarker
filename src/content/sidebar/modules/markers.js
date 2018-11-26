@@ -1,7 +1,7 @@
 import { _DOMMODULE } from './../../_shared/utils'
 
 new _DOMMODULE({
-  el: document.getElementById('markers'),
+  el: document.getElementById('tab--markers'),
   events: {
     ENV: {
       'started:app': 'render',

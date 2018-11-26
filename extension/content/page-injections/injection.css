@@ -213,8 +213,7 @@ tmnotepalette {
   padding: 4px 0 6px;
   text-align: center;
   box-sizing: border-box;
-  border-bottom: 1px solid #e1e2e3;
-  z-index: 1; }
+  border-bottom: 1px solid #e1e2e3; }
 
 tmnotecolor {
   width: 22px;

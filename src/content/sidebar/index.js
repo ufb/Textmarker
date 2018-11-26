@@ -5,10 +5,17 @@ import { _MODULE } from './../_shared/utils'
 import { _L10N } from './../_shared/utils'
 import _PORT from './port'
 import _STORE from './_store'
+
+import './modules/tabs'
 import './modules/header'
+import './modules/meta-infos'
+import './modules/tags'
+import './modules/page-notes'
 import './modules/markers'
+import './modules/history-actions'
 import './modules/mark-actions'
 import './modules/page-actions'
+import './modules/marks'
 import './modules/links'
 
 _L10N();

@@ -14,9 +14,9 @@ $colors:
     tmnoteheader {
       background: $val3;
     }
-    tmnotedelete,
+    tmnotecustomize,
     tmnoteminimize,
-    tmnotecustomize {
+    tmnotedelete {
       background: $val2;
       &:hover {
         background: $val;
@@ -33,22 +33,9 @@ $colors:
 }
 
 tmnote {
-  display: none;
-  position: absolute;
   font-family: Verdana, sans-serif;
   font-size: 12px;
-  color: $color-grey--dark;
   line-height: 1.4;
-  margin: 0;
-  z-index: $layer--max;
-  box-sizing: border-box !important;
-
-  .tmnotes--0_8 & {
-    opacity: 0.8;
-  }
-  &:hover {
-    opacity: 1 !important;
-  }
 }
 tmnoteheader {
   height: 22px;
@@ -58,22 +45,14 @@ tmnoteheader {
   cursor: move;
 }
 tmnotepalette {
-  position: absolute;
-  top: 0;
-  left: 0;
   z-index: 1;
   width: 100%;
-  padding: 4px 0 6px;
   text-align: center;
-  box-sizing: border-box;
   border-bottom: 1px solid $color-border--light;
 }
 tmnotecolor {
-  width: 22px;
-  height: 14px;
   position: relative;
   display: inline-block;
-  margin: 0 7px;
   border-top: 2px solid;
   cursor: pointer;
   box-shadow: 0 1px 3px $color-shadow--lighter;
@@ -83,20 +62,18 @@ tmnotecolor {
     filter: brightness(1.02);
   }
 }
-tmnotedelete,
+tmnotecustomize,
 tmnoteminimize,
-tmnotecustomize {
+tmnotedelete {
   position: absolute;
   display: block;
   font-size: 14px;
   right: -20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   border-radius: 0 2px 2px 0;
   cursor: pointer;
   color: $color-text--disabled;
   line-height: 1;
   height: 20px;
-  box-sizing: border-box !important;
 
   &:hover {
     color: $color-text--dark;
@@ -118,16 +95,11 @@ tmnotecustomize {
   font-size: 16px;
   padding: 1px 3px 2px 10px;
 }
-body > tmnote > textarea[data-tm-note] {
+.__note_textarea {
   display: block !important;
-  padding: 10px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
   position: relative !important;
-  width: 300px;
-  min-height: 100px !important;
   font-family: Verdana, sans-serif !important;
   font-size: 12px !important;
+  min-height: 100px !important;
   border: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
 }

@@ -1,0 +1,134 @@
+.mark {
+  position: relative;
+  width: 100%;
+  margin-bottom: 5px;
+
+  &__text-container {
+    position: relative;
+    z-index: 2;
+    background: #fff;
+    border: 1px solid $color-border--light;
+    border-radius: 2px 0 0 2px;
+
+    .mark--note & {
+      width: calc(100% - 16px);
+      float: left;
+    }
+
+    .mark--active &,
+    &:hover {
+      border: 1px solid $color-border;
+    }
+  }
+
+  &__text {
+    border-left: 2px solid;
+    padding: 2px 8px 2px 5px;
+
+    #marks[data-folded="2"] &,
+    #marks[data-folded="4"] &,
+    &.unfolded {
+      border-left: 0;
+      border-top: 1px solid;
+      padding-bottom: 10px;
+      text-overflow: inherit;
+      white-space: normal;
+    }
+  }
+
+  &__note-btn {
+    @include icon('note4');
+    position: relative;
+    z-index: 2;
+    float: right;
+    width: 16px;
+    height: 16px;
+
+    &--red {
+      filter: url(#filter--red);
+      &:hover {
+        filter: url(#filter--red) brightness(.75);
+      }
+    }
+    &--orange {
+      filter: url(#filter--orange);
+      &:hover {
+        filter: url(#filter--orange) brightness(.75);
+      }
+    }
+    &--yellow {
+      filter: url(#filter--yellow);
+      &:hover {
+        filter: url(#filter--yellow) brightness(.75);
+      }
+    }
+    &--white {
+      filter: url(#filter--white);
+      &:hover {
+        filter: url(#filter--white) brightness(.75);
+      }
+    }
+    &--green {
+      filter: url(#filter--green);
+      &:hover {
+        filter: url(#filter--green) brightness(.75);
+      }
+    }
+    &--blue {
+      filter: url(#filter--blue);
+      &:hover {
+        filter: url(#filter--blue) brightness(.75);
+      }
+    }
+    &--purple {
+      filter: url(#filter--purple);
+      &:hover {
+        filter: url(#filter--purple) brightness(.75);
+      }
+    }
+    &--turquoise {
+      filter: url(#filter--turquoise);
+      &:hover {
+        filter: url(#filter--turquoise) brightness(.75);
+      }
+    }
+  }
+
+  &__note {
+    position: relative;
+    top: 2px;
+    padding: 5px;
+    margin-left: 3px;
+    border: 1px solid $color-border--light;
+
+    #marks[data-folded="1"] &,
+    #marks[data-folded="2"] & {
+      display: none;
+    }
+
+    &--red {
+      background: #fee;
+    }
+    &--orange {
+      background: #fed;
+    }
+    &--yellow {
+      background: #ffe;
+    }
+    &--white {
+      background: #f9f9f9;
+    }
+    &--green {
+      background: #efe;
+    }
+    &--blue {
+      background: #def;
+    }
+    &--purple {
+      background: #eef;
+    }
+    &--turquoise {
+      background: #d5f0f7;
+    }
+  }
+}

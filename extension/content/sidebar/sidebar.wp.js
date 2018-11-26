@@ -188,13 +188,24 @@ var _utils = __webpack_require__(/*! ./../_shared/utils */ "./content/_shared/ut
 var _default = new _utils._MODULE({
   events: {
     ENV: {
-      'toggled:sync': 'setAreas'
+      'toggled:sync': 'setAreas',
+      'saved:entry': 'storeEntry',
+      'entry:found': 'storeEntry',
+      'entry:found-for-tab': 'storeEntry',
+      'updated:entry': 'storeEntry'
     }
   },
   initialized: false,
   initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
+  entry: {},
+  storeEntry: function storeEntry(entry) {
+    if (entry) {
+      this.entry = entry;
+      this.emit('stored:entry', entry);
+    }
+  },
   setAreas: function setAreas() {
     var _this = this;
 
@@ -278,13 +289,25 @@ var _port = _interopRequireDefault(__webpack_require__(/*! ./port */ "./content/
 
 var _store = _interopRequireDefault(__webpack_require__(/*! ./_store */ "./content/sidebar/_store.js"));
 
+__webpack_require__(/*! ./modules/tabs */ "./content/sidebar/modules/tabs.js");
+
 __webpack_require__(/*! ./modules/header */ "./content/sidebar/modules/header.js");
 
+__webpack_require__(/*! ./modules/meta-infos */ "./content/sidebar/modules/meta-infos.js");
+
+__webpack_require__(/*! ./modules/tags */ "./content/sidebar/modules/tags.js");
+
+__webpack_require__(/*! ./modules/page-notes */ "./content/sidebar/modules/page-notes.js");
+
 __webpack_require__(/*! ./modules/markers */ "./content/sidebar/modules/markers.js");
+
+__webpack_require__(/*! ./modules/history-actions */ "./content/sidebar/modules/history-actions.js");
 
 __webpack_require__(/*! ./modules/mark-actions */ "./content/sidebar/modules/mark-actions.js");
 
 __webpack_require__(/*! ./modules/page-actions */ "./content/sidebar/modules/page-actions.js");
+
+__webpack_require__(/*! ./modules/marks */ "./content/sidebar/modules/marks.js");
 
 __webpack_require__(/*! ./modules/links */ "./content/sidebar/modules/links.js");
 
@@ -352,22 +375,115 @@ new _utils._MODULE({
 
 var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/sidebar/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 new _utils._DOMMODULE({
   el: document.getElementById('header'),
   events: {
     ENV: {
-      'saved:entry': 'render',
-      'entry:found': 'render',
-      'entry:found-for-tab': 'render'
+      'stored:entry': 'render'
     }
   },
   render: function render(entry) {
+    var header = this.el;
+
     if (!entry || entry === 'locked') {
-      this.el.classList.add('u-display--none');
+      header.classList.add('u-display--none');
     } else if (!entry.locked) {
-      this.el.classList.remove('u-display--none');
-      document.getElementById('header__name').innerText = entry.name;
+      header.classList.remove('u-display--none');
+      header.getElementsByClassName('header__name')[0].innerText = entry.name;
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./content/sidebar/modules/history-actions.js":
+/*!****************************************************!*\
+  !*** ./content/sidebar/modules/history-actions.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/sidebar/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('history-actions'),
+  events: {
+    ENV: {
+      'started:app': 'toggleSave',
+      'updated:settings': 'toggleSave',
+      'toggled:sync-settings': 'toggleSave',
+      'updated:entry': 'deactivateSave',
+      'saved:entry': 'deactivateSave',
+      'unsaved-changes': 'activateSave',
+      'failed:restoration': 'activateRetry',
+      'update:entry?': 'deactivateRetry',
+      'page-state': 'onPageState'
+    },
+    DOM: {
+      click: {
+        '#page-action--retry': 'retryRestoration',
+        '#page-action--save': 'save'
+      }
+    }
+  },
+  retryBtnShown: false,
+  saveBtn: document.getElementById('page-action--save'),
+  retryBtn: document.getElementById('page-action--retry'),
+  autoinit: function autoinit() {
+    this.toggleSave();
+  },
+  save: function save() {
+    this.emit('sidebar:save-changes', {
+      tab: 'active'
+    });
+  },
+  retryRestoration: function retryRestoration() {
+    this.emit('sidebar:retry-restoration', {
+      tab: 'active'
+    });
+    this.deactivateRetry();
+  },
+  toggleSave: function toggleSave() {
+    var _this = this;
+
+    _store.default.get('autosave').then(function (autosave) {
+      var meth = autosave ? 'add' : 'remove';
+
+      _this.saveBtn.classList[meth]('u-display--none');
+    });
+  },
+  activateSave: function activateSave() {
+    var on = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+    if (on) this.saveBtn.removeAttribute('disabled');else this.saveBtn.setAttribute('disabled', true);
+  },
+  deactivateSave: function deactivateSave() {
+    this.activateSave(false);
+  },
+  activateRetry: function activateRetry() {
+    if (!this.retryBtnShown) {
+      this.retryBtn.classList.remove('u-display--none');
+      this.retryBtnShown = true;
+    }
+  },
+  deactivateRetry: function deactivateRetry() {
+    if (this.retryBtnShown) {
+      this.retryBtn.classList.add('u-display--none');
+      this.retryBtnShown = false;
+    }
+  },
+  onPageState: function onPageState(state) {
+    if (state.retryActive) this.activateRetry();
   }
 });
 
@@ -386,7 +502,7 @@ new _utils._DOMMODULE({
 var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 new _utils._DOMMODULE({
-  el: document.getElementById('links'),
+  el: document.getElementById('tab--links'),
   events: {
     DOM: {
       click: {
@@ -414,7 +530,7 @@ new _utils._DOMMODULE({
 var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 new _utils._DOMMODULE({
-  el: document.getElementById('mark-actions'),
+  el: document.getElementById('tab--actions'),
   events: {
     ENV: {
       'clicked:mark': 'activate',
@@ -422,9 +538,7 @@ new _utils._DOMMODULE({
     },
     DOM: {
       click: {
-        '.action-box__action--mark': 'markAction',
-        '.action-box__action--nav': 'nav',
-        '.i': 'toggleInfo'
+        '.action-button--mark': 'markAction'
       }
     }
   },
@@ -436,7 +550,7 @@ new _utils._DOMMODULE({
     if (el.hasAttribute('disabled')) return;
     this.emit('sidebar:' + el.getAttribute('data-action'), null, null, {
       tab: 'active'
-    }); //this.deactivate();
+    });
   },
   activate: function activate(markInfos) {
     this.buttons.forEach(function (btn) {
@@ -453,14 +567,6 @@ new _utils._DOMMODULE({
       btn.setAttribute('disabled', true);
       btn.parentNode.classList.add('disabled');
     });
-  },
-  nav: function nav(e, el) {
-    this.emit('sidebar:' + el.getAttribute('data-action'), 1 * el.getAttribute('data-value'), null, {
-      tab: 'active'
-    });
-  },
-  toggleInfo: function toggleInfo(e, el) {
-    el.classList.toggle('active');
   }
 });
 
@@ -479,7 +585,7 @@ new _utils._DOMMODULE({
 var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
 new _utils._DOMMODULE({
-  el: document.getElementById('markers'),
+  el: document.getElementById('tab--markers'),
   events: {
     ENV: {
       'started:app': 'render',
@@ -611,6 +717,200 @@ new _utils._DOMMODULE({
 
 /***/ }),
 
+/***/ "./content/sidebar/modules/marks.js":
+/*!******************************************!*\
+  !*** ./content/sidebar/modules/marks.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/sidebar/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('tab--list'),
+  events: {
+    ENV: {
+      'entry:ordered-marks': 'setMarkIDs',
+      'stored:entry': 'render'
+    },
+    DOM: {
+      click: {
+        '.mark__text': 'activate',
+        '.mark__note-btn': 'toggleNote',
+        '.action-button--nav': 'nav'
+      },
+      change: {
+        '#folding': 'foldList'
+      }
+    }
+  },
+  marks: [],
+  markIDs: null,
+  length: 0,
+  current: -1,
+  setFilters: false,
+  render: function render() {
+    if (_store.default.entry) console.log('render', _store.default.entry.marks.length);
+    var entry = this.entry = _store.default.entry;
+
+    if (entry) {
+      this.setMarks();
+      if (!this.setFilters) this.renderSVGFilters();
+      this.renderList();
+    }
+  },
+  setMarks: function setMarks() {
+    console.log('set marks');
+    var marks = this.entry.marks;
+    var markIDs = this.markIDs;
+    this.length = marks.length;
+    this.marks = markIDs ? marks.sort(function (m1, m2) {
+      return markIDs.indexOf(m1.id) < markIDs.indexOf(m2.id);
+    }) : marks;
+  },
+  setMarkIDs: function setMarkIDs(ids) {
+    console.log('set ids', ids.length);
+    this.markIDs = ids.reverse();
+  },
+  renderSVGFilters: function renderSVGFilters() {
+    var body = document.body;
+    var tmpl = document.getElementById('filter-template');
+    var colors = {
+      purple: '0 0 0 0 93 0 0 0 0 .8 0 0 0 0 1 0 0 0 1 0',
+      red: '0 0 0 0 1 0 0 0 0 .8 0 0 0 0 .8 0 0 0 1 0',
+      orange: '0 0 0 0 1 0 0 0 0 .93 0 0 0 0 .73 0 0 0 1 0',
+      yellow: '0 0 0 0 1 0 0 0 0 1 0 0 0 0 .8 0 0 0 1 0',
+      green: '0 0 0 0 .8 0 0 0 0 1 0 0 0 0 .8 0 0 0 1 0',
+      turquoise: '0 0 0 0 .73 0 0 0 0 .89 0 0 0 0 .93 0 0 0 1 0',
+      blue: '0 0 0 0 .8 0 0 0 0 .8 0 0 0 0 1 0 0 0 1 0',
+      white: '0 0 0 0 .93 0 0 0 0 .93 0 0 0 0 .93 0 0 0 1 0'
+    };
+    var filter;
+
+    for (var i in colors) {
+      filter = tmpl.cloneNode(true);
+      filter.getElementsByTagName('filter')[0].id = 'filter--' + i;
+      filter.getElementsByTagName('feColorMatrix')[0].setAttribute('values', colors[i]);
+      body.appendChild(filter);
+    }
+
+    this.setFilters = true;
+  },
+  renderList: function renderList() {
+    var markTmpl = document.getElementById('mark-template');
+    var fragment = document.createDocumentFragment();
+    var marksContainer = document.getElementById('marks');
+    var markContainer;
+    marksContainer.innerText = '';
+    this.marks.forEach(function (mark, i) {
+      markContainer = markTmpl.cloneNode(true);
+      markContainer.id = '';
+      markContainer.classList.remove('u-display--none');
+      markContainer.setAttribute('data-id', i);
+      var textNode = markContainer.getElementsByClassName('mark__text')[0];
+      var textContent = document.createTextNode(mark.text);
+      var color = mark.style.indexOf('background-color');
+      var note = mark.note;
+      color = color === -1 ? 'transparent' : mark.style.substr(color + 17, 7);
+      var noteColor = note ? note.color : '';
+      var noteBtn, noteNode;
+      textNode.style.borderColor = color;
+      textNode.appendChild(textContent);
+
+      if (note) {
+        markContainer.classList.add('mark--note');
+        noteBtn = markContainer.getElementsByClassName('mark__note-btn')[0];
+        noteBtn.classList.remove('u-display--none');
+        noteBtn.classList.add('mark__note-btn--' + noteColor);
+        noteNode = markContainer.getElementsByClassName('mark__note')[0];
+        noteNode.appendChild(document.createTextNode(note.text));
+        noteNode.classList.remove('u-display--none');
+        noteNode.classList.add('mark__note--' + noteColor);
+      }
+
+      fragment.appendChild(markContainer);
+    });
+    marksContainer.appendChild(fragment);
+  },
+  nav: function nav(e, el) {
+    var dir = 1 * el.getAttribute('data-value');
+    this.current += dir;
+    if (this.current >= this.length) this.current = 0;else if (this.current < 0) this.current = this.length - 1;
+    this.activateListItem();
+  },
+  activateListItem: function activateListItem(id) {
+    if (id) this.current = id;
+    console.log('activating', this.current);
+    var currentItem = this.el.getElementsByClassName('mark--active')[0];
+    if (currentItem) currentItem.classList.remove('mark--active');
+    document.querySelector('div[data-id="' + [this.current] + '"]').classList.add('mark--active');
+    this.emit('sidebar:next-mark', this.current, {
+      tab: 'active'
+    });
+  },
+  activate: function activate(e, el) {
+    el.classList.toggle('unfolded');
+    this.activateListItem(1 * el.parentNode.parentNode.getAttribute('data-id'));
+  },
+  foldList: function foldList(e, el) {
+    document.getElementById('marks').setAttribute('data-folded', el.value);
+  },
+  toggleNote: function toggleNote(e, el) {
+    el.parentNode.getElementsByClassName('mark__note')[0].classList.toggle('u-display--none');
+  }
+});
+
+/***/ }),
+
+/***/ "./content/sidebar/modules/meta-infos.js":
+/*!***********************************************!*\
+  !*** ./content/sidebar/modules/meta-infos.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/sidebar/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('tab--info'),
+  events: {
+    ENV: {
+      'stored:entry': 'render'
+    }
+  },
+  render: function render(entry) {
+    if (entry) {
+      document.getElementById('meta__number-marks').innerText = entry.marks.length;
+      document.getElementById('meta__synced').innerText = entry.synced ? browser.i18n.getMessage('yes') : 'No', //browser.i18n.getMessage('no');
+      document.getElementById('meta__created').innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
+      document.getElementById('meta__last-modified').innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
+    }
+  },
+  optimizeDateString: function optimizeDateString(date) {
+    return date.replace(/^(\d{1})(\D{1})/, function (m, p, q) {
+      return '0' + p + q;
+    }).replace(/(\D{1})(\d{1}\D{1})/g, function (m, p, q) {
+      return p + '0' + q;
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./content/sidebar/modules/page-actions.js":
 /*!*************************************************!*\
   !*** ./content/sidebar/modules/page-actions.js ***!
@@ -628,74 +928,21 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 new _utils._DOMMODULE({
-  el: document.getElementById('page-actions'),
+  el: document.getElementById('tab--actions'),
   events: {
     ENV: {
-      'started:app': 'update',
-      'updated:settings': 'update',
-      'toggled:sync-settings': 'update',
-      'updated:entry': 'deactivateSave',
-      'saved:entry': 'deactivateSave',
-      'unsaved-changes': 'activateSave',
       'added:bookmark': 'activateBookmark',
       'removed:bookmark': 'deactivateBookmark',
       'added:note': 'activateNotes',
       'removed:last-note': 'deactivateNotes',
-      'failed:restoration': 'activateRetry',
-      'update:entry?': 'deactivateRetry',
       'page-state': 'onPageState',
       'notes-state': 'onNotesState'
     },
     DOM: {
       click: {
-        '.switch-toggle': 'onAutosaveSwitch',
-        '.action-box__action--page': 'pageAction',
-        '#page-action--retry': 'retryRestoration'
+        '.action-button--page': 'pageAction'
       }
     }
-  },
-  retryBtnShown: false,
-  autoinit: function autoinit() {
-    this.update();
-  },
-  update: function update() {
-    this.updateAutosave();
-  },
-  updateAutosave: function updateAutosave() {
-    var _this = this;
-
-    _store.default.get('autosave').then(function (autosave) {
-      return _this.toggleAutosave(autosave);
-    });
-  },
-  onAutosaveSwitch: function onAutosaveSwitch(e, el) {
-    el = el.id === 'autosave-switch' ? el : el.parentNode;
-    var autosave = !el.classList.contains('active');
-    this.toggleAutosave(autosave);
-    this.emit('sidebar:toggle-autosave', autosave);
-  },
-  toggleAutosave: function toggleAutosave(on) {
-    var meth = on ? 'add' : 'remove';
-    document.getElementById('autosave-switch').classList[meth]('active');
-    document.getElementById('page-action-box--save').classList[meth]('u-display--none');
-  },
-  activateRetry: function activateRetry() {
-    if (!this.retryBtnShown) {
-      document.getElementById('page-action-box--retry').classList.remove('u-display--none');
-      this.retryBtnShown = true;
-    }
-  },
-  deactivateRetry: function deactivateRetry() {
-    if (this.retryBtnShown) {
-      document.getElementById('page-action-box--retry').classList.add('u-display--none');
-      this.retryBtnShown = false;
-    }
-  },
-  activateSave: function activateSave() {
-    this.activate('save', true);
-  },
-  deactivateSave: function deactivateSave() {
-    this.activate('save', false);
   },
   activateBookmark: function activateBookmark() {
     this.activate('scroll', true);
@@ -725,16 +972,174 @@ new _utils._DOMMODULE({
       tab: 'active'
     });
   },
-  retryRestoration: function retryRestoration(e, el) {
-    this.pageAction(e, el);
-    this.deactivateRetry();
-  },
   onPageState: function onPageState(state) {
     if (state.bookmark) this.activateBookmark();
-    if (state.retryActive) this.activateRetry();
   },
   onNotesState: function onNotesState(notes) {
     if (notes) this.activateNotes();
+  }
+});
+
+/***/ }),
+
+/***/ "./content/sidebar/modules/page-notes.js":
+/*!***********************************************!*\
+  !*** ./content/sidebar/modules/page-notes.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/sidebar/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('tab--page-notes'),
+  events: {
+    ENV: {//'stored:entry': 'render'
+    },
+    DOM: {
+      click: {
+        '#add-note': 'addNote',
+        'tmnotecolor': 'changeColor',
+        'tmnotecustomize': 'togglePalette',
+        'tmnotedelete': 'removeNote',
+        'tmnoteminimize': 'minimizeNote'
+      }
+    }
+  },
+  addNote: function addNote() {
+    var note = document.getElementById('page-note-template').cloneNode(true);
+    note.id = '';
+    note.classList.remove('u-display--none');
+    document.getElementById('page-notes').appendChild(note);
+  },
+  changeColor: function changeColor(e, el) {
+    el.parentNode.parentNode.parentNode.classList.add('tmnote--' + el.getAttribute('data-color'));
+  },
+  togglePalette: function togglePalette(e, el) {
+    el.parentNode.getElementsByTagName('tmnotepalette')[0].classList.toggle('u-display--none');
+  },
+  removeNote: function removeNote(e, el) {
+    el.parentNode.parentNode.removeChild(el.parentNode);
+    this.emit('remove:page-note');
+  },
+  minimizeNote: function minimizeNote(e, el) {
+    el.parentNode.classList.add('tmnote--min');
+  }
+});
+
+/***/ }),
+
+/***/ "./content/sidebar/modules/tabs.js":
+/*!*****************************************!*\
+  !*** ./content/sidebar/modules/tabs.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/sidebar/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('textmarker-sidebar'),
+  events: {
+    ENV: {
+      'stored:entry': 'showEntrySpecificTabs'
+    },
+    DOM: {
+      click: {
+        '.tab__name': 'toggle',
+        '.tab__toggle': 'toggle'
+      }
+    }
+  },
+  toggle: function toggle(e, el) {
+    document.getElementById(el.getAttribute('data-target')).classList.toggle('tab--folded');
+  },
+  showEntrySpecificTabs: function showEntrySpecificTabs() {
+    Array.from(document.getElementsByClassName('tab--entry')).forEach(function (tab) {
+      return tab.classList.remove('u-display--none');
+    });
+  }
+});
+
+/***/ }),
+
+/***/ "./content/sidebar/modules/tags.js":
+/*!*****************************************!*\
+  !*** ./content/sidebar/modules/tags.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/sidebar/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('tab--tags'),
+  events: {
+    ENV: {
+      'stored:entry': 'render'
+    },
+    DOM: {
+      click: {
+        '.tags__remove': 'removeTag',
+        '#add-tag': 'addTag'
+      }
+    }
+  },
+  render: function render(entry) {
+    var _this = this;
+
+    if (entry) {
+      var tags = entry.tag ? entry.tag.split(' ') : [];
+      document.getElementById('tags').innerText = '';
+      tags.forEach(function (tag) {
+        return _this.renderTag(tag);
+      });
+    }
+  },
+  renderTag: function renderTag(tag) {
+    var container = document.getElementById('tags');
+    var el = document.createElement('div');
+    var del = document.createElement('span');
+    var x = document.createTextNode(String.fromCharCode(10005));
+    el.className = 'tags__item u-overflow--ellipsis';
+    del.className = 'tags__remove';
+    del.setAttribute('data-tag', tag);
+    el.innerText = tag;
+    del.appendChild(x);
+    el.appendChild(del);
+    container.appendChild(el);
+  },
+  addTag: function addTag() {
+    var inp = document.getElementById('new-tag');
+    var tag = inp.value;
+    this.emit('add:tag', tag, _store.default.entry);
+    inp.value = '';
+    this.renderTag(tag);
+  },
+  removeTag: function removeTag(e, el) {
+    this.emit('remove:tag', el.getAttribute('data-tag'), _store.default.entry);
+    el.parentNode.parentNode.removeChild(el.parentNode);
   }
 });
 
@@ -761,7 +1166,7 @@ var _default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:toggle-autosave', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'open:addon-page', 'opened:sidebar']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar']
   }
 });
 

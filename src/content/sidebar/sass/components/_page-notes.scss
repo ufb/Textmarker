@@ -1,0 +1,27 @@
+#add-note {
+  font-size: 16px;
+  text-align: center;
+  color: $color-text--grey;
+}
+
+tmnote {
+  display: block;
+  position: relative;
+  width: calc(100% - 20px);
+}
+tmnote textarea {
+  @extend .__note_textarea;
+  padding: 5px;
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid $color-border--light !important;
+  border-top: 0 !important;
+}
+tmnotecolor {
+  width: 13px;
+  height: 9px;
+  margin: 0 1px;
+}
+tmnotepalette {
+  display: block;
+}

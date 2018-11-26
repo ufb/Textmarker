@@ -12,7 +12,6 @@ export default new _PORT({
       'sidebar:bookmark',
       'sidebar:delete-bookmark',
       'sidebar:note',
-      'sidebar:toggle-autosave',
       'sidebar:save-changes',
       'sidebar:retry-restoration',
       'sidebar:undo',
@@ -20,6 +19,8 @@ export default new _PORT({
       'sidebar:scroll-to-bookmark',
       'sidebar:toggle-notes',
       'sidebar:next-mark',
+      'remove:tag',
+      'add:tag',
       'open:addon-page',
       'opened:sidebar'
     ]

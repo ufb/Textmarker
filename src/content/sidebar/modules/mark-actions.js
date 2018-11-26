@@ -1,7 +1,7 @@
 import { _DOMMODULE } from './../../_shared/utils'
 
 new _DOMMODULE({
-  el: document.getElementById('mark-actions'),
+  el: document.getElementById('tab--actions'),
   events: {
     ENV: {
       'clicked:mark': 'activate',
@@ -9,9 +9,7 @@ new _DOMMODULE({
     },
     DOM: {
       click: {
-        '.action-box__action--mark': 'markAction',
-        '.action-box__action--nav': 'nav',
-        '.i': 'toggleInfo'
+        '.action-button--mark': 'markAction'
       }
     }
   },
@@ -23,7 +21,6 @@ new _DOMMODULE({
   markAction(e, el) {
     if (el.hasAttribute('disabled')) return;
     this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: 'active' });
-    //this.deactivate();
   },
   activate(markInfos) {
     this.buttons.forEach(btn => {
@@ -43,11 +40,5 @@ new _DOMMODULE({
       btn.setAttribute('disabled', true);
       btn.parentNode.classList.add('disabled');
     });
-  },
-  nav(e, el) {
-    this.emit('sidebar:' + el.getAttribute('data-action'), 1*el.getAttribute('data-value'), null, { tab: 'active' });
-  },
-  toggleInfo(e, el) {
-    el.classList.toggle('active');
   }
 });

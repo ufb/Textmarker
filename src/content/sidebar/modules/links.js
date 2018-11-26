@@ -1,7 +1,7 @@
 import { _DOMMODULE } from './../../_shared/utils'
 
 new _DOMMODULE({
-  el: document.getElementById('links'),
+  el: document.getElementById('tab--links'),
   events: {
     DOM: {
       click: {

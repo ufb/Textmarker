@@ -896,7 +896,7 @@ function _default() {
         'sidebar:retry-restoration': 'resume',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
-        'sidebar:next-mark': 'gotoNextMark',
+        'sidebar:next-mark': 'gotoMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark',
         'clicked:mark': 'gotoMark'
@@ -906,6 +906,7 @@ function _default() {
     done: [],
     undone: [],
     visuallyOrderedMarks: [],
+    visuallyOrderedMarkIDs: [],
     bookmark: null,
     removedBookmark: null,
     idcount: 0,
@@ -1050,6 +1051,7 @@ function _default() {
 
       this.undone = [];
       this.visuallyOrderedMarks = [];
+      this.visuallyOrderedMarkIDs = [];
       this.bookmark = null;
       this.removedBookmark = null;
       this.idcount = 0;
@@ -1092,14 +1094,14 @@ function _default() {
         if (autosave) _this2.save();else _this2.emit('unsaved-changes');
       });
     },
-    store: function store(mark, text, save) {
+    store: function store(mark, save, order) {
       this.done.push(mark);
       if (save !== false) this.autosave();
-      this.orderMarksVisually();
+      if (order) this.orderMarksVisually();
     },
     recreate: function recreate(selection, mark) {
       this.selection = selection;
-      this.store(this.mark(mark.key, mark), selection.text, false);
+      this.store(this.mark(mark.key, mark), false, false);
     },
     onFinishedRestoration: function onFinishedRestoration() {
       if (!this.done.length) return this;
@@ -1115,6 +1117,8 @@ function _default() {
         this.sortById();
         this.scrollToBookmark();
       }
+
+      this.orderMarksVisually();
     },
     addNote: function addNote(id) {
       this.emit('add:note', this.findMark(id));
@@ -1129,13 +1133,18 @@ function _default() {
       this.emit('update:entry?', entry);
     },
     gotoMark: function gotoMark(mark) {
+      console.log('go to', mark);
       var markElements = this.visuallyOrderedMarks;
       var el, pos, id;
 
-      if (mark) {
-        id = mark.id;
-        el = document.querySelector('.textmarker-highlight[data-tm-id="' + id + '_0"]');
-        pos = this.markScrollPos = markElements.indexOf(el);
+      if (mark || mark === 0) {
+        if (typeof mark === 'number') {
+          id = this.currentScrollPos = mark + 1;
+          el = markElements[mark];
+        } else {
+          id = mark.id;
+          el = document.querySelector('.textmarker-highlight[data-tm-id="' + id + '_0"]');
+        }
       } else {
         pos = this.markScrollPos;
         el = markElements[pos];
@@ -1146,7 +1155,7 @@ function _default() {
         behavior: 'smooth',
         block: 'center'
       });
-      if (!mark) this.getById(id).onClick(id);
+      if (!mark || typeof mark === 'number') this.getById(id).onClick(id);
       this.indicateMark(id);
     },
     gotoNextMark: function gotoNextMark(dir) {
@@ -1241,6 +1250,10 @@ function _default() {
           return 1;
         }
       });
+      this.visuallyOrderedMarkIDs = this.visuallyOrderedMarks.map(function (mark) {
+        return parseInt(mark.getAttribute('data-tm-id'));
+      });
+      this.emit('visually-ordered:marks', this.visuallyOrderedMarkIDs);
     },
     marksIntersect: function marksIntersect(mark1, mark2) {
       var wrappers1 = mark1.wrappers,
@@ -1282,7 +1295,7 @@ function _default() {
       _store.default.get('markers').then(function (markers) {
         _this3.store(_this3.mark(key, {
           style: markers[key]
-        }));
+        }), true, true);
       });
     },
     onHotkey: function onHotkey(key) {
@@ -3255,7 +3268,7 @@ var _default = new _utils._PORT({
   name: 'injection',
   type: 'content',
   events: {
-    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'activated:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries', 'page-state', 'notes-state']
+    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'activated:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries', 'page-state', 'notes-state', 'visually-ordered:marks']
   }
 });
 

@@ -1,0 +1,23 @@
+::-moz-placeholder,
+:placeholder-shown {
+  color: $color-text--disabled;
+}
+select, input {
+  font-family: inherit !important;
+}
+select {
+  @include icon('arrow-down', right 7px);
+  background-color: transparent;
+  -moz-appearance: none;
+  border: 1px solid $color-border--light;
+  height: 24px;
+  width: 100%;
+}
+input[type="text"] {
+  border: 1px solid $color-border--light;
+  color: inherit;
+  padding: 0;
+  height: 24px;
+  width: calc(100% - 27px);
+  padding: 0 4px;
+}

@@ -3,13 +3,25 @@ import { _MODULE } from './../_shared/utils'
 export default new _MODULE({
   events: {
     ENV: {
-      'toggled:sync': 'setAreas'
+      'toggled:sync': 'setAreas',
+      'saved:entry': 'storeEntry',
+      'entry:found': 'storeEntry',
+      'entry:found-for-tab': 'storeEntry',
+      'updated:entry': 'storeEntry'
     }
   },
   initialized: false,
   initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
+  entry: {},
+
+  storeEntry(entry) {
+    if (entry) {
+      this.entry = entry;
+      this.emit('stored:entry', entry);
+    }
+  },
 
   setAreas() {
     return browser.storage.sync.get().then(storage => {

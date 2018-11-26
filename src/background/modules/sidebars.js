@@ -7,7 +7,8 @@ export default function() {
       ENV: {
         'activated:tab': 'setPanel',
         'entry:found': 'storeEntry',
-        'opened:sidebar':'sendEntry'
+        'opened:sidebar':'sendEntry',
+        'visually-ordered:marks': 'sendOrderedMarks'
       }
     },
 
@@ -31,6 +32,9 @@ export default function() {
     },
     sendEntry() {
       _GET_ACTIVE_TAB().then(tab => this.emit('entry:found-for-tab', this.entries[tab.id]));
+    },
+    sendOrderedMarks(marks) {
+      _GET_ACTIVE_TAB().then(tab => this.emit('entry:ordered-marks', marks));
     }
   });
 }

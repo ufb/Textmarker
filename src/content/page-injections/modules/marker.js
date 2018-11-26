@@ -33,7 +33,7 @@ export default function() {
         'sidebar:retry-restoration': 'resume',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
-        'sidebar:next-mark': 'gotoNextMark',
+        'sidebar:next-mark': 'gotoMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark',
         'clicked:mark': 'gotoMark'
@@ -43,6 +43,7 @@ export default function() {
 		done: [],
 		undone: [],
 		visuallyOrderedMarks: [],
+		visuallyOrderedMarkIDs: [],
     bookmark: null,
     removedBookmark: null,
 		idcount: 0,
@@ -193,6 +194,7 @@ export default function() {
       }
       this.undone = [];
       this.visuallyOrderedMarks = [];
+      this.visuallyOrderedMarkIDs = [];
       this.bookmark = null;
       this.removedBookmark = null;
       this.idcount = 0;
@@ -233,14 +235,14 @@ export default function() {
         else this.emit('unsaved-changes');
       });
     },
-		store(mark, text, save) {
+		store(mark, save, order) {
 			this.done.push(mark);
       if (save !== false) this.autosave();
-			this.orderMarksVisually();
+			if (order) this.orderMarksVisually();
 		},
     recreate(selection, mark) {
       this.selection = selection;
-      this.store(this.mark(mark.key, mark), selection.text, false);
+      this.store(this.mark(mark.key, mark), false, false);
     },
     onFinishedRestoration() {
       if (!this.done.length) return this;
@@ -256,6 +258,7 @@ export default function() {
         this.sortById();
         this.scrollToBookmark();
       }
+      this.orderMarksVisually();
     },
     addNote(id) {
       this.emit('add:note', this.findMark(id));
@@ -270,10 +273,14 @@ export default function() {
     gotoMark(mark) {
       const markElements = this.visuallyOrderedMarks;
       let el, pos, id;
-      if (mark) {
-        id = mark.id;
-        el = document.querySelector('.textmarker-highlight[data-tm-id="' + id + '_0"]');
-        pos = this.markScrollPos = markElements.indexOf(el);
+      if (mark || mark === 0) {
+        if (typeof mark === 'number') {
+          id = this.currentScrollPos = mark+1;
+          el = markElements[mark];
+        } else {
+          id = mark.id;
+          el = document.querySelector('.textmarker-highlight[data-tm-id="' + id + '_0"]');
+        }
       } else {
         pos = this.markScrollPos;
         el = markElements[pos];
@@ -281,7 +288,7 @@ export default function() {
       }
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-			if (!mark) this.getById(id).onClick(id);
+			if (!mark || typeof mark === 'number') this.getById(id).onClick(id);
       this.indicateMark(id);
     },
 		gotoNextMark(dir) {
@@ -384,6 +391,8 @@ export default function() {
 					return 1;
 				}
 			});
+      this.visuallyOrderedMarkIDs = this.visuallyOrderedMarks.map(mark => parseInt(mark.getAttribute('data-tm-id')));
+      this.emit('visually-ordered:marks', this.visuallyOrderedMarkIDs);
 		},
     marksIntersect(mark1, mark2) {
 			let wrappers1 = mark1.wrappers,
@@ -419,7 +428,7 @@ export default function() {
 			}
 
       _STORE.get('markers').then(markers => {
-        this.store(this.mark(key, { style: markers[key] }));
+        this.store(this.mark(key, { style: markers[key] }), true, true);
       });
 		},
     onHotkey(key) {

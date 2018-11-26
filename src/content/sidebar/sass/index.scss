@@ -5,12 +5,18 @@
 @import '../../_shared/sass/icons';
 @import '../../_shared/sass/shadows';
 @import '../../_shared/sass/switches';
-@import '../../_shared/sass/infos';
+@import '../../_shared/sass/notes';
 
 @import './general';
 @import './buttons';
-@import './components/actionbox';
+@import './form-elements';
+
+@import './components/tabs';
+@import './components/tags';
+@import './components/marks';
 @import './components/marker';
+@import './components/actions';
+@import './components/page-notes';
 
 @include links(inherit);
 

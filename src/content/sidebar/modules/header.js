@@ -1,22 +1,23 @@
 import { _DOMMODULE } from './../../_shared/utils'
+import _STORE from './../_store'
 
 new _DOMMODULE({
   el: document.getElementById('header'),
   events: {
     ENV: {
-      'saved:entry': 'render',
-      'entry:found': 'render',
-      'entry:found-for-tab': 'render'
+      'stored:entry': 'render'
     }
   },
 
   render(entry) {
+    const header = this.el;
+
     if (!entry || entry === 'locked') {
-      this.el.classList.add('u-display--none');
+      header.classList.add('u-display--none');
     }
     else if (!entry.locked) {
-      this.el.classList.remove('u-display--none');
-      document.getElementById('header__name').innerText = entry.name;
+      header.classList.remove('u-display--none');
+      header.getElementsByClassName('header__name')[0].innerText = entry.name;
     }
   }
 });

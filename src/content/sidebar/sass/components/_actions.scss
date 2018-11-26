@@ -1,24 +1,6 @@
-.action-box {
-  margin: 0 0 6px 0;
-  position: relative;
-
-  &.disabled {
-    color: $color-text--disabled;
-  }
-  &__action {
-    @include icon(null, center);
-
-    &[disabled] {
-      opacity: 0.2 !important;
-      cursor: default;
-    }
-  }
-  label {
-    width: calc(100% - 30px);
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
+.action-button {
+  width: 28px;
+  height: 28px;
 }
 
 $action-buttons: (
@@ -31,7 +13,7 @@ $action-buttons: (
   '#page-action--undo': 'undo',
   '#page-action--redo': 'redo',
   '#page-action--scroll': 'to-bm',
-  '#page-action--notes': 'note2',
+  '#page-action--notes': 'toggle-notes',
   '#nav-action--up': 'up',
   '#nav-action--down': 'down',
 

@@ -25,7 +25,6 @@ new _MODULE({
       'change:view-setting': 'changeViewOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
-      'sidebar:toggle-autosave': 'changeSaveOpt',
 
       'remove:custom-marker': 'removeCustomMarker',
       'add:custom-marker': 'addCustomMarker',
@@ -36,7 +35,9 @@ new _MODULE({
       'finished:restoration': 'updateEntryOnRestoration',
       'clean:entries': 'cleanEntries',
       'sync:entry': 'syncEntry',
-      'tag:entries': 'tagEntries'
+      'tag:entries': 'tagEntries',
+      'remove:tag': 'removeTag',
+      'add:tag': 'addTag'
     }
   },
   updateOnChangedSync: false,
@@ -245,7 +246,7 @@ new _MODULE({
 
       return history;
     }, entry.synced ? 'sync' : 'local')
-      .then(() => this.emit('updated:entry'))
+      .then(() => this.emit('updated:entry', entry))
       .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
   },
   deleteEntries(names, area) {
@@ -321,6 +322,27 @@ new _MODULE({
           return history;
         }, 'local');
       });
+  },
+  removeTag(tag, entry) {
+    const area = entry.synced ? 'sync' : 'local';
+    _STORAGE.update('history', history => {
+      const storedEntry = history.entries[entry.name];
+      const rx = new RegExp('^'+tag+'$|^'+tag+'\\s|\\s'+tag+'\\s|\\s'+tag+'$');
+      if (storedEntry.tag) {
+        storedEntry.tag = storedEntry.tag
+          .replace(rx, ' ')
+          .replace(/^\s|\s$/, '')
+          .replace(/\s{2,}/, ' ');
+      }
+      return history;
+    }, area);
+  },
+  addTag(tag, entry) {
+    const area = entry.synced ? 'sync' : 'local';
+    _STORAGE.update('history', history => {
+      this.addTagToEntry(history.entries[entry.name], tag);
+      return history;
+    }, area);
   },
   addTagToEntry(entry, tag) {
     if (!tag) entry.tag = '';
