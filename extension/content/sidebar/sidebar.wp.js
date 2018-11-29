@@ -731,6 +731,8 @@ var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared
 
 var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/sidebar/_store.js"));
 
+var _globalSettings = _interopRequireDefault(__webpack_require__(/*! ./../../../data/global-settings */ "./data/global-settings.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 new _utils._DOMMODULE({
@@ -747,7 +749,7 @@ new _utils._DOMMODULE({
         '.action-button--nav': 'nav'
       },
       change: {
-        '#folding': 'foldList'
+        '#fold-marks': 'foldList'
       }
     }
   },
@@ -757,7 +759,6 @@ new _utils._DOMMODULE({
   current: -1,
   setFilters: false,
   render: function render() {
-    if (_store.default.entry) console.log('render', _store.default.entry.marks.length);
     var entry = this.entry = _store.default.entry;
 
     if (entry) {
@@ -767,7 +768,6 @@ new _utils._DOMMODULE({
     }
   },
   setMarks: function setMarks() {
-    console.log('set marks');
     var marks = this.entry.marks;
     var markIDs = this.markIDs;
     this.length = marks.length;
@@ -776,25 +776,22 @@ new _utils._DOMMODULE({
     }) : marks;
   },
   setMarkIDs: function setMarkIDs(ids) {
-    console.log('set ids', ids.length);
     this.markIDs = ids.reverse();
   },
   renderSVGFilters: function renderSVGFilters() {
     var body = document.body;
     var tmpl = document.getElementById('filter-template');
-    var colors = {
-      purple: '0 0 0 0 93 0 0 0 0 .8 0 0 0 0 1 0 0 0 1 0',
-      red: '0 0 0 0 1 0 0 0 0 .8 0 0 0 0 .8 0 0 0 1 0',
-      orange: '0 0 0 0 1 0 0 0 0 .93 0 0 0 0 .73 0 0 0 1 0',
-      yellow: '0 0 0 0 1 0 0 0 0 1 0 0 0 0 .8 0 0 0 1 0',
-      green: '0 0 0 0 .8 0 0 0 0 1 0 0 0 0 .8 0 0 0 1 0',
-      turquoise: '0 0 0 0 .73 0 0 0 0 .89 0 0 0 0 .93 0 0 0 1 0',
-      blue: '0 0 0 0 .8 0 0 0 0 .8 0 0 0 0 1 0 0 0 1 0',
-      white: '0 0 0 0 .93 0 0 0 0 .93 0 0 0 0 .93 0 0 0 1 0'
-    };
+    var colors = {};
+    var i, c;
+
+    for (i in _globalSettings.default.NOTE_COLORS) {
+      c = _globalSettings.default.NOTE_COLORS[i];
+      colors[i.toLowerCase()] = '0 0 0 0 ' + this.convertHex(c.substr(1, 2)) + ' 0 0 0 0 ' + this.convertHex(c.substr(3, 2)) + ' 0 0 0 0 ' + this.convertHex(c.substr(5, 2)) + ' 0 0 0 1 0';
+    }
+
     var filter;
 
-    for (var i in colors) {
+    for (i in colors) {
       filter = tmpl.cloneNode(true);
       filter.getElementsByTagName('filter')[0].id = 'filter--' + i;
       filter.getElementsByTagName('feColorMatrix')[0].setAttribute('values', colors[i]);
@@ -802,6 +799,9 @@ new _utils._DOMMODULE({
     }
 
     this.setFilters = true;
+  },
+  convertHex: function convertHex(hex) {
+    return (16 * Number('0x' + hex[0]) + Number('0x' + hex[1])) / 255;
   },
   renderList: function renderList() {
     var markTmpl = document.getElementById('mark-template');
@@ -895,7 +895,7 @@ new _utils._DOMMODULE({
   render: function render(entry) {
     if (entry) {
       document.getElementById('meta__number-marks').innerText = entry.marks.length;
-      document.getElementById('meta__synced').innerText = entry.synced ? browser.i18n.getMessage('yes') : 'No', //browser.i18n.getMessage('no');
+      document.getElementById('meta__synced').innerText = entry.synced ? browser.i18n.getMessage('yes') : browser.i18n.getMessage('no');
       document.getElementById('meta__created').innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
       document.getElementById('meta__last-modified').innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
     }
@@ -998,10 +998,13 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 new _utils._DOMMODULE({
   el: document.getElementById('tab--page-notes'),
   events: {
-    ENV: {//'stored:entry': 'render'
+    ENV: {
+      'stored:entry': 'render'
     },
     DOM: {
       click: {
@@ -1009,28 +1012,138 @@ new _utils._DOMMODULE({
         'tmnotecolor': 'changeColor',
         'tmnotecustomize': 'togglePalette',
         'tmnotedelete': 'removeNote',
-        'tmnoteminimize': 'minimizeNote'
+        'tmnoteminimize': 'toggleNote'
+      },
+      change: {
+        '#fold-page-notes': 'toggleNotes'
+      },
+      keyup: {
+        'textarea': 'attemptUpdate'
       }
     }
   },
-  addNote: function addNote() {
-    var note = document.getElementById('page-note-template').cloneNode(true);
-    note.id = '';
-    note.classList.remove('u-display--none');
-    document.getElementById('page-notes').appendChild(note);
+  notes: [],
+  noteEls: {},
+  id: 0,
+  recentlyUpdated: false,
+  render: function render(entry) {
+    console.log('render', entry.notes);
+    this.resume();
+
+    if (entry && entry.notes) {
+      this.notes = entry.notes;
+      var l = entry.notes.length,
+          id;
+
+      while (l--) {
+        id = this.addNote(entry.notes[l]);
+        this.id = Math.max(this.id, id);
+      }
+    }
+  },
+  update: function update() {
+    console.log('update', _typeof(_store.default.entry), this.notes.length);
+    this.emit('updated:page-note', _store.default.entry, this.notes);
+  },
+  resume: function resume() {
+    this.notes = [];
+    this.noteEls = {};
+    this.id = 0;
+    document.getElementById('page-notes').textContent = '';
+  },
+  addNote: function addNote(note) {
+    var _this = this;
+
+    note = note.type ? null : note;
+    var container = document.getElementById('page-notes');
+    var noteEl = document.getElementById('page-note-template').cloneNode(true);
+    var textarea = noteEl.getElementsByTagName('textarea')[0];
+    noteEl.classList.remove('u-display--none');
+    textarea.addEventListener('blur', function (e) {
+      return _this.attemptUpdate(e, e.target, true);
+    }, false);
+    var id;
+
+    if (note) {
+      id = noteEl.id = note.id;
+      textarea.textContent = note.text;
+      noteEl.classList.add('tmnote--' + note.color);
+      container.appendChild(noteEl);
+    } else {
+      id = noteEl.id = ++this.id;
+      this.notes.push({
+        id: id,
+        text: '',
+        color: 'yellow'
+      });
+      noteEl.classList.remove('tmnote--min');
+      noteEl.getElementsByTagName('tmnotepalette')[0].classList.remove('u-display--none');
+      container.insertBefore(noteEl, container.firstChild);
+      this.update();
+    }
+
+    Array.from(noteEl.getElementsByTagName('*')).forEach(function (el) {
+      return el.setAttribute('data-id', id);
+    });
+    this.noteEls[id] = noteEl;
+    return id;
+  },
+  attemptUpdate: function attemptUpdate(e, el, force) {
+    var _this2 = this;
+
+    if (force) {
+      this.updateText(el);
+    } else if (!this.recentlyUpdated) {
+      this.recentlyUpdated = true;
+      window.setTimeout(function () {
+        return _this2.updateText(el);
+      }, 3000);
+    }
+  },
+  updateText: function updateText(el) {
+    this.getById(el.getAttribute('data-id')).text = el.value;
+    this.recentlyUpdated = false;
+    this.update();
   },
   changeColor: function changeColor(e, el) {
-    el.parentNode.parentNode.parentNode.classList.add('tmnote--' + el.getAttribute('data-color'));
-  },
-  togglePalette: function togglePalette(e, el) {
-    el.parentNode.getElementsByTagName('tmnotepalette')[0].classList.toggle('u-display--none');
+    var id = el.getAttribute('data-id');
+    var color = el.getAttribute('data-color');
+    this.noteEls[id].classList.add('tmnote--' + color);
+    console.log(id, this.notes);
+    this.getById(id).color = color;
+    this.update();
   },
   removeNote: function removeNote(e, el) {
-    el.parentNode.parentNode.removeChild(el.parentNode);
-    this.emit('remove:page-note');
+    var id = el.getAttribute('data-id');
+    var note = this.noteEls[id];
+    note.parentNode.removeChild(note);
+    delete this.noteEls[id];
+    this.notes.splice(this.notes.indexOf(this.getById(id)), 1);
+    this.update();
   },
-  minimizeNote: function minimizeNote(e, el) {
-    el.parentNode.classList.add('tmnote--min');
+  togglePalette: function togglePalette(e, el) {
+    var note = this.noteEls[el.getAttribute('data-id')];
+    var palette = note.getElementsByTagName('tmnotepalette')[0];
+    palette.classList.toggle('u-display--none');
+
+    if (!palette.classList.contains('u-display--none')) {
+      note.classList.remove('tmnote--min');
+    }
+  },
+  toggleNote: function toggleNote(e, el) {
+    this.noteEls[el.getAttribute('data-id')].classList.toggle('tmnote--min');
+  },
+  toggleNotes: function toggleNotes(e, el) {
+    var meth = el.value == 1 ? 'add' : 'remove';
+
+    for (var id in this.noteEls) {
+      this.noteEls[id].classList[meth]('tmnote--min');
+    }
+  },
+  getById: function getById(id) {
+    return this.notes.find(function (note) {
+      return note.id == id;
+    });
   }
 });
 
@@ -1166,7 +1279,7 @@ var _default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar', 'updated:page-note']
   }
 });
 
@@ -1182,6 +1295,37 @@ exports.default = _default;
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ "./data/global-settings.js":
+/*!*********************************!*\
+  !*** ./data/global-settings.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  MAX_ENTRY_NAME_CHARS: 70,
+  NOTE_COLORS: {
+    TURQUOISE: '#b9e4ec',
+    GREEN: '#ccffcc',
+    YELLOW: '#ffffcc',
+    ORANGE: '#ffeebb',
+    RED: '#ffcccc',
+    PURPLE: '#eeccff',
+    BLUE: '#bbeeff',
+    WHITE: '#eeeeee'
+  }
+};
+exports.default = _default;
 
 /***/ }),
 

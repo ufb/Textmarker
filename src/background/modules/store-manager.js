@@ -37,7 +37,9 @@ new _MODULE({
       'sync:entry': 'syncEntry',
       'tag:entries': 'tagEntries',
       'remove:tag': 'removeTag',
-      'add:tag': 'addTag'
+      'add:tag': 'addTag',
+
+      'updated:page-note': 'updateNotes'
     }
   },
   updateOnChangedSync: false,
@@ -354,6 +356,13 @@ new _MODULE({
       }
     }
     return entry;
+  },
+  updateNotes(entry, notes) {
+    const area = entry.synced ? 'sync' : 'local';
+    _STORAGE.update('history', history => {
+      history.entries[entry.name].notes = notes;
+      return history;
+    }, area);
   },
   registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));

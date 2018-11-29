@@ -1133,7 +1133,6 @@ function _default() {
       this.emit('update:entry?', entry);
     },
     gotoMark: function gotoMark(mark) {
-      console.log('go to', mark);
       var markElements = this.visuallyOrderedMarks;
       var el, pos, id;
 
@@ -3302,7 +3301,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _default = {
-  MAX_ENTRY_NAME_CHARS: 70
+  MAX_ENTRY_NAME_CHARS: 70,
+  NOTE_COLORS: {
+    TURQUOISE: '#b9e4ec',
+    GREEN: '#ccffcc',
+    YELLOW: '#ffffcc',
+    ORANGE: '#ffeebb',
+    RED: '#ffcccc',
+    PURPLE: '#eeccff',
+    BLUE: '#bbeeff',
+    WHITE: '#eeeeee'
+  }
 };
 exports.default = _default;
 

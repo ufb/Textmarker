@@ -7,21 +7,66 @@
 tmnote {
   display: block;
   position: relative;
-  width: calc(100% - 20px);
-}
-tmnote textarea {
-  @extend .__note_textarea;
-  padding: 5px;
   width: 100%;
-  max-width: 100%;
   border: 1px solid $color-border--light !important;
-  border-top: 0 !important;
+  margin-bottom: 4px;
+
+  textarea {
+    @extend .__note_textarea;
+    padding: 5px;
+    width: 100%;
+    max-width: 100%;
+    margin: 1px 0 0 0;
+  }
+  &.tmnote--min {
+    textarea,
+    tmnotepalette {
+      display: none !important;
+    }
+    tmnotebuttons {
+      display: block !important;
+    }
+  }
+}
+tmnotepalette {
+  width: calc(100% - 22px);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 tmnotecolor {
-  width: 13px;
-  height: 9px;
-  margin: 0 1px;
+  width: 22px;
+  height: 14px;
+  margin: 0 2px;
 }
 tmnotepalette {
   display: block;
+}
+tmnotebuttons {
+  display: block;
+}
+tmnotedelete {
+  padding-top: 4px;
+}
+tmnoteminimize {
+  font-size: 16px;
+}
+tmnotecustomize,
+tmnoteminimize,
+tmnotedelete {
+  float: right;
+  height: 18px;
+  width: 18px;
+  margin: 2px 2px 0 0;
+  text-align: center;
+}
+tmnoteminimize {
+  &:before {
+    content: '-';
+    display: inline;
+
+    .tmnote--min & {
+      content: '+';
+    }
+  }
 }

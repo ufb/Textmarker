@@ -42,7 +42,6 @@ tmnoteheader {
   position: relative;
   z-index: 1;
   display: block;
-  cursor: move;
 }
 tmnotepalette {
   z-index: 1;
@@ -65,11 +64,7 @@ tmnotecolor {
 tmnotecustomize,
 tmnoteminimize,
 tmnotedelete {
-  position: absolute;
-  display: block;
   font-size: 14px;
-  right: -20px;
-  border-radius: 0 2px 2px 0;
   cursor: pointer;
   color: $color-text--disabled;
   line-height: 1;
@@ -80,20 +75,14 @@ tmnotedelete {
   }
 }
 tmnotedelete {
-  top: 44px;
   font-size: 10px;
   font-weight: bold;
-  padding: 5px 6px 0 10px;
 }
 tmnoteminimize {
-  top: 66px;
   font-size: 18px;
-  padding: 0px 4px 0 10px;
 }
 tmnotecustomize {
-  top: 22px;
   font-size: 16px;
-  padding: 1px 3px 2px 10px;
 }
 .__note_textarea {
   display: block !important;

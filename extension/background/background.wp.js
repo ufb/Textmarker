@@ -863,7 +863,8 @@ new _utils._MODULE({
       'sync:entry': 'syncEntry',
       'tag:entries': 'tagEntries',
       'remove:tag': 'removeTag',
-      'add:tag': 'addTag'
+      'add:tag': 'addTag',
+      'updated:page-note': 'updateNotes'
     }
   },
   updateOnChangedSync: false,
@@ -1206,6 +1207,14 @@ new _utils._MODULE({
       }
     }
     return entry;
+  },
+  updateNotes: function updateNotes(entry, notes) {
+    var area = entry.synced ? 'sync' : 'local';
+
+    _storage.default.update('history', function (history) {
+      history.entries[entry.name].notes = notes;
+      return history;
+    }, area);
   },
   registerStorageChangedHandler: function registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));
@@ -2133,7 +2142,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _default = {
-  MAX_ENTRY_NAME_CHARS: 70
+  MAX_ENTRY_NAME_CHARS: 70,
+  NOTE_COLORS: {
+    TURQUOISE: '#b9e4ec',
+    GREEN: '#ccffcc',
+    YELLOW: '#ffffcc',
+    ORANGE: '#ffeebb',
+    RED: '#ffcccc',
+    PURPLE: '#eeccff',
+    BLUE: '#bbeeff',
+    WHITE: '#eeeeee'
+  }
 };
 exports.default = _default;
 

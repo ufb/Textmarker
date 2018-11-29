@@ -12,7 +12,7 @@ new _DOMMODULE({
   render(entry) {
     if (entry) {
       document.getElementById('meta__number-marks').innerText = entry.marks.length;
-      document.getElementById('meta__synced').innerText = entry.synced ? browser.i18n.getMessage('yes') : 'No',//browser.i18n.getMessage('no');
+      document.getElementById('meta__synced').innerText = entry.synced ? browser.i18n.getMessage('yes') : browser.i18n.getMessage('no');
       document.getElementById('meta__created').innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
       document.getElementById('meta__last-modified').innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
     }

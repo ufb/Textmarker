@@ -257,6 +257,10 @@ new _utils._DOMMODULE({
 
 var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
 
+var _globalSettings = _interopRequireDefault(__webpack_require__(/*! ./../../../data/global-settings */ "./data/global-settings.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 new _utils._DOMMODULE({
   el: document.getElementById('marks'),
   events: {
@@ -297,19 +301,22 @@ new _utils._DOMMODULE({
     var td_text = markEl.getElementsByClassName('mark-text')[0];
     var td_note = markEl.getElementsByClassName('mark-note')[0];
     var text = document.createElement('p');
-    var note;
+    var noteText, noteColor;
     td_text.innerText = mark.text;
     td_text.setAttribute('style', mark.style);
 
     if (mark.note) {
       if (typeof mark.note === 'string') {
-        note = mark.note;
+        noteText = mark.note;
+        noteColor = _globalSettings.default.NOTE_COLORS.YELLOW;
       } else {
-        note = mark.note.text || '';
+        noteText = mark.note.text || '';
+        noteColor = _globalSettings.default.NOTE_COLORS[mark.note.color.toUpperCase()];
       }
 
-      if (note) {
-        td_note.innerText = note;
+      if (noteText) {
+        td_note.innerText = noteText;
+        td_note.parentNode.style.backgroundColor = noteColor;
         this.notes = true;
       }
     }
@@ -401,6 +408,37 @@ new _utils._DOMMODULE({
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+
+/***/ "./data/global-settings.js":
+/*!*********************************!*\
+  !*** ./data/global-settings.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  MAX_ENTRY_NAME_CHARS: 70,
+  NOTE_COLORS: {
+    TURQUOISE: '#b9e4ec',
+    GREEN: '#ccffcc',
+    YELLOW: '#ffffcc',
+    ORANGE: '#ffeebb',
+    RED: '#ffcccc',
+    PURPLE: '#eeccff',
+    BLUE: '#bbeeff',
+    WHITE: '#eeeeee'
+  }
+};
+exports.default = _default;
 
 /***/ }),
 

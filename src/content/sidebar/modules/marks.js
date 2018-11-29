@@ -16,7 +16,7 @@ new _DOMMODULE({
         '.action-button--nav': 'nav',
       },
       change: {
-        '#folding': 'foldList'
+        '#fold-marks': 'foldList'
       }
     }
   },

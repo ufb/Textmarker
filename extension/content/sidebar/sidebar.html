@@ -38,16 +38,20 @@
         <input id="new-tag" type="text" placeholder="new tag"> <button id="add-tag"></button>
       </div>
     </section>
-    <section id="tab--page-notes" class="tab tab--folded tab--entry u-display--none">
+    <section id="tab--page-notes" class="tab tab--folded">
       <header class="tab__header">
         <h2 class="tab__name" data-target="tab--page-notes"><span>General Notes</span><div class="tab__toggle" data-target="tab--page-notes"></div></h2>
       </header>
       <div class="tab__content">
+        <select id="fold-page-notes">
+          <option value="1">Folded</option>
+          <option value="2">Unfolded</option>
+        </select><br><br>
         <button id="add-note">&plus;</button>
         <div id="page-notes" class="u-clear u-pt-small"></div>
-        <tmnote id="page-note-template" class="u-display--none">
+        <tmnote id="page-note-template" class="tmnote tmnote--min u-display--none">
           <tmnoteheader>
-            <tmnotepalette>
+            <tmnotepalette class="u-display--none">
               <tmnotecolor class="tmnotecolor--green" data-color="green"></tmnotecolor>
               <tmnotecolor class="tmnotecolor--white" data-color="white"></tmnotecolor>
               <tmnotecolor class="tmnotecolor--yellow" data-color="yellow"></tmnotecolor>
@@ -57,10 +61,12 @@
               <tmnotecolor class="tmnotecolor--blue" data-color="blue"></tmnotecolor>
               <tmnotecolor class="tmnotecolor--turquoise" data-color="turquoise"></tmnotecolor>
             </tmnotepalette>
+            <tmnotebuttons class="u-cf">
+              <tmnotecustomize>⚙</tmnotecustomize>
+              <tmnotedelete>✕</tmnotedelete>
+              <tmnoteminimize></tmnoteminimize>
+            </tmnotebuttons>
           </tmnoteheader>
-          <tmnotecustomize>⚙</tmnotecustomize>
-          <tmnotedelete>✕</tmnotedelete>
-          <tmnoteminimize>–</tmnoteminimize>
           <textarea></textarea>
         </tmnote>
       </div>
@@ -111,7 +117,7 @@
         </div>
         <br>
         <div>
-          <select id="folding">
+          <select id="fold-marks">
             <option value="1">Folded</option>
             <option value="2">Unfold mark texts</option>
             <option value="3">Unfold note texts</option>
@@ -131,7 +137,7 @@
         <div data-id="settings" class="link" data-l10n-id="sb_l1"></div>
         <div data-id="history" class="link" data-l10n-id="sb_l2"></div>
         <div data-id="help" class="link" data-l10n-id="tbb_mitem_5"></div>
-        <div data-id="contact" class="link" data-l10n-id="tbb_mitem_7"></div>
+        <div data-id="contact" class="link" data-l10n-id="tbb_mitem_7"></div><br>
         <a href="https://github.com/ufb/Textmarker" title="github">GitHub</a>
       </div>
     </section>

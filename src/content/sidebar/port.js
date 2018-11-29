@@ -22,7 +22,8 @@ export default new _PORT({
       'remove:tag',
       'add:tag',
       'open:addon-page',
-      'opened:sidebar'
+      'opened:sidebar',
+      'updated:page-note'
     ]
   }
 })
