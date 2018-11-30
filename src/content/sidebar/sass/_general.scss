@@ -24,6 +24,12 @@ label {
   padding-top: 2px;
   cursor: pointer;
 }
+select {
+  color: $color-text--turquoise;
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
 svg {
   height: 0;
 }
