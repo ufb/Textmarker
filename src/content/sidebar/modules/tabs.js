@@ -15,8 +15,32 @@ new _DOMMODULE({
     }
   },
 
+  tabs: {},
+
+  autoinit() {
+    _STORE.get('settings').then(settings => {
+      if (!settings.sb) return;
+      const tabSettings = settings.sb.tabs;
+      for (let tab in tabSettings) {
+        this.tabs[tab] = document.getElementById('tab--' + tab);
+        if (tabSettings[tab].unfolded) this.open(tab);
+        else this.close(tab);
+      }
+    });
+  },
+
+  open(tab) {
+    this.tabs[tab].classList.remove('tab--folded');
+  },
+  close(tab) {
+    this.tabs[tab].classList.add('tab--folded');
+  },
   toggle(e, el) {
-    document.getElementById(el.getAttribute('data-target')).classList.toggle('tab--folded');
+    const id = el.getAttribute('data-target');
+    const tab = id.split('--').pop();
+    const tabEl = document.getElementById(id);
+    tabEl.classList.toggle('tab--folded');
+    this.emit('toggled:sidebar-tab', tab, !tabEl.classList.contains('tab--folded'));
   },
   showEntrySpecificTabs() {
     Array.from(document.getElementsByClassName('tab--entry'))

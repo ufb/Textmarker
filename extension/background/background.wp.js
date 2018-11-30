@@ -864,7 +864,8 @@ new _utils._MODULE({
       'tag:entries': 'tagEntries',
       'remove:tag': 'removeTag',
       'add:tag': 'addTag',
-      'updated:page-note': 'updateNotes'
+      'updated:page-note': 'updateNotes',
+      'toggled:sidebar-tab': 'changeSBSettings'
     }
   },
   updateOnChangedSync: false,
@@ -1021,6 +1022,12 @@ new _utils._MODULE({
       settings.misc[prop] = val;
       return settings;
     }, 'misc', 'error_save_bmicon');
+  },
+  changeSBSettings: function changeSBSettings(tab, unfolded) {
+    _storage.default.update('settings', function (settings) {
+      settings.sb.tabs[tab].unfolded = unfolded;
+      return settings;
+    });
   },
   cleanEntries: function cleanEntries(names, area) {
     var _this3 = this;
@@ -1399,6 +1406,10 @@ new _utils._MODULE({
 
       if (typeof settings.misc.notetransp !== 'boolean') {
         settings.misc.notetransp = defaultSettings.misc.notetransp;
+      }
+
+      if (!settings.sb) {
+        settings.sb = defaultSettings.sb;
       }
     }
 
@@ -2113,6 +2124,31 @@ var _default = {
       errorNote: true,
       customSearch: false,
       tmuipos: 'top-right'
+    },
+    sb: {
+      tabs: {
+        meta: {
+          unfolded: false
+        },
+        tags: {
+          unfolded: false
+        },
+        notes: {
+          unfolded: false
+        },
+        markers: {
+          unfolded: true
+        },
+        actions: {
+          unfolded: true
+        },
+        marks: {
+          unfolded: false
+        },
+        links: {
+          unfolded: false
+        }
+      }
     }
   },
   history: {

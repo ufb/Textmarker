@@ -23,7 +23,8 @@ export default new _PORT({
       'add:tag',
       'open:addon-page',
       'opened:sidebar',
-      'updated:page-note'
+      'updated:page-note',
+      'toggled:sidebar-tab'
     ]
   }
 })

@@ -55,6 +55,9 @@ new _MODULE({
       if (typeof settings.misc.notetransp !== 'boolean') {
         settings.misc.notetransp = defaultSettings.misc.notetransp;
       }
+      if (!settings.sb) {
+        settings.sb = defaultSettings.sb;
+      }
     }
     return settings;
   },

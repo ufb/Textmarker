@@ -736,7 +736,7 @@ var _globalSettings = _interopRequireDefault(__webpack_require__(/*! ./../../../
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 new _utils._DOMMODULE({
-  el: document.getElementById('tab--list'),
+  el: document.getElementById('tab--marks'),
   events: {
     ENV: {
       'entry:ordered-marks': 'setMarkIDs',
@@ -886,7 +886,7 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 new _utils._DOMMODULE({
-  el: document.getElementById('tab--info'),
+  el: document.getElementById('tab--meta'),
   events: {
     ENV: {
       'stored:entry': 'render'
@@ -998,10 +998,8 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 new _utils._DOMMODULE({
-  el: document.getElementById('tab--page-notes'),
+  el: document.getElementById('tab--notes'),
   events: {
     ENV: {
       'stored:entry': 'render'
@@ -1027,7 +1025,6 @@ new _utils._DOMMODULE({
   id: 0,
   recentlyUpdated: false,
   render: function render(entry) {
-    console.log('render', entry.notes);
     this.resume();
 
     if (entry && entry.notes) {
@@ -1042,7 +1039,6 @@ new _utils._DOMMODULE({
     }
   },
   update: function update() {
-    console.log('update', _typeof(_store.default.entry), this.notes.length);
     this.emit('updated:page-note', _store.default.entry, this.notes);
   },
   resume: function resume() {
@@ -1109,7 +1105,6 @@ new _utils._DOMMODULE({
     var id = el.getAttribute('data-id');
     var color = el.getAttribute('data-color');
     this.noteEls[id].classList.add('tmnote--' + color);
-    console.log(id, this.notes);
     this.getById(id).color = color;
     this.update();
   },
@@ -1178,8 +1173,32 @@ new _utils._DOMMODULE({
       }
     }
   },
+  tabs: {},
+  autoinit: function autoinit() {
+    var _this = this;
+
+    _store.default.get('settings').then(function (settings) {
+      if (!settings.sb) return;
+      var tabSettings = settings.sb.tabs;
+
+      for (var tab in tabSettings) {
+        _this.tabs[tab] = document.getElementById('tab--' + tab);
+        if (tabSettings[tab].unfolded) _this.open(tab);else _this.close(tab);
+      }
+    });
+  },
+  open: function open(tab) {
+    this.tabs[tab].classList.remove('tab--folded');
+  },
+  close: function close(tab) {
+    this.tabs[tab].classList.add('tab--folded');
+  },
   toggle: function toggle(e, el) {
-    document.getElementById(el.getAttribute('data-target')).classList.toggle('tab--folded');
+    var id = el.getAttribute('data-target');
+    var tab = id.split('--').pop();
+    var tabEl = document.getElementById(id);
+    tabEl.classList.toggle('tab--folded');
+    this.emit('toggled:sidebar-tab', tab, !tabEl.classList.contains('tab--folded'));
   },
   showEntrySpecificTabs: function showEntrySpecificTabs() {
     Array.from(document.getElementsByClassName('tab--entry')).forEach(function (tab) {
@@ -1279,7 +1298,7 @@ var _default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar', 'updated:page-note']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar', 'updated:page-note', 'toggled:sidebar-tab']
   }
 });
 

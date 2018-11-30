@@ -595,6 +595,12 @@ label {
   padding-top: 2px;
   cursor: pointer; }
 
+select {
+  color: #2ba5b7;
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important; }
+
 svg {
   height: 0; }
 

@@ -39,7 +39,8 @@ new _MODULE({
       'remove:tag': 'removeTag',
       'add:tag': 'addTag',
 
-      'updated:page-note': 'updateNotes'
+      'updated:page-note': 'updateNotes',
+      'toggled:sidebar-tab': 'changeSBSettings'
     }
   },
   updateOnChangedSync: false,
@@ -203,6 +204,9 @@ new _MODULE({
       'misc',
       'error_save_bmicon'
     );
+  },
+  changeSBSettings(tab, unfolded) {
+    _STORAGE.update('settings', settings => { settings.sb.tabs[tab].unfolded = unfolded; return settings; });
   },
   cleanEntries(names, area) {
     if (!names.length) return;

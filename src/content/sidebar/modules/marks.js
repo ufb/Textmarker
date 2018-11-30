@@ -3,7 +3,7 @@ import _STORE from './../_store'
 import _SETTINGS from './../../../data/global-settings'
 
 new _DOMMODULE({
-  el: document.getElementById('tab--list'),
+  el: document.getElementById('tab--marks'),
   events: {
     ENV: {
       'entry:ordered-marks': 'setMarkIDs',

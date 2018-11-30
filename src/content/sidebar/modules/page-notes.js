@@ -2,7 +2,7 @@ import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 
 new _DOMMODULE({
-  el: document.getElementById('tab--page-notes'),
+  el: document.getElementById('tab--notes'),
   events: {
     ENV: {
       'stored:entry': 'render'

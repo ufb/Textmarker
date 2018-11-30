@@ -1,7 +1,7 @@
 export default {
   version: browser.runtime.getManifest().version,
   settings:{
-    shortcuts:{
+    shortcuts: {
       z: ['ctrlKey-altKey', true],
       y: ['ctrlKey-altKey', true],
       s: ['ctrlKey-altKey', true],
@@ -50,6 +50,17 @@ export default {
       errorNote: true,
       customSearch: false,
       tmuipos: 'top-right'
+    },
+    sb: {
+      tabs: {
+        meta: { unfolded: false },
+        tags: { unfolded: false },
+        notes: { unfolded: false },
+        markers: { unfolded: true },
+        actions: { unfolded: true },
+        marks: { unfolded: false },
+        links: { unfolded: false }
+      }
     }
   },
   history: {
