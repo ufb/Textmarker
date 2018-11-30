@@ -431,7 +431,7 @@ export default function() {
 				key = key || 'm';
 			}
 
-      _STORE.get('markers').then(markers => {console.log('mark for', markers[key]);
+      _STORE.get('markers').then(markers => {
         this.store(this.mark(key, markers[key]), true, true);
       });
 		},

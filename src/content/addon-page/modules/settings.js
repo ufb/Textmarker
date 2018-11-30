@@ -203,7 +203,7 @@ export default function() {
       this.emit('change:autonote-setting', this.marker.key, val);
     },
     changeAutoNoteOpt(e, el) {
-      const val = document.getElementById('auto-note').checked ? el.value : false;console.log('val', val);
+      const val = document.getElementById('auto-note').checked ? el.value : false;
       this.emit('change:autonote-setting', this.marker.key, val);
     },
     addMarker(e, el) {

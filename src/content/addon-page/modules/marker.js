@@ -68,7 +68,7 @@ export default class _MARKER {
         bg = styles['background-color'],
         color = styles['color'],
         border = styles['border-bottom'],
-        autonoteColor = this.autonote || '';
+        autonoteColor = this.autonote || '',
         shadow, shadowSelect, i;
 
     document.getElementById('auto-note').checked = this.autonote;

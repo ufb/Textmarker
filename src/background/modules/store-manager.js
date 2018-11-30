@@ -111,7 +111,7 @@ new _MODULE({
       'error_save_style'
     );
   },
-  changeAutoNoteSetting(key, autonote) {console.log('store', key, autonote);
+  changeAutoNoteSetting(key, autonote) {
     this.updateSettings(
       settings => { settings.markers[key].autonote = autonote; return settings; },
       'autonote',
