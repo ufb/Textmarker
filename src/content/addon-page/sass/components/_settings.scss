@@ -25,6 +25,10 @@
   overflow: hidden;
   transition: max-height 1s;
   clear: both;
+
+  &.open {
+    max-height: 200px;
+  }
 }
 /* markers */
 #customized-key {
