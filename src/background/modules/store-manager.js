@@ -9,6 +9,7 @@ new _MODULE({
       'toggle:sync': 'toggleSync',
 
       'change:style-setting': 'changeStyle',
+      'change:autonote-setting': 'changeAutoNoteSetting',
       'change:bg-setting': 'changeBgColor',
       'toggle:shortcut-setting': 'toggleShortcutSetting',
       'change:shortcut-setting': 'changeShortcutSetting',
@@ -66,7 +67,7 @@ new _MODULE({
 
   addCustomMarker(key, style) {
     this.updateSettings(
-      settings => { settings.markers[key] = style; return settings; },
+      settings => { settings.markers[key] =  { style }; return settings; },
       'marker',
       'error_add_marker'
     );
@@ -82,7 +83,7 @@ new _MODULE({
     if (!key) return false;
 
     this.updateSettings(
-      settings => { settings.markers[key] = style; return settings; },
+      settings => { settings.markers[key].style = style; return settings; },
       'style',
       'error_save_style'
     );
@@ -93,13 +94,13 @@ new _MODULE({
         let marker = settings.markers[key];
 
         if (marker) {
-          let split = marker.split(';'),
+          let split = marker.style.split(';'),
               l = split.length, style;
 
           while (l--) {
             style = split[l];
             if (style.includes('background-color')) {
-              settings.markers[key] = marker.replace(/background-color:#.{6}/, 'background-color:' + color);
+              settings.markers[key].style = marker.style.replace(/background-color:#.{6}/, 'background-color:' + color);
               break;
             }
           }
@@ -108,6 +109,13 @@ new _MODULE({
       },
       'bg-color',
       'error_save_style'
+    );
+  },
+  changeAutoNoteSetting(key, autonote) {console.log('store', key, autonote);
+    this.updateSettings(
+      settings => { settings.markers[key].autonote = autonote; return settings; },
+      'autonote',
+      'error_save_toggle_autonote'
     );
   },
   toggleShortcutSetting(key, status) {

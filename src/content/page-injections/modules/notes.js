@@ -29,11 +29,11 @@ export default function() {
     autoinit() {
         this.updateTransp();
     },
-    add(mark) {
+    add(mark, color) {
       const note = this.notes[mark.id];
       if (note) return note;
       this.emit('added:note');
-      return this.notes[mark.id] = new _NOTE(mark);
+      return this.notes[mark.id] = new _NOTE(mark, color);
     },
     restore(marks) {
       for (let mark of marks) {
@@ -42,8 +42,8 @@ export default function() {
         }
       }
     },
-    addAndShow(mark) {
-      this.add(mark).show();
+    addAndShow(mark, color) {
+      this.add(mark, color).show();
     },
     removeNoteStorage(id) {
       delete this.notes[id];

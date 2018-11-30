@@ -937,7 +937,9 @@ function _default() {
     },
     mark: function mark(key, data) {
       this.undone.length = 0;
-      return new _markItem.default(this, key, data).create();
+      var mark = new _markItem.default(this, key, data).create();
+      if (data.autonote) this.emit('add:note', mark, data.autonote);
+      return mark;
     },
     undo: function undo(noAutosave) {
       if (_store.default.locked) return;
@@ -1292,9 +1294,9 @@ function _default() {
       }
 
       _store.default.get('markers').then(function (markers) {
-        _this3.store(_this3.mark(key, {
-          style: markers[key]
-        }), true, true);
+        console.log('mark for', markers[key]);
+
+        _this3.store(_this3.mark(key, markers[key]), true, true);
       });
     },
     onHotkey: function onHotkey(key) {
@@ -1401,7 +1403,7 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _default(mark) {
+function _default(mark, color) {
   var BODY = window.document.body;
   return new _utils._DOMMODULE({
     events: {
@@ -1432,7 +1434,7 @@ function _default(mark) {
     addListenersManually: true,
     el: null,
     mark: mark,
-    color: 'yellow',
+    color: color || '',
     markClickHandler: null,
     text: '',
     visible: false,
@@ -1456,12 +1458,12 @@ function _default(mark) {
       if (typeof noteData === 'string') {
         this.mark.keyData.note = {
           text: noteData,
-          color: 'yellow'
+          color: this.color || 'yellow'
         };
       } else if (!noteData) {
         this.mark.keyData.note = {
           text: noteData,
-          color: _store.default.noteColor
+          color: this.color || _store.default.noteColor
         };
       } else {
         this.pos = this.mark.keyData.note.pos || this.pos;
@@ -1730,11 +1732,11 @@ function _default() {
     autoinit: function autoinit() {
       this.updateTransp();
     },
-    add: function add(mark) {
+    add: function add(mark, color) {
       var note = this.notes[mark.id];
       if (note) return note;
       this.emit('added:note');
-      return this.notes[mark.id] = new _note.default(mark);
+      return this.notes[mark.id] = new _note.default(mark, color);
     },
     restore: function restore(marks) {
       var _iteratorNormalCompletion = true;
@@ -1764,8 +1766,8 @@ function _default() {
         }
       }
     },
-    addAndShow: function addAndShow(mark) {
-      this.add(mark).show();
+    addAndShow: function addAndShow(mark, color) {
+      this.add(mark, color).show();
     },
     removeNoteStorage: function removeNoteStorage(id) {
       delete this.notes[id];

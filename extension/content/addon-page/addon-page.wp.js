@@ -1622,7 +1622,9 @@ function () {
       var _this2 = this;
 
       return _store.default.get('markers').then(function (markers) {
-        var existingStyle = markers[_this2.key];
+        var marker = markers[_this2.key];
+        var existingStyle = marker.style;
+        _this2.autonote = marker.autonote ? true : false;
         if (!existingStyle) _this2.setStyle();else _this2.style = existingStyle;
 
         var styles = _this2.style.split(';'),
@@ -1657,12 +1659,15 @@ function () {
           bgInput = document.getElementById('bg-color'),
           colorInput = document.getElementById('text-color'),
           borderInput = document.getElementById('border-color'),
+          autonoteInput = document.getElementById('autonote-color'),
           bg = styles['background-color'],
           color = styles['color'],
           border = styles['border-bottom'],
-          shadow,
-          shadowSelect,
-          i;
+          autonoteColor = this.autonote || '';
+      shadow, shadowSelect, i;
+      document.getElementById('auto-note').checked = this.autonote;
+      autonoteInput.value = autonoteColor || 'yellow';
+      autonoteInput.disabled = !autonoteColor;
       document.getElementById('bg-color-checkbox').checked = !!bg;
       bgInput.value = bg || '#ffffff';
       bgInput.disabled = !bg;
@@ -1939,7 +1944,9 @@ function _default() {
           '.notes-cb': 'toggleNotes',
           '.misc-cb': 'toggleMisc',
           '.tmuipos': 'changeTmuiPositionOpt',
-          '#private-save': 'togglePrivSave'
+          '#private-save': 'togglePrivSave',
+          '#auto-note': 'toggleAutoNoteOpt',
+          '#autonote-color': 'changeAutoNoteOpt'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -2096,6 +2103,15 @@ function _default() {
     changeStyle: function changeStyle(e, el) {
       var marker = this.marker.update(el);
       this.emit('change:style-setting', marker.key, marker.style);
+    },
+    toggleAutoNoteOpt: function toggleAutoNoteOpt(e, el) {
+      var val = el.checked ? document.getElementById('autonote-color').value : false;
+      this.emit('change:autonote-setting', this.marker.key, val);
+    },
+    changeAutoNoteOpt: function changeAutoNoteOpt(e, el) {
+      var val = document.getElementById('auto-note').checked ? el.value : false;
+      console.log('val', val);
+      this.emit('change:autonote-setting', this.marker.key, val);
     },
     addMarker: function addMarker(e, el) {
       var key = el.value,
@@ -2329,7 +2345,7 @@ var _default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 
@@ -2397,6 +2413,7 @@ var _default = {
   error_save_priv: 32,
   note_restoration_warning_1: 33,
   note_restoration_warning_2: 34,
+  error_save_change_autonote: 35,
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {

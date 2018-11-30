@@ -837,6 +837,7 @@ new _utils._MODULE({
       'toggled:addon': 'saveActivationState',
       'toggle:sync': 'toggleSync',
       'change:style-setting': 'changeStyle',
+      'change:autonote-setting': 'changeAutoNoteSetting',
       'change:bg-setting': 'changeBgColor',
       'toggle:shortcut-setting': 'toggleShortcutSetting',
       'change:shortcut-setting': 'changeShortcutSetting',
@@ -900,7 +901,9 @@ new _utils._MODULE({
   },
   addCustomMarker: function addCustomMarker(key, style) {
     this.updateSettings(function (settings) {
-      settings.markers[key] = style;
+      settings.markers[key] = {
+        style: style
+      };
       return settings;
     }, 'marker', 'error_add_marker');
   },
@@ -913,7 +916,7 @@ new _utils._MODULE({
   changeStyle: function changeStyle(key, style) {
     if (!key) return false;
     this.updateSettings(function (settings) {
-      settings.markers[key] = style;
+      settings.markers[key].style = style;
       return settings;
     }, 'style', 'error_save_style');
   },
@@ -922,7 +925,7 @@ new _utils._MODULE({
       var marker = settings.markers[key];
 
       if (marker) {
-        var split = marker.split(';'),
+        var split = marker.style.split(';'),
             l = split.length,
             style;
 
@@ -930,7 +933,7 @@ new _utils._MODULE({
           style = split[l];
 
           if (style.includes('background-color')) {
-            settings.markers[key] = marker.replace(/background-color:#.{6}/, 'background-color:' + color);
+            settings.markers[key].style = marker.style.replace(/background-color:#.{6}/, 'background-color:' + color);
             break;
           }
         }
@@ -938,6 +941,13 @@ new _utils._MODULE({
 
       return settings;
     }, 'bg-color', 'error_save_style');
+  },
+  changeAutoNoteSetting: function changeAutoNoteSetting(key, autonote) {
+    console.log('store', key, autonote);
+    this.updateSettings(function (settings) {
+      settings.markers[key].autonote = autonote;
+      return settings;
+    }, 'autonote', 'error_save_toggle_autonote');
   },
   toggleShortcutSetting: function toggleShortcutSetting(key, status) {
     this.updateSettings(function (settings) {
@@ -1410,6 +1420,17 @@ new _utils._MODULE({
 
       if (!settings.sb) {
         settings.sb = defaultSettings.sb;
+      }
+
+      if (!settings.markers.m.style) {
+        var style;
+
+        for (var m in settings.markers) {
+          style = settings.markers[m];
+          settings.markers[m] = {
+            style: style
+          };
+        }
       }
     }
 
@@ -2093,9 +2114,15 @@ var _default = {
       sb: ['', '', true]
     },
     markers: {
-      '2': 'background-color:#ffcc00;',
-      '3': 'background-color:#00ff66;',
-      m: 'background-color:#ffee00;'
+      '2': {
+        style: 'background-color:#ffcc00;'
+      },
+      '3': {
+        style: 'background-color:#00ff66;'
+      },
+      m: {
+        style: 'background-color:#ffee00;'
+      }
     },
     history: {
       autosave: true,
@@ -2243,6 +2270,7 @@ var _default = {
   error_save_priv: 32,
   note_restoration_warning_1: 33,
   note_restoration_warning_2: 34,
+  error_save_change_autonote: 35,
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {

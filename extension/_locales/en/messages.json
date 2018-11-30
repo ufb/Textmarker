@@ -461,6 +461,7 @@
 "error_save_notify":{"message":"Settings: Notifications\nUnable to save your choice."},
 "error_save_download":{"message":"Settings: Download option\nUnable to save your choice."},
 "error_save_bmicon":{"message":"Settings: Bookmark icon\nUnable to save your choice."},
+"error_save_change_autonote":{"message":"Settings: Automatic sticky notes\nUnable to save your choice."},
 "error_clean_history":{"message":"History: Unable to remove lost marks from history."},
 "error_add_marker":{"message":"Settings: Markers\nUnable to save your new marker."},
 "error_remove_marker":{"message":"Settings: Markers\nUnable to delete custom marker."},

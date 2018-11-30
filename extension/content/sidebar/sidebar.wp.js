@@ -644,7 +644,7 @@ new _utils._DOMMODULE({
         input = document.createElement('input');
         exampleText = document.createElement('label');
         button = document.createElement('button');
-        color = _this.extractBgColor(markers[m]);
+        color = _this.extractBgColor(markers[m].style);
         box.className = 'marker u-cf';
         input.className = 'marker__color';
         input.id = 'marker-' + m;
@@ -652,7 +652,7 @@ new _utils._DOMMODULE({
         input.type = 'color';
         input.value = color;
         exampleText.className = 'marker__text';
-        exampleText.setAttribute('style', markers[m]);
+        exampleText.setAttribute('style', markers[m].style);
         exampleText.setAttribute('for', 'marker-' + m);
         button.className = 'marker__apply';
         button.setAttribute('disabled', true);

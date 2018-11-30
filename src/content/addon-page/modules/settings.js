@@ -29,7 +29,9 @@ export default function() {
           '.notes-cb': 'toggleNotes',
           '.misc-cb': 'toggleMisc',
           '.tmuipos': 'changeTmuiPositionOpt',
-          '#private-save': 'togglePrivSave'
+          '#private-save': 'togglePrivSave',
+          '#auto-note': 'toggleAutoNoteOpt',
+          '#autonote-color': 'changeAutoNoteOpt'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -192,9 +194,17 @@ export default function() {
       document.getElementById('custom-search--submitted').classList.add('u-display--none');
     },
     changeStyle(e, el) {
-      let marker = this.marker.update(el);
+      const marker = this.marker.update(el);
 
       this.emit('change:style-setting', marker.key, marker.style);
+    },
+    toggleAutoNoteOpt(e, el) {
+      const val = el.checked ? document.getElementById('autonote-color').value : false;
+      this.emit('change:autonote-setting', this.marker.key, val);
+    },
+    changeAutoNoteOpt(e, el) {
+      const val = document.getElementById('auto-note').checked ? el.value : false;console.log('val', val);
+      this.emit('change:autonote-setting', this.marker.key, val);
     },
     addMarker(e, el) {
       let key = el.value,

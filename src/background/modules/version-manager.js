@@ -58,6 +58,13 @@ new _MODULE({
       if (!settings.sb) {
         settings.sb = defaultSettings.sb;
       }
+      if (!settings.markers.m.style) {
+        let style;
+        for (let m in settings.markers) {
+          style = settings.markers[m]
+          settings.markers[m] = { style };
+        }
+      }
     }
     return settings;
   },

@@ -6,6 +6,7 @@ export default new _PORT({
   events: {
     ONEOFF: [
       'change:style-setting',
+      'change:autonote-setting',
       'toggle:shortcut-setting',
       'change:shortcut-setting',
       'toggle:ctm-setting',

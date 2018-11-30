@@ -76,7 +76,11 @@ export default function() {
 		mark(key, data) {
 			this.undone.length = 0;
 
-			return new _MARK(this, key, data).create();
+      const mark = new _MARK(this, key, data).create();
+
+      if (data.autonote) this.emit('add:note', mark, data.autonote);
+
+			return mark;
 		},
 		undo(noAutosave) {
       if (_STORE.locked) return;
@@ -427,8 +431,8 @@ export default function() {
 				key = key || 'm';
 			}
 
-      _STORE.get('markers').then(markers => {
-        this.store(this.mark(key, { style: markers[key] }), true, true);
+      _STORE.get('markers').then(markers => {console.log('mark for', markers[key]);
+        this.store(this.mark(key, markers[key]), true, true);
       });
 		},
     onHotkey(key) {

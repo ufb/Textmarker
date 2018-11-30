@@ -19,9 +19,9 @@ export default {
       sb: ['', '', true]
     },
     markers: {
-      '2': 'background-color:#ffcc00;',
-      '3': 'background-color:#00ff66;',
-      m: 'background-color:#ffee00;'
+      '2': { style: 'background-color:#ffcc00;' },
+      '3': { style: 'background-color:#00ff66;' },
+      m: { style: 'background-color:#ffee00;' }
     },
     history: {
       autosave: true,

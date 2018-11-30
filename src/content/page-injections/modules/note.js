@@ -1,7 +1,7 @@
 import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 
-export default function(mark) {
+export default function(mark, color) {
 
   const BODY = window.document.body;
 
@@ -34,7 +34,7 @@ export default function(mark) {
     addListenersManually: true,
     el: null,
     mark,
-    color: 'yellow',
+    color: color || '',
     markClickHandler: null,
     text: '',
     visible: false,
@@ -54,10 +54,10 @@ export default function(mark) {
     adjustNoteDataObject() {
       const noteData = this.mark.keyData.note;
       if (typeof noteData === 'string') {
-        this.mark.keyData.note = { text: noteData, color: 'yellow' };
+        this.mark.keyData.note = { text: noteData, color: this.color || 'yellow' };
       }
       else if (!noteData) {
-        this.mark.keyData.note = { text: noteData, color: _STORE.noteColor };
+        this.mark.keyData.note = { text: noteData, color: this.color || _STORE.noteColor };
       } else {
         this.pos = this.mark.keyData.note.pos || this.pos;
       }

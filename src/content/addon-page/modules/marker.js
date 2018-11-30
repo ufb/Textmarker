@@ -29,7 +29,10 @@ export default class _MARKER {
 
   init() {
     return _STORE.get('markers').then(markers => {
-      let existingStyle = markers[this.key];
+      const marker = markers[this.key];
+      const existingStyle = marker.style;
+
+      this.autonote = marker.autonote ? true : false;
 
       if (!existingStyle) this.setStyle();
       else this.style = existingStyle;
@@ -61,11 +64,16 @@ export default class _MARKER {
         bgInput = document.getElementById('bg-color'),
         colorInput = document.getElementById('text-color'),
         borderInput = document.getElementById('border-color'),
+        autonoteInput = document.getElementById('autonote-color'),
         bg = styles['background-color'],
         color = styles['color'],
         border = styles['border-bottom'],
+        autonoteColor = this.autonote || '';
         shadow, shadowSelect, i;
 
+    document.getElementById('auto-note').checked = this.autonote;
+    autonoteInput.value = autonoteColor || 'yellow';
+    autonoteInput.disabled = !autonoteColor;
     document.getElementById('bg-color-checkbox').checked = !!bg;
     bgInput.value = bg || '#ffffff';
     bgInput.disabled = !bg;
