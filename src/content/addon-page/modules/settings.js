@@ -64,7 +64,7 @@ export default function() {
         }
 
         this.renderMarkerSelectOptions()
-            .updateMarker('m')
+            .updateMarker(this.marker ? this.marker.key : 'm')
             .injectSettings(settings);
       });
     },
