@@ -43,21 +43,21 @@
         <h2 class="tab__name" data-target="tab--notes"><span>General Notes</span><div class="tab__toggle" data-target="tab--notes"></div></h2>
       </header>
       <div class="tab__content">
+        <button id="add-note" class="action-button"><span>&plus;</span></button>
         <select id="fold-page-notes">
           <option value="1">Folded</option>
           <option value="2">Unfolded</option>
-        </select><br><br>
-        <button id="add-note">&plus;</button>
+        </select>
         <div id="page-notes" class="u-clear u-pt-small"></div>
         <tmnote id="page-note-template" class="tmnote tmnote--min u-display--none">
           <tmnoteheader>
             <tmnotepalette class="u-display--none">
               <tmnotecolor class="tmnotecolor--green" data-color="green"></tmnotecolor>
-              <tmnotecolor class="tmnotecolor--white" data-color="white"></tmnotecolor>
+              <tmnotecolor class="tmnotecolor--white" data-color="white"></tmnotecolor><br class="u-clear">
               <tmnotecolor class="tmnotecolor--yellow" data-color="yellow"></tmnotecolor>
-              <tmnotecolor class="tmnotecolor--orange" data-color="orange"></tmnotecolor>
+              <tmnotecolor class="tmnotecolor--orange" data-color="orange"></tmnotecolor><br class="u-clear">
               <tmnotecolor class="tmnotecolor--red" data-color="red"></tmnotecolor>
-              <tmnotecolor class="tmnotecolor--purple" data-color="purple"></tmnotecolor>
+              <tmnotecolor class="tmnotecolor--purple" data-color="purple"></tmnotecolor><br class="u-clear">
               <tmnotecolor class="tmnotecolor--blue" data-color="blue"></tmnotecolor>
               <tmnotecolor class="tmnotecolor--turquoise" data-color="turquoise"></tmnotecolor>
             </tmnotepalette>
@@ -109,24 +109,20 @@
         <h2 class="tab__name" data-target="tab--marks"><span>Marks &amp; Notes</span><div class="tab__toggle" data-target="tab--marks"></div></h2>
       </header>
       <div class="tab__content">
-        <div class="u-cf">
+        <div class="u-cf u-mb-small">
           <div class="u-float--right">
             <button type="button" id="nav-action--up" data-value="-1" class="action-button--nav u-ml-tiny"></button>
             <button type="button" id="nav-action--down" data-value="1" class="action-button--nav"></button>
           </div>
-        </div>
-        <br>
-        <div>
           <select id="fold-marks">
             <option value="1">Folded</option>
             <option value="2">Unfold mark texts</option>
             <option value="3">Unfold note texts</option>
             <option value="4">Unfold all</option>
           </select>
-          <br><br>
-          <div id="marks" data-folded="1"></div>
-          <div id="mark-template" class="mark u-cf u-display--none"><div class="mark__text-container"><div class="mark__text u-overflow--ellipsis"></div></div><div class="mark__note-btn u-display--none"></div><div class="mark__note u-display--none"></div></div>
         </div>
+        <div id="marks" data-folded="1"></div>
+        <div id="mark-template" class="mark u-cf u-display--none"><div class="mark__text-container"><div class="mark__text u-overflow--ellipsis"></div></div><div class="mark__note-btn u-display--none"></div><div class="mark__note u-display--none"></div></div>
       </div>
     </section>
     <section id="tab--links" class="tab tab--folded">
