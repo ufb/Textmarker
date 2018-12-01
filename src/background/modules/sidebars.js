@@ -8,7 +8,8 @@ export default function() {
         'activated:tab': 'setPanel',
         'entry:found': 'storeEntry',
         'opened:sidebar':'sendEntry',
-        'visually-ordered:marks': 'sendOrderedMarks'
+        'visually-ordered:marks': 'sendOrderedMarks',
+        'updated:page-note': 'onUpdatedPageNotes'
       }
     },
 
@@ -35,6 +36,9 @@ export default function() {
     },
     sendOrderedMarks(marks) {
       _GET_ACTIVE_TAB().then(tab => this.emit('entry:ordered-marks', marks));
+    },
+    onUpdatedPageNotes(notes) {
+      this.emit('save:page-notes', notes);
     }
   });
 }

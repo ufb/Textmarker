@@ -43,7 +43,8 @@ new _PORT({
       'sidebar:toggle-notes',
       'sidebar:next-mark',
       'sidebar:retry-restoration',
-      'opened:sidebar'
+      'opened:sidebar',
+      'save:page-notes'
     ],
     CONNECTION: [
       'started:app',

@@ -7,7 +7,8 @@ new _DOMMODULE({
   events: {
     ENV: {
       'entry:ordered-marks': 'setMarkIDs',
-      'stored:entry': 'render'
+      'stored:entry': 'render',
+      'updated:stored-entry' : 'render'
     },
     DOM: {
       click: {
@@ -113,7 +114,7 @@ new _DOMMODULE({
     this.activateListItem();
   },
   activateListItem(id) {
-    if (id) this.current = id;console.log('activating', this.current);
+    if (id) this.current = id;
     const currentItem = this.el.getElementsByClassName('mark--active')[0];
     if (currentItem) currentItem.classList.remove('mark--active');
     document.querySelector('div[data-id="' + [this.current] + '"]').classList.add('mark--active');

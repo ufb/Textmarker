@@ -5,7 +5,7 @@ new _DOMMODULE({
   el: document.getElementById('tab--notes'),
   events: {
     ENV: {
-      'stored:entry': 'render'
+      'updated:stored-entry': 'render'
     },
     DOM: {
       click: {
@@ -13,13 +13,11 @@ new _DOMMODULE({
         'tmnotecolor': 'changeColor',
         'tmnotecustomize': 'togglePalette',
         'tmnotedelete': 'removeNote',
-        'tmnoteminimize': 'toggleNote'
+        'tmnoteminimize': 'toggleNote',
+        'tmnotesave': 'save'
       },
       change: {
         '#fold-page-notes': 'toggleNotes'
-      },
-      keyup: {
-        'textarea': 'attemptUpdate'
       }
     }
   },
@@ -39,8 +37,9 @@ new _DOMMODULE({
       }
     }
   },
-  update() {
-    this.emit('updated:page-note', _STORE.entry, this.notes);
+  save(e, el) {
+    if (el) this.getById(el.getAttribute('data-id')).text = el.previousSibling.value;
+    this.emit('updated:page-note', this.notes);
   },
   resume() {
     this.notes = [];
@@ -55,7 +54,7 @@ new _DOMMODULE({
     const noteEl = document.getElementById('page-note-template').cloneNode(true);
     const textarea = noteEl.getElementsByTagName('textarea')[0];
     noteEl.classList.remove('u-display--none');
-    textarea.addEventListener('blur', e => this.attemptUpdate(e, e.target, true), false);
+
     let id;
     if (note) {
       id = noteEl.id = note.id;
@@ -68,34 +67,20 @@ new _DOMMODULE({
       noteEl.classList.remove('tmnote--min');
       noteEl.getElementsByTagName('tmnotepalette')[0].classList.remove('u-display--none');
       container.insertBefore(noteEl, container.firstChild);
-      this.update();
     }
+
     Array.from(noteEl.getElementsByTagName('*'))
       .forEach(el => el.setAttribute('data-id', id));
 
     this.noteEls[id] = noteEl;
     return id;
   },
-  attemptUpdate(e, el, force) {
-    if (force) {
-      this.updateText(el);
-    }
-    else if (!this.recentlyUpdated) {
-      this.recentlyUpdated = true;
-      window.setTimeout(() => this.updateText(el), 3000);
-    }
-  },
-  updateText(el) {
-    this.getById(el.getAttribute('data-id')).text = el.value;
-    this.recentlyUpdated = false;
-    this.update();
-  },
   changeColor(e, el) {
     const id = el.getAttribute('data-id');
     const color = el.getAttribute('data-color');
     this.noteEls[id].classList.add('tmnote--' + color);
     this.getById(id).color = color;
-    this.update();
+    el.parentNode.classList.add('u-display--none');
   },
   removeNote(e, el) {
     const id = el.getAttribute('data-id');
@@ -103,7 +88,7 @@ new _DOMMODULE({
     note.parentNode.removeChild(note);
     delete this.noteEls[id];
     this.notes.splice(this.notes.indexOf(this.getById(id)), 1);
-    this.update();
+    this.save();
   },
   togglePalette(e, el) {
     const note = this.noteEls[el.getAttribute('data-id')];

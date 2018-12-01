@@ -40,7 +40,6 @@ new _MODULE({
       'remove:tag': 'removeTag',
       'add:tag': 'addTag',
 
-      'updated:page-note': 'updateNotes',
       'toggled:sidebar-tab': 'changeSBSettings'
     }
   },
@@ -368,13 +367,6 @@ new _MODULE({
       }
     }
     return entry;
-  },
-  updateNotes(entry, notes) {
-    const area = entry.synced ? 'sync' : 'local';
-    _STORAGE.update('history', history => {
-      history.entries[entry.name].notes = notes;
-      return history;
-    }, area);
   },
   registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));

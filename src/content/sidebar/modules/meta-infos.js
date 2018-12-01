@@ -5,7 +5,8 @@ new _DOMMODULE({
   el: document.getElementById('tab--meta'),
   events: {
     ENV: {
-      'stored:entry': 'render'
+      'stored:entry': 'render',
+      'updated:stored-entry': 'render'
     }
   },
 

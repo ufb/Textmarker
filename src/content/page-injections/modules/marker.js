@@ -36,7 +36,8 @@ export default function() {
         'sidebar:next-mark': 'gotoMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark',
-        'clicked:mark': 'gotoMark'
+        'clicked:mark': 'gotoMark',
+        'save:page-notes': 'onSavePageNotes'
 			}
 		},
 		selection: null,
@@ -447,6 +448,10 @@ export default function() {
 				case 'd': self.remove(); break;
       }
     },
+    onSavePageNotes(notes) {
+      this.pageNotes = notes;
+      this.save();
+    },
     preventDefault(e) {
 			if (e && e.preventDefault) {
 				e.preventDefault();
@@ -474,6 +479,10 @@ export default function() {
       entry.name = _STORE.locked ?
         entry.marks[0].text.trim().substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1) :
         _STORE.isNew ? _STORE.name : entry.name;
+
+      if (this.pageNotes) {
+        entry.notes = this.pageNotes;
+      }
 
 			return entry;
 		},

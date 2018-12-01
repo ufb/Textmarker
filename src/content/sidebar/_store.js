@@ -5,17 +5,23 @@ export default new _MODULE({
     ENV: {
       'toggled:sync': 'setAreas',
       'saved:entry': 'storeEntry',
-      'entry:found': 'storeEntry',
-      'entry:found-for-tab': 'storeEntry',
-      'updated:entry': 'storeEntry'
+      'entry:found': 'updateEntry',
+      'entry:found-for-tab': 'updateEntry',
+      'updated:entry': 'updateEntry'
     }
   },
   initialized: false,
   initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
-  entry: {},
+  entry: null,
 
+  updateEntry(entry) {
+    if (entry) {
+      this.entry = entry;
+      this.emit('updated:stored-entry', entry);
+    }
+  },
   storeEntry(entry) {
     if (entry) {
       this.entry = entry;

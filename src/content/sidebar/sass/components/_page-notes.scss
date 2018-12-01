@@ -18,6 +18,23 @@
   }
 }
 
+tmnotesave {
+  display: none;
+  position: absolute;
+  bottom: 2px;
+  right: 10px;
+  width: auto;
+  padding: 0 4px;
+  color: $color-text--turquoise;
+
+  tmnote & {
+    display: block;
+  }
+  tmnote.tmnote--min & {
+    display: none;
+  }
+}
+
 tmnote {
   display: block;
   position: relative;
@@ -27,7 +44,7 @@ tmnote {
 
   textarea {
     @extend .__note_textarea;
-    padding: 5px;
+    padding: 5px 5px 22px;
     width: 100%;
     max-width: 100%;
     margin: 1px 0 0 0;
