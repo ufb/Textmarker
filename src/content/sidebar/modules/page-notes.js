@@ -24,7 +24,7 @@ new _DOMMODULE({
   notes: [],
   noteEls: {},
   id: 0,
-  recentlyUpdated: false,
+  currentColor: 'yellow',
 
   render(entry) {
     this.resume();
@@ -63,9 +63,9 @@ new _DOMMODULE({
       container.appendChild(noteEl);
     } else {
       id = noteEl.id = ++this.id;
-      this.notes.push({ id, text: '', color: 'yellow' });
+      this.notes.push({ id, text: '', color: this.currentColor });
       noteEl.classList.remove('tmnote--min');
-      noteEl.getElementsByTagName('tmnotepalette')[0].classList.remove('u-display--none');
+      noteEl.classList.add('tmnote--' + this.currentColor);
       container.insertBefore(noteEl, container.firstChild);
     }
 
@@ -77,8 +77,8 @@ new _DOMMODULE({
   },
   changeColor(e, el) {
     const id = el.getAttribute('data-id');
-    const color = el.getAttribute('data-color');
-    this.noteEls[id].classList.add('tmnote--' + color);
+    const color = this.currentColor = el.getAttribute('data-color');
+    this.noteEls[id].className = this.noteEls[id].className.replace(/--\w+/, '--' + color);
     this.getById(id).color = color;
     el.parentNode.classList.add('u-display--none');
   },
