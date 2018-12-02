@@ -9,7 +9,8 @@ new _DOMMODULE({
     },
     DOM: {
       click: {
-        '.col-toggle': 'toggleNotes'
+        '.col-toggle': 'toggleNotes',
+        '.table-toggle': 'toggleTable'
       }
     }
   },
@@ -25,6 +26,8 @@ new _DOMMODULE({
     const tmpl = this.tmpl = document.getElementById('mark-template');
     const tbody = this.tbody = document.getElementById('marks-content');
     const marks = this.marks = this.sortById(entry.marks);
+
+    if (!marks.length) this.el.classList.add('disabled');
 
     this.renderCount(entry);
     marks.forEach(mark => this.renderMark(mark));
@@ -74,5 +77,8 @@ new _DOMMODULE({
       this.el.classList.remove('hide-notes');
     }
     this.notesShown = !this.notesShown;
+  },
+  toggleTable() {
+    this.el.classList.toggle('folded');
   }
 });

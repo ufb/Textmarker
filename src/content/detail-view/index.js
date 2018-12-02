@@ -4,6 +4,7 @@ import { _MODULE } from './../_shared/utils'
 import { _L10N } from './../_shared/utils'
 import './modules/header'
 import './modules/meta'
+import './modules/notes'
 import './modules/marks'
 
 _L10N();

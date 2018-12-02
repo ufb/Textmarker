@@ -12,6 +12,23 @@
 #main {
   padding: 20px;
 }
-#marks-count {
+.table-toggle {
+  @include icon('down', 0 center, 14px);
+  width: 14px;
+  height: 12px;
+  display: inline-block;
+  cursor: pointer;
+  opacity: 0.25;
+  margin-right: 8px;
+
+  .folded & {
+    transform: rotate(-90deg);
+  }
+
+  .disabled & {
+    display: none;
+  }
+}
+.count {
   color: $color-text--disabled;
 }
