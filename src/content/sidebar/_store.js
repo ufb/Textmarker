@@ -18,8 +18,13 @@ export default new _MODULE({
 
   updateEntry(entry) {
     if (entry) {
-      this.entry = entry;
-      this.emit('updated:stored-entry', entry);
+      if (this.entry) {
+        this.entry = entry;
+        this.emit('updated:stored-entry', entry);
+      } else {
+        this.entry = entry;
+        this.emit('stored:entry', entry);
+      }
     }
   },
   storeEntry(entry) {

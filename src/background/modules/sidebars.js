@@ -7,6 +7,8 @@ export default function() {
       ENV: {
         'activated:tab': 'setPanel',
         'entry:found': 'storeEntry',
+        'saved:entry': 'storeEntry',
+        'updated:entry': 'storeEntry',
         'opened:sidebar':'sendEntry',
         'visually-ordered:marks': 'sendOrderedMarks',
         'updated:page-note': 'onUpdatedPageNotes'
@@ -35,7 +37,7 @@ export default function() {
       _GET_ACTIVE_TAB().then(tab => this.emit('entry:found-for-tab', this.entries[tab.id]));
     },
     sendOrderedMarks(marks) {
-      _GET_ACTIVE_TAB().then(tab => this.emit('entry:ordered-marks', marks));
+      this.emit('entry:ordered-marks', marks);
     },
     onUpdatedPageNotes(notes) {
       this.emit('save:page-notes', notes);

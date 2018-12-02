@@ -5,6 +5,7 @@ new _DOMMODULE({
   el: document.getElementById('tab--notes'),
   events: {
     ENV: {
+      'stored:entry': 'render',
       'updated:stored-entry': 'render'
     },
     DOM: {
