@@ -6,7 +6,7 @@ select, input {
   font-family: inherit !important;
 }
 select {
-  @include icon('arrow-down', right 10px);
+  @include icon('arrow-down', right 8px);
   background-color: transparent;
   -moz-appearance: none;
   height: 24px;

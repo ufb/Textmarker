@@ -38,7 +38,11 @@ new _DOMMODULE({
     }
   },
   save(e, el) {
-    if (el) this.getById(el.getAttribute('data-id')).text = el.previousSibling.value;
+    if (el) {
+      const note = this.getById(el.getAttribute('data-id'));
+      note.text = el.previousSibling.value;
+      note.name = el.parentNode.getElementsByClassName('tmnote__header')[0].value;
+    }
     this.emit('updated:page-note', this.notes);
   },
   resume() {
@@ -53,12 +57,14 @@ new _DOMMODULE({
     const container = document.getElementById('page-notes');
     const noteEl = document.getElementById('page-note-template').cloneNode(true);
     const textarea = noteEl.getElementsByTagName('textarea')[0];
+    const header = noteEl.getElementsByClassName('tmnote__header')[0];
     noteEl.classList.remove('u-display--none');
 
     let id;
     if (note) {
       id = noteEl.id = note.id;
-      textarea.textContent = note.text;
+      textarea.textContent = note.text || '';
+      header.value = note.name || '';
       noteEl.classList.add('tmnote--' + note.color);
       container.appendChild(noteEl);
     } else {
@@ -99,15 +105,31 @@ new _DOMMODULE({
     }
   },
   toggleNote(e, el) {
-    this.noteEls[el.getAttribute('data-id')].classList.toggle('tmnote--min');
+    const note = this.noteEls[el.getAttribute('data-id')];
+    note.classList.toggle('tmnote--min');
+    if (!note.classList.contains('tmnote--min')) {
+      this.adjustTextareaHeight(note);
+    }
   },
   toggleNotes(e, el) {
-    const meth = el.value == 1 ? 'add' : 'remove';
-    for (let id in this.noteEls) {
-      this.noteEls[id].classList[meth]('tmnote--min');
+    if (el.value == 1) {
+      for (let id in this.noteEls) {
+        this.noteEls[id].classList.add('tmnote--min');
+      }
+    } else {
+      let note, textarea;
+      for (let id in this.noteEls) {
+        note = this.noteEls[id];
+        note.classList.remove('tmnote--min');
+        this.adjustTextareaHeight(note);
+      }
     }
   },
   getById(id) {
     return this.notes.find(note => note.id == id);
+  },
+  adjustTextareaHeight(note) {
+    const textarea = note.getElementsByTagName('textarea')[0];
+    textarea.style.height = textarea.scrollHeight + 10 + 'px';
   }
 });

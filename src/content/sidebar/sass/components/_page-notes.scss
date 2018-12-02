@@ -63,6 +63,17 @@ tmnote {
     tmnotebuttons {
       display: block !important;
     }
+    .tmnote__header {
+      background: none;
+      &::placeholder {
+        color: transparent;
+      }
+    }
+  }
+  .tmnote__header {
+    width: calc(100% - 70px);
+    border: 0;
+    color: $color-text--grey;
   }
 }
 tmnotepalette {
