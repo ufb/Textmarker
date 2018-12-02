@@ -25,3 +25,29 @@ input[type="text"] {
   width: calc(100% - 27px);
   padding: 0 4px;
 }
+input[type="radio"] {
+  display: none;
+}
+label.fake-rb {
+  width: auto;
+}
+input[type="radio"] + label span {
+  border-radius: 50%;
+}
+input[type="radio"]:checked + label span {
+  text-indent: 0;
+}
+label span {
+  display: inline-block;
+  line-height: 1.2;
+  height: 20px;
+  width: 20px;
+  text-align: center;
+  color: $color-text--turquoise;
+  text-indent: -1000px;
+  overflow: hidden;
+  border: 1px solid $color-border;
+  border-radius: 2px;
+  vertical-align: -5px;
+  margin-right: 8px;
+}

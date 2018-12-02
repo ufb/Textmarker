@@ -1,0 +1,21 @@
+tmpopup {
+  position: absolute;
+  display: block;
+  z-index: $layer--max;
+  background: $color-bg--dark;
+  border-radius: 3px;
+  box-sizing: border-box !important;
+  padding: 0 4px;
+}
+tmpopupcolor {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin: 4px 2px 0;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 0 1px $color-bg--light;
+  }
+}

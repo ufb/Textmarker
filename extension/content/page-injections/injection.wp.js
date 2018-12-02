@@ -364,6 +364,10 @@ var _notes = _interopRequireDefault(__webpack_require__(/*! ./modules/notes */ "
 
 var _tmui = _interopRequireDefault(__webpack_require__(/*! ./modules/tmui */ "./content/page-injections/modules/tmui.js"));
 
+var _markerPopup = _interopRequireDefault(__webpack_require__(/*! ./modules/marker-popup */ "./content/page-injections/modules/marker-popup.js"));
+
+var _autoMarker = _interopRequireDefault(__webpack_require__(/*! ./modules/auto-marker */ "./content/page-injections/modules/auto-marker.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 new _utils._MODULE({
@@ -391,6 +395,8 @@ new _utils._MODULE({
     (0, _marker.default)();
     (0, _notes.default)();
     (0, _tmui.default)();
+    (0, _markerPopup.default)();
+    (0, _autoMarker.default)();
     this.bootstrapped = true;
   }
 });
@@ -418,6 +424,86 @@ __webpack_require__(/*! ./_store */ "./content/page-injections/_store.js");
 __webpack_require__(/*! ./bootstrap */ "./content/page-injections/bootstrap.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+
+/***/ "./content/page-injections/modules/auto-marker.js":
+/*!********************************************************!*\
+  !*** ./content/page-injections/modules/auto-marker.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/page-injections/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
+  var DOC = window.document;
+  return new _utils._DOMMODULE({
+    events: {
+      ENV: {
+        'updated:mark-method-settings': 'update',
+        'changed:selection': 'onSelectionChange',
+        'sidebar:selected-marker': 'setMarker'
+      }
+    },
+    handler: null,
+    marker: 'm',
+    autoinit: function autoinit() {
+      this.update();
+    },
+    update: function update() {
+      var _this = this;
+
+      _store.default.get('settings').then(function (settings) {
+        _this.active = settings.misc.markmethod === 'auto';
+      });
+    },
+    setMarker: function setMarker(key) {
+      this.marker = key;
+    },
+    onSelectionChange: function onSelectionChange(selected) {
+      if (this.active) {
+        if (selected && !this.listening) {
+          this.startListening();
+        } else if (!selected && this.listening) {
+          this.stopListening();
+        }
+      } else if (this.listening) {
+        this.stopListening();
+      }
+    },
+    startListening: function startListening() {
+      if (!this.listening) {
+        var handler = this.handler = this.onMouseup.bind(this);
+        DOC.body.addEventListener('mouseup', handler, false);
+        this.listening = true;
+      }
+    },
+    stopListening: function stopListening() {
+      if (this.listening) {
+        DOC.body.removeEventListener('mouseup', this.handler, false);
+        this.listening = false;
+      }
+    },
+    onMouseup: function onMouseup() {
+      this.stopListening();
+      var selection = window.getSelection().toString();
+      if (selection) this.emit('selection-end', this.marker);
+    }
+  });
+}
 
 /***/ }),
 
@@ -839,6 +925,109 @@ exports.default = _MARK;
 
 /***/ }),
 
+/***/ "./content/page-injections/modules/marker-popup.js":
+/*!*********************************************************!*\
+  !*** ./content/page-injections/modules/marker-popup.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/page-injections/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
+  var DOC = window.document;
+  return new _utils._DOMMODULE({
+    events: {
+      ENV: {
+        'updated:mark-method-settings': 'update',
+        'changed:selection': 'onSelectionChange'
+      }
+    },
+    handler: null,
+    appended: false,
+    autoinit: function autoinit() {
+      var _this = this;
+
+      this.update().then(function () {
+        return _this.create();
+      });
+    },
+    update: function update() {
+      var _this2 = this;
+
+      return _store.default.get('settings').then(function (settings) {
+        _this2.active = settings.misc.markmethod === 'popup';
+        _this2.markers = settings.markers;
+      });
+    },
+    create: function create() {
+      var popup = this.el = DOC.createElement('tmpopup');
+      var bgColorRegExp = /background-color:(#[a-f0-9]{6})/;
+      var bgColor, colorBtn;
+
+      for (var m in this.markers) {
+        bgColor = this.markers[m].style.match(bgColorRegExp);
+
+        if (bgColor) {
+          colorBtn = DOC.createElement('tmpopupcolor');
+          popup.appendChild(colorBtn);
+          colorBtn.style.background = bgColor.pop();
+          colorBtn.id = 'tmpopupcolor--' + m;
+        }
+      }
+    },
+    remove: function remove() {
+      if (this.appended) {
+        DOC.body.removeChild(this.el);
+        this.el.removeEventListener('click', this.handler, false);
+        this.appended = false;
+      }
+    },
+    show: function show() {
+      if (!this.appended) {
+        DOC.body.appendChild(this.el);
+        var handler = this.handler = this.onClick.bind(this);
+        this.el.addEventListener('mousedown', handler, false);
+        this.appended = true;
+      }
+
+      var selectionPosition = window.getSelection().getRangeAt(0).getBoundingClientRect();
+      this.el.style.top = selectionPosition.top - selectionPosition.height - 10 + window.scrollY + 'px';
+      this.el.style.left = selectionPosition.left + window.scrollX + 'px';
+    },
+    onSelectionChange: function onSelectionChange(selected) {
+      if (this.active) {
+        if (!selected) this.remove();else this.show();
+      } else if (this.appended) {
+        this.remove();
+      }
+    },
+    onClick: function onClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var el = e.target;
+
+      if (el.nodeName === 'TMPOPUPCOLOR') {
+        this.emit('clicked:popup-marker', el.id.split('--').pop());
+      }
+    }
+  });
+}
+
+/***/ }),
+
 /***/ "./content/page-injections/modules/marker.js":
 /*!***************************************************!*\
   !*** ./content/page-injections/modules/marker.js ***!
@@ -876,6 +1065,8 @@ function _default() {
         'set:entries': 'updateID',
         'pressed:marker-key': 'onMarkerKey',
         'pressed:hotkey': 'onHotkey',
+        'clicked:popup-marker': 'onMarkerKey',
+        'selection-end': 'onMarkerKey',
         'restored:range': 'recreate',
         'finished:all-restorations': 'onFinishedRestoration',
         'ctx:b': 'setBookmark',
@@ -887,6 +1078,7 @@ function _default() {
         'removed:note': 'saveNote',
         'changed:note-color': 'saveNote',
         'changed:note-pos': 'saveNote',
+        'changed:note-size': 'saveNote',
         'sidebar:highlight': 'onMarkerKey',
         'sidebar:delete-highlight': 'remove',
         'sidebar:bookmark': 'setBookmark',
@@ -899,7 +1091,8 @@ function _default() {
         'sidebar:next-mark': 'gotoMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark',
-        'clicked:mark': 'gotoMark'
+        'clicked:mark': 'gotoMark',
+        'save:page-notes': 'onSavePageNotes'
       }
     },
     selection: null,
@@ -1294,8 +1487,6 @@ function _default() {
       }
 
       _store.default.get('markers').then(function (markers) {
-        console.log('mark for', markers[key]);
-
         _this3.store(_this3.mark(key, markers[key]), true, true);
       });
     },
@@ -1332,6 +1523,10 @@ function _default() {
           break;
       }
     },
+    onSavePageNotes: function onSavePageNotes(notes) {
+      this.pageNotes = notes;
+      this.save();
+    },
     preventDefault: function preventDefault(e) {
       if (e && e.preventDefault) {
         e.preventDefault();
@@ -1357,6 +1552,11 @@ function _default() {
       }
 
       entry.name = _store.default.locked ? entry.marks[0].text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1) : _store.default.isNew ? _store.default.name : entry.name;
+
+      if (this.pageNotes) {
+        entry.notes = this.pageNotes;
+      }
+
       return entry;
     },
     collectMarks: function collectMarks() {
@@ -1444,8 +1644,13 @@ function _default(mark, color) {
       l: null,
       t: null
     },
+    size: {
+      w: null,
+      h: null
+    },
     dragDX: 0,
     dragDY: 0,
+    mutationObserver: null,
     autoinit: function autoinit() {
       this.adjustNoteDataObject();
       this.createNoteElement();
@@ -1466,7 +1671,8 @@ function _default(mark, color) {
           color: this.color || _store.default.noteColor
         };
       } else {
-        this.pos = this.mark.keyData.note.pos || this.pos;
+        this.pos = noteData.pos || this.pos;
+        this.size = noteData.size || this.size;
       }
     },
     createNoteElement: function createNoteElement() {
@@ -1552,8 +1758,11 @@ function _default(mark, color) {
         left = this.pos.l = innerWindowWidth - 340;
       }
 
+      var size = this.size.w ? 'width:' + this.size.w + ';height:' + this.size.h + ';' : '';
       BODY.appendChild(el);
       el.setAttribute('style', 'display:block;top:' + top + 'px;left:' + left + 'px;');
+      el.getElementsByTagName('textarea')[0].setAttribute('style', size);
+      this.connectMutationObserver();
       this.visible = true;
     },
     bringUpFront: function bringUpFront() {
@@ -1565,6 +1774,7 @@ function _default(mark, color) {
     },
     hide: function hide() {
       BODY.removeChild(this.el);
+      this.mutationObserver.disconnect();
       this.visible = false;
     },
     toggle: function toggle() {
@@ -1654,6 +1864,14 @@ function _default(mark, color) {
         }
       }
     },
+    connectMutationObserver: function connectMutationObserver() {
+      var textarea = this.el.getElementsByTagName('textarea')[0];
+      var config = {
+        attributeFilter: ['style']
+      };
+      var observer = this.mutationObserver = this.mutationObserver || new MutationObserver(this.proxy(this, this.saveSize));
+      observer.observe(textarea, config);
+    },
     getPosition: function getPosition() {
       var rect = this.mark.wrappers[this.mark.wrappers.length - 1].getBoundingClientRect();
       return {
@@ -1680,6 +1898,14 @@ function _default(mark, color) {
     onDragEnd: function onDragEnd() {
       this.mark.keyData.note.pos = this.pos;
       this.emit('changed:note-pos', this.mark.id);
+    },
+    saveSize: function saveSize(mutationsList) {
+      var style = mutationsList[0].target.style;
+      this.size = this.mark.keyData.note.size = {
+        w: style.width,
+        h: style.height
+      };
+      this.emit('changed:note-size', this.mark.id);
     }
   });
 }
@@ -2059,7 +2285,7 @@ function _default() {
 
       return entries;
     },
-    onSelectionChange: function onSelectionChange() {
+    onSelectionChange: function onSelectionChange(e) {
       this.emit('changed:selection', !window.getSelection().isCollapsed);
     },
     activateRetry: function activateRetry() {

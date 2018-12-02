@@ -24,7 +24,8 @@ export default new _PORT({
       'open:addon-page',
       'opened:sidebar',
       'updated:page-note',
-      'toggled:sidebar-tab'
+      'toggled:sidebar-tab',
+      'sidebar:selected-marker'
     ]
   }
 })

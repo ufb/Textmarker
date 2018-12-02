@@ -34,6 +34,7 @@ export default {
   note_restoration_warning_1: 33,
   note_restoration_warning_2: 34,
   error_save_change_autonote: 35,
+  error_save_mark_method: 36,
 
   getKeyByValue(val) {
     for (let key in this) {

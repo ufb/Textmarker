@@ -7,6 +7,8 @@ import _MARKER from './modules/marker'
 import _RESTORER from './modules/restorer'
 import _NOTES from './modules/notes'
 import _TMUI from './modules/tmui'
+import _MARKERPOPUP from './modules/marker-popup'
+import _AUTOMARKER from './modules/auto-marker'
 
 new _MODULE({
   events: {
@@ -34,6 +36,8 @@ new _MODULE({
     _MARKER();
     _NOTES();
     _TMUI();
+    _MARKERPOPUP();
+    _AUTOMARKER();
 
     this.bootstrapped = true;
   }

@@ -1663,8 +1663,10 @@ function () {
           bg = styles['background-color'],
           color = styles['color'],
           border = styles['border-bottom'],
-          autonoteColor = this.autonote || '';
-      shadow, shadowSelect, i;
+          autonoteColor = this.autonote || '',
+          shadow,
+          shadowSelect,
+          i;
       document.getElementById('auto-note').checked = this.autonote;
       autonoteInput.value = autonoteColor || 'yellow';
       autonoteInput.disabled = !autonoteColor;
@@ -1934,6 +1936,7 @@ function _default() {
           '#customized-key': 'updateMarker',
           '#add-key': 'addMarker',
           '#remove-key': 'removeMarker',
+          '.mark-opt': 'changeMarkMethod',
           '.sc-cb': 'toggleShortcut',
           '.shortcut-select': 'changeShortcut',
           '.save-opt': 'changeSaveOpt',
@@ -1979,7 +1982,7 @@ function _default() {
           if (!markerKeys.includes(i) && !customMarkerKeys.includes(i)) _this.customMarkerKeys.push(i);
         }
 
-        _this.renderMarkerSelectOptions().updateMarker('m').injectSettings(settings);
+        _this.renderMarkerSelectOptions().updateMarker(_this.marker ? _this.marker.key : 'm').injectSettings(settings);
       });
     },
     resume: function resume() {
@@ -2080,6 +2083,7 @@ function _default() {
       document.getElementById('notes-new').checked = historySettings.saveNote;
       document.getElementById('quickbutton-download-select').value = historySettings.download;
       var miscSettings = settings.misc;
+      document.getElementById('mark-method--' + miscSettings.markmethod).checked = true;
       document.getElementById('misc-bm').checked = miscSettings.bmicon;
       document.getElementById('misc-noteicon').checked = miscSettings.noteicon;
       document.getElementById('misc-noteonclick').checked = miscSettings.noteonclick;
@@ -2110,7 +2114,6 @@ function _default() {
     },
     changeAutoNoteOpt: function changeAutoNoteOpt(e, el) {
       var val = document.getElementById('auto-note').checked ? el.value : false;
-      console.log('val', val);
       this.emit('change:autonote-setting', this.marker.key, val);
     },
     addMarker: function addMarker(e, el) {
@@ -2142,8 +2145,7 @@ function _default() {
           option;
       if (!key || this.allowedKeys.indexOf(key) === -1) return false;
       option = el.children[el.selectedIndex];
-      addKeySelect.appendChild(option); //lieber an richtige stelle im alphabet setzen (alternativ an anfang)
-
+      addKeySelect.appendChild(option);
       addKeySelect.selectedIndex = 0;
       el.selectedIndex = 0;
       keySelect.getElementsByClassName('custom-marker-option-' + key)[0].remove();
@@ -2151,6 +2153,11 @@ function _default() {
       keySelect.selectedIndex = 0;
       this.updateMarker('m');
       this.emit('remove:custom-marker', key);
+    },
+    changeMarkMethod: function changeMarkMethod(e, el) {
+      if (el.checked) {
+        this.emit('change:mark-method-setting', el.getAttribute('data-value'));
+      }
     },
     toggleShortcut: function toggleShortcut(e, el) {
       this.emit('toggle:shortcut-setting', el.name, el.checked);
@@ -2345,7 +2352,7 @@ var _default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 
@@ -2414,6 +2421,7 @@ var _default = {
   note_restoration_warning_1: 33,
   note_restoration_warning_2: 34,
   error_save_change_autonote: 35,
+  error_save_mark_method: 36,
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {

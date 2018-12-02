@@ -186,6 +186,8 @@ __webpack_require__(/*! ./modules/header */ "./content/detail-view/modules/heade
 
 __webpack_require__(/*! ./modules/meta */ "./content/detail-view/modules/meta.js");
 
+__webpack_require__(/*! ./modules/notes */ "./content/detail-view/modules/notes.js");
+
 __webpack_require__(/*! ./modules/marks */ "./content/detail-view/modules/marks.js");
 
 (0, _utils._L10N)();
@@ -269,7 +271,8 @@ new _utils._DOMMODULE({
     },
     DOM: {
       click: {
-        '.col-toggle': 'toggleNotes'
+        '.col-toggle': 'toggleNotes',
+        '.table-toggle': 'toggleTable'
       }
     }
   },
@@ -286,6 +289,7 @@ new _utils._DOMMODULE({
     var tmpl = this.tmpl = document.getElementById('mark-template');
     var tbody = this.tbody = document.getElementById('marks-content');
     var marks = this.marks = this.sortById(entry.marks);
+    if (!marks.length) this.el.classList.add('disabled');
     this.renderCount(entry);
     marks.forEach(function (mark) {
       return _this.renderMark(mark);
@@ -340,6 +344,9 @@ new _utils._DOMMODULE({
     }
 
     this.notesShown = !this.notesShown;
+  },
+  toggleTable: function toggleTable() {
+    this.el.classList.toggle('folded');
   }
 });
 
@@ -395,6 +402,84 @@ new _utils._DOMMODULE({
     }).replace(/(\D{1})(\d{1}\D{1})/g, function (m, p, q) {
       return p + '0' + q;
     });
+  }
+});
+
+/***/ }),
+
+/***/ "./content/detail-view/modules/notes.js":
+/*!**********************************************!*\
+  !*** ./content/detail-view/modules/notes.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _globalSettings = _interopRequireDefault(__webpack_require__(/*! ./../../../data/global-settings */ "./data/global-settings.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+new _utils._DOMMODULE({
+  el: document.getElementById('notes'),
+  events: {
+    ENV: {
+      'entry': 'render'
+    },
+    DOM: {
+      click: {
+        '.table-toggle': 'toggleTable'
+      }
+    }
+  },
+  entry: null,
+  tmpl: null,
+  tbody: null,
+  notes: [],
+  names: false,
+  render: function render(entry) {
+    var _this = this;
+
+    this.entry = entry;
+    var notes = this.notes = entry.notes || [];
+    this.renderCount();
+    if (!notes.length) this.el.classList.add('disabled');else {
+      var tmpl = this.tmpl = document.getElementById('notes-template');
+      var tbody = this.tbody = document.getElementById('notes-content');
+      notes.forEach(function (note) {
+        return _this.renderNote(note);
+      });
+      tbody.removeChild(tmpl);
+      if (!this.names) this.removeNameFields();
+    }
+  },
+  renderCount: function renderCount() {
+    document.getElementById('notes-count').innerText = '(' + this.notes.length + ')';
+  },
+  renderNote: function renderNote(note) {
+    var noteEl = this.tmpl.cloneNode(true);
+    var td_name = noteEl.getElementsByClassName('note-name')[0];
+    var td_txt = noteEl.getElementsByClassName('note-text')[0];
+    this.tbody.appendChild(noteEl);
+
+    if (note.name) {
+      td_name.textContent = note.name;
+      this.names = true;
+    }
+
+    td_txt.textContent = note.text;
+    noteEl.style.background = _globalSettings.default.NOTE_COLORS[note.color.toUpperCase()];
+  },
+  removeNameFields: function removeNameFields() {
+    Array.from(this.el.getElementsByClassName('note-name')).forEach(function (td) {
+      return td.parentNode.removeChild(td);
+    });
+  },
+  toggleTable: function toggleTable() {
+    this.el.classList.toggle('folded');
   }
 });
 

@@ -2,8 +2,24 @@
   margin-bottom: 8px;
   width: 78px;
 
+  .auto & {
+    width: 85px;
+  }
+
+  &__cb-box {
+    float: right;
+    margin: 0 0 0 10px;
+    display: none;
+    .auto & {
+      display: block;
+    }
+  }
+
   &__apply {
     margin: 0 0 0 10px;
+    .auto & {
+      display: none;
+    }
   }
   &__label {
     display: inline-block;

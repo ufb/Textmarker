@@ -770,8 +770,11 @@ function _default() {
       ENV: {
         'activated:tab': 'setPanel',
         'entry:found': 'storeEntry',
+        'saved:entry': 'storeEntry',
+        'updated:entry': 'storeEntry',
         'opened:sidebar': 'sendEntry',
-        'visually-ordered:marks': 'sendOrderedMarks'
+        'visually-ordered:marks': 'sendOrderedMarks',
+        'updated:page-note': 'onUpdatedPageNotes'
       }
     },
     entries: {},
@@ -803,11 +806,10 @@ function _default() {
       });
     },
     sendOrderedMarks: function sendOrderedMarks(marks) {
-      var _this3 = this;
-
-      (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        return _this3.emit('entry:ordered-marks', marks);
-      });
+      this.emit('entry:ordered-marks', marks);
+    },
+    onUpdatedPageNotes: function onUpdatedPageNotes(notes) {
+      this.emit('save:page-notes', notes);
     }
   });
 }
@@ -839,6 +841,7 @@ new _utils._MODULE({
       'change:style-setting': 'changeStyle',
       'change:autonote-setting': 'changeAutoNoteSetting',
       'change:bg-setting': 'changeBgColor',
+      'change:mark-method-setting': 'changeMarkMethod',
       'toggle:shortcut-setting': 'toggleShortcutSetting',
       'change:shortcut-setting': 'changeShortcutSetting',
       'toggle:ctm-setting': 'toggleCtmSetting',
@@ -865,7 +868,6 @@ new _utils._MODULE({
       'tag:entries': 'tagEntries',
       'remove:tag': 'removeTag',
       'add:tag': 'addTag',
-      'updated:page-note': 'updateNotes',
       'toggled:sidebar-tab': 'changeSBSettings'
     }
   },
@@ -943,11 +945,16 @@ new _utils._MODULE({
     }, 'bg-color', 'error_save_style');
   },
   changeAutoNoteSetting: function changeAutoNoteSetting(key, autonote) {
-    console.log('store', key, autonote);
     this.updateSettings(function (settings) {
       settings.markers[key].autonote = autonote;
       return settings;
     }, 'autonote', 'error_save_toggle_autonote');
+  },
+  changeMarkMethod: function changeMarkMethod(method) {
+    this.updateSettings(function (settings) {
+      settings.misc.markmethod = method;
+      return settings;
+    }, 'mark-method', 'error_save_mark_method');
   },
   toggleShortcutSetting: function toggleShortcutSetting(key, status) {
     this.updateSettings(function (settings) {
@@ -1224,14 +1231,6 @@ new _utils._MODULE({
       }
     }
     return entry;
-  },
-  updateNotes: function updateNotes(entry, notes) {
-    var area = entry.synced ? 'sync' : 'local';
-
-    _storage.default.update('history', function (history) {
-      history.entries[entry.name].notes = notes;
-      return history;
-    }, area);
   },
   registerStorageChangedHandler: function registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));
@@ -1687,7 +1686,7 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'opened:sidebar'],
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar', 'save:page-notes'],
     CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab', 'entry:ordered-marks']
   }
 });
@@ -2150,7 +2149,8 @@ var _default = {
       changedNote: false,
       errorNote: true,
       customSearch: false,
-      tmuipos: 'top-right'
+      tmuipos: 'top-right',
+      markmethod: ''
     },
     sb: {
       tabs: {
@@ -2271,6 +2271,7 @@ var _default = {
   note_restoration_warning_1: 33,
   note_restoration_warning_2: 34,
   error_save_change_autonote: 35,
+  error_save_mark_method: 36,
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {

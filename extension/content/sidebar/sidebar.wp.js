@@ -190,16 +190,27 @@ var _default = new _utils._MODULE({
     ENV: {
       'toggled:sync': 'setAreas',
       'saved:entry': 'storeEntry',
-      'entry:found': 'storeEntry',
-      'entry:found-for-tab': 'storeEntry',
-      'updated:entry': 'storeEntry'
+      'entry:found': 'updateEntry',
+      'entry:found-for-tab': 'updateEntry',
+      'updated:entry': 'updateEntry'
     }
   },
   initialized: false,
   initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
-  entry: {},
+  entry: null,
+  updateEntry: function updateEntry(entry) {
+    if (entry) {
+      if (this.entry) {
+        this.entry = entry;
+        this.emit('updated:stored-entry', entry);
+      } else {
+        this.entry = entry;
+        this.emit('stored:entry', entry);
+      }
+    }
+  },
   storeEntry: function storeEntry(entry) {
     if (entry) {
       this.entry = entry;
@@ -596,7 +607,8 @@ new _utils._DOMMODULE({
     },
     DOM: {
       change: {
-        '.marker__color': 'change'
+        '.marker__color': 'change',
+        '.marker__cb': 'select'
       },
       click: {
         '.marker__apply': 'applyColor'
@@ -609,13 +621,16 @@ new _utils._DOMMODULE({
   render: function render() {
     var _this = this;
 
+    var automarkEnabled;
     browser.storage.sync.get().then(function (storage) {
       if (storage && storage.settings && (!storage.sync || storage.sync.settings)) {
+        if (storage.settings.misc.markmethod === 'auto') _this.el.classList.add('auto');else _this.el.classList.remove('auto');
         return storage.settings.markers;
       }
 
       return browser.storage.local.get().then(function (storage) {
         if (storage && storage.settings && storage.sync && !storage.sync.settings) {
+          if (storage.settings.misc.markmethod === 'auto') _this.el.classList.add('auto');else _this.el.classList.remove('auto');
           return storage.settings.markers;
         }
 
@@ -634,7 +649,11 @@ new _utils._DOMMODULE({
           input,
           exampleText,
           button,
-          color;
+          color,
+          cbBox,
+          cb,
+          cbLabel,
+          cbSpan;
       leftContainer.innerText = '';
       rightContainer.innerText = '';
 
@@ -644,6 +663,10 @@ new _utils._DOMMODULE({
         input = document.createElement('input');
         exampleText = document.createElement('label');
         button = document.createElement('button');
+        cbBox = document.createElement('div');
+        cb = document.createElement('input');
+        cbLabel = document.createElement('label');
+        cbSpan = document.createElement('span');
         color = _this.extractBgColor(markers[m].style);
         box.className = 'marker u-cf';
         input.className = 'marker__color';
@@ -657,7 +680,20 @@ new _utils._DOMMODULE({
         button.className = 'marker__apply';
         button.setAttribute('disabled', true);
         button.setAttribute('data-key', m);
+        cbBox.className = 'marker__cb-box';
+        cb.className = 'marker__cb';
+        cb.setAttribute('data-key', m);
+        cb.type = 'radio';
+        cb.id = 'marker__cb--' + m;
+        cb.name = 'marker-cb';
+        cbLabel.className = 'fake-rb';
+        cbLabel.setAttribute('for', 'marker__cb--' + m);
+        cbSpan.textContent = String.fromCharCode(0x229a);
+        cbLabel.appendChild(cbSpan);
+        cbBox.appendChild(cb);
+        cbBox.appendChild(cbLabel);
         box.appendChild(button);
+        box.appendChild(cbBox);
         box.appendChild(input);
         box.appendChild(exampleText);
 
@@ -697,6 +733,11 @@ new _utils._DOMMODULE({
   },
   change: function change(e, el) {
     this.emit('change:bg-setting', el.name, el.value);
+  },
+  select: function select(e, el) {
+    this.emit('sidebar:selected-marker', el.getAttribute('data-key'), {
+      tab: 'active'
+    });
   },
   applyColor: function applyColor(e, el) {
     if (el.classList.contains('disabled')) return;
@@ -740,7 +781,8 @@ new _utils._DOMMODULE({
   events: {
     ENV: {
       'entry:ordered-marks': 'setMarkIDs',
-      'stored:entry': 'render'
+      'stored:entry': 'render',
+      'updated:stored-entry': 'render'
     },
     DOM: {
       click: {
@@ -847,7 +889,6 @@ new _utils._DOMMODULE({
   },
   activateListItem: function activateListItem(id) {
     if (id) this.current = id;
-    console.log('activating', this.current);
     var currentItem = this.el.getElementsByClassName('mark--active')[0];
     if (currentItem) currentItem.classList.remove('mark--active');
     document.querySelector('div[data-id="' + [this.current] + '"]').classList.add('mark--active');
@@ -889,7 +930,8 @@ new _utils._DOMMODULE({
   el: document.getElementById('tab--meta'),
   events: {
     ENV: {
-      'stored:entry': 'render'
+      'stored:entry': 'render',
+      'updated:stored-entry': 'render'
     }
   },
   render: function render(entry) {
@@ -1002,7 +1044,8 @@ new _utils._DOMMODULE({
   el: document.getElementById('tab--notes'),
   events: {
     ENV: {
-      'stored:entry': 'render'
+      'stored:entry': 'render',
+      'updated:stored-entry': 'render'
     },
     DOM: {
       click: {
@@ -1010,20 +1053,18 @@ new _utils._DOMMODULE({
         'tmnotecolor': 'changeColor',
         'tmnotecustomize': 'togglePalette',
         'tmnotedelete': 'removeNote',
-        'tmnoteminimize': 'toggleNote'
+        'tmnoteminimize': 'toggleNote',
+        'tmnotesave': 'save'
       },
       change: {
         '#fold-page-notes': 'toggleNotes'
-      },
-      keyup: {
-        'textarea': 'attemptUpdate'
       }
     }
   },
   notes: [],
   noteEls: {},
   id: 0,
-  recentlyUpdated: false,
+  currentColor: 'yellow',
   render: function render(entry) {
     this.resume();
 
@@ -1038,8 +1079,14 @@ new _utils._DOMMODULE({
       }
     }
   },
-  update: function update() {
-    this.emit('updated:page-note', _store.default.entry, this.notes);
+  save: function save(e, el) {
+    if (el) {
+      var note = this.getById(el.getAttribute('data-id'));
+      note.text = el.previousSibling.value;
+      note.name = el.parentNode.getElementsByClassName('tmnote__header')[0].value;
+    }
+
+    this.emit('updated:page-note', this.notes);
   },
   resume: function resume() {
     this.notes = [];
@@ -1048,21 +1095,18 @@ new _utils._DOMMODULE({
     document.getElementById('page-notes').textContent = '';
   },
   addNote: function addNote(note) {
-    var _this = this;
-
     note = note.type ? null : note;
     var container = document.getElementById('page-notes');
     var noteEl = document.getElementById('page-note-template').cloneNode(true);
     var textarea = noteEl.getElementsByTagName('textarea')[0];
+    var header = noteEl.getElementsByClassName('tmnote__header')[0];
     noteEl.classList.remove('u-display--none');
-    textarea.addEventListener('blur', function (e) {
-      return _this.attemptUpdate(e, e.target, true);
-    }, false);
     var id;
 
     if (note) {
       id = noteEl.id = note.id;
-      textarea.textContent = note.text;
+      textarea.textContent = note.text || '';
+      header.value = note.name || '';
       noteEl.classList.add('tmnote--' + note.color);
       container.appendChild(noteEl);
     } else {
@@ -1070,12 +1114,11 @@ new _utils._DOMMODULE({
       this.notes.push({
         id: id,
         text: '',
-        color: 'yellow'
+        color: this.currentColor
       });
       noteEl.classList.remove('tmnote--min');
-      noteEl.getElementsByTagName('tmnotepalette')[0].classList.remove('u-display--none');
+      noteEl.classList.add('tmnote--' + this.currentColor);
       container.insertBefore(noteEl, container.firstChild);
-      this.update();
     }
 
     Array.from(noteEl.getElementsByTagName('*')).forEach(function (el) {
@@ -1084,29 +1127,12 @@ new _utils._DOMMODULE({
     this.noteEls[id] = noteEl;
     return id;
   },
-  attemptUpdate: function attemptUpdate(e, el, force) {
-    var _this2 = this;
-
-    if (force) {
-      this.updateText(el);
-    } else if (!this.recentlyUpdated) {
-      this.recentlyUpdated = true;
-      window.setTimeout(function () {
-        return _this2.updateText(el);
-      }, 3000);
-    }
-  },
-  updateText: function updateText(el) {
-    this.getById(el.getAttribute('data-id')).text = el.value;
-    this.recentlyUpdated = false;
-    this.update();
-  },
   changeColor: function changeColor(e, el) {
     var id = el.getAttribute('data-id');
-    var color = el.getAttribute('data-color');
-    this.noteEls[id].classList.add('tmnote--' + color);
+    var color = this.currentColor = el.getAttribute('data-color');
+    this.noteEls[id].className = this.noteEls[id].className.replace(/--\w+/, '--' + color);
     this.getById(id).color = color;
-    this.update();
+    el.parentNode.classList.add('u-display--none');
   },
   removeNote: function removeNote(e, el) {
     var id = el.getAttribute('data-id');
@@ -1114,7 +1140,7 @@ new _utils._DOMMODULE({
     note.parentNode.removeChild(note);
     delete this.noteEls[id];
     this.notes.splice(this.notes.indexOf(this.getById(id)), 1);
-    this.update();
+    this.save();
   },
   togglePalette: function togglePalette(e, el) {
     var note = this.noteEls[el.getAttribute('data-id')];
@@ -1126,19 +1152,36 @@ new _utils._DOMMODULE({
     }
   },
   toggleNote: function toggleNote(e, el) {
-    this.noteEls[el.getAttribute('data-id')].classList.toggle('tmnote--min');
+    var note = this.noteEls[el.getAttribute('data-id')];
+    note.classList.toggle('tmnote--min');
+
+    if (!note.classList.contains('tmnote--min')) {
+      this.adjustTextareaHeight(note);
+    }
   },
   toggleNotes: function toggleNotes(e, el) {
-    var meth = el.value == 1 ? 'add' : 'remove';
+    if (el.value == 1) {
+      for (var id in this.noteEls) {
+        this.noteEls[id].classList.add('tmnote--min');
+      }
+    } else {
+      var note, textarea;
 
-    for (var id in this.noteEls) {
-      this.noteEls[id].classList[meth]('tmnote--min');
+      for (var _id in this.noteEls) {
+        note = this.noteEls[_id];
+        note.classList.remove('tmnote--min');
+        this.adjustTextareaHeight(note);
+      }
     }
   },
   getById: function getById(id) {
     return this.notes.find(function (note) {
       return note.id == id;
     });
+  },
+  adjustTextareaHeight: function adjustTextareaHeight(note) {
+    var textarea = note.getElementsByTagName('textarea')[0];
+    textarea.style.height = textarea.scrollHeight + 10 + 'px';
   }
 });
 
@@ -1298,7 +1341,7 @@ var _default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar', 'updated:page-note', 'toggled:sidebar-tab']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar', 'updated:page-note', 'toggled:sidebar-tab', 'sidebar:selected-marker']
   }
 });
 

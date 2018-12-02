@@ -595,12 +595,6 @@ label {
   padding-top: 2px;
   cursor: pointer; }
 
-select {
-  color: #2ba5b7;
-  border-top: 0 !important;
-  border-left: 0 !important;
-  border-right: 0 !important; }
-
 svg {
   height: 0; }
 
@@ -633,13 +627,17 @@ select, input {
 select {
   background-image: url(../../icons/arrow-down.png);
   background-repeat: no-repeat;
-  background-position: right 7px, 0 0;
+  background-position: right 8px, 0 0;
   background-size: unset, 100%;
   background-color: transparent;
   -moz-appearance: none;
-  border: 1px solid #e1e2e3;
   height: 24px;
-  width: 100%; }
+  color: #2ba5b7;
+  float: left;
+  padding-right: 15px;
+  width: auto;
+  border: 0;
+  border-top: 1px solid #e1e2e3; }
 
 input[type="text"] {
   border: 1px solid #e1e2e3;
@@ -648,6 +646,32 @@ input[type="text"] {
   height: 24px;
   width: calc(100% - 27px);
   padding: 0 4px; }
+
+input[type="radio"] {
+  display: none; }
+
+label.fake-rb {
+  width: auto; }
+
+input[type="radio"] + label span {
+  border-radius: 50%; }
+
+input[type="radio"]:checked + label span {
+  text-indent: 0; }
+
+label span {
+  display: inline-block;
+  line-height: 1.2;
+  height: 20px;
+  width: 20px;
+  text-align: center;
+  color: #2ba5b7;
+  text-indent: -1000px;
+  overflow: hidden;
+  border: 1px solid #c8c8c8;
+  border-radius: 2px;
+  vertical-align: -5px;
+  margin-right: 8px; }
 
 .tab__header {
   position: relative; }
@@ -707,6 +731,12 @@ input[type="text"] {
   background-repeat: no-repeat;
   background-position: center, 0 0;
   background-size: 12px, 100%; }
+
+#nav-action--up,
+#nav-action--down {
+  width: 20px;
+  height: 20px;
+  background-size: 14px; }
 
 .mark {
   position: relative;
@@ -804,8 +834,18 @@ input[type="text"] {
 .marker {
   margin-bottom: 8px;
   width: 78px; }
+  .auto .marker {
+    width: 85px; }
+  .marker__cb-box {
+    float: right;
+    margin: 0 0 0 10px;
+    display: none; }
+    .auto .marker__cb-box {
+      display: block; }
   .marker__apply {
     margin: 0 0 0 10px; }
+    .auto .marker__apply {
+      display: none; }
   .marker__label {
     display: inline-block; }
   .marker__text {
@@ -893,13 +933,41 @@ input[type="text"] {
   .marker__apply:hover {
     background-image: url(../../icons/highlight.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
-#nav-action--up, #nav-action--down {
+#nav-action--up,
+#nav-action--down {
   background-size: 12px, 100%; }
 
 #add-note {
+  width: 20px;
+  height: 20px;
   font-size: 16px;
-  text-align: center;
+  padding: 0;
+  position: relative;
+  background: linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
   color: #777; }
+  #add-note:hover {
+    background: linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+  #add-note span {
+    position: absolute;
+    top: -1px;
+    left: 3px; }
+
+tmnotesave {
+  display: none;
+  position: absolute;
+  background: #fff;
+  bottom: -1px;
+  left: 5px;
+  border: 1px solid #e1e2e3;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  width: auto;
+  padding: 0 4px;
+  color: #2ba5b7; }
+  tmnote tmnotesave {
+    display: block; }
+  tmnote.tmnote--min tmnotesave {
+    display: none; }
 
 tmnote {
   display: block;
@@ -908,29 +976,42 @@ tmnote {
   border: 1px solid #e1e2e3 !important;
   margin-bottom: 4px; }
   tmnote textarea {
-    padding: 5px;
+    padding: 5px 5px 10px;
     width: 100%;
     max-width: 100%;
     margin: 1px 0 0 0; }
-  tmnote.tmnote--min textarea,
-  tmnote.tmnote--min tmnotepalette {
-    display: none !important; }
-  tmnote.tmnote--min tmnotebuttons {
-    display: block !important; }
+  tmnote.tmnote--min {
+    margin-bottom: 2px;
+    border: 0 !important; }
+    tmnote.tmnote--min textarea,
+    tmnote.tmnote--min tmnotepalette {
+      display: none !important; }
+    tmnote.tmnote--min tmnotebuttons {
+      display: block !important; }
+    tmnote.tmnote--min .tmnote__header {
+      background: none; }
+      tmnote.tmnote--min .tmnote__header::placeholder {
+        color: transparent; }
+  tmnote .tmnote__header {
+    width: calc(100% - 70px);
+    border: 0;
+    color: #777; }
 
 tmnotepalette {
-  width: calc(100% - 22px);
   position: absolute;
-  top: 0;
-  left: 0; }
+  display: block;
+  background: none !important;
+  padding: 7px 3px 0;
+  width: auto;
+  top: 22px;
+  left: 0;
+  border: 0 !important; }
 
 tmnotecolor {
+  float: left;
   width: 22px;
   height: 14px;
   margin: 0 2px; }
-
-tmnotepalette {
-  display: block; }
 
 tmnotebuttons {
   display: block; }
@@ -939,22 +1020,26 @@ tmnotedelete {
   padding-top: 4px; }
 
 tmnoteminimize {
-  font-size: 16px; }
+  font-size: 20px; }
 
 tmnotecustomize,
 tmnoteminimize,
 tmnotedelete {
   float: right;
+  position: relative;
   height: 18px;
   width: 18px;
   margin: 2px 2px 0 0;
   text-align: center; }
 
 tmnoteminimize:before {
-  content: '-';
-  display: inline; }
+  content: '\2012';
+  position: absolute;
+  top: -1px;
+  left: 3px; }
   .tmnote--min tmnoteminimize:before {
-    content: '+'; }
+    content: '\25A1';
+    top: -4px; }
 
 a, .link {
   color: inherit;

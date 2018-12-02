@@ -21,6 +21,7 @@ new _PORT({
       'updated:bg-color-settings',
       'updated:custom-search-settings',
       'updated:saveopt-settings',
+      'updated:mark-method-settings',
       'saved:entry',
       'deleted:entry',
       'deleted:entries',
@@ -43,6 +44,7 @@ new _PORT({
       'sidebar:toggle-notes',
       'sidebar:next-mark',
       'sidebar:retry-restoration',
+      'sidebar:selected-marker',
       'opened:sidebar',
       'save:page-notes'
     ],

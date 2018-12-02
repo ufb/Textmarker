@@ -63,6 +63,10 @@ h2 {
 
 table {
   border-collapse: collapse; }
+  .disabled table {
+    display: none; }
+  .folded table {
+    display: none; }
   table td {
     padding: 2px 15px 2px 0; }
   table.table--bordered {
@@ -118,5 +122,21 @@ a, .link {
 #main {
   padding: 20px; }
 
-#marks-count {
+.table-toggle {
+  background-image: url(../../icons/down.png);
+  background-repeat: no-repeat;
+  background-position: 0 center, 0 0;
+  background-size: 14px, 100%;
+  width: 14px;
+  height: 12px;
+  display: inline-block;
+  cursor: pointer;
+  opacity: 0.25;
+  margin-right: 8px; }
+  .folded .table-toggle {
+    transform: rotate(-90deg); }
+  .disabled .table-toggle {
+    display: none; }
+
+.count {
   color: #c8c8c8; }

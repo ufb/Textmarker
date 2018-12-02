@@ -229,7 +229,7 @@ export default function() {
 
       return entries;
     },
-    onSelectionChange() {
+    onSelectionChange(e) {
       this.emit('changed:selection', !window.getSelection().isCollapsed);
     },
     activateRetry() {

@@ -462,6 +462,7 @@
 "error_save_download":{"message":"Einstellungen: Download\nAuswahl konnte nicht gespeichert werden."},
 "error_save_bmicon":{"message":"Einstellungen: Lesezeichen\nAuswahl konnte nicht gespeichert werden."},
 "error_save_change_autonote":{"message":"Einstellungen: Automatische Notizen\nAuswahl konnte nicht gespeichert werden."},
+"error_save_mark_method":{"message":"Einstellungen: Markierungsmethode\nAuswahl konnte nicht gespeichert werden."},
 "error_clean_history":{"message":"Chronik: Verlorene Markierungen konnten nicht aus dem Speicher gelöscht werden."},
 "error_add_marker":{"message":"Einstellungen: Marker\nDer neue Marker konnte nicht gespeichert werden."},
 "error_remove_marker":{"message":"Einstellungen: Marker\nDer Marker konnte nicht gelöscht werden."},

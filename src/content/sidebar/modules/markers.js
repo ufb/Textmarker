@@ -12,7 +12,8 @@ new _DOMMODULE({
     },
     DOM: {
       change: {
-        '.marker__color': 'change'
+        '.marker__color': 'change',
+        '.marker__cb': 'select'
       },
       click: {
         '.marker__apply': 'applyColor'
@@ -24,12 +25,18 @@ new _DOMMODULE({
     this.render();
   },
   render() {
+    let automarkEnabled;
+
     browser.storage.sync.get().then(storage => {
       if (storage && storage.settings && (!storage.sync || storage.sync.settings)) {
+        if (storage.settings.misc.markmethod === 'auto') this.el.classList.add('auto');
+        else this.el.classList.remove('auto');
         return storage.settings.markers;
       }
       return browser.storage.local.get().then(storage => {
         if (storage && storage.settings && storage.sync && !storage.sync.settings) {
+          if (storage.settings.misc.markmethod === 'auto') this.el.classList.add('auto');
+          else this.el.classList.remove('auto');
           return storage.settings.markers;
         }
         return null;
@@ -42,7 +49,7 @@ new _DOMMODULE({
       const fragRight = document.createDocumentFragment();
       const fragLeft = document.createDocumentFragment();
       const s = Math.ceil(Object.keys(markers).length / 2);
-      let count = 0, m, box, input, exampleText, button, color;
+      let count = 0, m, box, input, exampleText, button, color, cbBox, cb, cbLabel, cbSpan;
 
       leftContainer.innerText = '';
       rightContainer.innerText = '';
@@ -54,6 +61,10 @@ new _DOMMODULE({
         input = document.createElement('input');
         exampleText = document.createElement('label');
         button = document.createElement('button');
+        cbBox = document.createElement('div');
+        cb = document.createElement('input');
+        cbLabel = document.createElement('label');
+        cbSpan = document.createElement('span');
         color = this.extractBgColor(markers[m].style);
 
         box.className = 'marker u-cf';
@@ -68,8 +79,22 @@ new _DOMMODULE({
         button.className = 'marker__apply';
         button.setAttribute('disabled', true);
         button.setAttribute('data-key', m);
+        cbBox.className = 'marker__cb-box';
+        cb.className = 'marker__cb';
+        cb.setAttribute('data-key', m);
+        cb.type = 'radio';
+        cb.id = 'marker__cb--' + m;
+        cb.name = 'marker-cb';
+        cbLabel.className = 'fake-rb';
+        cbLabel.setAttribute('for', 'marker__cb--' + m);
+        cbSpan.textContent = String.fromCharCode(0x229a);
+
+        cbLabel.appendChild(cbSpan);
+        cbBox.appendChild(cb);
+        cbBox.appendChild(cbLabel);
 
         box.appendChild(button);
+        box.appendChild(cbBox);
         box.appendChild(input);
         box.appendChild(exampleText);
 
@@ -106,6 +131,9 @@ new _DOMMODULE({
   },
   change(e, el) {
     this.emit('change:bg-setting', el.name, el.value);
+  },
+  select(e, el) {
+    this.emit('sidebar:selected-marker', el.getAttribute('data-key'), { tab: 'active' });
   },
   applyColor(e, el) {
     if (el.classList.contains('disabled')) return;

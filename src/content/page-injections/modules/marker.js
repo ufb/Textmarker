@@ -13,6 +13,8 @@ export default function() {
 				'set:entries': 'updateID',
 				'pressed:marker-key': 'onMarkerKey',
         'pressed:hotkey': 'onHotkey',
+        'clicked:popup-marker': 'onMarkerKey',
+        'selection-end': 'onMarkerKey',
         'restored:range': 'recreate',
         'finished:all-restorations': 'onFinishedRestoration',
         'ctx:b': 'setBookmark',

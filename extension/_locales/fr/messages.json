@@ -462,6 +462,7 @@
 "error_save_download":{"message":"Réglages : option de téléchargement\nImpossible d’enregistrer votre choix."},
 "error_save_bmicon":{"message":"Réglages : icône signet\nImpossible d’enregistrer votre choix."},
 "error_save_change_autonote":{"message":""},
+"error_save_mark_method":{"message":""},
 "error_clean_history":{"message":"Historique : impossible de  supprimer les surlignages irrestaurables de l’historique."},
 "error_add_marker":{"message":"Réglages : surligneurs\nImpossible d’enregistrer le nouveau surligneur."},
 "error_remove_marker":{"message":"Réglages : surligneurs\nImpossible de supprimer le surligneur."},

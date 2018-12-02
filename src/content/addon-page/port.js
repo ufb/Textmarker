@@ -7,6 +7,7 @@ export default new _PORT({
     ONEOFF: [
       'change:style-setting',
       'change:autonote-setting',
+      'change:mark-method-setting',
       'toggle:shortcut-setting',
       'change:shortcut-setting',
       'toggle:ctm-setting',

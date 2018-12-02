@@ -49,7 +49,8 @@ export default {
       changedNote: false,
       errorNote: true,
       customSearch: false,
-      tmuipos: 'top-right'
+      tmuipos: 'top-right',
+      markmethod: ''
     },
     sb: {
       tabs: {

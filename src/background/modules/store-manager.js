@@ -11,6 +11,7 @@ new _MODULE({
       'change:style-setting': 'changeStyle',
       'change:autonote-setting': 'changeAutoNoteSetting',
       'change:bg-setting': 'changeBgColor',
+      'change:mark-method-setting': 'changeMarkMethod',
       'toggle:shortcut-setting': 'toggleShortcutSetting',
       'change:shortcut-setting': 'changeShortcutSetting',
       'toggle:ctm-setting': 'toggleCtmSetting',
@@ -115,6 +116,13 @@ new _MODULE({
       settings => { settings.markers[key].autonote = autonote; return settings; },
       'autonote',
       'error_save_toggle_autonote'
+    );
+  },
+  changeMarkMethod(method) {
+    this.updateSettings(
+      settings => { settings.misc.markmethod = method; return settings; },
+      'mark-method',
+      'error_save_mark_method'
     );
   },
   toggleShortcutSetting(key, status) {

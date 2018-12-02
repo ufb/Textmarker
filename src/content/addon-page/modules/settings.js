@@ -19,6 +19,7 @@ export default function() {
           '#customized-key': 'updateMarker',
           '#add-key': 'addMarker',
           '#remove-key': 'removeMarker',
+          '.mark-opt': 'changeMarkMethod',
           '.sc-cb': 'toggleShortcut',
           '.shortcut-select': 'changeShortcut',
           '.save-opt': 'changeSaveOpt',
@@ -173,6 +174,7 @@ export default function() {
 
       let miscSettings = settings.misc;
 
+      document.getElementById('mark-method--' + miscSettings.markmethod).checked = true;
       document.getElementById('misc-bm').checked = miscSettings.bmicon;
       document.getElementById('misc-noteicon').checked = miscSettings.noteicon;
       document.getElementById('misc-noteonclick').checked = miscSettings.noteonclick;
@@ -241,7 +243,7 @@ export default function() {
       if (!key || this.allowedKeys.indexOf(key) === -1) return false;
 
       option = el.children[el.selectedIndex];
-      addKeySelect.appendChild(option);//lieber an richtige stelle im alphabet setzen (alternativ an anfang)
+      addKeySelect.appendChild(option);
       addKeySelect.selectedIndex = 0;
       el.selectedIndex = 0;
 
@@ -252,6 +254,11 @@ export default function() {
       this.updateMarker('m');
 
       this.emit('remove:custom-marker', key);
+    },
+    changeMarkMethod(e, el) {
+      if (el.checked) {
+        this.emit('change:mark-method-setting', el.getAttribute('data-value'));
+      }
     },
     toggleShortcut(e, el) {
       this.emit('toggle:shortcut-setting', el.name, el.checked);
