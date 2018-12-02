@@ -41,8 +41,10 @@ export default function(mark, color) {
     recentlyUpdated: false,
     settingsMode: false,
     pos: { l: null, t: null },
+    size: { w: null, h: null },
     dragDX: 0,
     dragDY: 0,
+    mutationObserver: null,
 
     autoinit() {
       this.adjustNoteDataObject();
@@ -59,7 +61,8 @@ export default function(mark, color) {
       else if (!noteData) {
         this.mark.keyData.note = { text: noteData, color: this.color || _STORE.noteColor };
       } else {
-        this.pos = this.mark.keyData.note.pos || this.pos;
+        this.pos = noteData.pos || this.pos;
+        this.size = noteData.size || this.size;
       }
     },
     createNoteElement() {
@@ -141,8 +144,13 @@ export default function(mark, color) {
       if (left + 340 > innerWindowWidth) {
         left = this.pos.l = innerWindowWidth - 340;
       }
+
+      const size = this.size.w ? 'width:' + this.size.w + ';height:' + this.size.h + ';' : '';
+
       BODY.appendChild(el);
       el.setAttribute('style', 'display:block;top:' + top + 'px;left:' + left + 'px;');
+      el.getElementsByTagName('textarea')[0].setAttribute('style', size);
+      this.connectMutationObserver();
       this.visible = true;
     },
     bringUpFront() {
@@ -153,6 +161,7 @@ export default function(mark, color) {
     },
     hide() {
       BODY.removeChild(this.el);
+      this.mutationObserver.disconnect();
       this.visible = false;
     },
     toggle() {
@@ -199,6 +208,12 @@ export default function(mark, color) {
         wrapper.removeAttribute('title');
       }
     },
+    connectMutationObserver() {
+      const textarea = this.el.getElementsByTagName('textarea')[0];
+      const config = { attributeFilter: ['style'] };
+      const observer = this.mutationObserver = this.mutationObserver || new MutationObserver(this.proxy(this, this.saveSize));
+      observer.observe(textarea, config);
+    },
     getPosition() {
       const rect = this.mark.wrappers[this.mark.wrappers.length - 1].getBoundingClientRect();
       return {
@@ -225,6 +240,11 @@ export default function(mark, color) {
     onDragEnd() {
       this.mark.keyData.note.pos = this.pos;
       this.emit('changed:note-pos', this.mark.id);
+    },
+    saveSize(mutationsList) {
+      const style = mutationsList[0].target.style;
+      this.size = this.mark.keyData.note.size = { w: style.width, h: style.height };
+      this.emit('changed:note-size', this.mark.id);
     }
 	});
 }

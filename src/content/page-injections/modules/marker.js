@@ -24,6 +24,7 @@ export default function() {
         'removed:note': 'saveNote',
 				'changed:note-color': 'saveNote',
 				'changed:note-pos': 'saveNote',
+        'changed:note-size': 'saveNote',
 				'sidebar:highlight': 'onMarkerKey',
         'sidebar:delete-highlight': 'remove',
         'sidebar:bookmark': 'setBookmark',
