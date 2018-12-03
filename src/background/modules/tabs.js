@@ -24,7 +24,8 @@ export default function() {
     },
 
     autoinit() {
-      browser.tabs.onActivated.addListener(tab => this.emit('activated:tab', tab.tabId));
+      browser.tabs.onActivated.addListener(tab => this.emit('activated:tab', tab.tabId, tab.url));
+      browser.tabs.onUpdated.addListener((tabId, changed) => this.emit('updated:tab', tabId, changed));
     },
 
     open(urls, names) {
