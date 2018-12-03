@@ -14,56 +14,68 @@ new _MODULE({
   },
 
   updateSettings(settings) {
-    const noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
     const defaultSettings = _DEFAULT_STORAGE.settings;
 
     if (!settings.shortcuts) {
       settings = defaultSettings;
     } else {
+      const shortcuts = settings.shortcuts;
+      const markers = settings.markers;
+      const history = settings.history;
+      const misc = settings.misc;
+      const noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
+
+      if (!shortcuts.n) {
+        shortcuts.n = defaultSettings.shortcuts.n;
+        misc.noteicon = defaultSettings.misc.noteicon;
+        misc.noteonclick = defaultSettings.misc.noteonclick;
+      }
+      if (!shortcuts.arrowup) {
+        shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
+        shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
+      }
+      if (!shortcuts.d[0]) {
+        shortcuts.d[0] = defaultSettings.shortcuts.d[0];
+      }
+      if (!shortcuts.sb) {
+        shortcuts.sb = defaultSettings.shortcuts.sb;
+      }
+
+      if (!markers.m.style) {
+        let style;
+        for (let m in markers) {
+          style = markers[m];
+          markers[m] = { style };
+        }
+      }
+
+      if (!history.sorted) {
+        history.sorted = defaultSettings.history.sorted;
+      }
+      if (!history.view) {
+        history.view = defaultSettings.history.view;
+      }
+      if (typeof history.saveInPriv !== 'boolean') {
+        history.saveInPriv = defaultSettings.history.saveInPriv;
+      }
+
       noteTypes.forEach(noteType => {
-        if (!settings.misc[noteType]) {
-          settings.misc[noteType] = defaultSettings.misc[noteType];
+        if (!misc[noteType]) {
+          misc[noteType] = defaultSettings.misc[noteType];
         }
       });
-      if (!settings.history.sorted) {
-        settings.history.sorted = defaultSettings.history.sorted;
+      if (!misc.tmuipos) {
+        misc.tmuipos = defaultSettings.misc.tmuipos;
       }
-      if (!settings.history.view) {
-        settings.history.view = defaultSettings.history.view;
+      if (typeof misc.notetransp !== 'boolean') {
+        misc.notetransp = defaultSettings.misc.notetransp;
       }
-      if (typeof settings.history.saveInPriv !== 'boolean') {
-        settings.history.saveInPriv = defaultSettings.history.saveInPriv;
+      if (!misc.markmethod) {
+        misc.markmethod = defaultSettings.misc.markmethod;
       }
-      if (!settings.shortcuts.n) {
-        settings.shortcuts.n = defaultSettings.shortcuts.n;
-        settings.misc.noteicon = defaultSettings.misc.noteicon;
-        settings.misc.noteonclick = defaultSettings.misc.noteonclick;
-      }
-      if (!settings.shortcuts.arrowup) {
-        settings.shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
-        settings.shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
-      }
-      if (!settings.shortcuts.d[0]) {
-        settings.shortcuts.d[0] = defaultSettings.shortcuts.d[0];
-      }
-      if (!settings.shortcuts.sb) {
-        settings.shortcuts.sb = defaultSettings.shortcuts.sb;
-      }
-      if (!settings.misc.tmuipos) {
-        settings.misc.tmuipos = defaultSettings.misc.tmuipos;
-      }
-      if (typeof settings.misc.notetransp !== 'boolean') {
-        settings.misc.notetransp = defaultSettings.misc.notetransp;
-      }
+      
       if (!settings.sb) {
         settings.sb = defaultSettings.sb;
-      }
-      if (!settings.markers.m.style) {
-        let style;
-        for (let m in settings.markers) {
-          style = settings.markers[m]
-          settings.markers[m] = { style };
-        }
       }
     }
     return settings;
