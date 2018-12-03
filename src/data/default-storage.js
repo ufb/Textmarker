@@ -19,8 +19,11 @@ export default {
       sb: ['', '', true]
     },
     markers: {
-      '2': { style: 'background-color:#ffcc00;' },
-      '3': { style: 'background-color:#00ff66;' },
+      '1': { style: 'background-color:#dd99ff;' },
+      '2': { style: 'background-color:#66bbff;' },
+      '3': { style: 'background-color:#55ff55;' },
+      '4': { style: 'background-color:#ff6666;color:#ffffff;' },
+      '5': { style: 'background-color:#ffcc00;' },
       m: { style: 'background-color:#ffee00;' }
     },
     history: {
