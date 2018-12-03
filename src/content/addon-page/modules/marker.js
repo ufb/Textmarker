@@ -30,9 +30,9 @@ export default class _MARKER {
   init() {
     return _STORE.get('markers').then(markers => {
       const marker = markers[this.key];
-      const existingStyle = marker.style;
+      const existingStyle = marker ? marker.style : null;
 
-      this.autonote = marker.autonote ? true : false;
+      this.autonote = marker && marker.autonote ? true : false;
 
       if (!existingStyle) this.setStyle();
       else this.style = existingStyle;
