@@ -21,22 +21,20 @@ new _DOMMODULE({
     }
   },
 
+  automarkEnabled: false,
+
   autoinit() {
     this.render();
   },
   render() {
-    let automarkEnabled;
-
     browser.storage.sync.get().then(storage => {
       if (storage && storage.settings && (!storage.sync || storage.sync.settings)) {
-        if (storage.settings.misc.markmethod === 'auto') this.el.classList.add('auto');
-        else this.el.classList.remove('auto');
+        this.automarkEnabled = storage.settings.misc.markmethod === 'auto';
         return storage.settings.markers;
       }
       return browser.storage.local.get().then(storage => {
         if (storage && storage.settings && storage.sync && !storage.sync.settings) {
-          if (storage.settings.misc.markmethod === 'auto') this.el.classList.add('auto');
-          else this.el.classList.remove('auto');
+          this.automarkEnabled = storage.settings.misc.markmethod === 'auto';
           return storage.settings.markers;
         }
         return null;
@@ -111,6 +109,13 @@ new _DOMMODULE({
       }
       rightContainer.appendChild(fragRight);
       leftContainer.appendChild(fragLeft);
+
+      if (this.automarkEnabled) {
+        this.el.classList.add('auto');
+        document.getElementById('marker__cb--m').checked = true;
+      } else {
+        this.el.classList.remove('auto');
+      }
     });
   },
   extractBgColor(styles) {

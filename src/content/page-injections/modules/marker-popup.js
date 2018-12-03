@@ -15,6 +15,7 @@ export default function() {
 
     handler: null,
     appended: false,
+    height: 0,
 
     autoinit() {
       this.update().then(() => this.create());
@@ -43,20 +44,34 @@ export default function() {
     remove() {
       if (this.appended) {
         DOC.body.removeChild(this.el);
-        this.el.removeEventListener('click', this.handler, false);
+        this.el.removeEventListener('mousedown', this.handler, false);
         this.appended = false;
       }
     },
     show() {
+      const popup = this.el;
+      const style = popup.style;
+      let popupHeight;
+
       if (!this.appended) {
-        DOC.body.appendChild(this.el);
-        const handler = this.handler = this.onClick.bind(this);
-        this.el.addEventListener('mousedown', handler, false);
+        DOC.body.appendChild(popup);
+        const handler = this.handler = this.onMousedown.bind(this);
+        popup.addEventListener('mousedown', handler, false);
         this.appended = true;
+
+        const selectionPosition = window.getSelection().getRangeAt(0).getBoundingClientRect();
+
+        style.top = selectionPosition.top - selectionPosition.height + window.scrollY + 'px';
+        style.left = selectionPosition.left + window.scrollX + 'px';
+
+        popupHeight = popup.offsetHeight;
+
+        style.top = parseInt(style.top) - popupHeight + 'px';
       }
-      const selectionPosition = window.getSelection().getRangeAt(0).getBoundingClientRect();
-      this.el.style.top = selectionPosition.top - selectionPosition.height - 10 + window.scrollY + 'px';
-      this.el.style.left = selectionPosition.left + window.scrollX + 'px';
+      else if ((popupHeight = popup.offsetHeight) !== this.height) {
+        style.top = parseInt(style.top) + popupHeight - this.height + 'px';
+      }
+      this.height = popupHeight;
     },
     onSelectionChange(selected) {
       if (this.active) {
@@ -67,7 +82,7 @@ export default function() {
         this.remove();
       }
     },
-    onClick(e) {
+    onMousedown(e) {
       e.preventDefault();
       e.stopPropagation();
       const el = e.target;
