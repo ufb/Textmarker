@@ -31,6 +31,13 @@ export default function() {
     set: false,
     initialized: false,
     retryActive: false,
+    shiftSensitiveKeys: [13, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 171, 173],
+    keyCodeMap: {
+      '13': 'Enter',
+      '48': '0', '49': '1', '50': '2', '51': '3', '52': '4',
+      '53': '5', '54': '6', '55': '7', '56': '8', '57': '9',
+      '171': '+', '173': '-'
+    },
 
     autoinit() {
 
@@ -98,8 +105,7 @@ export default function() {
 
       if (_STORE.locked && lockedActions.includes(key)) return true;
 
-      if (keyCode === 50) key = '2';
-      else if (keyCode === 51) key ='3';
+      if (this.shiftSensitiveKeys.includes(keyCode)) key = this.keyCodeMap[keyCode];
 
       if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
 
@@ -109,40 +115,36 @@ export default function() {
 
         if (!settings) return true;
 
+        const origKey = key;
+        const markers = settings.markers;
+        const shortcuts = settings.shortcuts;
+        const isMarkerKey = markers[key];
+        const isCustomMarkerKey = isMarkerKey && !defaultMarkers.includes(key);
+        if (isCustomMarkerKey) key = 'cm';
+        const setting = shortcuts[key];
+
+        if (!setting) return true;
+
         if (!modKey) {
-          if (key === 'w' && !settings.shortcuts.w[0] && settings.shortcuts.w[1]) this.lookup();
-          else if (
-            settings.markers[key] &&
-            (
-              !defaultMarkers.includes(key) ||
-              (
-                !settings.shortcuts[key] ||
-                (
-                  !settings.shortcuts[key][0] &&
-                  settings.shortcuts[key][1]
-                )
-              )
-            )
-          ) {
-            this.emit('pressed:marker-key', e, key);
+          if (key === 'w' && !setting[0] && setting[1]) {
+            this.lookup();
+          }
+          else if (isMarkerKey && !setting[0] && setting[1]) {
+            this.emit('pressed:marker-key', e, origKey);
           }
         } else {
-          let setting = settings.shortcuts[key];
+          if (!setting[1]) return true;
 
-          if (!setting || !setting[1]) return true;
-
-          let shortcut = setting[0].split('-'),
-              s1, s2;
-
-          s1 = shortcut[0];
-          s2 = shortcut[1];
+          const shortcut = setting[0].split('-');
+          const s1 = shortcut[0];
+          const s2 = shortcut[1];
 
           if (!e[s1] || (s2 && !e[s2])) return true;
 
           if (key === 'w') this.lookup();
 
-          else if (defaultMarkers.includes(key) && settings.markers[key]) {
-            this.emit('pressed:marker-key', e, key);
+          else if (isMarkerKey) {
+            this.emit('pressed:marker-key', e, origKey);
           }
           else this.emit('pressed:hotkey', key)
         }

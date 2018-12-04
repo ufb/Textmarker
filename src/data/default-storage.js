@@ -16,7 +16,8 @@ export default {
       '3': ['', true],
       arrowup: ['altKey', false, false],
       arrowdown: ['altKey', false, false],
-      sb: ['', '', true]
+      sb: ['', '', true],
+      cm: ['', true]
     },
     markers: {
       '1': { style: 'background-color:#dd99ff;' },
