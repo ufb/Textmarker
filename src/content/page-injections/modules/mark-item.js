@@ -90,7 +90,6 @@ export default class _MARK {
   onClick(e) {
     let event;
     if (e.target) {
-      e.preventDefault();
       e.stopPropagation();
       _STORE.tmid = e.target.getAttribute('data-tm-id');
       event = 'clicked:mark';
