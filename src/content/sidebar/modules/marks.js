@@ -114,7 +114,7 @@ new _DOMMODULE({
     this.activateListItem();
   },
   activateListItem(id) {
-    if (id) this.current = id;
+    if (typeof id === 'number') this.current = id;
     const currentItem = this.el.getElementsByClassName('mark--active')[0];
     if (currentItem) currentItem.classList.remove('mark--active');
     document.querySelector('div[data-id="' + [this.current] + '"]').classList.add('mark--active');
