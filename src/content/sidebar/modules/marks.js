@@ -27,6 +27,7 @@ new _DOMMODULE({
   length: 0,
   current: -1,
   setFilters: false,
+  toggleMap: { '1': [false, false], '2': [true, false], '3': [false, true], '4': [true, true] },
 
   render() {
     const entry = this.entry = _STORE.entry;
@@ -121,13 +122,27 @@ new _DOMMODULE({
     this.emit('sidebar:next-mark', this.current, { tab: 'active' });
   },
   activate(e, el) {
+    document.getElementById('fold-marks').value = 0;
     el.classList.toggle('unfolded');
     this.activateListItem(1*el.parentNode.parentNode.getAttribute('data-id'));
   },
   foldList(e, el) {
-    document.getElementById('marks').setAttribute('data-folded', el.value);
+    const val = el.value;
+    if (val != 0) {
+      const marks = document.getElementById('marks');
+      const toggleSettings = this.toggleMap[val];
+
+      this.toggle('text', toggleSettings[0]);
+      this.toggle('note', toggleSettings[1]);
+    }
   },
   toggleNote(e, el) {
-    el.parentNode.getElementsByClassName('mark__note')[0].classList.toggle('u-display--none');
+    document.getElementById('fold-marks').value = 0;
+    el.parentNode.getElementsByClassName('mark__note')[0].classList.toggle('unfolded');
+  },
+  toggle(type, show) {
+    const meth = show ? 'add' : 'remove';
+    Array.from(this.el.getElementsByClassName('mark__' + type))
+      .forEach(el => el.classList[meth]('unfolded'));
   }
 });

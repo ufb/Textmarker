@@ -32,8 +32,6 @@
     border-left: 2px solid;
     padding: 2px 8px 2px 5px;
 
-    #marks[data-folded="2"] &,
-    #marks[data-folded="4"] &,
     &.unfolded {
       border-left: 0;
       border-top: 1px solid;
@@ -102,15 +100,15 @@
   }
 
   &__note {
+    display: none;
     position: relative;
     top: 2px;
     padding: 5px;
     margin-left: 3px;
     border: 1px solid $color-border--light;
 
-    #marks[data-folded="1"] &,
-    #marks[data-folded="2"] & {
-      display: none;
+    &.unfolded {
+      display: block;
     }
 
     &--red {

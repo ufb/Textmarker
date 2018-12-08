@@ -111,6 +111,7 @@ new _DOMMODULE({
     if (!note.classList.contains('tmnote--min')) {
       this.adjustTextareaHeight(note);
     }
+    document.getElementById('fold-page-notes').value = 0;
   },
   toggleNotes(e, el) {
     if (el.value == 1) {
