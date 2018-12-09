@@ -643,7 +643,7 @@ export default function() {
       this.count = entries.length;
 
       entries.forEach(entry => {
-        if (entry.marks[0].conds.s) new ImmutRestorer(entry);
+        if (entry.immut) new ImmutRestorer(entry);
         else new Restorer(entry);
       });
     },

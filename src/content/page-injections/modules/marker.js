@@ -436,8 +436,8 @@ export default function() {
 			}
 
       _STORE.get('settings').then(settings => {
-        const immut = settings.history.immut;
-        this.store(this.mark(key, settings.markers[key], immut), true, true);
+        this.immut = typeof this.immut === 'boolean' ? this.immut : !!settings.history.immut;
+        this.store(this.mark(key, settings.markers[key], this.immut), true, true);
       });
 		},
     onHotkey(key) {
@@ -472,6 +472,7 @@ export default function() {
       entry.title = window.document.title;
 			entry.count = entry.marks.length;
 			entry.idcount = this.idcount;
+      entry.immut = this.immut;
 
       if (_STORE.isNew || _STORE.locked) {
         entry.first = entry.last;
