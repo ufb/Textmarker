@@ -579,7 +579,7 @@ class ImmutRestorer extends _MODULE {
     const selection = this.selection = new _SELECTION();
     this.range = document.createRange();
 
-    entry.marks.forEach(mark => this.recreate(mark));
+    entry.marks.sort((m1, m2) => m1.id - m2.id).forEach(mark => this.recreate(mark));
     this.report();
   }
 
