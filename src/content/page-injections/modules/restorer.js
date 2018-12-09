@@ -567,6 +567,61 @@ class Restorer extends _MODULE {
   }
 }
 
+class ImmutRestorer extends _MODULE {
+
+  constructor(entry) {
+    super(entry)
+
+    this.entry = entry;
+    this.lost = [];
+    this.restored = [];
+    this.area = entry.synced ? 'sync' : 'local';
+    const selection = this.selection = new _SELECTION();
+    this.range = document.createRange();
+
+    entry.marks.forEach(mark => this.recreate(mark));
+    this.report();
+  }
+
+  recreate(mark) {
+    const conds = mark.conds;
+    const start = conds.s;
+    const end = conds.e;
+    const selection = this.selection;
+    const range = this.range;
+
+    try {
+      range.setStart(this.getNode(start.p), start.o);
+      range.setEnd(this.getNode(end.p), end.o);
+      selection.resume(range);
+      this.emit('restored:range', selection, mark);
+      this.restored.push(mark);
+    } catch(e) {
+      this.lost.push(mark);
+    }
+  }
+  getNode(position) {
+    const textNodePosition = position[0];
+    let node = document.body,
+        l = position.length;
+
+    while(l-- > 1) {
+      node = node.children[position[l]];
+    }
+    return node.childNodes[textNodePosition];
+  }
+  report() {
+    let ll = this.lost.length;
+    if (ll) {
+      while(ll--) {
+        delete this.lost[ll].temp;
+      }
+      this.emit('lost:marks');
+    }
+    this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
+  }
+}
+
 export default function() {
 
 	return new _MODULE({
@@ -587,7 +642,10 @@ export default function() {
       this.entries = entries;
       this.count = entries.length;
 
-      entries.forEach(entry => (new Restorer(entry)));
+      entries.forEach(entry => {
+        if (entry.marks[0].conds.s) new ImmutRestorer(entry);
+        else new Restorer(entry);
+      });
     },
     resume() {
       this.restored = 0;

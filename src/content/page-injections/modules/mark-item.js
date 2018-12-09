@@ -2,11 +2,12 @@ import _STORE from './../_store'
 
 export default class _MARK {
 
-  constructor(marker, key, preSettings) {
+  constructor(marker, key, preSettings, immut) {
     let selection, defaults;
 
 		this.marker = marker;
 		selection = this.selection = marker.selection;
+    this.immut = immut;
 
     defaults = {
       style: '',
@@ -44,6 +45,10 @@ export default class _MARK {
 			bookmark: preSettings.bookmark,
       note: preSettings.note
 		};
+
+    if (immut && !this.keyData.conds) {
+      this.describe_immut();
+    }
   }
 
 	create(range) {
@@ -75,7 +80,7 @@ export default class _MARK {
 
     if (this.keyData.bookmark) this.marker.setBookmark(this, false);
 
-    if (!this.keyData.conds) this.describe();
+    if (!this.immut && !this.keyData.conds) this.describe();
 
 		this.registerClickListeners();
 
@@ -192,17 +197,16 @@ export default class _MARK {
 		return wrappers;
 	}
   describe() {
-		let range = this.range,
-      selection = this.selection,
-			start = range.startContainer,
-			end = range.endContainer,
-			singleNode = this.simple,
-			//parent = this.containers ? this.containers[0] : start.parentNode,
-      parent = this.wrappers[0].parentNode,
-      parentIsTM = parent.hasAttribute('data-tm-id'),
-			grampa = parent.parentNode,
-      grandgrampa = grampa.parentNode || 0,
-			fTNP = this.anchorNodePosition;
+    const range = this.range;
+    const selection = this.selection;
+		const start = range.startContainer;
+		const end = range.endContainer;
+		const singleNode = this.simple;
+    const parent = this.wrappers[0].parentNode;
+    const parentIsTM = parent.hasAttribute('data-tm-id');
+		const grampa = parent.parentNode;
+    const grandgrampa = grampa.parentNode || 0;
+		const fTNP = this.anchorNodePosition;
 
 		this.keyData.conds = {
 			o: this.startOffset,
@@ -215,4 +219,34 @@ export default class _MARK {
 		};
     return this.keyData.conds;
 	}
+  describe_immut() {
+    const selection = this.selection;
+    const startPosition = [];
+    const endPosition = [];
+    const body = document.body;
+
+    let start = selection.anchorNode,
+        end = selection.focusNode;
+
+    while (start !== body) {
+      startPosition.push(this.whichChild(start.parentNode, start));
+      start = start.parentNode;
+    }
+    while (end !== body) {
+      endPosition.push(this.whichChild(end.parentNode, end));
+      end = end.parentNode;
+    }
+
+    this.keyData.conds = {
+      s: {
+        o: this.startOffset,
+        p: startPosition
+      },
+      e: {
+        o: this.endOffset,
+        p: endPosition
+      }
+    }
+    return this.keyData.conds;
+  }
 }

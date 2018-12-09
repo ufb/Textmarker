@@ -77,10 +77,10 @@ export default function() {
       }
       this.idcount = Math.max.apply(null, ids);
     },
-		mark(key, data) {
+		mark(key, data, immut) {
 			this.undone.length = 0;
 
-      const mark = new _MARK(this, key, data).create();
+      const mark = new _MARK(this, key, data, immut).create();
 
       if (data.autonote) this.emit('add:note', mark, data.autonote);
 
@@ -435,8 +435,9 @@ export default function() {
 				key = key || 'm';
 			}
 
-      _STORE.get('markers').then(markers => {
-        this.store(this.mark(key, markers[key]), true, true);
+      _STORE.get('settings').then(settings => {
+        const immut = settings.history.immut;
+        this.store(this.mark(key, settings.markers[key], immut), true, true);
       });
 		},
     onHotkey(key) {
