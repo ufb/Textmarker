@@ -16,6 +16,7 @@ new _MODULE({
       'change:shortcut-setting': 'changeShortcutSetting',
       'toggle:ctm-setting': 'toggleCtmSetting',
       'change:saveopt-setting': 'changeSaveOpt',
+      'change:immut-setting': 'toggleImmutOpt',
       'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
@@ -175,6 +176,13 @@ new _MODULE({
     this.updateSettings(
       settings => { settings.history.autosave = val; return settings; },
       'saveopt',
+      'error_save_autosave'
+    );
+  },
+  toggleImmutOpt(val) {
+    this.updateSettings(
+      settings => { settings.history.immut = val; return settings; },
+      'immutopt',
       'error_save_autosave'
     );
   },

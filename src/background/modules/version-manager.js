@@ -58,6 +58,9 @@ new _MODULE({
       if (typeof history.saveInPriv !== 'boolean') {
         history.saveInPriv = defaultSettings.history.saveInPriv;
       }
+      if (typeof history.immut !== 'boolean') {
+        history.immut = defaultStorage.history.immut;
+      }
 
       noteTypes.forEach(noteType => {
         if (!misc[noteType]) {
@@ -73,7 +76,7 @@ new _MODULE({
       if (!misc.markmethod) {
         misc.markmethod = defaultSettings.misc.markmethod;
       }
-      
+
       if (!settings.sb) {
         settings.sb = defaultSettings.sb;
       }

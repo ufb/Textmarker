@@ -13,6 +13,7 @@ export default new _PORT({
       'toggle:ctm-setting',
       'change:saveopt-setting',
       'toggle:priv-setting',
+      'change:immut-setting',
       'change:namingopt-setting',
       'change:sort-setting',
       'change:view-setting',

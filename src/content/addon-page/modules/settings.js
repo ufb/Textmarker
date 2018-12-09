@@ -32,6 +32,7 @@ export default function() {
           '.tmuipos': 'changeTmuiPositionOpt',
           '#private-save': 'togglePrivSave',
           '#auto-note': 'toggleAutoNoteOpt',
+          '#immut': 'toggleImmutOpt',
           '#autonote-color': 'changeAutoNoteOpt'
         },
         click: {
@@ -169,6 +170,7 @@ export default function() {
 
       document.getElementById('name-' + historySettings.naming).checked = true;
       document.getElementById('private-save').checked = historySettings.saveInPriv;
+      document.getElementById('immut').checked = historySettings.immut;
       document.getElementById('notes-new').checked = historySettings.saveNote;
       document.getElementById('quickbutton-download-select').value = historySettings.download;
 
@@ -207,6 +209,9 @@ export default function() {
     changeAutoNoteOpt(e, el) {
       const val = document.getElementById('auto-note').checked ? el.value : false;
       this.emit('change:autonote-setting', this.marker.key, val);
+    },
+    toggleImmutOpt(e, el) {
+      this.emit('change:immut-setting', el.checked);
     },
     addMarker(e, el) {
       let key = el.value,

@@ -112,6 +112,12 @@ export default new _MODULE({
       return storage.settings.history.autosave;
     });
   },
+  _get_immut() {
+    return browser.storage[this.area_settings].get().then(storage => {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.history.immut;
+    });
+  },
   _get_markers() {
     return browser.storage[this.area_settings].get().then(storage => storage.settings.markers);
   },
