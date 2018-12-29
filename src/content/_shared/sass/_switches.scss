@@ -6,9 +6,7 @@
   padding: 2px;
   cursor: pointer;
 
-  &--sync {
-    margin-right: 10px;
-
+  &:not(.switch__indicator):not(.switch--immut) {
     &:before {
       content: 'O';
       position: absolute;
@@ -26,6 +24,10 @@
         left: 8px;
       }
     }
+  }
+
+  &--sync {
+    margin-right: 10px;
   }
   &--save {
     .autosave {
@@ -53,6 +55,7 @@
   background-color: $color-grey--light;
   display: inline-block;
   margin-left: 0;
+  text-align: center;
   transition: margin 0.1s;
 
   .switch--sync & {
@@ -60,6 +63,16 @@
   }
   .switch--save & {
     @include icon('save2', center, 67%);
+  }
+  .switch--immut & {
+    &:before {
+      content: '\221E';
+      display: block;
+      font-size: 16px;
+      position: relative;
+      top: -5px;
+      color: #fff;
+    }
   }
   .switch.active & {
     background-color: transparentize($color-bg--turquoise, .25);

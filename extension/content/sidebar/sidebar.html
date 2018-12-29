@@ -23,10 +23,12 @@
         <span id="meta__last-modified"></span>
       </div> -->
       <div class="tab__content" id="meta-infos">
-        <span class="meta__field">Marks</span>: <strong id="meta__number-marks"></strong><br><br>
-        <span class="meta__field">Synced</span>: <span id="meta__synced"></span><br><br>
+        <span>Marks</span>: <span id="meta__number-marks"></span><br><br>
         <span id="meta__created"></span><br>
-        <span id="meta__last-modified"></span>
+        <span id="meta__last-modified"></span><br><br>
+        <span>Synced</span>: <span id="meta__synced"></span><br>
+        <span>Immutable Page</span>: <span id="meta__immut"></span><br>
+        <span>Locked</span>: <span id="meta__locked"></span>
       </div>
     </section>
     <section id="tab--tags" class="tab tab--folded tab--entry u-display--none">
@@ -90,6 +92,12 @@
         <article id="history-actions" class="u-cf u-mb">
           <button type="button" id="page-action--retry" data-l10n-attr data-l10n-title="sb_b11" class="u-ml-tiny action-button action-button--retry-restoration u-display--none"></button>
           <button type="button" id="page-action--save" data-l10n-attr data-l10n-title="sb_b2" class="u-ml-tiny action-button action-button--page" disabled></button>
+          <div id="switch-box" class="u-display--none">
+            <div id="page-action--immut" class="switch switch--immut u-cf u-float--left u-ml-tiny" data-action="immut" data-l10n-attr data-l10n-title="quickbutton_sync">
+              <div class="switch switch__indicator" data-action="immut"></div>
+            </div>
+            <br class="u-clear"><br>
+          </div>
           <button type="button" id="mark-action--delete-highlight" data-l10n-attr data-l10n-title="sb_b7" data-action="delete-highlight" class="u-ml-tiny action-button action-button--mark" disabled></button>
           <button type="button" id="page-action--redo" data-l10n-attr data-l10n-title="sb_b4" data-action="redo" class="u-ml-tiny action-button action-button--page"></button>
           <button type="button" id="page-action--undo" data-l10n-attr data-l10n-title="sb_b3" data-action="undo" class="action-button action-button--page"></button>

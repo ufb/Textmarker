@@ -20,12 +20,6 @@
 
 @include links(inherit);
 
-.switch {
-  margin-bottom: 18px;
-}
-.autosave-label {
-  cursor: default;
-}
 #textmarker-sidebar--paused {
   padding: 10px 20px;
   color: $color-text--red;
