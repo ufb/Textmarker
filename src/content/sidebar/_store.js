@@ -5,7 +5,7 @@ export default new _MODULE({
     ENV: {
       'toggled:sync': 'setAreas',
       'saved:entry': 'storeEntry',
-      'entry:found': 'updateEntry',
+      'entry:found': 'updateEntryOnFound',
       'entry:found-for-tab': 'updateEntry',
       'updated:entry': 'updateEntry'
     }
@@ -26,6 +26,10 @@ export default new _MODULE({
         this.emit('stored:entry', entry);
       }
     }
+  },
+  updateEntryOnFound(entry) {
+    this.updateEntry(entry);
+    this.emit('initially-stored:entry', entry);
   },
   storeEntry(entry) {
     if (entry) {

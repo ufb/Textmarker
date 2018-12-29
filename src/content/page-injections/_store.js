@@ -20,6 +20,7 @@ export default new _MODULE({
   locked: false,
   tmid: '',
   noteColor: 'yellow',
+  redescribing: false,
 
   autoinit() {
     this.updateLockedStatus();

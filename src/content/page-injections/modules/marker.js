@@ -32,6 +32,7 @@ export default function() {
         'sidebar:bookmark': 'setBookmark',
         'sidebar:delete-bookmark': 'removeBookmark',
         'sidebar:note': 'addNote',
+        'sidebar:immut': 'immut',
         'sidebar:save-changes': 'save',
         'sidebar:retry-restoration': 'resume',
         'sidebar:undo': 'undo',
@@ -210,6 +211,11 @@ export default function() {
 
       this.emit('resumed:markers');
     },
+    immut(immutable) {
+      this.immut = immutable;
+      _STORE.redescribing = true;
+      this.resume();
+    },
     save() {
       const iframe = _STORE.iframe;
       const locked = _STORE.locked;
@@ -267,6 +273,11 @@ export default function() {
         this.scrollToBookmark();
       }
       this.orderMarksVisually();
+
+      if (_STORE.redescribing) {
+        _STORE.redescribing = false;
+        this.save();
+      }
     },
     addNote(id) {
       this.emit('add:note', this.findMark(id));

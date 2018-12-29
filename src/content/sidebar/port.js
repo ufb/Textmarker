@@ -12,6 +12,7 @@ export default new _PORT({
       'sidebar:bookmark',
       'sidebar:delete-bookmark',
       'sidebar:note',
+      'sidebar:immut',
       'sidebar:save-changes',
       'sidebar:retry-restoration',
       'sidebar:undo',

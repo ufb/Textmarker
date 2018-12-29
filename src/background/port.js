@@ -37,6 +37,7 @@ new _PORT({
       'sidebar:bookmark',
       'sidebar:delete-bookmark',
       'sidebar:note',
+      'sidebar:immut',
       'sidebar:save-changes',
       'sidebar:undo',
       'sidebar:redo',

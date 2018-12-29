@@ -13,12 +13,14 @@ new _DOMMODULE({
       'unsaved-changes': 'activateSave',
       'failed:restoration': 'activateRetry',
       'update:entry?': 'deactivateRetry',
-      'page-state': 'onPageState'
+      'page-state': 'onPageState',
+      'initially-stored:entry': 'updateImmut'
     },
     DOM: {
       click: {
         '#page-action--retry': 'retryRestoration',
-        '#page-action--save': 'save'
+        '#page-action--save': 'save',
+        '.switch': 'toggleImmut'
       }
     }
   },
@@ -61,6 +63,20 @@ new _DOMMODULE({
     if (this.retryBtnShown) {
       this.retryBtn.classList.add('u-display--none');
       this.retryBtnShown = false;
+    }
+  },
+  toggleImmut(e, el) {
+    el = el.classList.contains('switch--immut') ? el : el.parentNode;
+    el.classList.toggle('active');
+    this.emit('sidebar:immut', el.classList.contains('active'), { tab: 'active' });
+  },
+  updateImmut(entry) {
+    if (entry) {
+      const meth = entry.immut ? 'add' : 'remove';
+      document.getElementById('page-action--immut').classList[meth]('active');
+      document.getElementById('switch-box').classList.remove('u-display--none');
+    } else {
+      document.getElementById('switch-box').classList.add('u-display--none');
     }
   },
   onPageState(state) {

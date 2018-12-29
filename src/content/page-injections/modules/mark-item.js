@@ -7,7 +7,7 @@ export default class _MARK {
 
 		this.marker = marker;
 		selection = this.selection = marker.selection;
-    this.immut = immut;
+    this.immut = _STORE.redescribing ? marker.immut : immut;
 
     defaults = {
       style: '',
@@ -46,7 +46,7 @@ export default class _MARK {
       note: preSettings.note
 		};
 
-    if (immut && !this.keyData.conds) {
+    if (this.immut && (_STORE.redescribing || !this.keyData.conds)) {
       this.describe_immut();
     }
   }
@@ -80,7 +80,7 @@ export default class _MARK {
 
     if (this.keyData.bookmark) this.marker.setBookmark(this, false);
 
-    if (!this.immut && !this.keyData.conds) this.describe();
+    if (!this.immut && (_STORE.redescribing || !this.keyData.conds)) this.describe();
 
 		this.registerClickListeners();
 
