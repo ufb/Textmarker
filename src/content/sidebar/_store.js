@@ -39,7 +39,7 @@ export default new _MODULE({
   updateEntryOnFound(entry) {
     if (entry) {
       this.updateEntry(entry);
-      if (!isArr) {
+      if (!Array.isArray(entry)) {
         this.emit('initially-stored:entry', entry);
       }
     }
