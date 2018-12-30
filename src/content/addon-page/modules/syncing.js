@@ -18,6 +18,7 @@ export default function() {
     autoinit() {
       document.getElementById('sync-switch--settings').classList.toggle('active', _STORE.area_settings === 'sync');
       document.getElementById('sync-switch--history').classList.toggle('active', _STORE.area_history === 'sync');
+      document.getElementById('sync-switch--pagenotes').classList.toggle('active', _STORE.area_pagenotes === 'sync');
     },
 
     toggleSwitch(e, el) {

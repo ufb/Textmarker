@@ -179,6 +179,7 @@ export default new _MODULE({
       .then(() => {
         this.area_settings = sync.settings ? 'sync' : 'local';
         this.area_history = sync.history ? 'sync' : 'local';
+        this.area_pagenotes = sync.pagenotes ? 'sync' : 'local';
       });
   },
   _set_settings(area = this.area_settings) {
@@ -237,6 +238,7 @@ export default new _MODULE({
     let sync = {};
     sync.settings = this.area_settings === 'sync';
     sync.history = this.area_history === 'sync';
+    sync.pagenotes = this.area_pagenotes === 'sync';
     return this._set_sync(updater(sync));
   },
   _update_pagenotes(updater, area = this.area_pagenotes) {

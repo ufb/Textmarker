@@ -10,12 +10,14 @@ export default new _MODULE({
   initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
+  area_pagenotes: 'sync',
 
   setAreas() {
     return browser.storage.sync.get().then(storage => {
       if (storage && storage.sync) {
         this.area_settings = storage.sync.settings ? 'sync' : 'local';
         this.area_history = storage.sync.history ? 'sync' : 'local';
+        this.area_pagenotes = storage.sync.pagenotes ? 'sync' : 'local';
       }
     });
   },
