@@ -210,7 +210,6 @@ export default function() {
           lockedEntries.push(entry);
           lockedEntriesExist = true;
         } else {
-          lockedEntries = [];
           entries = [entry];
           nonLockedEntries++;
         }
