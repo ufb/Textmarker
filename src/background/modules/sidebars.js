@@ -11,8 +11,7 @@ export default function() {
         'saved:entry': 'storeEntry',
         'updated:entry': 'storeEntry',
         'opened:sidebar':'sendEntry',
-        'visually-ordered:marks': 'sendOrderedMarks',
-        'updated:page-note': 'onUpdatedPageNotes'
+        'visually-ordered:marks': 'sendOrderedMarks'
       }
     },
 
@@ -50,9 +49,6 @@ export default function() {
     },
     sendOrderedMarks(marks) {
       this.emit('entry:ordered-marks', marks);
-    },
-    onUpdatedPageNotes(notes) {
-      this.emit('save:page-notes', notes);
     },
     onUpdatedTab(tab, changed) {
       if (changed.url) {

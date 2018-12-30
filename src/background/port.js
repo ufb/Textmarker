@@ -46,8 +46,7 @@ new _PORT({
       'sidebar:next-mark',
       'sidebar:retry-restoration',
       'sidebar:selected-marker',
-      'opened:sidebar',
-      'save:page-notes'
+      'opened:sidebar'
     ],
     CONNECTION: [
       'started:app',
@@ -55,6 +54,7 @@ new _PORT({
       'updated:settings',
       'updated:entry',
       'saved:entry',
+      'updated:pagenotes',
       'toggled:sync-settings',
       'changed:selection',
       'unsaved-changes',

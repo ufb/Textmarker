@@ -42,7 +42,9 @@ new _MODULE({
       'remove:tag': 'removeTag',
       'add:tag': 'addTag',
 
-      'toggled:sidebar-tab': 'changeSBSettings'
+      'toggled:sidebar-tab': 'changeSBSettings',
+
+      'updated:page-note': 'updatePageNotes'
     }
   },
   updateOnChangedSync: false,
@@ -384,11 +386,18 @@ new _MODULE({
     }
     return entry;
   },
+  updatePageNotes(url, notes) {
+    _STORAGE.update('pagenotes', pagenotes => {
+      pagenotes[url] = notes;
+      return pagenotes;
+    });
+  },
   registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));
   },
   onStorageChanged(changedItem) {
     if (changedItem.settings) this.emit('updated:settings');
     if (changedItem.history) this.emit('updated:history');
+    if (changedItem.pagenotes) this.emit('updated:pagenotes');
   }
 });

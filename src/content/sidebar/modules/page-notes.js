@@ -1,12 +1,12 @@
 import { _DOMMODULE } from './../../_shared/utils'
+import { _GET_ACTIVE_TAB } from './../../_shared/utils'
 import _STORE from './../_store'
 
 new _DOMMODULE({
   el: document.getElementById('tab--notes'),
   events: {
     ENV: {
-      'stored:entry': 'render',
-      'updated:stored-entry': 'render'
+      'updated:pagenotes': 'render'
     },
     DOM: {
       click: {
@@ -27,24 +27,26 @@ new _DOMMODULE({
   id: 0,
   currentColor: 'yellow',
 
-  render(entry) {
+  autoinit() {
+    this.render();
+  },
+
+  render() {
     this.resume();
-    if (entry) {
-      if (Array.isArray(entry)) {
-        entry.forEach(e => {
-          if (e.notes) this.notes = this.notes.concat(e.notes);
-        })
-      } else if (entry.notes) {
-        this.notes = entry.notes;
-      }
-      if (this.notes.length) {
-        let l = entry.notes.length, id;
-        while (l--) {
-          id = this.addNote(entry.notes[l]);
-          this.id = Math.max(this.id, id);
+    _GET_ACTIVE_TAB().then(tab => {
+      const url = this.url = tab.url;
+      _STORE.get('pagenotes').then(pagenotes => {
+        pagenotes = pagenotes ? pagenotes[url] : null;
+        let l, id;
+        if (pagenotes && (l = pagenotes.length)) {
+          this.notes = pagenotes;
+          while (l--) {
+            id = this.addNote(pagenotes[l]);
+            this.id = Math.max(this.id, id);
+          }
         }
-      }
-    }
+      });
+    });
   },
   save(e, el) {
     if (el) {
@@ -52,7 +54,7 @@ new _DOMMODULE({
       note.text = el.previousSibling.value;
       note.name = el.parentNode.getElementsByClassName('tmnote__header')[0].value;
     }
-    this.emit('updated:page-note', this.notes);
+    this.emit('updated:page-note', this.url, this.notes);
   },
   resume() {
     this.notes = [];

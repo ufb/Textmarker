@@ -8,6 +8,7 @@ export default new _MODULE({
   initializing: false,
   area_settings: _DEFAULT_STORAGE.sync.settings ? 'sync' : 'local',
   area_history: _DEFAULT_STORAGE.sync.history ? 'sync' : 'local',
+  area_pagenotes: _DEFAULT_STORAGE.sync.pagenotes ? 'sync' : 'local',
 
   init() {
     browser.storage.sync.remove('logs');
@@ -215,8 +216,7 @@ export default new _MODULE({
   },
 
   _update_history(updater, area = this.area_history) {
-    return browser.storage[area].get()
-      .then(storage => {
+    return browser.storage[area].get().then(storage => {
         if (!storage.history) {
           storage.history = _COPY(_DEFAULT_STORAGE.history);
         }
@@ -225,8 +225,7 @@ export default new _MODULE({
       });
   },
   _update_settings(updater, area = this.area_settings) {
-    return browser.storage[area].get()
-      .then(storage => {
+    return browser.storage[area].get().then(storage => {
         if (!storage.settings) {
           storage.settings = _COPY(_DEFAULT_STORAGE.settings);
         }
@@ -239,5 +238,14 @@ export default new _MODULE({
     sync.settings = this.area_settings === 'sync';
     sync.history = this.area_history === 'sync';
     return this._set_sync(updater(sync));
-  }
+  },
+  _update_pagenotes(updater, area = this.area_pagenotes) {
+    return browser.storage[area].get().then(storage => {
+        if (!storage.pagenotes) {
+          storage.pagenotes = _COPY(_DEFAULT_STORAGE.pagenotes);
+        }
+        let pagenotes = updater(storage.pagenotes);
+        return browser.storage[area].set({ pagenotes: pagenotes }).then(() => pagenotes);
+      });
+  },
 });

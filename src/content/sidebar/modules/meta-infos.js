@@ -10,7 +10,7 @@ new _DOMMODULE({
     }
   },
 
-  render(entry) {console.log('meta render', entry);
+  render(entry) {
     if (entry && !Array.isArray(entry)) {
       const yes = browser.i18n.getMessage('yes');
       const no = browser.i18n.getMessage('no');

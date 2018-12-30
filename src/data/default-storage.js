@@ -72,8 +72,10 @@ export default {
   history: {
     entries: {}
   },
+  pagenotes: {},
   sync: {
     settings: false,
-    history: false
+    history: false,
+    pagenotes: false
   }
 };

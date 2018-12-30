@@ -95,5 +95,8 @@ export default new _MODULE({
   },
   _get_markers() {
     return browser.storage[this.area_settings].get().then(storage => storage.settings.markers);
+  },
+  _get_pagenotes() {
+    return browser.storage[this.area_settings].get().then(storage => storage.pagenotes);
   }
 });
