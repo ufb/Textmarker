@@ -169,7 +169,8 @@ export default function() {
           names = searched ? this.searched : this.names,
           l = searched ? names.length : this.page * this.perPage,
           i = searched ? 0 : l - this.perPage,
-          clone, entry, name, nameField, input, label, infoButton, details, buttons, view, tags, locked, lockedEl, tagEl, b, j;
+          clone, entry, name, nameField, input, label, infoButton, details,
+          buttons, view, tags, immut, immutEl, locked, lockedEl, tagEl, b, j;
 
       if (this.filtered) {
         names = names.filter(n => !!entries[n]);
@@ -190,6 +191,7 @@ export default function() {
           if (entry) {
             tags = entry.tag ? entry.tag.split(' ') : null;
             locked = entry.locked;
+            immut = entry.immut;
             clone = template.cloneNode(true);
             container.appendChild(clone);
             clone.id = 'entry-' + j;
@@ -203,6 +205,7 @@ export default function() {
             view = clone.getElementsByClassName('view')[0];
             tagEl = clone.getElementsByClassName('tags')[0];
             lockedEl = clone.getElementsByClassName('locked')[0];
+            immutEl = clone.getElementsByClassName('immut')[0];
             b = buttons.length;
 
             while(b--) {
@@ -218,6 +221,7 @@ export default function() {
             label.setAttribute('for', 'entry-cb-' + j);
 
             if (locked) lockedEl.classList.remove('u-display--none');
+            if (immut) immutEl.classList.remove('u-display--none');
 
             if (tags) {
               tags.forEach(tag => {
