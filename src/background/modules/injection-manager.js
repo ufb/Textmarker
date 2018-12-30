@@ -17,13 +17,13 @@ new _MODULE({
     _STORAGE.get('history').then(history => {
       let entries = history.entries,
           matches = [],
-          locked = false,
+          lockedMatches = [],
           entry;
       for (let e in entries) {
         entry = entries[e];
         if (url === this.getHashlessURL(entry.url)) {
           matches.push(entry);
-          if (entry.locked) locked = true;
+          if (entry.locked) lockedMatches.push(entry);
         }
       }
       if (!matches.length) {
@@ -32,7 +32,7 @@ new _MODULE({
         sendResponse({ entries: matches, recentlyOpenedEntry: this.recentlyOpenedEntry });
         this.recentlyOpenedEntry = null;
       }
-      entry = locked ? 'locked' : !matches.length ? null : matches[0];
+      entry = lockedMatches.length ? lockedMatches : !matches.length ? null : matches[0];
       this.emit('entry:found', entry);
     });
   },

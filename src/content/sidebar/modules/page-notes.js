@@ -29,12 +29,20 @@ new _DOMMODULE({
 
   render(entry) {
     this.resume();
-    if (entry && entry.notes) {
-      this.notes = entry.notes;
-      let l = entry.notes.length, id;
-      while (l--) {
-        id = this.addNote(entry.notes[l]);
-        this.id = Math.max(this.id, id);
+    if (entry) {
+      if (Array.isArray(entry)) {
+        entry.forEach(e => {
+          if (e.notes) this.notes = this.notes.concat(e.notes);
+        })
+      } else if (entry.notes) {
+        this.notes = entry.notes;
+      }
+      if (this.notes.length) {
+        let l = entry.notes.length, id;
+        while (l--) {
+          id = this.addNote(entry.notes[l]);
+          this.id = Math.max(this.id, id);
+        }
       }
     }
   },

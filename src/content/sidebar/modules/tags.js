@@ -16,7 +16,7 @@ new _DOMMODULE({
   },
 
   render(entry) {
-    if (entry) {
+    if (entry && !Array.isArray(entry)) {
       const tags = entry.tag ? entry.tag.split(' ') : [];
       document.getElementById('tags').innerText = '';
       tags.forEach(tag => this.renderTag(tag));

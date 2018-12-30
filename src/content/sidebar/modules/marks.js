@@ -38,7 +38,13 @@ new _DOMMODULE({
     }
   },
   setMarks() {
-    const marks = this.entry.marks;
+    const entry = this.entry;
+    let marks = [];
+    if (Array.isArray(entry)) {
+      entry.forEach(e => marks = marks.concat(e.marks));
+    } else {
+      marks = entry.marks;
+    }
     const markIDs = this.markIDs;
     this.length = marks.length;
     this.marks = markIDs ? marks.sort((m1, m2) => markIDs.indexOf(m1.id) < markIDs.indexOf(m2.id)) : marks;

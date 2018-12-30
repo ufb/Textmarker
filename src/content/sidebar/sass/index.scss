@@ -25,12 +25,16 @@
   color: $color-text--red;
 }
 .textmarker-sidebar--locked {
+  #header,
+  #tab--meta,
+  #tab--tags,
+  #page-action--immut,
   #action-box--delete,
   #action-box--bookmark,
   #action-box--delete-bookmark,
   #action-box--undo,
   #action-box--redo,
   #action-box--scroll {
-    display: none;
+    display: none !important;
   }
 }

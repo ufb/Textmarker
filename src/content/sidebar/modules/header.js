@@ -12,12 +12,10 @@ new _DOMMODULE({
   render(entry) {
     const header = this.el;
 
-    if (!entry || entry === 'locked') {
-      header.classList.add('u-display--none');
-    }
-    else if (!entry.locked) {
-      header.classList.remove('u-display--none');
-      header.getElementsByClassName('header__name')[0].innerText = entry.name;
-    }
+    if (!entry) header.classList.add('u-display--none');
+    else if (Array.isArray(entry)) return;
+
+    header.classList.remove('u-display--none');
+    header.getElementsByClassName('header__name')[0].innerText = entry.name;
   }
 });

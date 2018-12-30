@@ -4,7 +4,7 @@ export default new _MODULE({
   events: {
     ENV: {
       'toggled:sync': 'setAreas',
-      'saved:entry': 'storeEntry',
+      'saved:entry': 'updateEntry',
       'entry:found': 'updateEntryOnFound',
       'entry:found-for-tab': 'updateEntry',
       'updated:entry': 'updateEntry'
@@ -15,22 +15,35 @@ export default new _MODULE({
   area_settings: 'sync',
   area_history: 'sync',
   entry: null,
+  locked: false,
 
   updateEntry(entry) {
     if (entry) {
-      if (this.entry) {
+      const isArr = Array.isArray(entry);
+      const currentEntry = !!this.entry;
+
+      if (!this.locked || isArr) {
         this.entry = entry;
-        this.emit('updated:stored-entry', entry);
-      } else {
-        this.entry = entry;
-        this.emit('stored:entry', entry);
       }
+      else if (this.locked && !isArr) {
+        if (this.entry) this.entry.push(entry);
+        else this.entry = [entry];
+      }
+
+      if (currentEntry) this.emit('updated:stored-entry', this.entry);
+      else this.emit('stored:entry', this.entry);
     }
   },
   updateEntryOnFound(entry) {
-    this.updateEntry(entry);
-    this.emit('initially-stored:entry', entry);
+    if (entry) {
+      const isArr = this.locked = Array.isArray(entry);
+      this.updateEntry(entry);
+      if (!isArr) {
+        this.emit('initially-stored:entry', entry);
+      }
+    }
   },
+
   storeEntry(entry) {
     if (entry) {
       this.entry = entry;
