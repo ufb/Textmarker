@@ -22,6 +22,8 @@ export default new _MODULE({
       const isArr = Array.isArray(entry);
       const currentEntry = !!this.entry;
 
+      this.locked = this.locked || isArr;
+
       if (!this.locked || isArr) {
         this.entry = entry;
       }
@@ -36,7 +38,6 @@ export default new _MODULE({
   },
   updateEntryOnFound(entry) {
     if (entry) {
-      const isArr = this.locked = Array.isArray(entry);
       this.updateEntry(entry);
       if (!isArr) {
         this.emit('initially-stored:entry', entry);
