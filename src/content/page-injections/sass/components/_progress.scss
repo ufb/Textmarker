@@ -1,0 +1,49 @@
+tmprogressmodal {
+  display: block;
+  z-index: $layer--max;
+  position: fixed;
+  background: $color-bg--light;
+  width: 457px;
+  left: 50%;
+  top: 50vh;
+  transform: translate(-50%, -50%);
+  padding: 19px;
+  box-shadow: 0 5px 19px -5px #555;
+  box-sizing: border-box !important;
+}
+
+tmprogressheader {
+  display: block;
+  color: $color-text--grey;
+  font-size: 19px;
+  margin-bottom: 19px;
+  box-sizing: border-box !important;
+}
+
+tmprogressbar {
+  display: block;
+  height: 29px;
+  margin-bottom: 29px;
+  padding: 2px;
+  border: 1px solid $color-border;
+  box-sizing: border-box !important;
+}
+
+tmprogress {
+  display: block;
+  height: 23px;
+  max-width: 413px;
+  background: $color-bg--turquoise;
+  transition: width .29s;
+  box-sizing: border-box !important;
+}
+
+tmprogresscancel {
+  display: block;
+  color: $color-text--grey;
+  float: right;
+  padding: 5px 11px;
+  cursor: pointer;
+  border: 1px solid $color-border;
+  box-sizing: border-box !important;
+}

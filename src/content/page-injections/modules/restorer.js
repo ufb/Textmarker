@@ -578,9 +578,24 @@ class ImmutRestorer extends _MODULE {
     this.area = entry.synced ? 'sync' : 'local';
     const selection = this.selection = new _SELECTION();
     this.range = document.createRange();
+let canceled = false;
+this.emit('started:restoration', entry.marks.length);
+this.on('canceled:restoration', () => canceled = true);
 
-    entry.marks.sort((m1, m2) => m1.id - m2.id).forEach(mark => this.recreate(mark));
-    this.report();
+    entry.marks.sort((m1, m2) => m1.id - m2.id);
+let marks = entry.marks.concat();
+let self = this;
+function proc() {
+  if (marks.length) {
+    self.recreate(marks.shift());
+    setTimeout(() => {
+      if (!canceled) proc();
+      else self.emit('failed:restoration');//cancel und failed nur, wenn cancel vor dem letzten mark passiert
+    }, 1000);
+  } else self.report();
+}
+proc();
+    //this.report();
   }
 
   recreate(mark) {
@@ -598,6 +613,7 @@ class ImmutRestorer extends _MODULE {
       this.restored.push(mark);
     } catch(e) {
       this.lost.push(mark);
+      this.emit('failed:restore-range', mark);
     }
   }
   getNode(position) {
