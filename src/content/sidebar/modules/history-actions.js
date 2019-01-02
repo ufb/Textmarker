@@ -12,6 +12,7 @@ new _DOMMODULE({
       'saved:entry': 'deactivateSave',
       'unsaved-changes': 'activateSave',
       'failed:restoration': 'activateRetry',
+      'canceled:restoration': 'activateRetry',
       'update:entry?': 'deactivateRetry',
       'page-state': 'onPageState',
       'initially-stored:entry': 'updateImmut'

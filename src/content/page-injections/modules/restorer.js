@@ -8,12 +8,50 @@ class Restorer extends _MODULE {
     super(entry)
 
     this.entry = entry;
-
-    this.queue = [];
-    this.cache = [];
     this.lost = [];
     this.restored = [];
     this.area = entry.synced ? 'sync' : 'local';
+
+    this.on('canceled:restoration', () => this.canceled = true);
+  }
+
+  processInChunks(data, proc, cb) {
+    proc = proc.bind(this);
+    cb = cb.bind(this);
+
+		(function rec() {
+			let dur = +new Date() + 500;
+
+			do {
+				proc(data.shift());
+
+			} while (data.length > 0 && dur > +new Date());
+
+			if (data.length > 0) window.setTimeout(() => rec(), 0);
+			else cb();
+		})();
+	}
+  report() {
+    if (this.canceled) return false;
+
+    let ll = this.lost.length;
+    if (ll) {
+      while(ll--) {
+        delete this.lost[ll].temp;
+      }
+      this.emit('lost:marks');
+    }
+    this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
+  }
+}
+
+class LiveRestorer extends Restorer {
+
+  constructor(entry) {
+    super(entry)
+
+    this.queue = [];
+    this.cache = [];
     this.phase = 1;
 
     this.init();
@@ -503,23 +541,6 @@ class Restorer extends _MODULE {
     }
   }
 
-  processPeuAPeu(data, func, cb) {
-		let d = Array.prototype.slice.call(data),
-			  done, time0;
-
-		(function rec() {
-			let max = +new Date() + 500;
-			do {
-				done = func(d[0]);
-				if (done) d.shift();
-
-			} while (d.length > 0 && max > +new Date());
-
-			if (d.length > 0)
-				window.setTimeout(() => rec(), 25);
-			else cb();
-		})();
-	}
   setBodySelection(el) {
     let selection = this.selection = new _SELECTION(el);
 
@@ -555,50 +576,22 @@ class Restorer extends _MODULE {
       }
 		}
 	}
-  report() {
-    let ll = this.lost.length;
-    if (ll) {
-      while(ll--) {
-        delete this.lost[ll].temp;
-      }
-      this.emit('lost:marks');
-    }
-    this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
-  }
 }
 
-class ImmutRestorer extends _MODULE {
+class ImmutRestorer extends Restorer {
 
   constructor(entry) {
     super(entry)
 
-    this.entry = entry;
-    this.lost = [];
-    this.restored = [];
-    this.area = entry.synced ? 'sync' : 'local';
     const selection = this.selection = new _SELECTION();
     this.range = document.createRange();
-let canceled = false;
-this.emit('started:restoration', entry.marks.length);
-this.on('canceled:restoration', () => canceled = true);
+    const marks = this.marks = entry.marks.sort((m1, m2) => m1.id - m2.id);
 
-    entry.marks.sort((m1, m2) => m1.id - m2.id);
-let marks = entry.marks.concat();
-let self = this;
-function proc() {
-  if (marks.length) {
-    self.recreate(marks.shift());
-    setTimeout(() => {
-      if (!canceled) proc();
-      else self.emit('failed:restoration');//cancel und failed nur, wenn cancel vor dem letzten mark passiert
-    }, 1000);
-  } else self.report();
-}
-proc();
-    //this.report();
+    this.processInChunks(marks, this.recreate, this.report);
   }
 
   recreate(mark) {
+    if (this.canceled) return this.marks = [];
     const conds = mark.conds;
     const start = conds.s;
     const end = conds.e;
@@ -626,16 +619,6 @@ proc();
     }
     return node.childNodes[textNodePosition];
   }
-  report() {
-    let ll = this.lost.length;
-    if (ll) {
-      while(ll--) {
-        delete this.lost[ll].temp;
-      }
-      this.emit('lost:marks');
-    }
-    this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
-  }
 }
 
 export default function() {
@@ -654,13 +637,15 @@ export default function() {
     restored: 0,
     failed: 0,
 
-    restore(entries) {
+    restore(entries) {this.t0 = (new Date()).getTime();console.log('start:',this.t0);
       this.entries = entries;
-      this.count = entries.length;
+      const len = this.count = entries.length;
+
+      this.emit('started:restoration', len);
 
       entries.forEach(entry => {
         if (entry.immut) new ImmutRestorer(entry);
-        else new Restorer(entry);
+        else new LiveRestorer(entry);
       });
     },
     resume() {
@@ -675,6 +660,7 @@ export default function() {
       this.failed++;
     },
     onFinishedRestoration(name, restored, lost, area) {
+      console.log('time:', ((new Date()).getTime() - this.t0));
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
         if (this.failed) this.emit('failed:restoration');

@@ -197,9 +197,9 @@ export default function() {
       }
       this.emit('removed:mark', id[0]);
     },
-    resume(silent) {
+    resume() {
       _STORE.disabled = false;
-      
+
       while (this.done.length) {
         this.undo(true);
       }
@@ -211,7 +211,7 @@ export default function() {
       this.idcount = 0;
       this.markScrollPos = -1;
 
-      if (silent !== true) this.emit('resumed:markers');
+      this.emit('resumed:markers');
     },
     immut(immutable) {
       this.immut = immutable;
@@ -284,7 +284,6 @@ export default function() {
       }
     },
     onCanceledRestoration() {
-      this.resume(true);
       _STORE.disabled = true;
     },
     addNote(id) {

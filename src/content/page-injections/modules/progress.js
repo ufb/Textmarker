@@ -7,10 +7,10 @@ export default function() {
   return new _DOMMODULE({
 		events: {
       ENV: {
-        'started:restoration': 'start',
-        'restored:range': 'progress',
-        'failed:restore-range': 'progress',
-        'finished:restoration': 'stop'
+        // 'started:restoration': 'start',
+        // 'restored:range': 'progress',
+        // 'failed:restore-range': 'progress',
+        // 'finished:restoration': 'stop'
       }
 		},
     el: null,
@@ -58,7 +58,7 @@ export default function() {
       this.currentWidth = 0;
       this.tmprogress.style.width = 0;
     },
-    start(len) {
+    start(len) {console.log('progress',len);
       this.resume(len);
       const handler = this.cancelHandler = this.cancel.bind(this);
       DOC.body.appendChild(this.el);
@@ -68,9 +68,11 @@ export default function() {
       const width = this.currentWidth += this.stepLength;
       this.tmprogress.style.width = width + 'px';
     },
-    stop() {
-      this.tmprogresscancel.removeEventListener('click', this.cancelHandler, false);
-      DOC.body.removeChild(this.el);
+    stop() {console.log('stop');
+      try {
+        DOC.body.removeChild(this.el);
+        this.tmprogresscancel.removeEventListener('click', this.cancelHandler, false);
+      } catch(e) {}
     },
     cancel() {
       this.stop();
