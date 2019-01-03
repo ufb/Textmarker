@@ -2,7 +2,7 @@ import { _MODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 import _SELECTION from './selection'
 
-class Restorer extends _MODULE {
+class RestorerBase extends _MODULE {
 
   constructor(entry) {
     super(entry)
@@ -12,6 +12,7 @@ class Restorer extends _MODULE {
     this.restored = [];
     this.area = entry.synced ? 'sync' : 'local';
 
+    this.emit('started:restoration', entry.marks.length);
     this.on('canceled:restoration', () => this.canceled = true);
   }
 
@@ -20,12 +21,12 @@ class Restorer extends _MODULE {
     cb = cb.bind(this);
 
 		(function rec() {
-			let dur = +new Date() + 500;
+			let expire = +new Date() + 500;
 
 			do {
 				proc(data.shift());
 
-			} while (data.length > 0 && dur > +new Date());
+			} while (data.length > 0 && expire > +new Date());
 
 			if (data.length > 0) window.setTimeout(() => rec(), 0);
 			else cb();
@@ -45,7 +46,7 @@ class Restorer extends _MODULE {
   }
 }
 
-class LiveRestorer extends Restorer {
+class Restorer extends RestorerBase {
 
   constructor(entry) {
     super(entry)
@@ -53,10 +54,17 @@ class LiveRestorer extends Restorer {
     this.queue = [];
     this.cache = [];
     this.phase = 1;
+    this.chunkDuration = 500;
+    this._timer = +new Date() + this.chunkDuration;
 
     this.init();
   }
 
+  get timer() {
+    const timer = this._timer;
+    this._timer = +new Date() + this.chunkDuration;
+    return timer;
+  }
   init() {
     let entry = this.entry,
         now = [], postponed = [],
@@ -75,10 +83,11 @@ class LiveRestorer extends Restorer {
 
     this.queue.push(now);
 
-    for (i = 0, l = postponed.length; i < l; i++)
+    for (i = 0, l = postponed.length; i < l; i++) {
       this.queue.push([postponed[i]]);
+    }
 
-    this.restore().report();
+    this.restore();
   }
   convertDescription(mark) {
     if (typeof mark.conds.o === 'undefined') {
@@ -133,13 +142,16 @@ class LiveRestorer extends Restorer {
       this.findPossibleExtrema()
           .ruleOutMultiples()
           .restoreRanges();
+
+      this.phase++;
+
+      if (this.queue.length && !this.canceled) {
+        if (this.timer < +new Date()) setTimeout(() => this.restore(), 0);
+        else this.restore();
+        //this.restore();
+      }
+      else this.report();
     }
-
-    this.phase++;
-
-    if (this.queue.length) this.restore();
-
-    return this;
   }
   sortQueueById() {
     let marks = this.queue,
@@ -540,6 +552,7 @@ class LiveRestorer extends Restorer {
           selection.recollectNodes(mark);
         } catch(e) {
           this.lost.push(mark);
+          this.emit('failed:restore-range', mark);
         }
         delete mark.temp;
       }
@@ -581,7 +594,7 @@ class LiveRestorer extends Restorer {
 	}
 }
 
-class ImmutRestorer extends Restorer {
+class ImmutRestorer extends RestorerBase {
 
   constructor(entry) {
     super(entry)
@@ -590,10 +603,10 @@ class ImmutRestorer extends Restorer {
     this.range = document.createRange();
     const marks = this.marks = entry.marks.sort((m1, m2) => m1.id - m2.id);
 
-    this.processInChunks(marks, this.recreate, this.report);
+    this.processInChunks(marks, this.restoreRange, this.report);
   }
 
-  recreate(mark) {
+  restoreRange(mark) {
     if (this.canceled) return this.marks = [];
     const conds = mark.conds;
     const start = conds.s;
@@ -642,13 +655,11 @@ export default function() {
 
     restore(entries) {this.t0 = (new Date()).getTime();console.log('start:',this.t0);
       this.entries = entries;
-      const len = this.count = entries.length;
-
-      this.emit('started:restoration', len);
+      this.count = entries.length;
 
       entries.forEach(entry => {
         if (entry.immut) new ImmutRestorer(entry);
-        else new LiveRestorer(entry);
+        else new Restorer(entry);
       });
     },
     resume() {
