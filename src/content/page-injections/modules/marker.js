@@ -219,7 +219,7 @@ export default function() {
       this.resume();
     },
     save() {
-      if (_STORE.disabled) return alert('not possible');
+      if (_STORE.disabled) return this.emit('canceled:save-after-canceled-restoration');
 
       const iframe = _STORE.iframe;
       const locked = _STORE.locked;
