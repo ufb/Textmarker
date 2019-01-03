@@ -76,6 +76,9 @@ new _MODULE({
       if (!misc.markmethod) {
         misc.markmethod = defaultSettings.misc.markmethod;
       }
+      if (typeof misc.progressbar !== 'boolean') {
+        misc.progressbar = defaultSettings.misc.progressbar;
+      }
 
       if (!settings.sb) {
         settings.sb = defaultSettings.sb;

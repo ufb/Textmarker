@@ -55,7 +55,8 @@ export default {
       errorNote: true,
       customSearch: false,
       tmuipos: 'top-right',
-      markmethod: ''
+      markmethod: '',
+      progressbar: true
     },
     sb: {
       tabs: {

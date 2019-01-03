@@ -1,4 +1,5 @@
 import { _DOMMODULE } from './../../_shared/utils'
+import _STORE from './../_store'
 
 export default function() {
 
@@ -10,10 +11,12 @@ export default function() {
         'started:restoration': 'start',
         'restored:range': 'progress',
         'failed:restore-range': 'progress',
-        'finished:restoration': 'stop'
+        'finished:restoration': 'stop',
+        'updated:misc-settings': 'activate'
       }
 		},
     el: null,
+    active: true,
     steps: 0,
     totalWidth: 413,
     currentWidth: 0,
@@ -21,7 +24,7 @@ export default function() {
     cancelHandler: null,
 
     autoinit() {
-      this.create();
+      this.activate().then(() => this.create());
     },
 
     create() {
@@ -58,17 +61,18 @@ export default function() {
       this.currentWidth = 0;
       this.tmprogress.style.width = 0;
     },
-    start(len) {console.log('start progress',len);
+    start(len) {
+      if (!this.active) return;
       this.resume(len);
       const handler = this.cancelHandler = this.cancel.bind(this);
       DOC.body.appendChild(this.el);
       this.tmprogresscancel.addEventListener('click', handler, false);
     },
-    progress() {console.log('progress...');
+    progress() {
       const width = this.currentWidth += this.stepLength;
       this.tmprogress.style.width = width + 'px';
     },
-    stop() {console.log('stop');
+    stop() {
       try {
         DOC.body.removeChild(this.el);
         this.tmprogresscancel.removeEventListener('click', this.cancelHandler, false);
@@ -77,6 +81,9 @@ export default function() {
     cancel() {
       this.stop();
       this.emit('canceled:restoration');
+    },
+    activate() {
+      return _STORE.get('progressbar').then(progressbar => this.active = progressbar);
     }
 	});
 }
