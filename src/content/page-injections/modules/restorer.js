@@ -132,7 +132,7 @@ class LiveRestorer extends Restorer {
 
       this.findPossibleExtrema()
           .ruleOutMultiples()
-          .recreateMarks();
+          .restoreRanges();
     }
 
     this.phase++;
@@ -298,9 +298,7 @@ class LiveRestorer extends Restorer {
       this.queue.push([mark]);
   }
   findPossibleExtrema() {
-    let selection = this.selection,
-        range = this.range,
-        nodes = this.bodyTextNodes,
+    let nodes = this.bodyTextNodes,
         n = nodes.length,
         indices = this.allPossibleStartPositions,
         phase = this.phase,
@@ -355,7 +353,7 @@ class LiveRestorer extends Restorer {
               continue;
             }
             else {
-              mark.temp.possibleStartNodes.push(node);
+              mark.temp.possibleStartNodes.push({ node: node, pos: i });
               mark.temp.startFoundFor.push(startPosition);
               startFoundFor.push(id);
             }
@@ -378,7 +376,8 @@ class LiveRestorer extends Restorer {
             mark.temp.endFoundFor.push(endPosition);
             mark.temp.possibleEnds[startPosition] = {
               node: node,
-              offset: possibleFocusOffset
+              offset: possibleFocusOffset,
+              pos: i
             };
             if (!satisfied.includes(id)) {
               cache.push(mark);
@@ -407,7 +406,7 @@ class LiveRestorer extends Restorer {
     let cache = this.cache,
         i = cache.length,
         mark, possibleStartNodes, p, node, parent, grampa, grandgrampa, grandgrandgrampa, matches, failed, q,
-        possibleEnds, startFoundFor, conds, startOffset, temp, textLength;
+        possibleEnds, startFoundFor, conds, startOffset, temp, textLength, start;
 
     while (i--) {
       mark = cache[i];
@@ -424,7 +423,7 @@ class LiveRestorer extends Restorer {
 
       if (p > 1) {
         while (p--) {
-          node = possibleStartNodes[p];
+          node = possibleStartNodes[p].node;
           parent = node.parentNode.parentNode;
           grampa = parent.parentNode || 0;
 
@@ -441,7 +440,7 @@ class LiveRestorer extends Restorer {
 
             while (matches.length) {
               q = matches.pop();
-              parent = possibleStartNodes[q].parentNode;
+              parent = possibleStartNodes[q].node.parentNode;
               grampa = parent.parentNode || 0;
               grandgrampa = grampa && grampa.parentNode ? grampa.parentNode : 0;
               grandgrandgrampa = grandgrampa && grandgrampa.parentNode ? grandgrampa.parentNode : 0;
@@ -462,7 +461,9 @@ class LiveRestorer extends Restorer {
 
       p = p || 0;
 
-      mark.temp.startNode = mark.temp.possibleStartNodes[p];
+      start = mark.temp.possibleStartNodes[p];
+      mark.temp.startNode = start.node;
+      mark.temp.startNodePosition = start.pos;
 
       this.setMatchingEnd(mark, p);
     }
@@ -473,6 +474,7 @@ class LiveRestorer extends Restorer {
         end = mark.temp.possibleEnds[startPosition];
 
     mark.temp.endNode = end.node;
+    mark.temp.endNodePosition = end.pos;
     mark.temp.focusOffset = end.offset;
   }
   satisfiesDescription(mark, node) {
@@ -510,8 +512,8 @@ class LiveRestorer extends Restorer {
       if (counter === n) return (/\s$/.test(mark.text) ? i + 2 : i + 1);
     }
   }
-  recreateMarks() {
-    let range = this.range,
+  restoreRanges() {
+    let range = document.createRange(),
         selection = this.selection,
         marks = this.cache,
         i = marks.length,
@@ -530,9 +532,12 @@ class LiveRestorer extends Restorer {
         try {
           range.setStart(start, mark.conds.o);
           range.setEnd(end, focusOffset);
-          selection.resume(range);
-          this.emit('restored:range', selection, mark);
+          selection.self.removeAllRanges();
+          selection.self.addRange(range);
+          //selection.resume(range);
+          this.emit('restored:range', mark);
           this.restored.push(mark);
+          selection.recollectNodes(mark);
         } catch(e) {
           this.lost.push(mark);
         }
@@ -542,14 +547,12 @@ class LiveRestorer extends Restorer {
   }
 
   setBodySelection(el) {
-    let selection = this.selection = new _SELECTION(el);
-
     if (this.phase === 1) {
-      this.trimmedSelectionText = this.squeeze(selection.text);
+      this.selection = new _SELECTION(el);
+      this.trimmedSelectionText = this.squeeze(this.selection.text);
     }
 
-    this.bodyTextNodes = selection.nodes;
-    this.range = selection.range;
+    this.bodyTextNodes = this.selection.nodes;
 
     return this;
   }

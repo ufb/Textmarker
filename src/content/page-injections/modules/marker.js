@@ -258,8 +258,8 @@ export default function() {
       if (save !== false) this.autosave();
 			if (order) this.orderMarksVisually();
 		},
-    recreate(selection, mark) {
-      this.selection = selection;
+    recreate(mark) {
+      this.selection = new _SELECTION();
       this.store(this.mark(mark.key, mark), false, false);
     },
     onFinishedRestoration() {

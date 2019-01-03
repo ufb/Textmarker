@@ -3,7 +3,7 @@ import _STORE from './../_store'
 export default class _SELECTION {
 
   constructor(node) {
-
+//var t0=+new Date();
     let selection = this.self = window.getSelection();
 
     if (selection.rangeCount) this.range = selection.getRangeAt(0);
@@ -25,7 +25,7 @@ export default class _SELECTION {
             .update()
             .retrieveText();
       }
-      selection.collapseToStart();
+      selection.collapseToStart();//console.log('_SELECTION time:',!!node,+new Date() -t0);
     }
   }
 
@@ -34,13 +34,13 @@ export default class _SELECTION {
 
     return this;
   }
-  resume(range) {
+  resume(range) {//var t0=+new Date();
     let selection = this.self;
 
     selection.removeAllRanges();
     selection.addRange(range);
     this.reduceToOneRange().update().collectNodes().retrieveText();
-		selection.collapseToStart();
+		selection.collapseToStart();//console.log('resume time:',+new Date()-t0);
   }
   update(selection) {
     if (selection) this.self = selection;
@@ -84,15 +84,13 @@ export default class _SELECTION {
         selection = this.self,
         range = this.range,
         container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
+        filter = wholeDocument ?
+          (node) => (!self.isBlank(node) && self.hasNormalParent(node)) :
+          (node) => (selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(node)),
 
         iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {
           acceptNode(node) {
-            var parent = node.parentNode;
-            return (
-              selection.containsNode(node) &&
-              !self.isBlank(node) &&
-              self.hasNormalParent(parent)
-            );
+            return filter(node);
           }
         }, false),
 
@@ -107,6 +105,27 @@ export default class _SELECTION {
     this.parentNodes = this.collectParentNodes(this.nodes);
 
     return this;
+  }
+  recollectNodes(mark) {
+    const markWrappers = Array.from(document.querySelectorAll('[data-tm-id^="' + mark.id + '_"]'));
+    const m = markWrappers.length;
+    const newSegment = markWrappers.map(el => el.firstChild);
+// watch out: can be <script> etc.(?) !
+
+    const prev = markWrappers[0].previousSibling;
+    const next = markWrappers[m-1].nextSibling;
+
+    const start = mark.temp.startNodePosition;
+    const end = mark.temp.endNodePosition;
+
+    if (prev && prev.nodeType === 3) {
+      newSegment.unshift(prev);
+    }
+    if (next && next.nodeType === 3) {
+      newSegment.push(next);
+    }
+
+    this.nodes.splice(start, end - start + 1, ...newSegment);
   }
   getReducedNodeCollection(nodes) {
     const selection = this.self;
@@ -200,7 +219,8 @@ export default class _SELECTION {
     return this;
   }
   hasNormalParent(node) {
-    const tag = node.tagName.toUpperCase();
+    const parent = node.parentNode;
+    const tag = parent.tagName.toUpperCase();
 
     return (
       tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' &&
@@ -209,7 +229,7 @@ export default class _SELECTION {
       tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' &&
       tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' &&
       tag !== 'MATH' && tag !== 'OBJECT' &&
-      !this.isInsideSVG(node)
+      !this.isInsideSVG(parent)
     );
   }
   isInsideSVG(node) {
