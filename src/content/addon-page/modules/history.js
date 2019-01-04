@@ -18,6 +18,7 @@ export default function() {
           '.action-button': 'delegateButtonAction',
           '.switch': 'toggleSwitch',
           '.name': 'open',
+          '.edit': 'edit',
           '.view': 'view',
           '#search-toggle': 'toggleSearch',
           '#remove-filter': 'removeFilter',
@@ -125,6 +126,15 @@ export default function() {
     open(e, el) {
       this.emit('open:entries', el.getAttribute('data-url'), el.getAttribute('data-name'));
     },
+    edit(e, el) {
+      const newName = window.prompt(browser.i18n.getMessage('nm_message'));
+      if (newName) {
+        const oldName = el.getAttribute('data-name');
+        const area = el.parentNode.getElementsByClassName('switch--sync')[0].classList.contains('active') ?
+          'sync' : 'local';
+        this.emit('rename:entry', oldName, newName, area);
+      }
+    },
     view(e, el) {
       this.emit('view:entry', el.getAttribute('data-name'));
     },
@@ -171,7 +181,7 @@ export default function() {
           l = searched ? names.length : this.page * this.perPage,
           i = searched ? 0 : l - this.perPage,
           clone, entry, name, nameField, input, label, infoButton, details,
-          buttons, view, tags, immut, immutEl, locked, lockedEl, tagEl, b, j;
+          buttons, edit, view, tags, immut, immutEl, locked, lockedEl, tagEl, b, j;
 
       if (this.filtered) {
         names = names.filter(n => !!entries[n]);
@@ -203,6 +213,7 @@ export default function() {
             label = clone.getElementsByTagName('label')[0];
             details = clone.getElementsByClassName('details')[0];
             buttons = clone.getElementsByClassName('quick-action');
+            edit = clone.getElementsByClassName('edit')[0];
             view = clone.getElementsByClassName('view')[0];
             tagEl = clone.getElementsByClassName('tags')[0];
             lockedEl = clone.getElementsByClassName('locked')[0];
@@ -218,6 +229,7 @@ export default function() {
             input.className = 'entry-cb';
             input.id = 'entry-cb-' + j;
             input.setAttribute('data-name', name);
+            edit.setAttribute('data-name', name);
             view.setAttribute('data-name', name);
             label.setAttribute('for', 'entry-cb-' + j);
 

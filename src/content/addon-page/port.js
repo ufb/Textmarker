@@ -28,6 +28,7 @@ export default new _PORT({
       'delete:entries',
       'clean:entries',
       'open:entries',
+      'rename:entry',
       'view:entry',
       'sync:entry',
       'sync:history',

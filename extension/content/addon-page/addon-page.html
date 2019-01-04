@@ -837,7 +837,8 @@
           <section id="customize-quickbuttons">
             <h4 data-l10n-id="h434"></h4>
             <div class="option-row">
-              <label data-l10n-id="t437"></label>
+              <input type="radio" class="download-quickbutton-opt" id="download-text" name="download" data-id="text">
+              <label class="fake-cb" for="download-text"><span>&#149;</span> <sup data-l10n-id="t437"></sup></label>
               <select id="quickbutton-download-select" class="customize-quickbuttons" name="download">
                 <option value="text" data-l10n-id="t439"></option>
                 <option value="text +meta" data-l10n-id="t438"></option>
@@ -851,6 +852,9 @@
                 <option value="title" data-l10n-id="t4314"></option>
                 <option value="url" data-l10n-id="t4315"></option>
               </select>
+              <br><br>
+              <input type="radio" class="download-quickbutton-opt" id="download-json" name="download" data-id="json">
+              <label class="fake-cb width--full" for="download-json"><span>&#149;</span> <sup>Backup-Datei</sup></label>
             </div>
           </section>
         </div>
@@ -1025,6 +1029,7 @@
             <input type="checkbox">
             <label class="fake-cb"><span>&#10003;</span></label>
             <span class="name" data-l10n-attr data-l10n-title="title_name"></span>
+            <span class="edit" data-l10n-attr data-l10n-title="title_edit"></span>
             <span class="view" data-l10n-attr data-l10n-title="title_view"></span>
             <div class="quick-buttons">
               <div class="switch switch--sync u-cf quick-action u-float--left" data-action="sync" data-l10n-attr data-l10n-title="quickbutton_sync">

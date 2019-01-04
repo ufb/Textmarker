@@ -6,7 +6,8 @@ export default function() {
   return new _MODULE({
     events: {
       ENV: {
-        'granted:save-entry': 'name'
+        'granted:save-entry': 'name',
+        'rename:entry': 'rename'
       }
     },
 
@@ -15,6 +16,16 @@ export default function() {
 
       _STORAGE.get('naming').then(naming => this.adjustName(null, entry, naming))
         .catch(() => this.emit('error', 'error_naming'));
+    },
+    rename(oldName, newName, area) {
+      newName = newName.substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1);
+
+      _STORAGE.get('history').then(history => {
+        let counter = this.getDoubleNameCount(history, newName);
+        if (counter) newName += ' (' + (counter + 1) + ')';
+        this.emit('renamed:entry', oldName, newName, area);
+      })
+      .catch(() => this.emit('error', 'error_naming'));
     },
     adjustName(name, entry, method) {
       name = name ? name :

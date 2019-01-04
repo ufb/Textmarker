@@ -34,6 +34,7 @@ new _MODULE({
       'add:custom-marker': 'addCustomMarker',
 
       'named:entry': 'saveEntry',
+      'renamed:entry': 'saveNewName',
       'granted:update-entry': 'updateEntry',
       'delete:entries': 'deleteEntries',
       'finished:restoration': 'updateEntryOnRestoration',
@@ -266,6 +267,15 @@ new _MODULE({
     _STORAGE.set('entry', entry)
       .then(() => this.emit('saved:entry', entry))
       .catch(() => this.emit('failed:save-entry', 'error_save_entry'));
+  },
+  saveNewName(oldName, newName, area) {
+    _STORAGE.update('history', history => {
+      const entry = history.entries[oldName];
+      history.entries[newName] = entry;
+      delete history.entries[oldName];
+      return history;
+    }, area)
+      .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
   },
   updateEntry(entry) {
     _STORAGE.update('history', history => {
