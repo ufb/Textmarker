@@ -32,7 +32,7 @@ export default {
       saveInPriv: false,
       immut: false,
       naming: 'title',
-      download: 'text',
+      download: 'json',
       copy: 'text',
       saveNote: true,
       sorted: 'date-last',

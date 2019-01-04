@@ -26,6 +26,7 @@ export default function() {
           '.naming-opt': 'changeNamingOpt',
           '#notes-new': 'toggleSaveNoteOpt',
           '.customize-quickbuttons': 'changeQuickbuttonOpt',
+          '.download-quickbutton-opt': 'switchQuickbuttonOpt',
           '.ctm-cb': 'toggleCtm',
           '.notes-cb': 'toggleNotes',
           '.misc-cb': 'toggleMisc',
@@ -172,7 +173,13 @@ export default function() {
       document.getElementById('private-save').checked = historySettings.saveInPriv;
       document.getElementById('immut').checked = historySettings.immut;
       document.getElementById('notes-new').checked = historySettings.saveNote;
-      document.getElementById('quickbutton-download-select').value = historySettings.download;
+
+      if (historySettings.download === 'json') {
+        document.getElementById('download-json').checked = true;
+      } else {
+        document.getElementById('download-text').checked = true;
+        document.getElementById('quickbutton-download-select').value = historySettings.download;
+      }
 
       let miscSettings = settings.misc;
 
@@ -293,6 +300,11 @@ export default function() {
       if (!this.allowedQuickbuttonOpts.includes(el.value)) return false;
 
       this.emit('toggle:quickbuttonopt-setting', el.name, el.value);
+    },
+    switchQuickbuttonOpt(e, el) {
+      const type = el.getAttribute('data-id');
+      const val = type === 'json' ? type : document.getElementById('quickbutton-download-select').value;
+      this.emit('switch:quickbuttonopt-setting', el.name, val);
     },
     toggleNotes(e, el) {
       this.emit('toggle:notification-setting', el.name, el.checked);

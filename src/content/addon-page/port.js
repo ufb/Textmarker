@@ -19,6 +19,7 @@ export default new _PORT({
       'change:view-setting',
       'toggle:noteopt-setting',
       'toggle:quickbuttonopt-setting',
+      'switch:quickbuttonopt-setting',
       'toggle:notification-setting',
       'toggle:misc-setting',
       'change:misc-setting',

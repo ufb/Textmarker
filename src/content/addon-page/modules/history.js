@@ -76,7 +76,8 @@ export default function() {
           settings = settings.split(' ');
           type = settings[0];
           spec = settings.length === 2 ? settings[1] : undefined;
-          this.download(names, type, spec);
+          if (type === 'json') this.export(names);
+          else this.download(names, type, spec);
         });
       }
       this.getData(names, type, spec).then(data => {

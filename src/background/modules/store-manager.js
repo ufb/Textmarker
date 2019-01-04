@@ -21,6 +21,7 @@ new _MODULE({
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
       'toggle:quickbuttonopt-setting': 'toggleQuickbuttonOpt',
+      'switch:quickbuttonopt-setting': 'switchQuickbuttonOpt',
       'toggle:notification-setting': 'toggleNotificationOpt',
       'toggle:misc-setting': 'changeMiscSetting',
       'change:misc-setting': 'changeMiscSetting',
@@ -210,6 +211,13 @@ new _MODULE({
     );
   },
   toggleQuickbuttonOpt(prop, val) {
+    this.updateSettings(
+      settings => { settings.history[prop] = val; return settings; },
+      'quickbutton',
+      'error_save_download'
+    );
+  },
+  switchQuickbuttonOpt(prop, val) {
     this.updateSettings(
       settings => { settings.history[prop] = val; return settings; },
       'quickbutton',
