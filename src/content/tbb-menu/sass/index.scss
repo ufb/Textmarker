@@ -6,23 +6,16 @@ body {
 	width: 185px;
 	font-family: system, 'Segoe UI', Tahoma;
 }
+a {
+  text-decoration: none;
+}
 ul {
 	list-style-type: none;
 	font-size: 12px;
-	padding: 5px 0;
+	padding: 5px 0 8px;
 }
 li {
 	padding: 5px 10px;
-
-	.menu__icon {
-    position: relative;
-		display: inline-block;
-		width: 16px;
-		height: 16px;
-    top: 3px;
-		margin-right: 8px;
-		opacity: .5;
-	}
 
 	&:hover {
 		background: transparentize($color-bg--turquoise, .9);
@@ -31,6 +24,15 @@ li {
 			opacity: 1;
 		}
 	}
+}
+.menu__icon {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  top: 3px;
+  margin-right: 8px;
+  opacity: .5;
 }
 .partingline {
   height: 1px;
@@ -65,4 +67,30 @@ li {
 }
 #logs .menu__icon {
   @include icon('dna');
+}
+#activate.menu__icon--start {
+  @include icon('start');
+}
+#activate.menu__icon--pause {
+  @include icon('pause');
+}
+#donate .menu__icon {
+  @include icon('donate');
+  float: right;
+}
+#github .menu__icon {
+  @include icon('github');
+  float: right;
+}
+footer {
+  background: $color-bg--turquoise;
+  padding: 7px 10px 8px 12px;
+
+  .menu__icon {
+    opacity: .85;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
