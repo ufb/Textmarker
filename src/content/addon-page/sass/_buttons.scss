@@ -9,3 +9,61 @@ button, .btn {
     margin-left: 5px;
   }
 }
+
+aside {
+  position: absolute;
+  top: 50px;
+  right: -36px;
+
+  @include mq('desk') {
+    right: 0;
+    top: 0;
+    position: relative;
+  }
+
+  a {
+    width: 37px;
+    height: 24px;
+    border: 1px solid $color-border;
+    border-radius: 0 3px 3px 0;
+    display: block;
+    margin-bottom: 7px;
+    opacity: .75;
+
+    &:hover {
+      opacity: 1;
+      border: 1px solid $color-bg--light;
+    }
+
+    @include mq('desk') {
+      border: 0;
+      border-radius: 2px;
+      display: inline-block;
+      background: $color-bg--turquoise;
+      float: right;
+      margin-left: 7px;
+
+      &:hover {
+        border: 0;
+      }
+
+      &.github {
+        background-position: center !important;
+      }
+
+      img {
+        margin-top: 6px !important;
+      }
+    }
+
+    &.github {
+      @include icon('github', 9px center);
+    }
+
+    img {
+      width: 20px;
+      height: 13px;
+      margin: 4px 0 0 9px;
+    }
+  }
+}
