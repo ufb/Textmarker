@@ -214,7 +214,7 @@ export default function() {
       this.emit('resumed:markers');
     },
     immut(immutable) {
-      this.immut = immutable;
+      this.isImmut = immutable;
       _STORE.redescribing = true;
       this.resume();
     },
@@ -456,8 +456,8 @@ export default function() {
 			}
 
       _STORE.get('settings').then(settings => {
-        this.immut = typeof this.immut === 'boolean' ? this.immut : !!settings.history.immut;
-        this.store(this.mark(key, settings.markers[key], this.immut), true, true);
+        this.isImmut = typeof this.isImmut === 'boolean' ? this.isImmut : !!settings.history.immut;
+        this.store(this.mark(key, settings.markers[key], this.isImmut), true, true);
       });
 		},
     onHotkey(key) {
@@ -488,7 +488,7 @@ export default function() {
       entry.title = window.document.title;
 			entry.count = entry.marks.length;
 			entry.idcount = this.idcount;
-      entry.immut = this.immut;
+      entry.immut = this.isImmut;
 
       if (_STORE.isNew || _STORE.locked) {
         entry.first = entry.last;
