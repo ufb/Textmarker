@@ -84,7 +84,7 @@
 "h115":{"message":"Shortcut option for custom markers"},
 "t1122":{"message":"You can choose custom shortcuts for custom markers."},
 "h116":{"message":"Faster restoration of saved highlights"},
-"t1123":{"message":"The algorithm for restoring your saved highlights has been approved and is much faster now."},
+"t1123":{"message":"The algorithm for restoring your saved highlights has been improved and is much faster now."},
 "t1124":{"message":"Also see above 'Saving on immutable / unchangeable pages' for even faster and safer restoration."},
 "h117":{"message":"Progressbar"},
 "t1125":{"message":"If you have a really slow machine or browser you might experience the joy of seeing the new progressbar during the restoration of saved highlights."},
