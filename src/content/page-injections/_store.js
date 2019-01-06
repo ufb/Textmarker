@@ -4,7 +4,9 @@ export default new _MODULE({
   events: {
     ENV: {
       'toggled:sync': 'setAreas',
-      'updated:naming-settings': 'updateLockedStatus'
+      'updated:naming-settings': 'updateLockedStatus',
+      'saved:new-name': 'renameEntry',
+      'synced:entry': 'setSyncForEntry'
     }
   },
   initialized: false,
@@ -38,6 +40,19 @@ export default new _MODULE({
         this.area_history = storage.sync.history ? 'sync' : 'local';
       }
     });
+  },
+
+  renameEntry(oldName, newName) {
+    if (this.name && this.name === oldName) {
+      this.name = newName;
+      if (this.entry) this.entry.name = newName;
+    }
+  },
+
+  setSyncForEntry(name, val) {
+    if (this.name && this.name === name && this.entry) {
+      this.entry.synced = val;
+    }
   },
 
   get(field = 'storage') {

@@ -356,7 +356,7 @@ new _MODULE({
   },
   syncEntry(name, val) {
     _STORAGE.sync(name, val)
-      .then(() => this.emit('synced:entry'))
+      .then(() => this.emit('synced:entry', name, val))
       .catch(() => this.emit('failed:sync-entry', name));
   },
   tagEntries(names, tag) {
