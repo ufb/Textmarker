@@ -32,7 +32,7 @@ export default function() {
 
       [{
         type: 'tmprogressheader',
-        text: 'Restoring highlights...'
+        text: browser.i18n.getMessage('restoring')
       }, {
         type: 'tmprogressbar',
         child: {
@@ -40,7 +40,7 @@ export default function() {
         }
       }, {
         type: 'tmprogresscancel',
-        text: 'Cancel'
+        text: browser.i18n.getMessage('cancel')
       }]
         .forEach(obj => {
           const el = DOC.createElement(obj.type);

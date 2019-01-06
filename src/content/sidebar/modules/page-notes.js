@@ -45,7 +45,11 @@ new _DOMMODULE({
             this.id = Math.max(this.id, id);
           }
         }
-      });
+      })
+        .then(() => {
+          this.toggleSelect(!!this.notes.length);
+          this.toggleNotes(null, document.getElementById('fold-page-notes'));
+        });
     });
   },
   save(e, el) {
@@ -90,6 +94,9 @@ new _DOMMODULE({
       .forEach(el => el.setAttribute('data-id', id));
 
     this.noteEls[id] = noteEl;
+
+    this.toggleSelect(true);
+
     return id;
   },
   changeColor(e, el) {
@@ -106,6 +113,13 @@ new _DOMMODULE({
     delete this.noteEls[id];
     this.notes.splice(this.notes.indexOf(this.getById(id)), 1);
     this.save();
+    if (!this.notes.length) {
+      this.toggleSelect(false);
+    }
+  },
+  toggleSelect(show) {
+    const meth = show ? 'remove' : 'add';
+    document.getElementById('fold-page-notes').classList[meth]('u-display--none');
   },
   togglePalette(e, el) {
     const note = this.noteEls[el.getAttribute('data-id')];

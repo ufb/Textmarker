@@ -14,47 +14,40 @@
     </header>
     <section id="tab--meta" class="tab tab--folded tab--entry u-display--none">
       <header class="tab__header">
-        <h2 class="tab__name" data-target="tab--meta"><span>Meta Infos</span><div class="tab__toggle" data-target="tab--meta"></div></h2>
+        <h2 class="tab__name" data-target="tab--meta"><span data-l10n-id="sb01"></span><div class="tab__toggle" data-target="tab--meta"></div></h2>
       </header>
-      <!-- <div class="tab__content" id="meta-infos">
-        <span class="meta__field" data-l10n-id="t439"></span>: <strong id="meta__number-marks"></strong><br><br>
-        <span class="meta__field" data-l10n-id="detail_sync"></span>: <span id="meta__synced"></span><br><br>
-        <span id="meta__created"></span><br>
-        <span id="meta__last-modified"></span>
-      </div> -->
       <div class="tab__content" id="meta-infos">
-        <span>Marks</span>: <span id="meta__number-marks"></span><br><br>
+        <span data-l10n-id="sb11"></span>: <span id="meta__number-marks"></span><br><br>
         <span id="meta__created"></span><br>
         <span id="meta__last-modified"></span><br><br>
-        <span>Synced</span>: <span id="meta__synced"></span><br>
-        <span>Immutable Page</span>: <span id="meta__immut"></span><br>
-        <span>Locked</span>: <span id="meta__locked"></span>
+        <span data-l10n-id="sb12"></span>: <span id="meta__synced"></span><br>
+        <span data-l10n-id="sb13"></span>: <span id="meta__immut"></span>
       </div>
     </section>
     <section id="tab--tags" class="tab tab--folded tab--entry u-display--none">
       <header class="tab__header">
-        <h2 class="tab__name" data-target="tab--tags"><span>Tags</span><div class="tab__toggle" data-target="tab--tags"></div></h2>
+        <h2 class="tab__name" data-target="tab--tags"><span data-l10n-id="sb02"></span><div class="tab__toggle" data-target="tab--tags"></div></h2>
       </header>
       <div class="tab__content">
-        <div id="tags"></div><br>
-        <input id="new-tag" type="text" placeholder="new tag"> <button id="add-tag"></button>
+        <div id="tags"></div>
+        <input id="new-tag" type="text" placeholder="tag"> <button id="add-tag" class="action-button action-button--add"><span>&plus;</span></button>
       </div>
     </section>
     <section id="tab--notes" class="tab tab--folded">
       <header class="tab__header">
-        <h2 class="tab__name" data-target="tab--notes"><span>General Notes</span><div class="tab__toggle" data-target="tab--notes"></div></h2>
+        <h2 class="tab__name" data-target="tab--notes"><span data-l10n-id="sb03"></span><div class="tab__toggle" data-target="tab--notes"></div></h2>
       </header>
       <div class="tab__content">
-        <button id="add-note" class="action-button"><span>&plus;</span></button>
+        <button id="add-note" class="action-button action-button--add"><span>&plus;</span></button>
         <select id="fold-page-notes">
           <option value="0" disabled hidden></option>
-          <option value="1">Folded</option>
-          <option value="2">Unfolded</option>
+          <option value="1" data-l10n-id="sb31"></option>
+          <option value="2" data-l10n-id="sb32"></option>
         </select>
         <div id="page-notes" class="u-clear u-pt-small"></div>
         <tmnote id="page-note-template" class="tmnote tmnote--min u-display--none">
           <tmnoteheader>
-            <input type="text" placeholder="optional note name" class="tmnote__header u-float--left"></span>
+            <input type="text" data-l10n-attr data-l10n-placeholder="sb33" class="tmnote__header u-float--left"></span>
             <tmnotepalette class="u-display--none">
               <tmnotecolor class="tmnotecolor--green" data-color="green"></tmnotecolor>
               <tmnotecolor class="tmnotecolor--white" data-color="white"></tmnotecolor><br class="u-clear">
@@ -71,52 +64,52 @@
               <tmnoteminimize></tmnoteminimize>
             </tmnotebuttons>
           </tmnoteheader>
-          <textarea></textarea><tmnotesave>save</tmnotesave>
+          <textarea></textarea><tmnotesave data-l10n-id="sb34"></tmnotesave>
         </tmnote>
       </div>
     </section>
     <section id="tab--markers" class="tab">
       <header class="tab__header">
-        <h2 class="tab__name" data-target="tab--markers"><span>Markers</span><div class="tab__toggle" data-target="tab--markers"></div></h2>
+        <h2 class="tab__name" data-target="tab--markers"><span data-l10n-id="sb04"></span><div class="tab__toggle" data-target="tab--markers"></div></h2>
       </header>
       <div id="markers" class="tab__content u-cf u-pt">
-        <div id="markers-container--left" class="u-float--left u-cf"></div>
         <div id="markers-container--right" class="u-float--right u-cf"></div>
+        <div id="markers-container--left" class="u-float--right u-cf u-mr-small"></div>
       </div>
     </section>
     <section id="tab--actions" class="tab">
       <header class="tab__header">
-        <h2 class="tab__name" data-target="tab--actions"><span>Page actions</span><div class="tab__toggle" data-target="tab--actions"></div></h2>
+        <h2 class="tab__name" data-target="tab--actions"><span data-l10n-id="sb05"></span><div class="tab__toggle" data-target="tab--actions"></div></h2>
       </header>
       <div class="tab__content">
         <article id="history-actions" class="u-cf u-mb">
-          <button type="button" id="page-action--retry" data-l10n-attr data-l10n-title="sb_b11" class="u-ml-tiny action-button action-button--retry-restoration u-display--none"></button>
-          <button type="button" id="page-action--save" data-l10n-attr data-l10n-title="sb_b2" class="u-ml-tiny action-button action-button--page" disabled></button>
-          <div id="switch-box" class="u-display--none">
-            <div id="page-action--immut" class="switch switch--immut u-cf u-float--left u-ml-tiny" data-action="immut" data-l10n-attr data-l10n-title="quickbutton_sync">
+          <button type="button" id="page-action--retry" data-l10n-attr data-l10n-title="sb52" class="u-ml-tiny action-button action-button--retry-restoration u-display--none"></button>
+          <button type="button" id="page-action--save" data-l10n-attr data-l10n-title="sb53" class="u-ml-tiny action-button action-button--page" disabled></button>
+          <div id="switch-box" class="u-display--none" data-l10n-attr data-l10n-title="sb51">
+            <div id="page-action--immut" class="switch switch--immut u-cf u-float--left u-ml-tiny" data-action="immut">
               <div class="switch switch__indicator" data-action="immut"></div>
             </div>
             <br class="u-clear"><br>
           </div>
-          <button type="button" id="mark-action--delete-highlight" data-l10n-attr data-l10n-title="sb_b7" data-action="delete-highlight" class="u-ml-tiny action-button action-button--mark" disabled></button>
-          <button type="button" id="page-action--redo" data-l10n-attr data-l10n-title="sb_b4" data-action="redo" class="u-ml-tiny action-button action-button--page"></button>
-          <button type="button" id="page-action--undo" data-l10n-attr data-l10n-title="sb_b3" data-action="undo" class="action-button action-button--page"></button>
+          <button type="button" id="mark-action--delete-highlight" data-l10n-attr data-l10n-title="sb56" data-action="delete-highlight" class="u-ml-tiny action-button action-button--mark" disabled></button>
+          <button type="button" id="page-action--redo" data-l10n-attr data-l10n-title="sb55" data-action="redo" class="u-ml-tiny action-button action-button--page"></button>
+          <button type="button" id="page-action--undo" data-l10n-attr data-l10n-title="sb54" data-action="undo" class="action-button action-button--page"></button>
         </article>
         <article class="u-cf">
           <div id="note-actions" class="u-cf u-float--right u-ml-tiny">
-            <button type="button" id="mark-action--add-note" data-l10n-attr data-l10n-title="sb_b10" data-action="note" class="u-ml-tiny action-button action-button--mark" disabled></button>
-            <button type="button" id="page-action--notes" data-l10n-attr data-l10n-title="sb_b6" data-action="toggle-notes" class="action-button action-button--page" disabled></button>
+            <button type="button" id="mark-action--add-note" data-l10n-attr data-l10n-title="sb510" data-action="note" class="u-ml-tiny action-button action-button--mark" disabled></button>
+            <button type="button" id="page-action--notes" data-l10n-attr data-l10n-title="sb59" data-action="toggle-notes" class="action-button action-button--page" disabled></button>
           </div>
           <div id="bookmark-actions" class="u-cf u-float--right">
-            <button type="button" id="mark-action--bookmark" data-l10n-attr data-l10n-title="sb_b8" data-action="bookmark" class="u-ml-tiny action-button action-button--mark" disabled></button>
-            <button type="button" id="page-action--scroll" data-l10n-attr data-l10n-title="sb_b5" data-action="scroll-to-bookmark" class="action-button action-button--page" disabled></button>
+            <button type="button" id="mark-action--bookmark" data-l10n-attr data-l10n-title="sb58" data-action="bookmark" class="u-ml-tiny action-button action-button--mark" disabled></button>
+            <button type="button" id="page-action--scroll" data-l10n-attr data-l10n-title="sb57" data-action="scroll-to-bookmark" class="action-button action-button--page" disabled></button>
           </div>
         </article>
       </div>
     </section>
     <section id="tab--marks" class="tab tab--folded tab--entry u-display--none">
       <header class="tab__header">
-        <h2 class="tab__name" data-target="tab--marks"><span>Marks &amp; Notes</span><div class="tab__toggle" data-target="tab--marks"></div></h2>
+        <h2 class="tab__name" data-target="tab--marks"><span data-l10n-id="sb06"></span><div class="tab__toggle" data-target="tab--marks"></div></h2>
       </header>
       <div class="tab__content">
         <div class="u-cf u-mb-small">
@@ -126,10 +119,10 @@
           </div>
           <select id="fold-marks">
             <option value="0" disabled hidden></option>
-            <option value="1">Folded</option>
-            <option value="2">Unfold mark texts</option>
-            <option value="3">Unfold note texts</option>
-            <option value="4">Unfold all</option>
+            <option value="1" data-l10n-id="sb61"></option>
+            <option value="2" data-l10n-id="sb62"></option>
+            <option value="3" data-l10n-id="sb63"></option>
+            <option value="4" data-l10n-id="sb64">Unfold all</option>
           </select>
         </div>
         <div id="marks" data-folded="1"></div>
@@ -138,15 +131,21 @@
     </section>
     <section id="tab--links" class="tab tab--folded">
       <header class="tab__header">
-        <h2 class="tab__name" data-target="tab--links"><span>Textmarker pages</span><div class="tab__toggle" data-target="tab--links"></div></h2>
+        <h2 class="tab__name" data-target="tab--links"><span data-l10n-id="sb07"></span><div class="tab__toggle" data-target="tab--links"></div></h2>
       </header>
       <div class="tab__content">
-        <div data-id="settings" class="link" data-l10n-id="sb_l1"></div>
-        <div data-id="history" class="link" data-l10n-id="sb_l2"></div>
-        <div data-id="help" class="link" data-l10n-id="tbb_mitem_5"></div>
-        <div data-id="contact" class="link" data-l10n-id="tbb_mitem_7"></div><br>
-        <a href="https://ko-fi.com/unflybi" title="donate" data-l10n-id="donate"></a><br>
-        <a href="https://github.com/ufb/Textmarker" title="github">GitHub</a>
+        <div data-id="settings" class="link link--settings">
+          <span class="link__icon"></span><span class="link__text" data-l10n-id="sb71"></span>
+        </div>
+        <div data-id="history" class="link link--history">
+          <span class="link__icon"></span><span class="link__text" data-l10n-id="sb72"></span>
+        </div>
+        <div data-id="help" class="link link--help">
+          <span class="link__icon"></span><span class="link__text" data-l10n-id="sb73"></span>
+        </div>
+        <div data-id="contact" class="link link--contact">
+          <span class="link__icon"></span><span class="link__text" data-l10n-id="sb74"></span>
+        </div>
       </div>
     </section>
   </div>

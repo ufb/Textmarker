@@ -316,10 +316,23 @@ body {
   box-shadow: 0 0 2px #777 inset; }
 
 .switch {
+  position: relative;
   width: 44px;
   height: 22px;
   padding: 2px;
   cursor: pointer; }
+  .switch:not(.switch__indicator):not(.switch--immut):before {
+    content: 'O';
+    position: absolute;
+    font-weight: bold;
+    top: 3px;
+    font-size: 14px;
+    left: 27px;
+    color: #e1e2e3;
+    font-family: Arial; }
+  .switch:not(.switch__indicator):not(.switch--immut).active:before {
+    content: 'I';
+    left: 8px; }
   .switch--sync {
     margin-right: 10px; }
   .switch--save .autosave {
@@ -332,7 +345,8 @@ body {
   height: 18px;
   background-color: #c8c8c8;
   display: inline-block;
-  margin-left: 22px;
+  margin-left: 0;
+  text-align: center;
   transition: margin 0.1s; }
   .switch--sync .switch__indicator {
     background-image: url(../../icons/sync.png);
@@ -344,9 +358,16 @@ body {
     background-repeat: no-repeat;
     background-position: center, 0 0;
     background-size: 67%, 100%; }
+  .switch--immut .switch__indicator:before {
+    content: '\221E';
+    display: block;
+    font-size: 16px;
+    position: relative;
+    top: -5px;
+    color: #fff; }
   .switch.active .switch__indicator {
     background-color: rgba(43, 165, 183, 0.75);
-    margin-left: 0; }
+    margin-left: 22px; }
   .switch.active:hover .switch__indicator {
     background-color: #2ba5b7; }
 
@@ -580,7 +601,7 @@ body {
 
 h1 {
   width: 100%;
-  font-size: 120%;
+  font-size: 100%;
   font-weight: normal;
   margin: 0 0 10px; }
 
@@ -600,6 +621,7 @@ svg {
 
 button {
   border: 1px solid #c8c8c8;
+  border-radius: 50%;
   transition: background 0.5s;
   float: right;
   width: 24px;
@@ -616,6 +638,21 @@ button {
   button[disabled] {
     opacity: 0.2 !important;
     cursor: default; }
+  button.action-button--add {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+    padding: 0;
+    top:3px;
+    position: relative;
+    background: linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
+    color: #777; }
+    button.action-button--add:hover {
+      background: linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+    button.action-button--add span {
+      position: absolute;
+      top: -1px;
+      left: 3px; }
 
 ::-moz-placeholder,
 :placeholder-shown {
@@ -625,22 +662,16 @@ select, input {
   font-family: inherit !important; }
 
 select {
-  background-image: url(../../icons/arrow-down.png);
-  background-repeat: no-repeat;
-  background-position: right 8px, 0 0;
-  background-size: unset, 100%;
-  background-color: transparent;
   -moz-appearance: none;
   height: 24px;
-  color: #2ba5b7;
+  color: #777;
   float: left;
-  padding-right: 15px;
   width: auto;
-  border: 0;
-  border-top: 1px solid #e1e2e3; }
+  border: 0; }
 
 input[type="text"] {
-  border: 1px solid #e1e2e3;
+  border: 0;
+  box-shadow: 0 0 3px -1px #c8c8c8 inset;
   color: inherit;
   padding: 0;
   height: 24px;
@@ -677,6 +708,7 @@ label span {
   position: relative; }
 
 .tab__name {
+  color: #aaa;
   border-bottom: 1px solid #e1e2e3; }
   .tab--folded .tab__name {
     border-top: 1px solid #e1e2e3;
@@ -726,12 +758,6 @@ label span {
   .tags__remove:hover {
     color: #ad3a3a; }
 
-#add-tag {
-  background-image: url(../../icons/submit.png);
-  background-repeat: no-repeat;
-  background-position: center, 0 0;
-  background-size: 12px, 100%; }
-
 #nav-action--up,
 #nav-action--down {
   width: 20px;
@@ -756,8 +782,7 @@ label span {
   .mark__text {
     border-left: 2px solid;
     padding: 2px 8px 2px 5px; }
-    #marks[data-folded="2"] .mark__text,
-    #marks[data-folded="4"] .mark__text, .mark__text.unfolded {
+    .mark__text.unfolded {
       border-left: 0;
       border-top: 1px solid;
       padding-bottom: 10px;
@@ -806,14 +831,14 @@ label span {
       .mark__note-btn--turquoise:hover {
         filter: url(#filter--turquoise) brightness(0.75); }
   .mark__note {
+    display: none;
     position: relative;
     top: 2px;
     padding: 5px;
     margin-left: 3px;
     border: 1px solid #e1e2e3; }
-    #marks[data-folded="1"] .mark__note,
-    #marks[data-folded="2"] .mark__note {
-      display: none; }
+    .mark__note.unfolded {
+      display: block; }
     .mark__note--red {
       background: #fee; }
     .mark__note--orange {
@@ -843,7 +868,8 @@ label span {
     .auto .marker__cb-box {
       display: block; }
   .marker__apply {
-    margin: 0 0 0 10px; }
+    margin: 0 0 0 10px;
+    border-radius: 0; }
     .auto .marker__apply {
       display: none; }
   .marker__label {
@@ -937,21 +963,6 @@ label span {
 #nav-action--down {
   background-size: 12px, 100%; }
 
-#add-note {
-  width: 20px;
-  height: 20px;
-  font-size: 16px;
-  padding: 0;
-  position: relative;
-  background: linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
-  color: #777; }
-  #add-note:hover {
-    background: linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
-  #add-note span {
-    position: absolute;
-    top: -1px;
-    left: 3px; }
-
 tmnotesave {
   display: none;
   position: absolute;
@@ -1041,6 +1052,43 @@ tmnoteminimize:before {
     content: '\25A1';
     top: -4px; }
 
+.link {
+  opacity: .5; }
+  .link__icon {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    top: 2px;
+    margin-right: 8px; }
+  .link__text {
+    display: inline-block; }
+  .link:hover {
+    opacity: 1; }
+
+.link--settings .link__icon {
+  background-image: url(../../icons/tools.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: 12px, 100%; }
+
+.link--history .link__icon {
+  background-image: url(../../icons/clock.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: 12px, 100%; }
+
+.link--help .link__icon {
+  background-image: url(../../icons/book.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: 12px, 100%; }
+
+.link--contact .link__icon {
+  background-image: url(../../icons/ghost.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: 12px, 100%; }
+
 a, .link {
   color: inherit;
   text-decoration: none;
@@ -1048,20 +1096,18 @@ a, .link {
   a:hover, .link:hover {
     text-decoration: underline; }
 
-.switch {
-  margin-bottom: 18px; }
-
-.autosave-label {
-  cursor: default; }
-
 #textmarker-sidebar--paused {
   padding: 10px 20px;
   color: #ad3a3a; }
 
+.textmarker-sidebar--locked #header,
+.textmarker-sidebar--locked #tab--meta,
+.textmarker-sidebar--locked #tab--tags,
+.textmarker-sidebar--locked #page-action--immut,
 .textmarker-sidebar--locked #action-box--delete,
 .textmarker-sidebar--locked #action-box--bookmark,
 .textmarker-sidebar--locked #action-box--delete-bookmark,
 .textmarker-sidebar--locked #action-box--undo,
 .textmarker-sidebar--locked #action-box--redo,
 .textmarker-sidebar--locked #action-box--scroll {
-  display: none; }
+  display: none !important; }

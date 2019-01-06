@@ -189,8 +189,8 @@ var _default = new _utils._MODULE({
   events: {
     ENV: {
       'toggled:sync': 'setAreas',
-      'saved:entry': 'storeEntry',
-      'entry:found': 'updateEntry',
+      'saved:entry': 'updateEntry',
+      'entry:found': 'updateEntryOnFound',
       'entry:found-for-tab': 'updateEntry',
       'updated:entry': 'updateEntry'
     }
@@ -199,15 +199,30 @@ var _default = new _utils._MODULE({
   initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
+  area_pagenotes: 'sync',
   entry: null,
+  locked: false,
   updateEntry: function updateEntry(entry) {
     if (entry) {
-      if (this.entry) {
+      var isArr = Array.isArray(entry);
+      var currentEntry = !!this.entry;
+      this.locked = this.locked || isArr;
+
+      if (!this.locked || isArr) {
         this.entry = entry;
-        this.emit('updated:stored-entry', entry);
-      } else {
-        this.entry = entry;
-        this.emit('stored:entry', entry);
+      } else if (this.locked && !isArr) {
+        if (this.entry) this.entry.push(entry);else this.entry = [entry];
+      }
+
+      if (currentEntry) this.emit('updated:stored-entry', this.entry);else this.emit('stored:entry', this.entry);
+    }
+  },
+  updateEntryOnFound: function updateEntryOnFound(entry) {
+    if (entry) {
+      this.updateEntry(entry);
+
+      if (!Array.isArray(entry)) {
+        this.emit('initially-stored:entry', entry);
       }
     }
   },
@@ -224,6 +239,7 @@ var _default = new _utils._MODULE({
       if (storage && storage.sync) {
         _this.area_settings = storage.sync.settings ? 'sync' : 'local';
         _this.area_history = storage.sync.history ? 'sync' : 'local';
+        _this.area_pagenotes = storage.sync.pagenotes ? 'sync' : 'local';
       }
     });
   },
@@ -274,6 +290,11 @@ var _default = new _utils._MODULE({
   _get_markers: function _get_markers() {
     return browser.storage[this.area_settings].get().then(function (storage) {
       return storage.settings.markers;
+    });
+  },
+  _get_pagenotes: function _get_pagenotes() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      return storage.pagenotes;
     });
   }
 });
@@ -332,9 +353,8 @@ new _utils._MODULE({
     ENV: {
       'started:app': 'onStart',
       'toggled:addon': 'power',
-      'saved:entry': 'toggle',
-      'entry:found': 'toggle',
-      'entry:found-for-tab': 'toggle'
+      'stored:entry': 'toggle',
+      'updated:stored-entry': 'toggle'
     }
   },
   autoinit: function autoinit() {
@@ -364,7 +384,7 @@ new _utils._MODULE({
   toggle: function toggle(entry) {
     var sidebar = document.getElementById('textmarker-sidebar');
 
-    if (entry && (entry === 'locked' || entry.locked)) {
+    if (entry && _store.default.locked) {
       sidebar.classList.add('textmarker-sidebar--locked');
     } else {
       sidebar.classList.remove('textmarker-sidebar--locked');
@@ -399,13 +419,9 @@ new _utils._DOMMODULE({
   },
   render: function render(entry) {
     var header = this.el;
-
-    if (!entry || entry === 'locked') {
-      header.classList.add('u-display--none');
-    } else if (!entry.locked) {
-      header.classList.remove('u-display--none');
-      header.getElementsByClassName('header__name')[0].innerText = entry.name;
-    }
+    if (!entry) header.classList.add('u-display--none');else if (Array.isArray(entry)) return;
+    header.classList.remove('u-display--none');
+    header.getElementsByClassName('header__name')[0].innerText = entry.name;
   }
 });
 
@@ -438,13 +454,16 @@ new _utils._DOMMODULE({
       'saved:entry': 'deactivateSave',
       'unsaved-changes': 'activateSave',
       'failed:restoration': 'activateRetry',
+      'canceled:restoration': 'activateRetry',
       'update:entry?': 'deactivateRetry',
-      'page-state': 'onPageState'
+      'page-state': 'onPageState',
+      'initially-stored:entry': 'updateImmut'
     },
     DOM: {
       click: {
         '#page-action--retry': 'retryRestoration',
-        '#page-action--save': 'save'
+        '#page-action--save': 'save',
+        '.switch': 'toggleImmut'
       }
     }
   },
@@ -493,6 +512,22 @@ new _utils._DOMMODULE({
       this.retryBtnShown = false;
     }
   },
+  toggleImmut: function toggleImmut(e, el) {
+    el = el.classList.contains('switch--immut') ? el : el.parentNode;
+    el.classList.toggle('active');
+    this.emit('sidebar:immut', el.classList.contains('active'), {
+      tab: 'active'
+    });
+  },
+  updateImmut: function updateImmut(entry) {
+    if (entry) {
+      var meth = entry.immut ? 'add' : 'remove';
+      document.getElementById('page-action--immut').classList[meth]('active');
+      document.getElementById('switch-box').classList.remove('u-display--none');
+    } else {
+      document.getElementById('switch-box').classList.add('u-display--none');
+    }
+  },
   onPageState: function onPageState(state) {
     if (state.retryActive) this.activateRetry();
   }
@@ -517,11 +552,14 @@ new _utils._DOMMODULE({
   events: {
     DOM: {
       click: {
-        '.link': 'link'
+        '.link': 'link',
+        '.link__icon': 'link',
+        '.link__text': 'link'
       }
     }
   },
   link: function link(e, el) {
+    el = el.classList.contains('link') ? el : el.parentNode;
     this.emit('open:addon-page', el.getAttribute('data-id'));
   }
 });
@@ -615,22 +653,22 @@ new _utils._DOMMODULE({
       }
     }
   },
+  automarkEnabled: false,
   autoinit: function autoinit() {
     this.render();
   },
   render: function render() {
     var _this = this;
 
-    var automarkEnabled;
     browser.storage.sync.get().then(function (storage) {
       if (storage && storage.settings && (!storage.sync || storage.sync.settings)) {
-        if (storage.settings.misc.markmethod === 'auto') _this.el.classList.add('auto');else _this.el.classList.remove('auto');
+        _this.automarkEnabled = storage.settings.misc.markmethod === 'auto';
         return storage.settings.markers;
       }
 
       return browser.storage.local.get().then(function (storage) {
         if (storage && storage.settings && storage.sync && !storage.sync.settings) {
-          if (storage.settings.misc.markmethod === 'auto') _this.el.classList.add('auto');else _this.el.classList.remove('auto');
+          _this.automarkEnabled = storage.settings.misc.markmethod === 'auto';
           return storage.settings.markers;
         }
 
@@ -711,6 +749,14 @@ new _utils._DOMMODULE({
 
       rightContainer.appendChild(fragRight);
       leftContainer.appendChild(fragLeft);
+
+      if (_this.automarkEnabled) {
+        _this.el.classList.add('auto');
+
+        document.getElementById('marker__cb--m').checked = true;
+      } else {
+        _this.el.classList.remove('auto');
+      }
     });
   },
   extractBgColor: function extractBgColor(styles) {
@@ -800,6 +846,12 @@ new _utils._DOMMODULE({
   length: 0,
   current: -1,
   setFilters: false,
+  toggleMap: {
+    '1': [false, false],
+    '2': [true, false],
+    '3': [false, true],
+    '4': [true, true]
+  },
   render: function render() {
     var entry = this.entry = _store.default.entry;
 
@@ -810,7 +862,17 @@ new _utils._DOMMODULE({
     }
   },
   setMarks: function setMarks() {
-    var marks = this.entry.marks;
+    var entry = this.entry;
+    var marks = [];
+
+    if (Array.isArray(entry)) {
+      entry.forEach(function (e) {
+        return marks = marks.concat(e.marks);
+      });
+    } else {
+      marks = entry.marks;
+    }
+
     var markIDs = this.markIDs;
     this.length = marks.length;
     this.marks = markIDs ? marks.sort(function (m1, m2) {
@@ -888,7 +950,7 @@ new _utils._DOMMODULE({
     this.activateListItem();
   },
   activateListItem: function activateListItem(id) {
-    if (id) this.current = id;
+    if (typeof id === 'number') this.current = id;
     var currentItem = this.el.getElementsByClassName('mark--active')[0];
     if (currentItem) currentItem.classList.remove('mark--active');
     document.querySelector('div[data-id="' + [this.current] + '"]').classList.add('mark--active');
@@ -897,14 +959,29 @@ new _utils._DOMMODULE({
     });
   },
   activate: function activate(e, el) {
+    document.getElementById('fold-marks').value = 0;
     el.classList.toggle('unfolded');
     this.activateListItem(1 * el.parentNode.parentNode.getAttribute('data-id'));
   },
   foldList: function foldList(e, el) {
-    document.getElementById('marks').setAttribute('data-folded', el.value);
+    var val = el.value;
+
+    if (val != 0) {
+      var marks = document.getElementById('marks');
+      var toggleSettings = this.toggleMap[val];
+      this.toggle('text', toggleSettings[0]);
+      this.toggle('note', toggleSettings[1]);
+    }
   },
   toggleNote: function toggleNote(e, el) {
-    el.parentNode.getElementsByClassName('mark__note')[0].classList.toggle('u-display--none');
+    document.getElementById('fold-marks').value = 0;
+    el.parentNode.getElementsByClassName('mark__note')[0].classList.toggle('unfolded');
+  },
+  toggle: function toggle(type, show) {
+    var meth = show ? 'add' : 'remove';
+    Array.from(this.el.getElementsByClassName('mark__' + type)).forEach(function (el) {
+      return el.classList[meth]('unfolded');
+    });
   }
 });
 
@@ -935,11 +1012,15 @@ new _utils._DOMMODULE({
     }
   },
   render: function render(entry) {
-    if (entry) {
+    if (entry && !Array.isArray(entry)) {
+      var yes = browser.i18n.getMessage('yes');
+      var no = browser.i18n.getMessage('no');
       document.getElementById('meta__number-marks').innerText = entry.marks.length;
-      document.getElementById('meta__synced').innerText = entry.synced ? browser.i18n.getMessage('yes') : browser.i18n.getMessage('no');
       document.getElementById('meta__created').innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
       document.getElementById('meta__last-modified').innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
+      ['synced', 'immut'].forEach(function (field) {
+        return document.getElementById('meta__' + field).innerText = entry[field] ? yes : no;
+      });
     }
   },
   optimizeDateString: function optimizeDateString(date) {
@@ -1044,8 +1125,7 @@ new _utils._DOMMODULE({
   el: document.getElementById('tab--notes'),
   events: {
     ENV: {
-      'stored:entry': 'render',
-      'updated:stored-entry': 'render'
+      'updated:pagenotes': 'render'
     },
     DOM: {
       click: {
@@ -1065,19 +1145,34 @@ new _utils._DOMMODULE({
   noteEls: {},
   id: 0,
   currentColor: 'yellow',
-  render: function render(entry) {
+  autoinit: function autoinit() {
+    this.render();
+  },
+  render: function render() {
+    var _this = this;
+
     this.resume();
+    (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+      var url = _this.url = tab.url;
 
-    if (entry && entry.notes) {
-      this.notes = entry.notes;
-      var l = entry.notes.length,
-          id;
+      _store.default.get('pagenotes').then(function (pagenotes) {
+        pagenotes = pagenotes ? pagenotes[url] : null;
+        var l, id;
 
-      while (l--) {
-        id = this.addNote(entry.notes[l]);
-        this.id = Math.max(this.id, id);
-      }
-    }
+        if (pagenotes && (l = pagenotes.length)) {
+          _this.notes = pagenotes;
+
+          while (l--) {
+            id = _this.addNote(pagenotes[l]);
+            _this.id = Math.max(_this.id, id);
+          }
+        }
+      }).then(function () {
+        _this.toggleSelect(!!_this.notes.length);
+
+        _this.toggleNotes(null, document.getElementById('fold-page-notes'));
+      });
+    });
   },
   save: function save(e, el) {
     if (el) {
@@ -1086,7 +1181,7 @@ new _utils._DOMMODULE({
       note.name = el.parentNode.getElementsByClassName('tmnote__header')[0].value;
     }
 
-    this.emit('updated:page-note', this.notes);
+    this.emit('updated:page-note', this.url, this.notes);
   },
   resume: function resume() {
     this.notes = [];
@@ -1125,6 +1220,7 @@ new _utils._DOMMODULE({
       return el.setAttribute('data-id', id);
     });
     this.noteEls[id] = noteEl;
+    this.toggleSelect(true);
     return id;
   },
   changeColor: function changeColor(e, el) {
@@ -1141,6 +1237,14 @@ new _utils._DOMMODULE({
     delete this.noteEls[id];
     this.notes.splice(this.notes.indexOf(this.getById(id)), 1);
     this.save();
+
+    if (!this.notes.length) {
+      this.toggleSelect(false);
+    }
+  },
+  toggleSelect: function toggleSelect(show) {
+    var meth = show ? 'remove' : 'add';
+    document.getElementById('fold-page-notes').classList[meth]('u-display--none');
   },
   togglePalette: function togglePalette(e, el) {
     var note = this.noteEls[el.getAttribute('data-id')];
@@ -1158,6 +1262,8 @@ new _utils._DOMMODULE({
     if (!note.classList.contains('tmnote--min')) {
       this.adjustTextareaHeight(note);
     }
+
+    document.getElementById('fold-page-notes').value = 0;
   },
   toggleNotes: function toggleNotes(e, el) {
     if (el.value == 1) {
@@ -1284,7 +1390,7 @@ new _utils._DOMMODULE({
   render: function render(entry) {
     var _this = this;
 
-    if (entry) {
+    if (entry && !Array.isArray(entry)) {
       var tags = entry.tag ? entry.tag.split(' ') : [];
       document.getElementById('tags').innerText = '';
       tags.forEach(function (tag) {
@@ -1341,7 +1447,7 @@ var _default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar', 'updated:page-note', 'toggled:sidebar-tab', 'sidebar:selected-marker']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar', 'updated:page-note', 'toggled:sidebar-tab', 'sidebar:selected-marker']
   }
 });
 

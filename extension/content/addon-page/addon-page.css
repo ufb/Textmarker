@@ -463,10 +463,23 @@ input[type="number"] {
   box-shadow: 0 0 2px #777 inset; }
 
 .switch {
+  position: relative;
   width: 44px;
   height: 22px;
   padding: 2px;
   cursor: pointer; }
+  .switch:not(.switch__indicator):not(.switch--immut):before {
+    content: 'O';
+    position: absolute;
+    font-weight: bold;
+    top: 3px;
+    font-size: 14px;
+    left: 27px;
+    color: #e1e2e3;
+    font-family: Arial; }
+  .switch:not(.switch__indicator):not(.switch--immut).active:before {
+    content: 'I';
+    left: 8px; }
   .switch--sync {
     margin-right: 10px; }
   .switch--save .autosave {
@@ -479,7 +492,8 @@ input[type="number"] {
   height: 18px;
   background-color: #c8c8c8;
   display: inline-block;
-  margin-left: 22px;
+  margin-left: 0;
+  text-align: center;
   transition: margin 0.1s; }
   .switch--sync .switch__indicator {
     background-image: url(../../icons/sync.png);
@@ -491,9 +505,16 @@ input[type="number"] {
     background-repeat: no-repeat;
     background-position: center, 0 0;
     background-size: 67%, 100%; }
+  .switch--immut .switch__indicator:before {
+    content: '\221E';
+    display: block;
+    font-size: 16px;
+    position: relative;
+    top: -5px;
+    color: #fff; }
   .switch.active .switch__indicator {
     background-color: rgba(43, 165, 183, 0.75);
-    margin-left: 0; }
+    margin-left: 22px; }
   .switch.active:hover .switch__indicator {
     background-color: #2ba5b7; }
 
@@ -740,6 +761,51 @@ button--small, .btn--small {
   background-size: 13px, 100%;
   margin-left: 5px; }
 
+aside {
+  position: absolute;
+  top: 50px;
+  right: -37px; }
+  @media only screen and (max-width: 940px) {
+    aside {
+      right: 0;
+      top: 0;
+      position: relative; } }
+  aside a {
+    width: 37px;
+    height: 24px;
+    border: 1px solid #aaa;
+    border-left: 0;
+    border-radius: 0 3px 3px 0;
+    display: block;
+    margin-bottom: 7px;
+    opacity: .75; }
+    aside a:hover {
+      opacity: 1;
+      border-color: #c8c8c8; }
+    @media only screen and (max-width: 940px) {
+      aside a {
+        border: 0;
+        border-radius: 2px;
+        display: inline-block;
+        background: #2ba5b7;
+        float: right;
+        margin-left: 7px; }
+        aside a:hover {
+          border: 0; }
+        aside a.github {
+          background-position: center !important; }
+        aside a img {
+          margin-top: 6px !important; } }
+    aside a.github {
+      background-image: url(../../icons/github.png);
+      background-repeat: no-repeat;
+      background-position: 9px center, 0 0;
+      background-size: unset, 100%; }
+    aside a img {
+      width: 20px;
+      height: 13px;
+      margin: 4px 0 0 9px; }
+
 .option-row {
   margin-top: 13px; }
   .option-row button {
@@ -815,6 +881,12 @@ button--small, .btn--small {
 #custom-name-row {
   display: none; }
 
+#quickbutton-download-select {
+  display: none; }
+
+#download-text:checked + label + #quickbutton-download-select {
+  display: inline-block; }
+
 /* misc */
 .tmuipos {
   display: none;
@@ -853,7 +925,7 @@ button--small, .btn--small {
   .entry .name {
     cursor: pointer;
     display: inline-block;
-    max-width: calc(100% - 200px);
+    max-width: calc(100% - 250px);
     padding-right: 3px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -862,27 +934,34 @@ button--small, .btn--small {
     top: 4px; }
     .entry .name:hover {
       text-decoration: underline; }
-  .entry .view {
+  .entry .view, .entry .edit {
     cursor: pointer;
     display: inline-block;
     width: 12px;
     height: 12px;
+    opacity: .5; }
+    .entry .view:hover, .entry .edit:hover {
+      opacity: 1; }
+  .entry .view {
     background-image: url(../../icons/view.png);
     background-repeat: no-repeat;
     background-position: 0 0, 0 0;
-    background-size: 12px, 100%;
-    opacity: .5; }
-    .entry .view:hover {
-      opacity: 1; }
-  .entry .locked {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin: 0 3px -1px -1px;
-    background-image: url(../../icons/lock.png);
+    background-size: 12px, 100%; }
+  .entry .edit {
+    background-image: url(../../icons/edit.png);
     background-repeat: no-repeat;
     background-position: 0 0, 0 0;
     background-size: 12px, 100%; }
+  .entry .immut, .entry .locked {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin: -3px 3px -1px -1px;
+    color: #c8c8c8;
+    position: relative;
+    top: 4px; }
+  .entry .locked {
+    font-size: 17px; }
   .entry .quick-buttons {
     float: right;
     position: relative;
@@ -1115,6 +1194,43 @@ a .at {
     tr:last-child #logs-table td {
       border: 0; }
 
+.news-box {
+  background: #fff;
+  box-shadow: 3px 3px 0 #e1e2e3;
+  padding: 10px;
+  margin-bottom: 10px; }
+  .news-box h3 {
+    padding-bottom: 0;
+    padding-right: 20px;
+    position: relative; }
+    .news-box h3:after {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      right: 3px;
+      top: 3px;
+      background-image: url(../../icons/down.png);
+      background-repeat: no-repeat;
+      background-position: 0 0, 0 0;
+      background-size: unset, 100%;
+      transform: rotate(90deg);
+      opacity: .5; }
+  .news-box p {
+    display: none; }
+  .news-box.open h3 {
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e1e2e3; }
+    .news-box.open h3:after {
+      transform: none; }
+  .news-box.open p {
+    display: block; }
+  .news-box small {
+    display: block;
+    margin-top: 5px; }
+
 a, .link {
   color: #2ba5b7;
   text-decoration: none;
@@ -1124,6 +1240,7 @@ a, .link {
 
 /* MAIN CONTENT */
 #main {
+  position: relative;
   padding: 20px;
   max-width: 760px;
   width: calc(100% - 220px);

@@ -1,23 +1,3 @@
-#add-note {
-  width: 20px;
-  height: 20px;
-  font-size: 16px;
-  padding: 0;
-  position: relative;
-  background: $gradient--button;
-  color: $color-text--grey;
-
-  &:hover {
-    background: $gradient--button-hover;
-  }
-
-  span {
-    position: absolute;
-    top: -1px;
-    left: 3px;
-  }
-}
-
 tmnotesave {
   display: none;
   position: absolute;

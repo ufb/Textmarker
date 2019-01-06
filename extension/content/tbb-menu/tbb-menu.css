@@ -20,25 +20,29 @@ body {
   width: 185px;
   font-family: system, 'Segoe UI', Tahoma; }
 
+a {
+  text-decoration: none; }
+
 ul {
   list-style-type: none;
   font-size: 12px;
-  padding: 5px 0; }
+  padding: 5px 0 8px; }
 
 li {
   padding: 5px 10px; }
-  li .menu__icon {
-    position: relative;
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    top: 3px;
-    margin-right: 8px;
-    opacity: .5; }
   li:hover {
     background: rgba(43, 165, 183, 0.1); }
     li:hover .menu__icon {
       opacity: 1; }
+
+.menu__icon {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  top: 3px;
+  margin-right: 8px;
+  opacity: .5; }
 
 .partingline {
   height: 1px;
@@ -49,8 +53,14 @@ li {
 .partingline:hover {
   background: #e1e2e3; }
 
-#news .menu__icon {
-  background-image: url(../../icons/forklift.png);
+#settings .menu__icon {
+  background-image: url(../../icons/tools.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#history .menu__icon {
+  background-image: url(../../icons/clock.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
@@ -61,14 +71,14 @@ li {
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#settings .menu__icon {
-  background-image: url(../../icons/tools.png);
+#contact .menu__icon {
+  background-image: url(../../icons/ghost.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#history .menu__icon {
-  background-image: url(../../icons/clock.png);
+#news .menu__icon {
+  background-image: url(../../icons/forklift.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
@@ -85,14 +95,43 @@ li {
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#contact .menu__icon {
-  background-image: url(../../icons/ghost.png);
-  background-repeat: no-repeat;
-  background-position: 0 0, 0 0;
-  background-size: unset, 100%; }
-
 #logs .menu__icon {
   background-image: url(../../icons/dna.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
+
+#donate .menu__icon {
+  background-image: url(../../icons/donate.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#github .menu__icon {
+  background-image: url(../../icons/github.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#activate.menu__icon--start {
+  background-image: url(../../icons/start.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#activate.menu__icon--pause {
+  background-image: url(../../icons/pause.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
+#donate, #github {
+  float: right; }
+
+footer {
+  background: #2ba5b7;
+  padding: 7px 10px 8px 12px; }
+  footer .menu__icon {
+    opacity: .85; }
+    footer .menu__icon:hover {
+      opacity: 1; }

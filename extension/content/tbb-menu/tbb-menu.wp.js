@@ -228,7 +228,16 @@ new _utils._DOMMODULE({
     window.close();
   },
   setActivateText: function setActivateText(active) {
-    document.getElementById('activate').innerText = browser.i18n.getMessage('tbb_mitem_1_' + active);
+    var btn = document.getElementById('activate');
+    btn.title = browser.i18n.getMessage('tbb_mitem_1_' + active);
+
+    if (active) {
+      btn.classList.remove('menu__icon--start');
+      btn.classList.add('menu__icon--pause');
+    } else {
+      btn.classList.add('menu__icon--start');
+      btn.classList.remove('menu__icon--pause');
+    }
   }
 });
 

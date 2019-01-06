@@ -195,6 +195,7 @@ var _default = new _utils._MODULE({
   initializing: false,
   area_settings: 'sync',
   area_history: 'sync',
+  area_pagenotes: 'sync',
   setAreas: function setAreas() {
     var _this = this;
 
@@ -202,6 +203,7 @@ var _default = new _utils._MODULE({
       if (storage && storage.sync) {
         _this.area_settings = storage.sync.settings ? 'sync' : 'local';
         _this.area_history = storage.sync.history ? 'sync' : 'local';
+        _this.area_pagenotes = storage.sync.pagenotes ? 'sync' : 'local';
       }
     });
   },
@@ -741,6 +743,7 @@ function _default() {
           '.action-button': 'delegateButtonAction',
           '.switch': 'toggleSwitch',
           '.name': 'open',
+          '.edit': 'edit',
           '.view': 'view',
           '#search-toggle': 'toggleSearch',
           '#remove-filter': 'removeFilter',
@@ -795,8 +798,7 @@ function _default() {
         settings = settings.split(' ');
         type = settings[0];
         spec = settings.length === 2 ? settings[1] : undefined;
-
-        _this.download(names, type, spec);
+        if (type === 'json') _this.export(names);else _this.download(names, type, spec);
       });
     }
 
@@ -843,6 +845,14 @@ function _default() {
     });
   }), _defineProperty(_ref, "open", function open(e, el) {
     this.emit('open:entries', el.getAttribute('data-url'), el.getAttribute('data-name'));
+  }), _defineProperty(_ref, "edit", function edit(e, el) {
+    var newName = window.prompt(browser.i18n.getMessage('nm_message'));
+
+    if (newName) {
+      var oldName = el.getAttribute('data-name');
+      var area = el.parentNode.getElementsByClassName('switch--sync')[0].classList.contains('active') ? 'sync' : 'local';
+      this.emit('rename:entry', oldName, newName, area);
+    }
   }), _defineProperty(_ref, "view", function view(e, el) {
     this.emit('view:entry', el.getAttribute('data-name'));
   }), _defineProperty(_ref, "tag", function tag(names, _tag, force) {
@@ -898,8 +908,11 @@ function _default() {
         infoButton,
         details,
         buttons,
+        edit,
         view,
         tags,
+        immut,
+        immutEl,
         locked,
         lockedEl,
         tagEl,
@@ -925,6 +938,7 @@ function _default() {
         if (entry) {
           tags = entry.tag ? entry.tag.split(' ') : null;
           locked = entry.locked;
+          immut = entry.immut;
           clone = template.cloneNode(true);
           container.appendChild(clone);
           clone.id = 'entry-' + j;
@@ -935,9 +949,11 @@ function _default() {
           label = clone.getElementsByTagName('label')[0];
           details = clone.getElementsByClassName('details')[0];
           buttons = clone.getElementsByClassName('quick-action');
+          edit = clone.getElementsByClassName('edit')[0];
           view = clone.getElementsByClassName('view')[0];
           tagEl = clone.getElementsByClassName('tags')[0];
           lockedEl = clone.getElementsByClassName('locked')[0];
+          immutEl = clone.getElementsByClassName('immut')[0];
           b = buttons.length;
 
           while (b--) {
@@ -950,9 +966,11 @@ function _default() {
           input.className = 'entry-cb';
           input.id = 'entry-cb-' + j;
           input.setAttribute('data-name', name);
+          edit.setAttribute('data-name', name);
           view.setAttribute('data-name', name);
           label.setAttribute('for', 'entry-cb-' + j);
           if (locked) lockedEl.classList.remove('u-display--none');
+          if (immut) immutEl.classList.remove('u-display--none');
 
           if (tags) {
             tags.forEach(function (tag) {
@@ -1623,8 +1641,8 @@ function () {
 
       return _store.default.get('markers').then(function (markers) {
         var marker = markers[_this2.key];
-        var existingStyle = marker.style;
-        _this2.autonote = marker.autonote ? true : false;
+        var existingStyle = marker ? marker.style : null;
+        _this2.autonote = marker && marker.autonote ? true : false;
         if (!existingStyle) _this2.setStyle();else _this2.style = existingStyle;
 
         var styles = _this2.style.split(';'),
@@ -1943,12 +1961,14 @@ function _default() {
           '.naming-opt': 'changeNamingOpt',
           '#notes-new': 'toggleSaveNoteOpt',
           '.customize-quickbuttons': 'changeQuickbuttonOpt',
+          '.download-quickbutton-opt': 'switchQuickbuttonOpt',
           '.ctm-cb': 'toggleCtm',
           '.notes-cb': 'toggleNotes',
           '.misc-cb': 'toggleMisc',
           '.tmuipos': 'changeTmuiPositionOpt',
           '#private-save': 'togglePrivSave',
           '#auto-note': 'toggleAutoNoteOpt',
+          '#immut': 'toggleImmutOpt',
           '#autonote-color': 'changeAutoNoteOpt'
         },
         click: {
@@ -2080,8 +2100,16 @@ function _default() {
       if (historySettings.autosave) saveOpts[0].checked = true;else saveOpts[1].checked = true;
       document.getElementById('name-' + historySettings.naming).checked = true;
       document.getElementById('private-save').checked = historySettings.saveInPriv;
+      document.getElementById('immut').checked = historySettings.immut;
       document.getElementById('notes-new').checked = historySettings.saveNote;
-      document.getElementById('quickbutton-download-select').value = historySettings.download;
+
+      if (historySettings.download === 'json') {
+        document.getElementById('download-json').checked = true;
+      } else {
+        document.getElementById('download-text').checked = true;
+        document.getElementById('quickbutton-download-select').value = historySettings.download;
+      }
+
       var miscSettings = settings.misc;
       document.getElementById('mark-method--' + miscSettings.markmethod).checked = true;
       document.getElementById('misc-bm').checked = miscSettings.bmicon;
@@ -2097,6 +2125,7 @@ function _default() {
       document.getElementById('custom-search--end').value = miscSettings.customSearch ? miscSettings.customSearch[1] : '';
       document.getElementById('tmuipos--noteicon').value = miscSettings.tmuipos;
       document.getElementById('tmuipos--bmicon').value = miscSettings.tmuipos;
+      document.getElementById('misc-progressbar').checked = miscSettings.progressbar;
     },
     showCustomSearchSettingSuccess: function showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('u-display--none');
@@ -2115,6 +2144,9 @@ function _default() {
     changeAutoNoteOpt: function changeAutoNoteOpt(e, el) {
       var val = document.getElementById('auto-note').checked ? el.value : false;
       this.emit('change:autonote-setting', this.marker.key, val);
+    },
+    toggleImmutOpt: function toggleImmutOpt(e, el) {
+      this.emit('change:immut-setting', el.checked);
     },
     addMarker: function addMarker(e, el) {
       var key = el.value,
@@ -2184,6 +2216,11 @@ function _default() {
     changeQuickbuttonOpt: function changeQuickbuttonOpt(e, el) {
       if (!this.allowedQuickbuttonOpts.includes(el.value)) return false;
       this.emit('toggle:quickbuttonopt-setting', el.name, el.value);
+    },
+    switchQuickbuttonOpt: function switchQuickbuttonOpt(e, el) {
+      var type = el.getAttribute('data-id');
+      var val = type === 'json' ? type : document.getElementById('quickbutton-download-select').value;
+      this.emit('switch:quickbuttonopt-setting', el.name, val);
     },
     toggleNotes: function toggleNotes(e, el) {
       this.emit('toggle:notification-setting', el.name, el.checked);
@@ -2257,6 +2294,7 @@ function _default() {
     autoinit: function autoinit() {
       document.getElementById('sync-switch--settings').classList.toggle('active', _store.default.area_settings === 'sync');
       document.getElementById('sync-switch--history').classList.toggle('active', _store.default.area_history === 'sync');
+      document.getElementById('sync-switch--pagenotes').classList.toggle('active', _store.default.area_pagenotes === 'sync');
     },
     toggleSwitch: function toggleSwitch(e, el) {
       el = el.classList.contains('switch--sync') ? el : el.parentNode;
@@ -2352,7 +2390,7 @@ var _default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 

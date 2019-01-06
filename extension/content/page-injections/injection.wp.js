@@ -204,6 +204,7 @@ var _default = new _utils._MODULE({
   locked: false,
   tmid: '',
   noteColor: 'yellow',
+  redescribing: false,
   autoinit: function autoinit() {
     this.updateLockedStatus();
   },
@@ -310,6 +311,18 @@ var _default = new _utils._MODULE({
       return storage.settings.history.autosave;
     });
   },
+  _get_immut: function _get_immut() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.history.immut;
+    });
+  },
+  _get_progressbar: function _get_progressbar() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return true;
+      return storage.settings.misc.progressbar;
+    });
+  },
   _get_markers: function _get_markers() {
     return browser.storage[this.area_settings].get().then(function (storage) {
       return storage.settings.markers;
@@ -358,6 +371,8 @@ var _contextmenu = _interopRequireDefault(__webpack_require__(/*! ./modules/cont
 
 var _marker = _interopRequireDefault(__webpack_require__(/*! ./modules/marker */ "./content/page-injections/modules/marker.js"));
 
+var _progress = _interopRequireDefault(__webpack_require__(/*! ./modules/progress */ "./content/page-injections/modules/progress.js"));
+
 var _restorer = _interopRequireDefault(__webpack_require__(/*! ./modules/restorer */ "./content/page-injections/modules/restorer.js"));
 
 var _notes = _interopRequireDefault(__webpack_require__(/*! ./modules/notes */ "./content/page-injections/modules/notes.js"));
@@ -391,6 +406,7 @@ new _utils._MODULE({
     if (!on || this.bootstrapped) return false;
     (0, _page.default)();
     (0, _contextmenu.default)();
+    (0, _progress.default)();
     (0, _restorer.default)();
     (0, _marker.default)();
     (0, _notes.default)();
@@ -674,12 +690,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var _MARK =
 /*#__PURE__*/
 function () {
-  function _MARK(marker, key, preSettings) {
+  function _MARK(marker, key, preSettings, immut) {
     _classCallCheck(this, _MARK);
 
     var selection, defaults;
     this.marker = marker;
     selection = this.selection = marker.selection;
+    this.immut = _store.default.redescribing ? marker.immut : immut;
     defaults = {
       style: '',
       bookmark: false,
@@ -713,6 +730,10 @@ function () {
       bookmark: preSettings.bookmark,
       note: preSettings.note
     };
+
+    if (this.immut && (_store.default.redescribing || !this.keyData.conds)) {
+      this.describe_immut();
+    }
   }
 
   _createClass(_MARK, [{
@@ -740,7 +761,7 @@ function () {
 
       this.definePosition(lastIndex);
       if (this.keyData.bookmark) this.marker.setBookmark(this, false);
-      if (!this.keyData.conds) this.describe();
+      if (!this.immut && (_store.default.redescribing || !this.keyData.conds)) this.describe();
       this.registerClickListeners();
       return this;
     }
@@ -778,7 +799,6 @@ function () {
       var event;
 
       if (e.target) {
-        e.preventDefault();
         e.stopPropagation();
         _store.default.tmid = e.target.getAttribute('data-tm-id');
         event = 'clicked:mark';
@@ -894,17 +914,16 @@ function () {
   }, {
     key: "describe",
     value: function describe() {
-      var range = this.range,
-          selection = this.selection,
-          start = range.startContainer,
-          end = range.endContainer,
-          singleNode = this.simple,
-          //parent = this.containers ? this.containers[0] : start.parentNode,
-      parent = this.wrappers[0].parentNode,
-          parentIsTM = parent.hasAttribute('data-tm-id'),
-          grampa = parent.parentNode,
-          grandgrampa = grampa.parentNode || 0,
-          fTNP = this.anchorNodePosition;
+      var range = this.range;
+      var selection = this.selection;
+      var start = range.startContainer;
+      var end = range.endContainer;
+      var singleNode = this.simple;
+      var parent = this.wrappers[0].parentNode;
+      var parentIsTM = parent.hasAttribute('data-tm-id');
+      var grampa = parent.parentNode;
+      var grandgrampa = grampa.parentNode || 0;
+      var fTNP = this.anchorNodePosition;
       this.keyData.conds = {
         o: this.startOffset,
         n1: parentIsTM ? 'TM' : parent.nodeName,
@@ -913,6 +932,38 @@ function () {
         p2: this.whichChild(grampa, parent),
         p3: grandgrampa ? this.whichChild(grandgrampa, grampa) : undefined,
         p4: grandgrampa && grandgrampa.parentNode ? this.whichChild(grandgrampa.parentNode, grandgrampa) : undefined
+      };
+      return this.keyData.conds;
+    }
+  }, {
+    key: "describe_immut",
+    value: function describe_immut() {
+      var selection = this.selection;
+      var startPosition = [];
+      var endPosition = [];
+      var body = document.body;
+      var start = selection.anchorNode,
+          end = selection.focusNode;
+
+      while (start !== body) {
+        startPosition.push(this.whichChild(start.parentNode, start));
+        start = start.parentNode;
+      }
+
+      while (end !== body) {
+        endPosition.push(this.whichChild(end.parentNode, end));
+        end = end.parentNode;
+      }
+
+      this.keyData.conds = {
+        s: {
+          o: this.startOffset,
+          p: startPosition
+        },
+        e: {
+          o: this.endOffset,
+          p: endPosition
+        }
       };
       return this.keyData.conds;
     }
@@ -957,6 +1008,7 @@ function _default() {
     },
     handler: null,
     appended: false,
+    height: 0,
     autoinit: function autoinit() {
       var _this = this;
 
@@ -991,21 +1043,30 @@ function _default() {
     remove: function remove() {
       if (this.appended) {
         DOC.body.removeChild(this.el);
-        this.el.removeEventListener('click', this.handler, false);
+        this.el.removeEventListener('mousedown', this.handler, false);
         this.appended = false;
       }
     },
     show: function show() {
+      var popup = this.el;
+      var style = popup.style;
+      var popupHeight;
+
       if (!this.appended) {
-        DOC.body.appendChild(this.el);
-        var handler = this.handler = this.onClick.bind(this);
-        this.el.addEventListener('mousedown', handler, false);
+        DOC.body.appendChild(popup);
+        var handler = this.handler = this.onMousedown.bind(this);
+        popup.addEventListener('mousedown', handler, false);
         this.appended = true;
+        var selectionPosition = window.getSelection().getRangeAt(0).getBoundingClientRect();
+        style.top = selectionPosition.top - selectionPosition.height + window.scrollY + 'px';
+        style.left = selectionPosition.left + window.scrollX + 'px';
+        popupHeight = popup.offsetHeight;
+        style.top = parseInt(style.top) - popupHeight + 'px';
+      } else if ((popupHeight = popup.offsetHeight) !== this.height) {
+        style.top = parseInt(style.top) + popupHeight - this.height + 'px';
       }
 
-      var selectionPosition = window.getSelection().getRangeAt(0).getBoundingClientRect();
-      this.el.style.top = selectionPosition.top - selectionPosition.height - 10 + window.scrollY + 'px';
-      this.el.style.left = selectionPosition.left + window.scrollX + 'px';
+      this.height = popupHeight;
     },
     onSelectionChange: function onSelectionChange(selected) {
       if (this.active) {
@@ -1014,7 +1075,7 @@ function _default() {
         this.remove();
       }
     },
-    onClick: function onClick(e) {
+    onMousedown: function onMousedown(e) {
       e.preventDefault();
       e.stopPropagation();
       var el = e.target;
@@ -1069,6 +1130,7 @@ function _default() {
         'selection-end': 'onMarkerKey',
         'restored:range': 'recreate',
         'finished:all-restorations': 'onFinishedRestoration',
+        'canceled:restoration': 'onCanceledRestoration',
         'ctx:b': 'setBookmark',
         'ctx:-b': 'removeBookmark',
         'ctx:d': 'remove',
@@ -1084,6 +1146,7 @@ function _default() {
         'sidebar:bookmark': 'setBookmark',
         'sidebar:delete-bookmark': 'removeBookmark',
         'sidebar:note': 'addNote',
+        'sidebar:immut': 'immut',
         'sidebar:save-changes': 'save',
         'sidebar:retry-restoration': 'resume',
         'sidebar:undo': 'undo',
@@ -1091,8 +1154,7 @@ function _default() {
         'sidebar:next-mark': 'gotoMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark',
-        'clicked:mark': 'gotoMark',
-        'save:page-notes': 'onSavePageNotes'
+        'clicked:mark': 'gotoMark'
       }
     },
     selection: null,
@@ -1128,9 +1190,9 @@ function _default() {
 
       this.idcount = Math.max.apply(null, ids);
     },
-    mark: function mark(key, data) {
+    mark: function mark(key, data, immut) {
       this.undone.length = 0;
-      var mark = new _markItem.default(this, key, data).create();
+      var mark = new _markItem.default(this, key, data, immut).create();
       if (data.autonote) this.emit('add:note', mark, data.autonote);
       return mark;
     },
@@ -1240,6 +1302,8 @@ function _default() {
       this.emit('removed:mark', id[0]);
     },
     resume: function resume() {
+      _store.default.disabled = false;
+
       while (this.done.length) {
         this.undo(true);
       }
@@ -1253,9 +1317,15 @@ function _default() {
       this.markScrollPos = -1;
       this.emit('resumed:markers');
     },
+    immut: function immut(immutable) {
+      this.immut = immutable;
+      _store.default.redescribing = true;
+      this.resume();
+    },
     save: function save() {
       var _this = this;
 
+      if (_store.default.disabled) return this.emit('canceled:save-after-canceled-restoration');
       var iframe = _store.default.iframe;
       var locked = _store.default.locked;
 
@@ -1294,8 +1364,8 @@ function _default() {
       if (save !== false) this.autosave();
       if (order) this.orderMarksVisually();
     },
-    recreate: function recreate(selection, mark) {
-      this.selection = selection;
+    recreate: function recreate(mark) {
+      this.selection = new _selection.default();
       this.store(this.mark(mark.key, mark), false, false);
     },
     onFinishedRestoration: function onFinishedRestoration() {
@@ -1314,6 +1384,14 @@ function _default() {
       }
 
       this.orderMarksVisually();
+
+      if (_store.default.redescribing) {
+        _store.default.redescribing = false;
+        this.save();
+      }
+    },
+    onCanceledRestoration: function onCanceledRestoration() {
+      _store.default.disabled = true;
     },
     addNote: function addNote(id) {
       this.emit('add:note', this.findMark(id));
@@ -1486,8 +1564,10 @@ function _default() {
         key = key || 'm';
       }
 
-      _store.default.get('markers').then(function (markers) {
-        _this3.store(_this3.mark(key, markers[key]), true, true);
+      _store.default.get('settings').then(function (settings) {
+        _this3.immut = typeof _this3.immut === 'boolean' ? _this3.immut : !!settings.history.immut;
+
+        _this3.store(_this3.mark(key, settings.markers[key], _this3.immut), true, true);
       });
     },
     onHotkey: function onHotkey(key) {
@@ -1523,10 +1603,6 @@ function _default() {
           break;
       }
     },
-    onSavePageNotes: function onSavePageNotes(notes) {
-      this.pageNotes = notes;
-      this.save();
-    },
     preventDefault: function preventDefault(e) {
       if (e && e.preventDefault) {
         e.preventDefault();
@@ -1543,6 +1619,7 @@ function _default() {
       entry.title = window.document.title;
       entry.count = entry.marks.length;
       entry.idcount = this.idcount;
+      entry.immut = this.immut;
 
       if (_store.default.isNew || _store.default.locked) {
         entry.first = entry.last;
@@ -1552,11 +1629,6 @@ function _default() {
       }
 
       entry.name = _store.default.locked ? entry.marks[0].text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1) : _store.default.isNew ? _store.default.name : entry.name;
-
-      if (this.pageNotes) {
-        entry.notes = this.pageNotes;
-      }
-
       return entry;
     },
     collectMarks: function collectMarks() {
@@ -2112,6 +2184,22 @@ function _default() {
     set: false,
     initialized: false,
     retryActive: false,
+    shiftSensitiveKeys: [13, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 171, 173],
+    keyCodeMap: {
+      '13': 'Enter',
+      '48': '0',
+      '49': '1',
+      '50': '2',
+      '51': '3',
+      '52': '4',
+      '53': '5',
+      '54': '6',
+      '55': '7',
+      '56': '8',
+      '57': '9',
+      '171': '+',
+      '173': '-'
+    },
     autoinit: function autoinit() {
       //_READER = this.readerMode = this.isReaderMode();
       this.setup();
@@ -2173,28 +2261,35 @@ function _default() {
           functionKeys = lockedActions.concat(arrowKeys),
           defaultMarkers = ['m', '2', '3'];
       if (_store.default.locked && lockedActions.includes(key)) return true;
-      if (keyCode === 50) key = '2';else if (keyCode === 51) key = '3';
+      if (this.shiftSensitiveKeys.includes(keyCode)) key = this.keyCodeMap[keyCode];
       if (!functionKeys.includes(key) && window.getSelection().isCollapsed) return true;
       if (this.isEditable(e.target)) return true;
 
       _store.default.get('settings').then(function (settings) {
         if (!settings) return true;
+        var origKey = key;
+        var markers = settings.markers;
+        var shortcuts = settings.shortcuts;
+        var isMarkerKey = markers[key];
+        var isCustomMarkerKey = isMarkerKey && !defaultMarkers.includes(key);
+        if (isCustomMarkerKey) key = 'cm';
+        var setting = shortcuts[key];
+        if (!setting) return true;
 
         if (!modKey) {
-          if (key === 'w' && !settings.shortcuts.w[0] && settings.shortcuts.w[1]) _this2.lookup();else if (settings.markers[key] && (!defaultMarkers.includes(key) || !settings.shortcuts[key] || !settings.shortcuts[key][0] && settings.shortcuts[key][1])) {
-            _this2.emit('pressed:marker-key', e, key);
+          if (key === 'w' && !setting[0] && setting[1]) {
+            _this2.lookup();
+          } else if (isMarkerKey && !setting[0] && setting[1]) {
+            _this2.emit('pressed:marker-key', e, origKey);
           }
         } else {
-          var setting = settings.shortcuts[key];
-          if (!setting || !setting[1]) return true;
-          var shortcut = setting[0].split('-'),
-              s1,
-              s2;
-          s1 = shortcut[0];
-          s2 = shortcut[1];
+          if (!setting[1]) return true;
+          var shortcut = setting[0].split('-');
+          var s1 = shortcut[0];
+          var s2 = shortcut[1];
           if (!e[s1] || s2 && !e[s2]) return true;
-          if (key === 'w') _this2.lookup();else if (defaultMarkers.includes(key) && settings.markers[key]) {
-            _this2.emit('pressed:marker-key', e, key);
+          if (key === 'w') _this2.lookup();else if (isMarkerKey) {
+            _this2.emit('pressed:marker-key', e, origKey);
           } else _this2.emit('pressed:hotkey', key);
         }
       });
@@ -2262,7 +2357,6 @@ function _default() {
           lockedEntries.push(entry);
           lockedEntriesExist = true;
         } else {
-          lockedEntries = [];
           entries = [entry];
           nonLockedEntries++;
         }
@@ -2300,6 +2394,120 @@ function _default() {
         bookmark: !!document.getElementById('textmarker-bookmark-anchor'),
         retryActive: this.retryActive
       }, info);
+    }
+  });
+}
+
+/***/ }),
+
+/***/ "./content/page-injections/modules/progress.js":
+/*!*****************************************************!*\
+  !*** ./content/page-injections/modules/progress.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = _default;
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./content/page-injections/_store.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _default() {
+  var DOC = window.document;
+  return new _utils._DOMMODULE({
+    events: {
+      ENV: {
+        'started:restoration': 'start',
+        'restored:range': 'progress',
+        'failed:restore-range': 'progress',
+        'finished:restoration': 'stop',
+        'updated:misc-settings': 'activate'
+      }
+    },
+    el: null,
+    active: true,
+    steps: 0,
+    totalWidth: 413,
+    currentWidth: 0,
+    stepLength: 0,
+    cancelHandler: null,
+    autoinit: function autoinit() {
+      var _this = this;
+
+      this.activate().then(function () {
+        return _this.create();
+      });
+    },
+    create: function create() {
+      var _this2 = this;
+
+      var modal = this.el = DOC.createElement('tmprogressmodal');
+      [{
+        type: 'tmprogressheader',
+        text: browser.i18n.getMessage('restoring')
+      }, {
+        type: 'tmprogressbar',
+        child: {
+          type: 'tmprogress'
+        }
+      }, {
+        type: 'tmprogresscancel',
+        text: browser.i18n.getMessage('cancel')
+      }].forEach(function (obj) {
+        var el = DOC.createElement(obj.type);
+        modal.appendChild(el);
+        _this2[obj.type] = el;
+        if (obj.text) el.textContent = obj.text;
+
+        if (obj.child) {
+          var child = DOC.createElement(obj.child.type);
+          el.appendChild(child);
+          _this2[obj.child.type] = child;
+        }
+      });
+    },
+    resume: function resume(len) {
+      this.steps = len;
+      this.stepLength = this.totalWidth / len;
+      this.currentWidth = 0;
+      this.tmprogress.style.width = 0;
+    },
+    start: function start(len) {
+      if (!this.active) return;
+      this.resume(len);
+      var handler = this.cancelHandler = this.cancel.bind(this);
+      DOC.body.appendChild(this.el);
+      this.tmprogresscancel.addEventListener('click', handler, false);
+    },
+    progress: function progress() {
+      var width = this.currentWidth += this.stepLength;
+      this.tmprogress.style.width = width + 'px';
+    },
+    stop: function stop() {
+      try {
+        DOC.body.removeChild(this.el);
+        this.tmprogresscancel.removeEventListener('click', this.cancelHandler, false);
+      } catch (e) {}
+    },
+    cancel: function cancel() {
+      this.stop();
+      this.emit('canceled:restoration');
+    },
+    activate: function activate() {
+      var _this3 = this;
+
+      return _store.default.get('progressbar').then(function (progressbar) {
+        return _this3.active = progressbar;
+      });
     }
   });
 }
@@ -2347,28 +2555,90 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var Restorer =
+var RestorerBase =
 /*#__PURE__*/
 function (_MODULE2) {
-  _inherits(Restorer, _MODULE2);
+  _inherits(RestorerBase, _MODULE2);
 
-  function Restorer(entry) {
+  function RestorerBase(entry) {
     var _this;
 
-    _classCallCheck(this, Restorer);
+    _classCallCheck(this, RestorerBase);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Restorer).call(this, entry));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(RestorerBase).call(this, entry));
     _this.entry = entry;
-    _this.queue = [];
-    _this.cache = [];
     _this.lost = [];
     _this.restored = [];
     _this.area = entry.synced ? 'sync' : 'local';
-    _this.phase = 1;
 
-    _this.init();
+    _this.emit('started:restoration', entry.marks.length);
+
+    _this.on('canceled:restoration', function () {
+      return _this.canceled = true;
+    });
 
     return _this;
+  }
+
+  _createClass(RestorerBase, [{
+    key: "processInChunks",
+    value: function processInChunks(data, proc, cb) {
+      proc = proc.bind(this);
+      cb = cb.bind(this);
+
+      (function rec() {
+        var expire = +new Date() + 500;
+
+        do {
+          proc(data.shift());
+        } while (data.length > 0 && expire > +new Date());
+
+        if (data.length > 0) window.setTimeout(function () {
+          return rec();
+        }, 0);else cb();
+      })();
+    }
+  }, {
+    key: "report",
+    value: function report() {
+      if (this.canceled) return false;
+      var ll = this.lost.length;
+
+      if (ll) {
+        while (ll--) {
+          delete this.lost[ll].temp;
+        }
+
+        this.emit('lost:marks');
+      }
+
+      this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
+    }
+  }]);
+
+  return RestorerBase;
+}(_utils._MODULE);
+
+var Restorer =
+/*#__PURE__*/
+function (_RestorerBase) {
+  _inherits(Restorer, _RestorerBase);
+
+  function Restorer(entry) {
+    var _this2;
+
+    _classCallCheck(this, Restorer);
+
+    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Restorer).call(this, entry));
+    _this2.queue = [];
+    _this2.cache = [];
+    _this2.phase = 1;
+    _this2.chunkDuration = 500;
+    _this2._timer = +new Date() + _this2.chunkDuration;
+
+    _this2.init();
+
+    return _this2;
   }
 
   _createClass(Restorer, [{
@@ -2394,7 +2664,7 @@ function (_MODULE2) {
         this.queue.push([postponed[i]]);
       }
 
-      this.restore().report();
+      this.restore();
     }
   }, {
     key: "convertDescription",
@@ -2438,6 +2708,8 @@ function (_MODULE2) {
   }, {
     key: "restore",
     value: function restore() {
+      var _this3 = this;
+
       if (this.phase === 2) this.sortQueueById();
       var marks = this.marks = this.queue.shift(),
           length = marks ? marks.length : 0;
@@ -2446,12 +2718,15 @@ function (_MODULE2) {
       if (length) {
         this.setBodySelection(window.document.body).getTextPositions(marks, length);
         if (this.phase === 1 && length > 1) this.postponeOverlappings();
-        this.findPossibleExtrema().ruleOutMultiples().recreateMarks();
-      }
+        this.findPossibleExtrema().ruleOutMultiples().restoreRanges();
+        this.phase++;
 
-      this.phase++;
-      if (this.queue.length) this.restore();
-      return this;
+        if (this.queue.length && !this.canceled) {
+          if (this.timer < +new Date()) setTimeout(function () {
+            return _this3.restore();
+          }, 0);else this.restore(); //this.restore();
+        } else this.report();
+      }
     }
   }, {
     key: "sortQueueById",
@@ -2637,9 +2912,7 @@ function (_MODULE2) {
   }, {
     key: "findPossibleExtrema",
     value: function findPossibleExtrema() {
-      var selection = this.selection,
-          range = this.range,
-          nodes = this.bodyTextNodes,
+      var nodes = this.bodyTextNodes,
           n = nodes.length,
           indices = this.allPossibleStartPositions,
           phase = this.phase,
@@ -2706,7 +2979,10 @@ function (_MODULE2) {
                 indices.splice(l, 1);
                 continue;
               } else {
-                mark.temp.possibleStartNodes.push(node);
+                mark.temp.possibleStartNodes.push({
+                  node: node,
+                  pos: i
+                });
                 mark.temp.startFoundFor.push(startPosition);
                 startFoundFor.push(id);
               }
@@ -2727,7 +3003,8 @@ function (_MODULE2) {
               mark.temp.endFoundFor.push(endPosition);
               mark.temp.possibleEnds[startPosition] = {
                 node: node,
-                offset: possibleFocusOffset
+                offset: possibleFocusOffset,
+                pos: i
               };
 
               if (!satisfied.includes(id)) {
@@ -2777,7 +3054,8 @@ function (_MODULE2) {
           conds,
           startOffset,
           temp,
-          textLength;
+          textLength,
+          start;
 
       while (i--) {
         mark = cache[i];
@@ -2794,7 +3072,7 @@ function (_MODULE2) {
 
         if (p > 1) {
           while (p--) {
-            node = possibleStartNodes[p];
+            node = possibleStartNodes[p].node;
             parent = node.parentNode.parentNode;
             grampa = parent.parentNode || 0;
 
@@ -2809,7 +3087,7 @@ function (_MODULE2) {
 
               while (matches.length) {
                 q = matches.pop();
-                parent = possibleStartNodes[q].parentNode;
+                parent = possibleStartNodes[q].node.parentNode;
                 grampa = parent.parentNode || 0;
                 grandgrampa = grampa && grampa.parentNode ? grampa.parentNode : 0;
                 grandgrandgrampa = grandgrampa && grandgrampa.parentNode ? grandgrampa.parentNode : 0;
@@ -2826,7 +3104,9 @@ function (_MODULE2) {
         } else p = 0;
 
         p = p || 0;
-        mark.temp.startNode = mark.temp.possibleStartNodes[p];
+        start = mark.temp.possibleStartNodes[p];
+        mark.temp.startNode = start.node;
+        mark.temp.startNodePosition = start.pos;
         this.setMatchingEnd(mark, p);
       }
 
@@ -2838,6 +3118,7 @@ function (_MODULE2) {
       var startPosition = mark.temp.startFoundFor[p],
           end = mark.temp.possibleEnds[startPosition];
       mark.temp.endNode = end.node;
+      mark.temp.endNodePosition = end.pos;
       mark.temp.focusOffset = end.offset;
     }
   }, {
@@ -2870,9 +3151,9 @@ function (_MODULE2) {
       }
     }
   }, {
-    key: "recreateMarks",
-    value: function recreateMarks() {
-      var range = this.range,
+    key: "restoreRanges",
+    value: function restoreRanges() {
+      var range = document.createRange(),
           selection = this.selection,
           marks = this.cache,
           i = marks.length,
@@ -2892,11 +3173,15 @@ function (_MODULE2) {
           try {
             range.setStart(start, mark.conds.o);
             range.setEnd(end, focusOffset);
-            selection.resume(range);
-            this.emit('restored:range', selection, mark);
+            selection.self.removeAllRanges();
+            selection.self.addRange(range); //selection.resume(range);
+
+            this.emit('restored:range', mark);
             this.restored.push(mark);
+            selection.recollectNodes(mark);
           } catch (e) {
             this.lost.push(mark);
+            this.emit('failed:restore-range', mark);
           }
 
           delete mark.temp;
@@ -2904,36 +3189,14 @@ function (_MODULE2) {
       }
     }
   }, {
-    key: "processPeuAPeu",
-    value: function processPeuAPeu(data, func, cb) {
-      var d = Array.prototype.slice.call(data),
-          done,
-          time0;
-
-      (function rec() {
-        var max = +new Date() + 500;
-
-        do {
-          done = func(d[0]);
-          if (done) d.shift();
-        } while (d.length > 0 && max > +new Date());
-
-        if (d.length > 0) window.setTimeout(function () {
-          return rec();
-        }, 25);else cb();
-      })();
-    }
-  }, {
     key: "setBodySelection",
     value: function setBodySelection(el) {
-      var selection = this.selection = new _selection.default(el);
-
       if (this.phase === 1) {
-        this.trimmedSelectionText = this.squeeze(selection.text);
+        this.selection = new _selection.default(el);
+        this.trimmedSelectionText = this.squeeze(this.selection.text);
       }
 
-      this.bodyTextNodes = selection.nodes;
-      this.range = selection.range;
+      this.bodyTextNodes = this.selection.nodes;
       return this;
     }
   }, {
@@ -2963,24 +3226,77 @@ function (_MODULE2) {
       }
     }
   }, {
-    key: "report",
-    value: function report() {
-      var ll = this.lost.length;
-
-      if (ll) {
-        while (ll--) {
-          delete this.lost[ll].temp;
-        }
-
-        this.emit('lost:marks');
-      }
-
-      this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
+    key: "timer",
+    get: function get() {
+      var timer = this._timer;
+      this._timer = +new Date() + this.chunkDuration;
+      return timer;
     }
   }]);
 
   return Restorer;
-}(_utils._MODULE);
+}(RestorerBase);
+
+var ImmutRestorer =
+/*#__PURE__*/
+function (_RestorerBase2) {
+  _inherits(ImmutRestorer, _RestorerBase2);
+
+  function ImmutRestorer(entry) {
+    var _this4;
+
+    _classCallCheck(this, ImmutRestorer);
+
+    _this4 = _possibleConstructorReturn(this, _getPrototypeOf(ImmutRestorer).call(this, entry));
+    var selection = _this4.selection = new _selection.default();
+    _this4.range = document.createRange();
+    var marks = _this4.marks = entry.marks.sort(function (m1, m2) {
+      return m1.id - m2.id;
+    });
+
+    _this4.processInChunks(marks, _this4.restoreRange, _this4.report);
+
+    return _this4;
+  }
+
+  _createClass(ImmutRestorer, [{
+    key: "restoreRange",
+    value: function restoreRange(mark) {
+      if (this.canceled) return this.marks = [];
+      var conds = mark.conds;
+      var start = conds.s;
+      var end = conds.e;
+      var selection = this.selection;
+      var range = this.range;
+
+      try {
+        range.setStart(this.getNode(start.p), start.o);
+        range.setEnd(this.getNode(end.p), end.o);
+        selection.resume(range);
+        this.emit('restored:range', selection, mark);
+        this.restored.push(mark);
+      } catch (e) {
+        this.lost.push(mark);
+        this.emit('failed:restore-range', mark);
+      }
+    }
+  }, {
+    key: "getNode",
+    value: function getNode(position) {
+      var textNodePosition = position[0];
+      var node = document.body,
+          l = position.length;
+
+      while (l-- > 1) {
+        node = node.children[position[l]];
+      }
+
+      return node.childNodes[textNodePosition];
+    }
+  }]);
+
+  return ImmutRestorer;
+}(RestorerBase);
 
 function _default() {
   return new _utils._MODULE({
@@ -2996,10 +3312,12 @@ function _default() {
     restored: 0,
     failed: 0,
     restore: function restore(entries) {
+      this.t0 = new Date().getTime();
+      console.log('start:', this.t0);
       this.entries = entries;
       this.count = entries.length;
       entries.forEach(function (entry) {
-        return new Restorer(entry);
+        if (entry.immut) new ImmutRestorer(entry);else new Restorer(entry);
       });
     },
     resume: function resume() {
@@ -3014,6 +3332,8 @@ function _default() {
       this.failed++;
     },
     onFinishedRestoration: function onFinishedRestoration(name, restored, lost, area) {
+      console.log('time:', new Date().getTime() - this.t0);
+
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
         if (this.failed) this.emit('failed:restoration');else this.emit('succeeded:restoration');
@@ -3043,6 +3363,14 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -3055,6 +3383,7 @@ function () {
   function _SELECTION(node) {
     _classCallCheck(this, _SELECTION);
 
+    //var t0=+new Date();
     var selection = this.self = window.getSelection();
     if (selection.rangeCount) this.range = selection.getRangeAt(0);
 
@@ -3066,7 +3395,7 @@ function () {
         this.collectNodes().reduceToOneRange().update().adjust().update().retrieveText();
       }
 
-      selection.collapseToStart();
+      selection.collapseToStart(); //console.log('_SELECTION time:',!!node,+new Date() -t0);
     }
   }
 
@@ -3079,11 +3408,12 @@ function () {
   }, {
     key: "resume",
     value: function resume(range) {
+      //var t0=+new Date();
       var selection = this.self;
       selection.removeAllRanges();
       selection.addRange(range);
       this.reduceToOneRange().update().collectNodes().retrieveText();
-      selection.collapseToStart();
+      selection.collapseToStart(); //console.log('resume time:',+new Date()-t0);
     }
   }, {
     key: "update",
@@ -3126,10 +3456,14 @@ function () {
           selection = this.self,
           range = this.range,
           container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
+          filter = wholeDocument ? function (node) {
+        return !self.isBlank(node) && self.hasNormalParent(node);
+      } : function (node) {
+        return selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(node);
+      },
           iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {
         acceptNode: function acceptNode(node) {
-          var parent = node.parentNode;
-          return selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(parent);
+          return filter(node);
         }
       }, false),
           tempRange = document.createRange(),
@@ -3147,6 +3481,32 @@ function () {
       this.nodes = this.getReducedNodeCollection(nodes);
       this.parentNodes = this.collectParentNodes(this.nodes);
       return this;
+    }
+  }, {
+    key: "recollectNodes",
+    value: function recollectNodes(mark) {
+      var _this$nodes;
+
+      var markWrappers = Array.from(document.querySelectorAll('[data-tm-id^="' + mark.id + '_"]'));
+      var m = markWrappers.length;
+      var newSegment = markWrappers.map(function (el) {
+        return el.firstChild;
+      }); // watch out: can be <script> etc.(?) !
+
+      var prev = markWrappers[0].previousSibling;
+      var next = markWrappers[m - 1].nextSibling;
+      var start = mark.temp.startNodePosition;
+      var end = mark.temp.endNodePosition;
+
+      if (prev && prev.nodeType === 3) {
+        newSegment.unshift(prev);
+      }
+
+      if (next && next.nodeType === 3) {
+        newSegment.push(next);
+      }
+
+      (_this$nodes = this.nodes).splice.apply(_this$nodes, [start, end - start + 1].concat(_toConsumableArray(newSegment)));
     }
   }, {
     key: "getReducedNodeCollection",
@@ -3257,8 +3617,9 @@ function () {
   }, {
     key: "hasNormalParent",
     value: function hasNormalParent(node) {
-      var tag = node.tagName.toUpperCase();
-      return tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' && tag !== 'BASE' && tag !== 'TITLE' && tag !== 'NOSCRIPT' && tag !== 'IMG' && tag !== 'IFRAME' && tag !== 'EMBED' && tag !== 'PARAM' && tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' && tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' && tag !== 'MATH' && tag !== 'OBJECT' && !this.isInsideSVG(node);
+      var parent = node.parentNode;
+      var tag = parent.tagName.toUpperCase();
+      return tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' && tag !== 'BASE' && tag !== 'TITLE' && tag !== 'NOSCRIPT' && tag !== 'IMG' && tag !== 'IFRAME' && tag !== 'EMBED' && tag !== 'PARAM' && tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' && tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' && tag !== 'MATH' && tag !== 'OBJECT' && !this.isInsideSVG(parent);
     }
   }, {
     key: "isInsideSVG",
@@ -3495,7 +3856,7 @@ var _default = new _utils._PORT({
   name: 'injection',
   type: 'content',
   events: {
-    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'activated:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries', 'page-state', 'notes-state', 'visually-ordered:marks']
+    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'canceled:restoration', 'canceled:save-after-canceled-restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'activated:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries', 'page-state', 'notes-state', 'visually-ordered:marks']
   }
 });
 

@@ -1,0 +1,49 @@
+.news-box {
+  background: #fff;
+  box-shadow: 3px 3px 0 $color-border--light;
+  padding: $spacing--small;
+  margin-bottom: $spacing--small;
+
+  h3 {
+    padding-bottom: 0;
+    padding-right: $spacing--large;
+    position: relative;
+
+    &:after {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      right: 3px;
+      top: 3px;
+      @include icon('down');
+      transform: rotate(90deg);
+      opacity: .5;
+    }
+  }
+
+  p {
+    display: none;
+  }
+  &.open {
+    h3 {
+      padding-bottom: $spacing--small;
+      margin-bottom: $spacing--medium;
+      border-bottom: 1px solid $color-border--light;
+
+      &:after {
+        transform: none;
+      }
+    }
+
+    p {
+      display: block;
+    }
+  }
+
+  small {
+    display: block;
+    margin-top: $spacing--tiny;
+  }
+}

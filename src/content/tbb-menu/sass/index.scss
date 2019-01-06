@@ -44,44 +44,36 @@ li {
   background: $color-border--light;
 }
 
-#news .menu__icon {
-  @include icon('forklift');
+$links: (
+  'settings': 'tools',
+  'history': 'clock',
+  'help': 'book',
+  'contact': 'ghost',
+  'news': 'forklift',
+  'sync': 'sync2',
+  'export': 'export',
+  'logs': 'dna',
+  'donate': 'donate',
+  'github': 'github'
+);
+
+@each $link, $icon in $links {
+  ##{$link} .menu__icon {
+    @include icon(#{$icon});
+  }
 }
-#help .menu__icon {
-  @include icon('book');
-}
-#settings .menu__icon {
-  @include icon('tools');
-}
-#history .menu__icon {
-  @include icon('clock');
-}
-#sync .menu__icon {
-  @include icon('sync2');
-}
-#export .menu__icon {
-  @include icon('export');
-}
-#contact .menu__icon {
-  @include icon('ghost');
-}
-#logs .menu__icon {
-  @include icon('dna');
-}
+
 #activate.menu__icon--start {
   @include icon('start');
 }
 #activate.menu__icon--pause {
   @include icon('pause');
 }
-#donate .menu__icon {
-  @include icon('donate');
+
+#donate, #github {
   float: right;
 }
-#github .menu__icon {
-  @include icon('github');
-  float: right;
-}
+
 footer {
   background: $color-bg--turquoise;
   padding: 7px 10px 8px 12px;

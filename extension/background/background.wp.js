@@ -458,7 +458,7 @@ new _utils._MODULE({
     _storage.default.get('history').then(function (history) {
       var entries = history.entries,
           matches = [],
-          locked = false,
+          lockedMatches = [],
           entry;
 
       for (var e in entries) {
@@ -466,7 +466,7 @@ new _utils._MODULE({
 
         if (url === _this.getHashlessURL(entry.url)) {
           matches.push(entry);
-          if (entry.locked) locked = true;
+          if (entry.locked) lockedMatches.push(entry);
         }
       }
 
@@ -480,7 +480,7 @@ new _utils._MODULE({
         _this.recentlyOpenedEntry = null;
       }
 
-      entry = locked ? 'locked' : !matches.length ? null : matches[0];
+      entry = lockedMatches.length ? lockedMatches : !matches.length ? null : matches[0];
 
       _this.emit('entry:found', entry);
     });
@@ -557,7 +557,8 @@ function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
-        'granted:save-entry': 'name'
+        'granted:save-entry': 'name',
+        'rename:entry': 'rename'
       }
     },
     name: function name(entry) {
@@ -571,21 +572,36 @@ function _default() {
         return _this.emit('error', 'error_naming');
       });
     },
-    adjustName: function adjustName(name, entry, method) {
+    rename: function rename(oldName, newName, area) {
       var _this2 = this;
+
+      newName = newName.substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1);
+
+      _storage.default.get('history').then(function (history) {
+        var counter = _this2.getDoubleNameCount(history, newName);
+
+        if (counter) newName += ' (' + (counter + 1) + ')';
+
+        _this2.emit('renamed:entry', oldName, newName, area);
+      }).catch(function () {
+        return _this2.emit('error', 'error_naming');
+      });
+    },
+    adjustName: function adjustName(name, entry, method) {
+      var _this3 = this;
 
       name = name ? name : method === 'title' ? entry.title.trim() ? entry.title.trim() : entry.url : method === 'date' ? new Date(entry.first).toLocaleString() : '';
       name = name.substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1);
 
       _storage.default.get('history').then(function (history) {
-        var counter = _this2.getDoubleNameCount(history, name);
+        var counter = _this3.getDoubleNameCount(history, name);
 
         if (counter) name += ' (' + (counter + 1) + ')';
         entry.name = name;
 
-        _this2.emit('named:entry', entry);
+        _this3.emit('named:entry', entry);
       }).catch(function () {
-        return _this2.emit('error', 'error_naming');
+        return _this3.emit('error', 'error_naming');
       });
     },
     getDoubleNameCount: function getDoubleNameCount(history, name) {
@@ -649,6 +665,7 @@ function _default() {
         'updated:entry': 'onUpdatedEntry',
         'failed:restoration': 'onFailedRestoration',
         'succeeded:restoration': 'onSuccessfulRestoration',
+        'canceled:save-after-canceled-restoration': 'onCanceledSave',
         'failed:pbm': 'onFailedPBM',
         'failed:import': 'onFailedImport',
         'error:import': 'onImportError',
@@ -727,6 +744,11 @@ function _default() {
         return settings.misc.failureNote;
       }, browser.i18n.getMessage('note_restoration_failure'), 'error');
     },
+    onCanceledSave: function onCanceledSave() {
+      this.notify(function (settings) {
+        return settings.history.saveNote;
+      }, browser.i18n.getMessage('canceled_save_warning'), 'warning');
+    },
     onSaveError: function onSaveError(error) {
       this.notify(function (settings) {
         return settings.history.saveNote;
@@ -769,20 +791,20 @@ function _default() {
     events: {
       ENV: {
         'activated:tab': 'setPanel',
+        'updated:tab': 'onUpdatedTab',
         'entry:found': 'storeEntry',
         'saved:entry': 'storeEntry',
         'updated:entry': 'storeEntry',
         'opened:sidebar': 'sendEntry',
-        'visually-ordered:marks': 'sendOrderedMarks',
-        'updated:page-note': 'onUpdatedPageNotes'
+        'visually-ordered:marks': 'sendOrderedMarks'
       }
     },
     entries: {},
-    setPanel: function setPanel(tabId) {
+    setPanel: function setPanel(tabId, url) {
       this.isOpen().then(function (open) {
         if (open) {
           browser.sidebarAction.setPanel({
-            panel: browser.runtime.getURL('content/sidebar/sidebar.html#' + tabId),
+            panel: browser.runtime.getURL('content/sidebar/sidebar.html#' + tabId + '_' + url),
             tabId: tabId
           });
         }
@@ -795,21 +817,35 @@ function _default() {
       var _this = this;
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        return _this.entries[tab.id] = entry;
+        var entries = _this.entries;
+        var id = tab.id;
+        entries[id] = entries[id] || [];
+        entries[id][tab.url] = entry;
       });
     },
     sendEntry: function sendEntry() {
       var _this2 = this;
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        return _this2.emit('entry:found-for-tab', _this2.entries[tab.id]);
+        var url = _this2.getHashlessURL(tab.url);
+
+        var entriesForThisTab = _this2.entries[tab.id];
+        var entry = entriesForThisTab ? entriesForThisTab[url] : null;
+
+        _this2.emit('entry:found-for-tab', entry);
       });
     },
     sendOrderedMarks: function sendOrderedMarks(marks) {
       this.emit('entry:ordered-marks', marks);
     },
-    onUpdatedPageNotes: function onUpdatedPageNotes(notes) {
-      this.emit('save:page-notes', notes);
+    onUpdatedTab: function onUpdatedTab(tab, changed) {
+      if (changed.url) {
+        this.setPanel(tab, changed.url);
+      }
+    },
+    getHashlessURL: function getHashlessURL(url) {
+      var h = url.lastIndexOf('#');
+      if (h === -1) return url;else return url.substr(0, h);
     }
   });
 }
@@ -846,10 +882,12 @@ new _utils._MODULE({
       'change:shortcut-setting': 'changeShortcutSetting',
       'toggle:ctm-setting': 'toggleCtmSetting',
       'change:saveopt-setting': 'changeSaveOpt',
+      'change:immut-setting': 'toggleImmutOpt',
       'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
       'toggle:quickbuttonopt-setting': 'toggleQuickbuttonOpt',
+      'switch:quickbuttonopt-setting': 'switchQuickbuttonOpt',
       'toggle:notification-setting': 'toggleNotificationOpt',
       'toggle:misc-setting': 'changeMiscSetting',
       'change:misc-setting': 'changeMiscSetting',
@@ -860,6 +898,7 @@ new _utils._MODULE({
       'remove:custom-marker': 'removeCustomMarker',
       'add:custom-marker': 'addCustomMarker',
       'named:entry': 'saveEntry',
+      'renamed:entry': 'saveNewName',
       'granted:update-entry': 'updateEntry',
       'delete:entries': 'deleteEntries',
       'finished:restoration': 'updateEntryOnRestoration',
@@ -868,7 +907,8 @@ new _utils._MODULE({
       'tag:entries': 'tagEntries',
       'remove:tag': 'removeTag',
       'add:tag': 'addTag',
-      'toggled:sidebar-tab': 'changeSBSettings'
+      'toggled:sidebar-tab': 'changeSBSettings',
+      'updated:page-note': 'updatePageNotes'
     }
   },
   updateOnChangedSync: false,
@@ -1004,6 +1044,12 @@ new _utils._MODULE({
       return settings;
     }, 'saveopt', 'error_save_autosave');
   },
+  toggleImmutOpt: function toggleImmutOpt(val) {
+    this.updateSettings(function (settings) {
+      settings.history.immut = val;
+      return settings;
+    }, 'immutopt', 'error_save_autosave');
+  },
   togglePrivSaveOpt: function togglePrivSaveOpt(val) {
     this.updateSettings(function (settings) {
       settings.history.saveInPriv = val;
@@ -1023,6 +1069,12 @@ new _utils._MODULE({
     }, 'noteopt', 'error_save_notify');
   },
   toggleQuickbuttonOpt: function toggleQuickbuttonOpt(prop, val) {
+    this.updateSettings(function (settings) {
+      settings.history[prop] = val;
+      return settings;
+    }, 'quickbutton', 'error_save_download');
+  },
+  switchQuickbuttonOpt: function switchQuickbuttonOpt(prop, val) {
     this.updateSettings(function (settings) {
       settings.history[prop] = val;
       return settings;
@@ -1085,8 +1137,20 @@ new _utils._MODULE({
       return _this4.emit('failed:save-entry', 'error_save_entry');
     });
   },
-  updateEntry: function updateEntry(entry) {
+  saveNewName: function saveNewName(oldName, newName, area) {
     var _this5 = this;
+
+    _storage.default.update('history', function (history) {
+      var entry = history.entries[oldName];
+      history.entries[newName] = entry;
+      delete history.entries[oldName];
+      return history;
+    }, area).catch(function () {
+      return _this5.emit('failed:update-entry', 'error_update_entry');
+    });
+  },
+  updateEntry: function updateEntry(entry) {
+    var _this6 = this;
 
     _storage.default.update('history', function (history) {
       var name = entry.name,
@@ -1105,13 +1169,13 @@ new _utils._MODULE({
       history.entries[name].lost = lost || [];
       return history;
     }, entry.synced ? 'sync' : 'local').then(function () {
-      return _this5.emit('updated:entry', entry);
+      return _this6.emit('updated:entry', entry);
     }).catch(function () {
-      return _this5.emit('failed:update-entry', 'error_update_entry');
+      return _this6.emit('failed:update-entry', 'error_update_entry');
     });
   },
   deleteEntries: function deleteEntries(names, area) {
-    var _this6 = this;
+    var _this7 = this;
 
     if (!names.length) return;
     area = typeof area === 'string' ? area : 'sync';
@@ -1127,18 +1191,18 @@ new _utils._MODULE({
 
         if (i === -1) names_local.push(name);
 
-        _this6.emit('deleted:entry', name);
+        _this7.emit('deleted:entry', name);
       }
 
       return history;
     }, area).catch(function () {
-      return _this6.emit('failed:delete-entries', 'error_del_entry');
+      return _this7.emit('failed:delete-entries', 'error_del_entry');
     }).then(function () {
       if (area === 'sync' && names_local.length) {
-        _this6.deleteEntries(names_local, 'local');
+        _this7.deleteEntries(names_local, 'local');
       }
     }).then(function () {
-      return _this6.emit('deleted:entries');
+      return _this7.emit('deleted:entries');
     });
   },
   updateEntryOnRestoration: function updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
@@ -1170,28 +1234,28 @@ new _utils._MODULE({
     }, area);
   },
   syncEntry: function syncEntry(name, val) {
-    var _this7 = this;
+    var _this8 = this;
 
     _storage.default.sync(name, val).then(function () {
-      return _this7.emit('synced:entry');
+      return _this8.emit('synced:entry');
     }).catch(function () {
-      return _this7.emit('failed:sync-entry', name);
+      return _this8.emit('failed:sync-entry', name);
     });
   },
   tagEntries: function tagEntries(names, tag) {
-    var _this8 = this;
+    var _this9 = this;
 
     _storage.default.update('history', function (history) {
       var entries = history.entries;
       names.sync.forEach(function (name) {
-        return _this8.addTagToEntry(entries[name], tag);
+        return _this9.addTagToEntry(entries[name], tag);
       });
       return history;
     }, 'sync').then(function () {
       return _storage.default.update('history', function (history) {
         var entries = history.entries;
         names.local.forEach(function (name) {
-          return _this8.addTagToEntry(entries[name], tag);
+          return _this9.addTagToEntry(entries[name], tag);
         });
         return history;
       }, 'local');
@@ -1212,12 +1276,12 @@ new _utils._MODULE({
     }, area);
   },
   addTag: function addTag(tag, entry) {
-    var _this9 = this;
+    var _this10 = this;
 
     var area = entry.synced ? 'sync' : 'local';
 
     _storage.default.update('history', function (history) {
-      _this9.addTagToEntry(history.entries[entry.name], tag);
+      _this10.addTagToEntry(history.entries[entry.name], tag);
 
       return history;
     }, area);
@@ -1232,12 +1296,19 @@ new _utils._MODULE({
     }
     return entry;
   },
+  updatePageNotes: function updatePageNotes(url, notes) {
+    _storage.default.update('pagenotes', function (pagenotes) {
+      pagenotes[url] = notes;
+      return pagenotes;
+    });
+  },
   registerStorageChangedHandler: function registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));
   },
   onStorageChanged: function onStorageChanged(changedItem) {
     if (changedItem.settings) this.emit('updated:settings');
     if (changedItem.history) this.emit('updated:history');
+    if (changedItem.pagenotes) this.emit('updated:pagenotes');
   }
 });
 
@@ -1289,7 +1360,10 @@ function _default() {
       var _this = this;
 
       browser.tabs.onActivated.addListener(function (tab) {
-        return _this.emit('activated:tab', tab.tabId);
+        return _this.emit('activated:tab', tab.tabId, tab.url);
+      });
+      browser.tabs.onUpdated.addListener(function (tabId, changed) {
+        return _this.emit('updated:tab', tabId, changed);
       });
     },
     open: function open(urls, names) {
@@ -1366,70 +1440,87 @@ new _utils._MODULE({
     }
   },
   updateSettings: function updateSettings(settings) {
-    var noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
     var defaultSettings = _defaultStorage.default.settings;
 
     if (!settings.shortcuts) {
       settings = defaultSettings;
     } else {
+      var shortcuts = settings.shortcuts;
+      var markers = settings.markers;
+      var history = settings.history;
+      var misc = settings.misc;
+      var noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
+
+      if (!shortcuts.n) {
+        shortcuts.n = defaultSettings.shortcuts.n;
+        misc.noteicon = defaultSettings.misc.noteicon;
+        misc.noteonclick = defaultSettings.misc.noteonclick;
+      }
+
+      if (!shortcuts.arrowup) {
+        shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
+        shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
+      }
+
+      if (!shortcuts.d[0]) {
+        shortcuts.d[0] = defaultSettings.shortcuts.d[0];
+      }
+
+      if (!shortcuts.sb) {
+        shortcuts.sb = defaultSettings.shortcuts.sb;
+      }
+
+      if (!markers.m.style) {
+        var style;
+
+        for (var m in markers) {
+          style = markers[m];
+          markers[m] = {
+            style: style
+          };
+        }
+      }
+
+      if (!history.sorted) {
+        history.sorted = defaultSettings.history.sorted;
+      }
+
+      if (!history.view) {
+        history.view = defaultSettings.history.view;
+      }
+
+      if (typeof history.saveInPriv !== 'boolean') {
+        history.saveInPriv = defaultSettings.history.saveInPriv;
+      }
+
+      if (typeof history.immut !== 'boolean') {
+        history.immut = defaultStorage.history.immut;
+      }
+
       noteTypes.forEach(function (noteType) {
-        if (!settings.misc[noteType]) {
-          settings.misc[noteType] = defaultSettings.misc[noteType];
+        if (!misc[noteType]) {
+          misc[noteType] = defaultSettings.misc[noteType];
         }
       });
 
-      if (!settings.history.sorted) {
-        settings.history.sorted = defaultSettings.history.sorted;
+      if (!misc.tmuipos) {
+        misc.tmuipos = defaultSettings.misc.tmuipos;
       }
 
-      if (!settings.history.view) {
-        settings.history.view = defaultSettings.history.view;
+      if (typeof misc.notetransp !== 'boolean') {
+        misc.notetransp = defaultSettings.misc.notetransp;
       }
 
-      if (typeof settings.history.saveInPriv !== 'boolean') {
-        settings.history.saveInPriv = defaultSettings.history.saveInPriv;
+      if (!misc.markmethod) {
+        misc.markmethod = defaultSettings.misc.markmethod;
       }
 
-      if (!settings.shortcuts.n) {
-        settings.shortcuts.n = defaultSettings.shortcuts.n;
-        settings.misc.noteicon = defaultSettings.misc.noteicon;
-        settings.misc.noteonclick = defaultSettings.misc.noteonclick;
-      }
-
-      if (!settings.shortcuts.arrowup) {
-        settings.shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
-        settings.shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
-      }
-
-      if (!settings.shortcuts.d[0]) {
-        settings.shortcuts.d[0] = defaultSettings.shortcuts.d[0];
-      }
-
-      if (!settings.shortcuts.sb) {
-        settings.shortcuts.sb = defaultSettings.shortcuts.sb;
-      }
-
-      if (!settings.misc.tmuipos) {
-        settings.misc.tmuipos = defaultSettings.misc.tmuipos;
-      }
-
-      if (typeof settings.misc.notetransp !== 'boolean') {
-        settings.misc.notetransp = defaultSettings.misc.notetransp;
+      if (typeof misc.progressbar !== 'boolean') {
+        misc.progressbar = defaultSettings.misc.progressbar;
       }
 
       if (!settings.sb) {
         settings.sb = defaultSettings.sb;
-      }
-
-      if (!settings.markers.m.style) {
-        var style;
-
-        for (var m in settings.markers) {
-          style = settings.markers[m];
-          settings.markers[m] = {
-            style: style
-          };
-        }
       }
     }
 
@@ -1686,8 +1777,8 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar', 'save:page-notes'],
-    CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab', 'entry:ordered-marks']
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar'],
+    CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'updated:pagenotes', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab', 'entry:ordered-marks']
   }
 });
 
@@ -1719,6 +1810,7 @@ var _default = new _utils._MODULE({
   initializing: false,
   area_settings: _defaultStorage.default.sync.settings ? 'sync' : 'local',
   area_history: _defaultStorage.default.sync.history ? 'sync' : 'local',
+  area_pagenotes: _defaultStorage.default.sync.pagenotes ? 'sync' : 'local',
   init: function init() {
     var _this = this;
 
@@ -1915,6 +2007,7 @@ var _default = new _utils._MODULE({
     }).then(function () {
       _this5.area_settings = sync.settings ? 'sync' : 'local';
       _this5.area_history = sync.history ? 'sync' : 'local';
+      _this5.area_pagenotes = sync.pagenotes ? 'sync' : 'local';
     });
   },
   _set_settings: function _set_settings() {
@@ -2004,7 +2097,23 @@ var _default = new _utils._MODULE({
     var sync = {};
     sync.settings = this.area_settings === 'sync';
     sync.history = this.area_history === 'sync';
+    sync.pagenotes = this.area_pagenotes === 'sync';
     return this._set_sync(updater(sync));
+  },
+  _update_pagenotes: function _update_pagenotes(updater) {
+    var area = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.area_pagenotes;
+    return browser.storage[area].get().then(function (storage) {
+      if (!storage.pagenotes) {
+        storage.pagenotes = (0, _utils._COPY)(_defaultStorage.default.pagenotes);
+      }
+
+      var pagenotes = updater(storage.pagenotes);
+      return browser.storage[area].set({
+        pagenotes: pagenotes
+      }).then(function () {
+        return pagenotes;
+      });
+    });
   }
 });
 
@@ -2110,14 +2219,24 @@ var _default = {
       '3': ['', true],
       arrowup: ['altKey', false, false],
       arrowdown: ['altKey', false, false],
-      sb: ['', '', true]
+      sb: ['', '', true],
+      cm: ['', true]
     },
     markers: {
+      '1': {
+        style: 'background-color:#dd99ff;'
+      },
       '2': {
-        style: 'background-color:#ffcc00;'
+        style: 'background-color:#66bbff;'
       },
       '3': {
-        style: 'background-color:#00ff66;'
+        style: 'background-color:#55ff55;'
+      },
+      '4': {
+        style: 'background-color:#ff6666;color:#ffffff;'
+      },
+      '5': {
+        style: 'background-color:#ffcc00;'
       },
       m: {
         style: 'background-color:#ffee00;'
@@ -2126,8 +2245,9 @@ var _default = {
     history: {
       autosave: true,
       saveInPriv: false,
+      immut: false,
       naming: 'title',
-      download: 'text',
+      download: 'json',
       copy: 'text',
       saveNote: true,
       sorted: 'date-last',
@@ -2150,7 +2270,8 @@ var _default = {
       errorNote: true,
       customSearch: false,
       tmuipos: 'top-right',
-      markmethod: ''
+      markmethod: '',
+      progressbar: true
     },
     sb: {
       tabs: {
@@ -2181,9 +2302,11 @@ var _default = {
   history: {
     entries: {}
   },
+  pagenotes: {},
   sync: {
     settings: false,
-    history: false
+    history: false,
+    pagenotes: false
   }
 };
 exports.default = _default;

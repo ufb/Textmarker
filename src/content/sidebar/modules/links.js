@@ -5,12 +5,15 @@ new _DOMMODULE({
   events: {
     DOM: {
       click: {
-        '.link': 'link'
+        '.link': 'link',
+        '.link__icon': 'link',
+        '.link__text': 'link'
       }
     }
   },
 
   link(e, el) {
+    el = el.classList.contains('link') ? el : el.parentNode;
     this.emit('open:addon-page', el.getAttribute('data-id'));
   }
 });

@@ -19,7 +19,7 @@ new _DOMMODULE({
       document.getElementById('meta__created').innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
       document.getElementById('meta__last-modified').innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
 
-      ['synced', 'immut', 'locked']
+      ['synced', 'immut']
         .forEach(field => document.getElementById('meta__' + field).innerText = entry[field] ? yes : no);
     }
   },

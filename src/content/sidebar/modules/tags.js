@@ -37,7 +37,8 @@ new _DOMMODULE({
   },
   addTag() {
     const inp = document.getElementById('new-tag');
-    const tag = inp.value;
+    const tag = inp.value.trim();
+    if (!tag) return;
     this.emit('add:tag', tag, _STORE.entry);
     inp.value = '';
     this.renderTag(tag);

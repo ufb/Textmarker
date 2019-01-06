@@ -6,19 +6,16 @@ select, input {
   font-family: inherit !important;
 }
 select {
-  @include icon('arrow-down', right 8px);
-  background-color: transparent;
   -moz-appearance: none;
   height: 24px;
-  color: $color-text--turquoise;
+  color: $color-text--grey;
   float: left;
-  padding-right: 15px;
   width: auto;
   border: 0;
-  border-top: 1px solid $color-border--light;
 }
 input[type="text"] {
-  border: 1px solid $color-border--light;
+  border: 0;
+  box-shadow: 0 0 3px -1px #c8c8c8 inset;
   color: inherit;
   padding: 0;
   height: 24px;
