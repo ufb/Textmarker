@@ -51,6 +51,7 @@ new _DOMMODULE({
   },
   setMarkIDs(ids) {
     this.markIDs = ids.reverse();
+    this.render();
   },
   renderSVGFilters() {
     const body = document.body;

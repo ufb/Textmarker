@@ -301,8 +301,9 @@ export default function() {
       let el, pos, id;
       if (mark || mark === 0) {
         if (typeof mark === 'number') {
-          id = this.currentScrollPos = mark+1;
+          this.markScrollPos = mark + 1;
           el = markElements[mark];
+          id = el.getAttribute('data-tm-id').split('_')[0];
         } else {
           id = mark.id;
           el = document.querySelector('.textmarker-highlight[data-tm-id="' + id + '_0"]');
@@ -312,6 +313,7 @@ export default function() {
         el = markElements[pos];
         id = el.getAttribute('data-tm-id').split('_')[0];
       }
+
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
 			if (!mark || typeof mark === 'number') this.getById(id).onClick(id);
@@ -331,7 +333,7 @@ export default function() {
       Array.from(document.querySelectorAll('.textmarker-highlight--active'))
         .forEach(tm => tm.classList.remove('textmarker-highlight--active'));
 
-      const tms = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id*="' + id + '_"]'));
+      const tms = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id^="' + id + '_"]'));
 
       tms.forEach(tm => tm.classList.add('textmarker-highlight--active'));
 
