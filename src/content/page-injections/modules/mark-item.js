@@ -112,18 +112,20 @@ export default class _MARK {
   definePosition(n, includingOffsets) {
     let wrappers = this.wrappers;
     n = typeof n === 'number' ? n : wrappers.length - 1;
-    let firstWrapper = wrappers[0],
-        lastWrapper = wrappers[n],
-        anchorPrev, focusPrev;
+    const firstWrapper = wrappers[0];
+    const lastWrapper = wrappers[n];
+    const firstParent = firstWrapper.parentNode;
+    const lastParent = lastWrapper.parentNode;
+    let anchorPrev, focusPrev;
 
-    this.anchorNodePosition = this.whichChild(firstWrapper.parentNode, firstWrapper, true) - 1;
-    this.focusNodePosition = this.whichChild(lastWrapper.parentNode, lastWrapper, true);
+    this.anchorNodePosition = this.whichChild(firstParent, firstWrapper, true) - 1;
+    this.focusNodePosition = this.whichChild(lastParent, lastWrapper, true);
 
     anchorPrev = firstWrapper.previousSibling;
     focusPrev = lastWrapper.previousSibling;
 
     if (anchorPrev && anchorPrev.nodeType === 1) this.anchorNodePosition += 1;
-    if (!focusPrev || focusPrev.nodeType === 3) this.focusNodePosition -= 1;
+    if (!focusPrev || focusPrev.nodeType === 3 || firstParent === lastParent) this.focusNodePosition -= 1;
 
     if (this.anchorNodePosition < 0) this.anchorNodePosition = 0;
     if (this.focusNodePosition < 0) this.focusNodePosition = 0;
