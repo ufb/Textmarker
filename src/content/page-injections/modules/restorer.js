@@ -601,7 +601,7 @@ class ImmutRestorer extends RestorerBase {
   constructor(entry) {
     super(entry)
 
-    const selection = this.selection = new _SELECTION();
+    this.selection = window.getSelection();
     this.range = document.createRange();
     const marks = this.marks = entry.marks.sort((m1, m2) => m1.id - m2.id);
 
@@ -619,8 +619,9 @@ class ImmutRestorer extends RestorerBase {
     try {
       range.setStart(this.getNode(start.p), start.o);
       range.setEnd(this.getNode(end.p), end.o);
-      selection.resume(range);
-      this.emit('restored:range', selection, mark);
+      selection.removeAllRanges();
+      selection.addRange(range);
+      this.emit('restored:range', mark);
       this.restored.push(mark);
     } catch(e) {
       this.lost.push(mark);
