@@ -29,13 +29,12 @@
   #header,
   #tab--meta,
   #tab--tags,
-  #page-action--immut,
-  #action-box--delete,
-  #action-box--bookmark,
-  #action-box--delete-bookmark,
-  #action-box--undo,
-  #action-box--redo,
-  #action-box--scroll {
+  #switch-box,
+  #mark-action--delete-highlight,
+  #mark-action--bookmark,
+  #page-action--scroll,
+  #page-action--undo,
+  #page-action--redo {
     display: none !important;
   }
 }
