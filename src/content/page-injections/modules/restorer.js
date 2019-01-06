@@ -123,6 +123,8 @@ class Restorer extends RestorerBase {
       possibleEnds: {},
       possibleFocusOffsets: []
     };
+
+    mark.synced = this.entry.synced;
   }
   restore() {
     if (this.phase === 2) this.sortQueueById();

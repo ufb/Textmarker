@@ -278,11 +278,11 @@ new _MODULE({
       .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
   },
   updateEntry(entry) {
+    const name = entry.name;
+    const receivedCompleteEntry = !!entry.url;
+
     _STORAGE.update('history', history => {
-      let name = entry.name,
-          currentEntry = history.entries[name],
-          lost = currentEntry.lost,
-          receivedCompleteEntry = !!entry.url;
+      const lost = history.entries[name].lost;
 
       if (receivedCompleteEntry) {
         history.entries[name] = entry;
@@ -296,7 +296,7 @@ new _MODULE({
       return history;
     }, entry.synced ? 'sync' : 'local')
       .then(() => this.emit('updated:entry', entry))
-      .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
+      .catch((e) => this.emit('failed:update-entry', 'error_update_entry'));
   },
   deleteEntries(names, area) {
     if (!names.length) return;

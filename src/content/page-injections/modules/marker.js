@@ -293,7 +293,13 @@ export default function() {
       if (!_STORE.locked) return this.autosave();
 
       const mark = this.getById(id).keyData;
-      const entry = { marks: [mark], name: mark.text.trim().substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1) };
+      const synced = typeof mark.synced === 'boolean' ? mark.synced : _STORE.area_history === 'sync';
+
+      const entry = {
+        marks: [mark],
+        name: mark.text.trim().substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1),
+        synced
+      };
       this.emit('update:entry?', entry);
     },
     gotoMark(mark) {
@@ -516,6 +522,7 @@ export default function() {
 
       for (let m = 0, kD; m < l; m++) {
 				kD = done[m].keyData;
+        delete kD.synced;
 				marks.push(kD);
 			}
       return marks;

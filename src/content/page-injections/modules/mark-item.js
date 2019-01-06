@@ -43,7 +43,8 @@ export default class _MARK {
 			conds: preSettings.conds,
 			text: preSettings.text,
 			bookmark: preSettings.bookmark,
-      note: preSettings.note
+      note: preSettings.note,
+      synced: preSettings.synced
 		};
 
     if (this.immut && (_STORE.redescribing || !this.keyData.conds)) {
