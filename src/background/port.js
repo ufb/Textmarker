@@ -27,6 +27,7 @@ new _PORT({
       'deleted:entries',
       'imported:settings',
       'imported:history',
+      'saved:new-name',
       'ctx:m',
       'ctx:d',
       'ctx:b',

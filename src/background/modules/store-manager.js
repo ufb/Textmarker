@@ -275,6 +275,7 @@ new _MODULE({
       delete history.entries[oldName];
       return history;
     }, area)
+      .then(() => this.emit('saved:new-name', oldName, newName))
       .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
   },
   updateEntry(entry) {

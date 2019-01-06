@@ -14,7 +14,8 @@ export default function() {
         'opened:sidebar': 'sendPageState',
         'failed:restoration': 'activateRetry',
         'succeeded:restoration': 'deactivateRetry',
-        'update:entry?': 'deactivateRetry'
+        'update:entry?': 'deactivateRetry',
+        'saved:new-name': 'renameEntry'
       },
       DOM: {
         keydown: {
@@ -238,6 +239,12 @@ export default function() {
     },
     deactivateRetry() {
       this.retryActive = false;
+    },
+    renameEntry(oldName, newName) {
+      if (_STORE.name && _STORE.name === oldName) {
+        _STORE.name = newName;
+        if (_STORE.entry) _STORE.entry.name = newName;
+      }
     },
     sendPageState(info) {
       this.emit('page-state', {
