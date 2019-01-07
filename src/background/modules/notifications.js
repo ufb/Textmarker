@@ -10,7 +10,6 @@ export default function() {
         'failed:update-entry': 'onSaveError',
         'failed:delete-entries': 'onDeleteError',
         'failed:open-tab': 'onOpenTabFailure',
-        'updated:entry': 'onUpdatedEntry',
         'failed:restoration': 'onFailedRestoration',
         'succeeded:restoration': 'onSuccessfulRestoration',
         'canceled:save-after-canceled-restoration': 'onCanceledSave',
@@ -83,14 +82,6 @@ export default function() {
       this.notify(
         settings => true,
         browser.i18n.getMessage('note_import_success'),
-        'success'
-      );
-    },
-
-    onUpdatedEntry() {
-      this.notify(
-        settings => settings.misc.changedNote,
-        browser.i18n.getMessage('note_updated_entry'),
         'success'
       );
     },
