@@ -3,7 +3,7 @@ import _STORE from './../_store'
 export default class _SELECTION {
 
   constructor(node) {
-//var t0=+new Date();
+
     let selection = this.self = window.getSelection();
 
     if (selection.rangeCount) this.range = selection.getRangeAt(0);
@@ -34,7 +34,7 @@ export default class _SELECTION {
 
     return this;
   }
-  resume(range) {//var t0=+new Date();
+  resume(range) {
     let selection = this.self;
 
     selection.removeAllRanges();
