@@ -26,7 +26,8 @@ new _MODULE({
       'started:app': 'onStart',
       'toggled:addon': 'power',
       'stored:entry': 'toggle',
-      'updated:stored-entry': 'toggle'
+      'updated:stored-entry': 'toggle',
+      'initially-stored:entry': 'toggle'
     }
   },
 

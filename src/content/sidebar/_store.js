@@ -23,13 +23,13 @@ export default new _MODULE({
       const isArr = Array.isArray(entry);
       const currentEntry = !!this.entry;
 
-      this.locked = this.locked || isArr;
+      this.locked = this.locked || isArr || entry.locked;
 
       if (!this.locked || isArr) {
         this.entry = entry;
       }
       else if (this.locked && !isArr) {
-        if (this.entry) this.entry.push(entry);
+        if (this.entry && Array.isArray(this.entry)) this.entry.push(entry);
         else this.entry = [entry];
       }
 
