@@ -197,7 +197,7 @@ export default function() {
       }
       this.emit('removed:mark', id[0]);
     },
-    resume() {
+    resume(arg) {
       _STORE.disabled = false;
 
       while (this.done.length) {
@@ -211,7 +211,7 @@ export default function() {
       this.idcount = 0;
       this.markScrollPos = -1;
 
-      this.emit('resumed:markers');
+      this.emit('resumed:markers', arg ? null : _STORE.entry);
     },
     immut(immutable) {
       this.isImmut = immutable;

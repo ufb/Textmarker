@@ -657,6 +657,9 @@ export default function() {
     failed: 0,
 
     restore(entries) {this.t0 = (new Date()).getTime();console.log('start:',this.t0);
+      if (!entries) return;
+      if (!Array.isArray(entries)) entries = [entries];
+
       this.entries = entries;
       this.count = entries.length;
 
@@ -669,9 +672,10 @@ export default function() {
       this.restored = 0;
       this.failed = 0;
     },
-    retry() {
+    retry(entry) {
+      entry = entry ? [entry] : this.entries;
       this.resume();
-      this.restore(this.entries);
+      this.restore(entry);
     },
     onFailure() {
       this.failed++;

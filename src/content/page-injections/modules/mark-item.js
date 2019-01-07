@@ -7,7 +7,7 @@ export default class _MARK {
 
 		this.marker = marker;
 		selection = this.selection = marker.selection;
-    this.immut = _STORE.redescribing ? marker.immut : immut;
+    this.immut = _STORE.redescribing ? marker.isImmut : immut;
 
     defaults = {
       style: '',
