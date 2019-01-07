@@ -37,11 +37,11 @@ new _DOMMODULE({
   },
   addTag() {
     const inp = document.getElementById('new-tag');
-    const tag = inp.value.trim();
+    let tag = inp.value.trim();
     if (!tag) return;
     this.emit('add:tag', tag, _STORE.entry);
     inp.value = '';
-    this.renderTag(tag);
+    tag.split(' ').forEach(tag => this.renderTag(tag));
   },
   removeTag(e, el) {
     this.emit('remove:tag', el.getAttribute('data-tag'), _STORE.entry);
