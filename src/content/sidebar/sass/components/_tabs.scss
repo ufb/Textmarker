@@ -1,9 +1,14 @@
 .tab {
   &__header {
     position: relative;
+    color: $color-grey--medium-light;
+
+    &:hover {
+      color: $color-black;
+    }
   }
 
-  &__name {
+  &__title {
     border-bottom: 1px solid $color-border--light;
 
     .tab--folded & {

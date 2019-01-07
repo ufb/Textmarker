@@ -9,6 +9,7 @@ new _DOMMODULE({
     },
     DOM: {
       click: {
+        '.tab__title': 'toggle',
         '.tab__name': 'toggle',
         '.tab__toggle': 'toggle'
       }
@@ -36,6 +37,7 @@ new _DOMMODULE({
     this.tabs[tab].classList.add('tab--folded');
   },
   toggle(e, el) {
+    el = el.nodeName === 'H2' ? el : el.parentNode;
     const id = el.getAttribute('data-target');
     const tab = id.split('--').pop();
     const tabEl = document.getElementById(id);
