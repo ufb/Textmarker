@@ -5,8 +5,8 @@ export default new _MODULE({
     ENV: {
       'toggled:sync': 'setAreas',
       'updated:naming-settings': 'updateLockedStatus',
-      'saved:new-name': 'renameEntry',
-      'synced:entry': 'setSyncForEntry'
+      'updated:entry-sync': 'setSyncForEntry',
+      'updated:entry-name': 'renameEntry'
     }
   },
   initialized: false,
@@ -42,16 +42,16 @@ export default new _MODULE({
     });
   },
 
-  renameEntry(oldName, newName) {
+  renameEntry(entry, oldName) {
     if (this.name && this.name === oldName) {
-      this.name = newName;
-      if (this.entry) this.entry.name = newName;
+      this.name = entry.name;
+      if (this.entry) this.entry.name = entry.name;
     }
   },
 
-  setSyncForEntry(name, val) {
-    if (this.name && this.name === name && this.entry) {
-      this.entry.synced = val;
+  setSyncForEntry(entry) {
+    if (this.name && this.name === entry.name && this.entry) {
+      this.entry.synced = entry.synced;
     }
   },
 

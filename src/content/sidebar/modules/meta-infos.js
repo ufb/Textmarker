@@ -23,6 +23,7 @@ new _DOMMODULE({
         .forEach(field => document.getElementById('meta__' + field).innerText = entry[field] ? yes : no);
     }
   },
+
   optimizeDateString(date) {
     return (date
       .replace(/^(\d{1})(\D{1})/, (m, p, q)=> '0' + p + q)

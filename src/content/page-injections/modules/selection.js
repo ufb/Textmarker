@@ -110,7 +110,6 @@ export default class _SELECTION {
     const markWrappers = Array.from(document.querySelectorAll('[data-tm-id^="' + mark.id + '_"]'));
     const m = markWrappers.length;
     const newSegment = markWrappers.map(el => el.firstChild);
-// watch out: can be <script> etc.(?) !
 
     const prev = markWrappers[0].previousSibling;
     const next = markWrappers[m-1].nextSibling;

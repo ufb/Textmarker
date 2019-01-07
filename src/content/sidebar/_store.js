@@ -7,7 +7,7 @@ export default new _MODULE({
       'saved:entry': 'updateEntry',
       'entry:found': 'updateEntryOnFound',
       'entry:found-for-tab': 'updateEntry',
-      'updated:entry': 'updateEntry'
+      'entry:deleted-for-tab': 'resume'
     }
   },
   initialized: false,
@@ -45,12 +45,16 @@ export default new _MODULE({
       }
     }
   },
-
   storeEntry(entry) {
     if (entry) {
       this.entry = entry;
       this.emit('stored:entry', entry);
     }
+  },
+  resume() {
+    this.entry = null;
+    this.locked = false;
+    this.emit('removed:entry');
   },
 
   setAreas() {

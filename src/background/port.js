@@ -10,10 +10,11 @@ new _PORT({
       'toggled:addon',
       'toggled:sync',
       'toggled:sync-settings',
-      'synced:entry',
       'updated:settings',
       'updated:history',
       'updated:history-on-restoration',
+      'updated:entry-sync',
+      'updated:entry-name',
       'updated:logs',
       'updated:ctm-settings',
       'updated:misc-settings',
@@ -27,7 +28,6 @@ new _PORT({
       'deleted:entries',
       'imported:settings',
       'imported:history',
-      'saved:new-name',
       'ctx:m',
       'ctx:d',
       'ctx:b',
@@ -53,7 +53,7 @@ new _PORT({
       'started:app',
       'toggled:addon',
       'updated:settings',
-      'updated:entry',
+      'updated:entry-on-save',
       'saved:entry',
       'updated:pagenotes',
       'toggled:sync-settings',
@@ -68,6 +68,7 @@ new _PORT({
       'notes-state',
       'entry:found',
       'entry:found-for-tab',
+      'entry:deleted-for-tab',
       'entry:ordered-marks'
     ]
   }

@@ -41,48 +41,8 @@ export default new _MODULE({
     if (!meth) throw('field ' + field + ' doesn\'t exist');
     return this['_set_' + field](val);
   },
-  update(field, updater, area) {
-    const meth = this['_update_' + field];
-    if (!meth) throw('field ' + field + ' doesn\'t exist');
-    return this['_update_' + field](updater, area);
-  },
-  sync(name, val) {
-    return this._get_history().then(history => {
-      if (!history.entries.hasOwnProperty(name)) throw('entry doesnt exist');
-      let entry = _COPY(history.entries[name]);
-      return browser.storage.sync.get().then(storage => {
-        let syncedEntry;
-        if (storage.history.entries.hasOwnProperty(name)) syncedEntry = storage.history.entries[name];
-        if (val && syncedEntry) syncedEntry.synced = val;
-        else if (val && !syncedEntry) {
-          storage.history.entries[name] = _COPY(entry);
-          //storage.history.order.push(name);
-          storage.history.entries[name].synced = val;
-        }
-        else if (!val && syncedEntry) {
-          delete storage.history.entries[name];
-          //storage.history.order.splice(storage.history.order.indexOf(name), 1);
-        }
-        return browser.storage.sync.set({ history: storage.history });
-      })
-      .then(() => {
-        return browser.storage.local.get().then(localStorage => {
-          let localEntry;
-          if (localStorage.history.entries.hasOwnProperty(name)) localEntry = localStorage.history.entries[name];
-          if (!val && localEntry) localEntry.synced = val;
-          else if (!val && !localEntry) {
-            localStorage.history.entries[name] = _COPY(entry);
-            //localStorage.history.order.push(name);
-            localStorage.history.entries[name].synced = val;
-          }
-          else if (val && localEntry) {
-            delete localStorage.history.entries[name];
-            //localStorage.history.order.splice(localStorage.history.order.indexOf(name), 1);
-          }
-          return browser.storage.local.set({ history: localStorage.history });
-        })
-      });
-    });
+  update(...args) {
+    return this._update(...args);
   },
 
   isEmpty(area = 'sync') {
@@ -210,44 +170,20 @@ export default new _MODULE({
     return browser.storage[this.area_history].get().then(storage => {
       let history = storage.history;
       if (Object.keys(history.entries).includes(entry.name)) return this._update_entry(entry);
-      //history.order.push(entry.name);
       history.entries[entry.name] = entry;
       return browser.storage[this.area_history].set({ history: history });
     });
   },
 
-  _update_history(updater, area = this.area_history) {
+  _update(field, updater, area = this['area_' + field]) {
     return browser.storage[area].get().then(storage => {
-        if (!storage.history) {
-          storage.history = _COPY(_DEFAULT_STORAGE.history);
+        if (!storage[field]) {
+          storage[field] = _COPY(_DEFAULT_STORAGE[field]);
         }
-        let history = updater(storage.history);
-        return browser.storage[area].set({ history: history }).then(() => history);
+        const update = {};
+        update[field] = updater.call(this, storage[field]);
+
+        return browser.storage[area].set(update).then(() => update[field]);
       });
-  },
-  _update_settings(updater, area = this.area_settings) {
-    return browser.storage[area].get().then(storage => {
-        if (!storage.settings) {
-          storage.settings = _COPY(_DEFAULT_STORAGE.settings);
-        }
-        let settings = updater(storage.settings);
-        return browser.storage[area].set({ settings: settings }).then(() => settings);
-      });
-  },
-  _update_sync(updater) {
-    let sync = {};
-    sync.settings = this.area_settings === 'sync';
-    sync.history = this.area_history === 'sync';
-    sync.pagenotes = this.area_pagenotes === 'sync';
-    return this._set_sync(updater(sync));
-  },
-  _update_pagenotes(updater, area = this.area_pagenotes) {
-    return browser.storage[area].get().then(storage => {
-        if (!storage.pagenotes) {
-          storage.pagenotes = _COPY(_DEFAULT_STORAGE.pagenotes);
-        }
-        let pagenotes = updater(storage.pagenotes);
-        return browser.storage[area].set({ pagenotes: pagenotes }).then(() => pagenotes);
-      });
-  },
+  }
 });

@@ -192,7 +192,7 @@ var _default = new _utils._MODULE({
       'saved:entry': 'updateEntry',
       'entry:found': 'updateEntryOnFound',
       'entry:found-for-tab': 'updateEntry',
-      'updated:entry': 'updateEntry'
+      'entry:deleted-for-tab': 'resume'
     }
   },
   initialized: false,
@@ -231,6 +231,11 @@ var _default = new _utils._MODULE({
       this.entry = entry;
       this.emit('stored:entry', entry);
     }
+  },
+  resume: function resume() {
+    this.entry = null;
+    this.locked = false;
+    this.emit('removed:entry');
   },
   setAreas: function setAreas() {
     var _this = this;
@@ -414,14 +419,18 @@ new _utils._DOMMODULE({
   el: document.getElementById('header'),
   events: {
     ENV: {
-      'stored:entry': 'render'
+      'stored:entry': 'render',
+      'updated:stored-entry': 'render'
     }
   },
   render: function render(entry) {
     var header = this.el;
     if (!entry) header.classList.add('u-display--none');else if (Array.isArray(entry)) return;
     header.classList.remove('u-display--none');
-    header.getElementsByClassName('header__name')[0].innerText = entry.name;
+    this.updateName(entry.name);
+  },
+  updateName: function updateName(name) {
+    this.el.getElementsByClassName('header__name')[0].innerText = name;
   }
 });
 
@@ -450,7 +459,7 @@ new _utils._DOMMODULE({
       'started:app': 'toggleSave',
       'updated:settings': 'toggleSave',
       'toggled:sync-settings': 'toggleSave',
-      'updated:entry': 'deactivateSave',
+      'updated:entry-on-save': 'deactivateSave',
       'saved:entry': 'deactivateSave',
       'unsaved-changes': 'activateSave',
       'failed:restoration': 'activateRetry',
@@ -881,6 +890,7 @@ new _utils._DOMMODULE({
   },
   setMarkIDs: function setMarkIDs(ids) {
     this.markIDs = ids.reverse();
+    this.render();
   },
   renderSVGFilters: function renderSVGFilters() {
     var body = document.body;
@@ -1412,11 +1422,16 @@ new _utils._DOMMODULE({
     container.appendChild(el);
   },
   addTag: function addTag() {
+    var _this2 = this;
+
     var inp = document.getElementById('new-tag');
-    var tag = inp.value;
+    var tag = inp.value.trim();
+    if (!tag) return;
     this.emit('add:tag', tag, _store.default.entry);
     inp.value = '';
-    this.renderTag(tag);
+    tag.split(' ').forEach(function (tag) {
+      return _this2.renderTag(tag);
+    });
   },
   removeTag: function removeTag(e, el) {
     this.emit('remove:tag', el.getAttribute('data-tag'), _store.default.entry);

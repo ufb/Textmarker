@@ -160,11 +160,15 @@ new _utils._MODULE({
     var _this = this;
 
     var currentVersion = this.version = browser.runtime.getManifest().version;
+    console.log('current version:', currentVersion);
     browser.runtime.onInstalled.addListener(function (details) {
       _storage.default.get('version').then(function (version) {
         if (!version || version !== currentVersion) {
+          console.log('version changed');
           var loadReason = _this.loadReason = details.reason;
           var prevVersion = details.previousVersion || '2';
+          console.log('load reason:', loadReason);
+          console.log('prev version:', prevVersion);
 
           if (loadReason && (loadReason === 'update' || loadReason === 'install')) {
             _this.emit(loadReason + ':app', prevVersion, loadReason);
@@ -176,6 +180,7 @@ new _utils._MODULE({
     });
 
     _storage.default.get('version').then(function (version) {
+      console.log('new version:', version);
       if (version && version === currentVersion) _this.emit('check:storage');
     });
   },
@@ -662,7 +667,6 @@ function _default() {
         'failed:update-entry': 'onSaveError',
         'failed:delete-entries': 'onDeleteError',
         'failed:open-tab': 'onOpenTabFailure',
-        'updated:entry': 'onUpdatedEntry',
         'failed:restoration': 'onFailedRestoration',
         'succeeded:restoration': 'onSuccessfulRestoration',
         'canceled:save-after-canceled-restoration': 'onCanceledSave',
@@ -718,11 +722,6 @@ function _default() {
       this.notify(function (settings) {
         return true;
       }, browser.i18n.getMessage('note_import_success'), 'success');
-    },
-    onUpdatedEntry: function onUpdatedEntry() {
-      this.notify(function (settings) {
-        return settings.misc.changedNote;
-      }, browser.i18n.getMessage('note_updated_entry'), 'success');
     },
     onMixedEntryTypes: function onMixedEntryTypes() {
       this.notify(function (settings) {
@@ -794,7 +793,8 @@ function _default() {
         'updated:tab': 'onUpdatedTab',
         'entry:found': 'storeEntry',
         'saved:entry': 'storeEntry',
-        'updated:entry': 'storeEntry',
+        'updated:entry': 'updateEntry',
+        'deleted:entry': 'removeEntry',
         'opened:sidebar': 'sendEntry',
         'visually-ordered:marks': 'sendOrderedMarks'
       }
@@ -823,16 +823,60 @@ function _default() {
         entries[id][tab.url] = entry;
       });
     },
-    sendEntry: function sendEntry() {
+    updateEntry: function updateEntry(entry) {
       var _this2 = this;
 
+      console.log('save updated entry', entry);
+      var entries = this.entries;
+
+      for (var id in entries) {
+        for (var url in entries[id]) {
+          if (url === entry.url) {
+            entries[id][url] = entry;
+          }
+        }
+      }
+
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        var url = _this2.getHashlessURL(tab.url);
+        if (tab.url === entry.url) {
+          console.log('send entry on update');
 
-        var entriesForThisTab = _this2.entries[tab.id];
+          _this2.emit('entry:found-for-tab', entry);
+        }
+      });
+    },
+    removeEntry: function removeEntry(name, url) {
+      var _this3 = this;
+
+      var entries = this.entries;
+
+      for (var id in entries) {
+        for (var savedUrl in entries[id]) {
+          if (savedUrl === url) {
+            delete entries[id][url];
+          }
+        }
+      }
+
+      (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+        if (tab.url === url) {
+          console.log('send entry on delete');
+
+          _this3.emit('entry:deleted-for-tab');
+        }
+      });
+    },
+    sendEntry: function sendEntry() {
+      var _this4 = this;
+
+      (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
+        var url = _this4.getHashlessURL(tab.url);
+
+        var entriesForThisTab = _this4.entries[tab.id];
         var entry = entriesForThisTab ? entriesForThisTab[url] : null;
+        console.log('send entry on opened sb');
 
-        _this2.emit('entry:found-for-tab', entry);
+        _this4.emit('entry:found-for-tab', entry);
       });
     },
     sendOrderedMarks: function sendOrderedMarks(marks) {
@@ -899,7 +943,7 @@ new _utils._MODULE({
       'add:custom-marker': 'addCustomMarker',
       'named:entry': 'saveEntry',
       'renamed:entry': 'saveNewName',
-      'granted:update-entry': 'updateEntry',
+      'granted:update-entry': 'updateEntryOnPageAction',
       'delete:entries': 'deleteEntries',
       'finished:restoration': 'updateEntryOnRestoration',
       'clean:entries': 'cleanEntries',
@@ -912,28 +956,45 @@ new _utils._MODULE({
     }
   },
   updateOnChangedSync: false,
+  // ADDON METHODS
   saveActivationState: function saveActivationState(active) {
+    console.log('update activate state');
+
     _storage.default.update('settings', function (settings) {
       settings.addon.active = active;
       return settings;
     });
   },
+  // SYNC METHODS
   toggleSync: function toggleSync(field, val) {
     var _this = this;
 
+    console.log('update sync', field, val);
+
     _storage.default.update('sync', function (sync) {
       sync[field] = val;
+      this.area_settings = sync.settings ? 'sync' : 'local';
+      this.area_history = sync.history ? 'sync' : 'local';
+      this.area_pagenotes = sync.pagenotes ? 'sync' : 'local';
       return sync;
-    }).catch(function () {
-      _this.emit('error', 'error_toggle_sync');
+    }, 'local').then(function () {
+      _storage.default.update('sync', function (sync) {
+        sync[field] = val;
+        return sync;
+      }).catch(function () {
+        _this.emit('error', 'error_toggle_sync');
 
-      _this.emit('failed:toggle-sync', field);
-    }).then(function () {
-      return _this.emit('toggled:sync toggled:sync-' + field, field, val);
+        _this.emit('failed:toggle-sync', field);
+      }).then(function () {
+        return _this.emit('toggled:sync toggled:sync-' + field, field, val);
+      });
     });
   },
+  // SETTINGS METHODS
   updateSettings: function updateSettings(updater, setting, error) {
     var _this2 = this;
+
+    console.log('update', setting);
 
     _storage.default.update('settings', updater).then(function () {
       return _this2.emit('updated:' + setting + '-settings');
@@ -1098,6 +1159,7 @@ new _utils._MODULE({
       return settings;
     });
   },
+  // HISTORY METHODS
   cleanEntries: function cleanEntries(names, area) {
     var _this3 = this;
 
@@ -1130,9 +1192,13 @@ new _utils._MODULE({
     var _this4 = this;
 
     entry.lost = [];
+    var name = entry.name;
 
-    _storage.default.set('entry', entry).then(function () {
-      return _this4.emit('saved:entry', entry);
+    _storage.default.update('history', function (history) {
+      history.entries[name] = entry;
+      return history;
+    }).then(function (history) {
+      return _this4.emit('saved:entry', history.entries[name]);
     }).catch(function () {
       return _this4.emit('failed:save-entry', 'error_save_entry');
     });
@@ -1140,23 +1206,29 @@ new _utils._MODULE({
   saveNewName: function saveNewName(oldName, newName, area) {
     var _this5 = this;
 
+    console.log('update name');
+
     _storage.default.update('history', function (history) {
-      var entry = history.entries[oldName];
+      var entry = (0, _utils._COPY)(history.entries[oldName]);
+      entry.name = newName;
       history.entries[newName] = entry;
       delete history.entries[oldName];
       return history;
-    }, area).catch(function () {
+    }, area).then(function (history) {
+      return _this5.emit('updated:entry updated:entry-name', history.entries[newName], oldName);
+    }).catch(function () {
       return _this5.emit('failed:update-entry', 'error_update_entry');
     });
   },
-  updateEntry: function updateEntry(entry) {
+  updateEntryOnPageAction: function updateEntryOnPageAction(entry) {
     var _this6 = this;
 
+    console.log('update on page action', entry.name);
+    var name = entry.name;
+    var receivedCompleteEntry = !!entry.url;
+
     _storage.default.update('history', function (history) {
-      var name = entry.name,
-          currentEntry = history.entries[name],
-          lost = currentEntry.lost,
-          receivedCompleteEntry = !!entry.url;
+      var lost = history.entries[name].lost;
 
       if (receivedCompleteEntry) {
         history.entries[name] = entry;
@@ -1169,8 +1241,8 @@ new _utils._MODULE({
       history.entries[name].lost = lost || [];
       return history;
     }, entry.synced ? 'sync' : 'local').then(function () {
-      return _this6.emit('updated:entry', entry);
-    }).catch(function () {
+      return _this6.emit('updated:entry updated:entry-on-save', entry);
+    }).catch(function (e) {
       return _this6.emit('failed:update-entry', 'error_update_entry');
     });
   },
@@ -1181,17 +1253,19 @@ new _utils._MODULE({
     area = typeof area === 'string' ? area : 'sync';
     var names_local = [];
     return _storage.default.update('history', function (history) {
-      var name, i;
+      var name, url;
 
       while (names.length) {
         name = names.pop();
-        i = Object.keys(history.entries).indexOf(name);
-        delete history.entries[name]; //if (i !== -1) history.order.splice(i, 1);
-        //else names_local.push(name);
 
-        if (i === -1) names_local.push(name);
+        if (history.entries && Object.keys(history.entries).indexOf(name) !== -1) {
+          url = history.entries[name].url;
+          delete history.entries[name];
 
-        _this7.emit('deleted:entry', name);
+          _this7.emit('deleted:entry', name, url);
+        } else {
+          names_local.push(name);
+        }
       }
 
       return history;
@@ -1206,6 +1280,8 @@ new _utils._MODULE({
     });
   },
   updateEntryOnRestoration: function updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
+    console.log('update on restauration', entryName);
+
     _storage.default.update('history', function (history) {
       var oldLostMarks = history.entries[entryName].lost || [];
       var restoredMarksIDs = [];
@@ -1230,16 +1306,32 @@ new _utils._MODULE({
       lostMarks.forEach(function (mark) {
         if (!oldLostMarksIDs.includes(mark.id)) oldLostMarks.push(mark);
       });
+      history.entries[entryName].lost = oldLostMarks;
       return history;
     }, area);
   },
   syncEntry: function syncEntry(name, val) {
     var _this8 = this;
 
-    _storage.default.sync(name, val).then(function () {
-      return _this8.emit('synced:entry');
-    }).catch(function () {
-      return _this8.emit('failed:sync-entry', name);
+    console.log('sync', name);
+    var area_1 = val ? 'local' : 'sync';
+    var area_2 = val ? 'sync' : 'local';
+    var entry;
+
+    _storage.default.update('history', function (history) {
+      entry = (0, _utils._COPY)(history.entries[name]);
+      entry.synced = val;
+      delete history.entries[name];
+      return history;
+    }, area_1).then(function () {
+      _storage.default.update('history', function (history) {
+        history.entries[name] = entry;
+        return history;
+      }, area_2).then(function () {
+        return _this8.emit('updated:entry updated:entry-sync', entry);
+      }).catch(function () {
+        return _this8.emit('failed:sync-entry', name);
+      });
     });
   },
   tagEntries: function tagEntries(names, tag) {
@@ -1262,10 +1354,13 @@ new _utils._MODULE({
     });
   },
   removeTag: function removeTag(tag, entry) {
+    var _this10 = this;
+
     var area = entry.synced ? 'sync' : 'local';
+    var name = entry.name;
 
     _storage.default.update('history', function (history) {
-      var storedEntry = history.entries[entry.name];
+      var storedEntry = history.entries[name];
       var rx = new RegExp('^' + tag + '$|^' + tag + '\\s|\\s' + tag + '\\s|\\s' + tag + '$');
 
       if (storedEntry.tag) {
@@ -1273,20 +1368,24 @@ new _utils._MODULE({
       }
 
       return history;
-    }, area);
+    }, area).then(function (history) {
+      return _this10.emit('updated:entry updated:entry-tags', history.entries[name]);
+    });
   },
   addTag: function addTag(tag, entry) {
-    var _this10 = this;
+    var _this11 = this;
 
     var area = entry.synced ? 'sync' : 'local';
+    var name = entry.name;
 
     _storage.default.update('history', function (history) {
-      _this10.addTagToEntry(history.entries[entry.name], tag);
+      _this11.addTagToEntry(history.entries[name], tag);
 
       return history;
     }, area);
   },
   addTagToEntry: function addTagToEntry(entry, tag) {
+    console.log('add tag', tag);
     if (!tag) entry.tag = '';else if (!entry.tag) entry.tag = tag;else {
       var rx = new RegExp('^' + tag + '$|^' + tag + '\\s|\\s' + tag + '\\s|\\s' + tag + '$', 'g');
 
@@ -1294,8 +1393,10 @@ new _utils._MODULE({
         entry.tag += ' ' + tag;
       }
     }
+    this.emit('updated:entry updated:entry-tags', entry);
     return entry;
   },
+  // PAGE NOTE METHODS
   updatePageNotes: function updatePageNotes(url, notes) {
     _storage.default.update('pagenotes', function (pagenotes) {
       pagenotes[url] = notes;
@@ -1603,13 +1704,14 @@ new _utils._MODULE({
 
     var prevVersion = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '2';
     var loadReason = arguments.length > 1 ? arguments[1] : undefined;
+    console.log('set storage on upgrade. load reason:', loadReason);
 
-    _storage.default.isEmpty('sync').then(function (empty) {
+    _storage.default.isEmpty('local').then(function (empty) {
       if (empty) {
-        if (loadReason !== 'install') _this.emit('error', 'error_empty_synced_storage_onupdate');
+        if (loadReason !== 'install') _this.emit('error', 'error_empty_local_storage_onupdate');
       }
 
-      return _storage.default.set('storage', 'sync');
+      return _storage.default.set('storage', 'local');
     }).then(function () {
       return _storage.default.update('settings', function (settings) {
         return _this.updateSettings(settings);
@@ -1777,8 +1879,8 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'synced:entry', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar'],
-    CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry', 'saved:entry', 'updated:pagenotes', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab', 'entry:ordered-marks']
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:entry-sync', 'updated:entry-name', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar'],
+    CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry-on-save', 'saved:entry', 'updated:pagenotes', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab', 'entry:deleted-for-tab', 'entry:ordered-marks']
   }
 });
 
@@ -1852,45 +1954,8 @@ var _default = new _utils._MODULE({
     if (!meth) throw 'field ' + field + ' doesn\'t exist';
     return this['_set_' + field](val);
   },
-  update: function update(field, updater, area) {
-    var meth = this['_update_' + field];
-    if (!meth) throw 'field ' + field + ' doesn\'t exist';
-    return this['_update_' + field](updater, area);
-  },
-  sync: function sync(name, val) {
-    return this._get_history().then(function (history) {
-      if (!history.entries.hasOwnProperty(name)) throw 'entry doesnt exist';
-      var entry = (0, _utils._COPY)(history.entries[name]);
-      return browser.storage.sync.get().then(function (storage) {
-        var syncedEntry;
-        if (storage.history.entries.hasOwnProperty(name)) syncedEntry = storage.history.entries[name];
-        if (val && syncedEntry) syncedEntry.synced = val;else if (val && !syncedEntry) {
-          storage.history.entries[name] = (0, _utils._COPY)(entry); //storage.history.order.push(name);
-
-          storage.history.entries[name].synced = val;
-        } else if (!val && syncedEntry) {
-          delete storage.history.entries[name]; //storage.history.order.splice(storage.history.order.indexOf(name), 1);
-        }
-        return browser.storage.sync.set({
-          history: storage.history
-        });
-      }).then(function () {
-        return browser.storage.local.get().then(function (localStorage) {
-          var localEntry;
-          if (localStorage.history.entries.hasOwnProperty(name)) localEntry = localStorage.history.entries[name];
-          if (!val && localEntry) localEntry.synced = val;else if (!val && !localEntry) {
-            localStorage.history.entries[name] = (0, _utils._COPY)(entry); //localStorage.history.order.push(name);
-
-            localStorage.history.entries[name].synced = val;
-          } else if (val && localEntry) {
-            delete localStorage.history.entries[name]; //localStorage.history.order.splice(localStorage.history.order.indexOf(name), 1);
-          }
-          return browser.storage.local.set({
-            history: localStorage.history
-          });
-        });
-      });
-    });
+  update: function update() {
+    return this._update.apply(this, arguments);
   },
   isEmpty: function isEmpty() {
     var area = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'sync';
@@ -2055,63 +2120,26 @@ var _default = new _utils._MODULE({
 
     return browser.storage[this.area_history].get().then(function (storage) {
       var history = storage.history;
-      if (Object.keys(history.entries).includes(entry.name)) return _this6._update_entry(entry); //history.order.push(entry.name);
-
+      if (Object.keys(history.entries).includes(entry.name)) return _this6._update_entry(entry);
       history.entries[entry.name] = entry;
       return browser.storage[_this6.area_history].set({
         history: history
       });
     });
   },
-  _update_history: function _update_history(updater) {
-    var area = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.area_history;
+  _update: function _update(field, updater) {
+    var _this7 = this;
+
+    var area = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this['area_' + field];
     return browser.storage[area].get().then(function (storage) {
-      if (!storage.history) {
-        storage.history = (0, _utils._COPY)(_defaultStorage.default.history);
+      if (!storage[field]) {
+        storage[field] = (0, _utils._COPY)(_defaultStorage.default[field]);
       }
 
-      var history = updater(storage.history);
-      return browser.storage[area].set({
-        history: history
-      }).then(function () {
-        return history;
-      });
-    });
-  },
-  _update_settings: function _update_settings(updater) {
-    var area = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.area_settings;
-    return browser.storage[area].get().then(function (storage) {
-      if (!storage.settings) {
-        storage.settings = (0, _utils._COPY)(_defaultStorage.default.settings);
-      }
-
-      var settings = updater(storage.settings);
-      return browser.storage[area].set({
-        settings: settings
-      }).then(function () {
-        return settings;
-      });
-    });
-  },
-  _update_sync: function _update_sync(updater) {
-    var sync = {};
-    sync.settings = this.area_settings === 'sync';
-    sync.history = this.area_history === 'sync';
-    sync.pagenotes = this.area_pagenotes === 'sync';
-    return this._set_sync(updater(sync));
-  },
-  _update_pagenotes: function _update_pagenotes(updater) {
-    var area = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.area_pagenotes;
-    return browser.storage[area].get().then(function (storage) {
-      if (!storage.pagenotes) {
-        storage.pagenotes = (0, _utils._COPY)(_defaultStorage.default.pagenotes);
-      }
-
-      var pagenotes = updater(storage.pagenotes);
-      return browser.storage[area].set({
-        pagenotes: pagenotes
-      }).then(function () {
-        return pagenotes;
+      var update = {};
+      update[field] = updater.call(_this7, storage[field]);
+      return browser.storage[area].set(update).then(function () {
+        return update[field];
       });
     });
   }

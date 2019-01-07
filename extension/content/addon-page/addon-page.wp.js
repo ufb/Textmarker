@@ -2119,7 +2119,6 @@ function _default() {
       document.getElementById('notes-restoration-failure').checked = miscSettings.failureNote;
       document.getElementById('notes-restoration-success').checked = miscSettings.successNote;
       document.getElementById('notes-pbm').checked = miscSettings.pbmNote;
-      document.getElementById('notes-changed').checked = miscSettings.changedNote;
       document.getElementById('notes-error').checked = miscSettings.errorNote;
       document.getElementById('custom-search--start').value = miscSettings.customSearch ? miscSettings.customSearch[0] : this.customSearch;
       document.getElementById('custom-search--end').value = miscSettings.customSearch ? miscSettings.customSearch[1] : '';

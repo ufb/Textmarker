@@ -5,7 +5,8 @@ new _DOMMODULE({
   el: document.getElementById('header'),
   events: {
     ENV: {
-      'stored:entry': 'render'
+      'stored:entry': 'render',
+      'updated:stored-entry': 'render'
     }
   },
 
@@ -16,6 +17,10 @@ new _DOMMODULE({
     else if (Array.isArray(entry)) return;
 
     header.classList.remove('u-display--none');
-    header.getElementsByClassName('header__name')[0].innerText = entry.name;
+    this.updateName(entry.name);
+  },
+
+  updateName(name) {
+    this.el.getElementsByClassName('header__name')[0].innerText = name;
   }
 });

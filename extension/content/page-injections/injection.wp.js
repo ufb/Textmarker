@@ -189,7 +189,9 @@ var _default = new _utils._MODULE({
   events: {
     ENV: {
       'toggled:sync': 'setAreas',
-      'updated:naming-settings': 'updateLockedStatus'
+      'updated:naming-settings': 'updateLockedStatus',
+      'updated:entry-sync': 'setSyncForEntry',
+      'updated:entry-name': 'renameEntry'
     }
   },
   initialized: false,
@@ -226,6 +228,17 @@ var _default = new _utils._MODULE({
         _this2.area_history = storage.sync.history ? 'sync' : 'local';
       }
     });
+  },
+  renameEntry: function renameEntry(entry, oldName) {
+    if (this.name && this.name === oldName) {
+      this.name = entry.name;
+      if (this.entry) this.entry.name = entry.name;
+    }
+  },
+  setSyncForEntry: function setSyncForEntry(entry) {
+    if (this.name && this.name === entry.name && this.entry) {
+      this.entry.synced = entry.synced;
+    }
   },
   get: function get() {
     var _this3 = this;
@@ -728,7 +741,8 @@ function () {
       conds: preSettings.conds,
       text: preSettings.text,
       bookmark: preSettings.bookmark,
-      note: preSettings.note
+      note: preSettings.note,
+      synced: preSettings.synced
     };
 
     if (this.immut && (_store.default.redescribing || !this.keyData.conds)) {
@@ -818,16 +832,17 @@ function () {
     value: function definePosition(n, includingOffsets) {
       var wrappers = this.wrappers;
       n = typeof n === 'number' ? n : wrappers.length - 1;
-      var firstWrapper = wrappers[0],
-          lastWrapper = wrappers[n],
-          anchorPrev,
-          focusPrev;
-      this.anchorNodePosition = this.whichChild(firstWrapper.parentNode, firstWrapper, true) - 1;
-      this.focusNodePosition = this.whichChild(lastWrapper.parentNode, lastWrapper, true);
+      var firstWrapper = wrappers[0];
+      var lastWrapper = wrappers[n];
+      var firstParent = firstWrapper.parentNode;
+      var lastParent = lastWrapper.parentNode;
+      var anchorPrev, focusPrev;
+      this.anchorNodePosition = this.whichChild(firstParent, firstWrapper, true) - 1;
+      this.focusNodePosition = this.whichChild(lastParent, lastWrapper, true);
       anchorPrev = firstWrapper.previousSibling;
       focusPrev = lastWrapper.previousSibling;
       if (anchorPrev && anchorPrev.nodeType === 1) this.anchorNodePosition += 1;
-      if (!focusPrev || focusPrev.nodeType === 3) this.focusNodePosition -= 1;
+      if (!focusPrev || focusPrev.nodeType === 3 || firstParent === lastParent) this.focusNodePosition -= 1;
       if (this.anchorNodePosition < 0) this.anchorNodePosition = 0;
       if (this.focusNodePosition < 0) this.focusNodePosition = 0;
 
@@ -1318,7 +1333,7 @@ function _default() {
       this.emit('resumed:markers');
     },
     immut: function immut(immutable) {
-      this.immut = immutable;
+      this.isImmut = immutable;
       _store.default.redescribing = true;
       this.resume();
     },
@@ -1399,9 +1414,11 @@ function _default() {
     saveNote: function saveNote(id) {
       if (!_store.default.locked) return this.autosave();
       var mark = this.getById(id).keyData;
+      var synced = typeof mark.synced === 'boolean' ? mark.synced : _store.default.area_history === 'sync';
       var entry = {
         marks: [mark],
-        name: mark.text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1)
+        name: mark.text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1),
+        synced: synced
       };
       this.emit('update:entry?', entry);
     },
@@ -1411,8 +1428,9 @@ function _default() {
 
       if (mark || mark === 0) {
         if (typeof mark === 'number') {
-          id = this.currentScrollPos = mark + 1;
+          this.markScrollPos = mark + 1;
           el = markElements[mark];
+          id = el.getAttribute('data-tm-id').split('_')[0];
         } else {
           id = mark.id;
           el = document.querySelector('.textmarker-highlight[data-tm-id="' + id + '_0"]');
@@ -1440,7 +1458,7 @@ function _default() {
       Array.from(document.querySelectorAll('.textmarker-highlight--active')).forEach(function (tm) {
         return tm.classList.remove('textmarker-highlight--active');
       });
-      var tms = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id*="' + id + '_"]'));
+      var tms = Array.from(document.querySelectorAll('.textmarker-highlight[data-tm-id^="' + id + '_"]'));
       tms.forEach(function (tm) {
         return tm.classList.add('textmarker-highlight--active');
       });
@@ -1565,9 +1583,9 @@ function _default() {
       }
 
       _store.default.get('settings').then(function (settings) {
-        _this3.immut = typeof _this3.immut === 'boolean' ? _this3.immut : !!settings.history.immut;
+        _this3.isImmut = typeof _this3.isImmut === 'boolean' ? _this3.isImmut : !!settings.history.immut;
 
-        _this3.store(_this3.mark(key, settings.markers[key], _this3.immut), true, true);
+        _this3.store(_this3.mark(key, settings.markers[key], _this3.isImmut), true, true);
       });
     },
     onHotkey: function onHotkey(key) {
@@ -1619,7 +1637,7 @@ function _default() {
       entry.title = window.document.title;
       entry.count = entry.marks.length;
       entry.idcount = this.idcount;
-      entry.immut = this.immut;
+      entry.immut = this.isImmut;
 
       if (_store.default.isNew || _store.default.locked) {
         entry.first = entry.last;
@@ -1644,6 +1662,7 @@ function _default() {
 
       for (var m = 0, kD; m < l; m++) {
         kD = done[m].keyData;
+        delete kD.synced;
         marks.push(kD);
       }
 
@@ -2704,6 +2723,7 @@ function (_RestorerBase) {
         possibleEnds: {},
         possibleFocusOffsets: []
       };
+      mark.synced = this.entry.synced;
     }
   }, {
     key: "restore",
@@ -3248,7 +3268,7 @@ function (_RestorerBase2) {
     _classCallCheck(this, ImmutRestorer);
 
     _this4 = _possibleConstructorReturn(this, _getPrototypeOf(ImmutRestorer).call(this, entry));
-    var selection = _this4.selection = new _selection.default();
+    _this4.selection = window.getSelection();
     _this4.range = document.createRange();
     var marks = _this4.marks = entry.marks.sort(function (m1, m2) {
       return m1.id - m2.id;
@@ -3272,8 +3292,9 @@ function (_RestorerBase2) {
       try {
         range.setStart(this.getNode(start.p), start.o);
         range.setEnd(this.getNode(end.p), end.o);
-        selection.resume(range);
-        this.emit('restored:range', selection, mark);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        this.emit('restored:range', mark);
         this.restored.push(mark);
       } catch (e) {
         this.lost.push(mark);
@@ -3491,8 +3512,7 @@ function () {
       var m = markWrappers.length;
       var newSegment = markWrappers.map(function (el) {
         return el.firstChild;
-      }); // watch out: can be <script> etc.(?) !
-
+      });
       var prev = markWrappers[0].previousSibling;
       var next = markWrappers[m - 1].nextSibling;
       var start = mark.temp.startNodePosition;

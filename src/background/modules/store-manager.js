@@ -1,5 +1,6 @@
 import _STORAGE from './../storage'
 import { _MODULE } from './../utils'
+import { _COPY } from './../utils'
 
 new _MODULE({
   events: {
@@ -35,7 +36,7 @@ new _MODULE({
 
       'named:entry': 'saveEntry',
       'renamed:entry': 'saveNewName',
-      'granted:update-entry': 'updateEntry',
+      'granted:update-entry': 'updateEntryOnPageAction',
       'delete:entries': 'deleteEntries',
       'finished:restoration': 'updateEntryOnRestoration',
       'clean:entries': 'cleanEntries',
@@ -51,25 +52,44 @@ new _MODULE({
   },
   updateOnChangedSync: false,
 
-  saveActivationState(active) {
+  // ADDON METHODS
+  saveActivationState(active) {console.log('update activate state');
     _STORAGE.update('settings', settings => { settings.addon.active = active; return settings; });
   },
 
-  toggleSync(field, val) {
-    _STORAGE.update('sync', sync => { sync[field] = val; return sync; })
-      .catch(() => {
-        this.emit('error', 'error_toggle_sync');
-        this.emit('failed:toggle-sync', field);
-      })
-      .then(() => this.emit('toggled:sync toggled:sync-' + field, field, val))
+  // SYNC METHODS
+  toggleSync(field, val) {console.log('update sync', field, val);
+    _STORAGE.update('sync', function(sync) {
+
+      sync[field] = val;
+
+      this.area_settings = sync.settings ? 'sync' : 'local';
+      this.area_history = sync.history ? 'sync' : 'local';
+      this.area_pagenotes = sync.pagenotes ? 'sync' : 'local';
+
+      return sync;
+    }, 'local')
+
+      .then(() => {
+        _STORAGE.update('sync', sync => {
+          sync[field] = val;
+          return sync;
+        })
+
+        .catch(() => {
+          this.emit('error', 'error_toggle_sync');
+          this.emit('failed:toggle-sync', field);
+        })
+        .then(() => this.emit('toggled:sync toggled:sync-' + field, field, val))
+      });
   },
 
-  updateSettings(updater, setting, error) {
+  // SETTINGS METHODS
+  updateSettings(updater, setting, error) {console.log('update', setting);
     _STORAGE.update('settings', updater)
       .then(() => this.emit('updated:' + setting + '-settings'))
       .catch(() => { if (error) this.emit('error', error); });
   },
-
   addCustomMarker(key, style) {
     this.updateSettings(
       settings => { settings.markers[key] =  { style }; return settings; },
@@ -242,6 +262,8 @@ new _MODULE({
   changeSBSettings(tab, unfolded) {
     _STORAGE.update('settings', settings => { settings.sb.tabs[tab].unfolded = unfolded; return settings; });
   },
+
+  // HISTORY METHODS
   cleanEntries(names, area) {
     if (!names.length) return;
 
@@ -264,21 +286,26 @@ new _MODULE({
   },
   saveEntry(entry) {
     entry.lost = [];
-    _STORAGE.set('entry', entry)
-      .then(() => this.emit('saved:entry', entry))
+    const name = entry.name;
+    _STORAGE.update('history', history => {
+      history.entries[name] = entry;
+      return history;
+    })
+      .then(history => this.emit('saved:entry', history.entries[name]))
       .catch(() => this.emit('failed:save-entry', 'error_save_entry'));
   },
-  saveNewName(oldName, newName, area) {
+  saveNewName(oldName, newName, area) {console.log('update name');
     _STORAGE.update('history', history => {
-      const entry = history.entries[oldName];
+      const entry = _COPY(history.entries[oldName]);
+      entry.name = newName;
       history.entries[newName] = entry;
       delete history.entries[oldName];
       return history;
     }, area)
-      .then(() => this.emit('saved:new-name', oldName, newName))
+      .then(history => this.emit('updated:entry updated:entry-name', history.entries[newName], oldName))
       .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
   },
-  updateEntry(entry) {
+  updateEntryOnPageAction(entry) {console.log('update on page action', entry.name);
     const name = entry.name;
     const receivedCompleteEntry = !!entry.url;
 
@@ -296,7 +323,7 @@ new _MODULE({
 
       return history;
     }, entry.synced ? 'sync' : 'local')
-      .then(() => this.emit('updated:entry', entry))
+      .then(() => this.emit('updated:entry updated:entry-on-save', entry))
       .catch((e) => this.emit('failed:update-entry', 'error_update_entry'));
   },
   deleteEntries(names, area) {
@@ -307,18 +334,17 @@ new _MODULE({
     let names_local = [];
 
     return _STORAGE.update('history', history => {
-      let name, i;
+      let name, url;
 
       while (names.length) {
         name = names.pop();
-        i = Object.keys(history.entries).indexOf(name);
-
-        delete history.entries[name];
-        //if (i !== -1) history.order.splice(i, 1);
-        //else names_local.push(name);
-        if (i === -1) names_local.push(name);
-
-        this.emit('deleted:entry', name);
+        if (history.entries && Object.keys(history.entries).indexOf(name) !== -1) {
+          url = history.entries[name].url;
+          delete history.entries[name];
+          this.emit('deleted:entry', name, url);
+        } else {
+          names_local.push(name);
+        }
       }
       return history;
     }, area)
@@ -326,7 +352,7 @@ new _MODULE({
       .then(() => { if (area === 'sync' && names_local.length) { this.deleteEntries(names_local, 'local'); }})
       .then(() => this.emit('deleted:entries'));
   },
-  updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
+  updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {console.log('update on restauration', entryName);
     _STORAGE.update('history', history => {
 	    const oldLostMarks = history.entries[entryName].lost || [];
       const restoredMarksIDs = [];
@@ -351,13 +377,33 @@ new _MODULE({
         if (!oldLostMarksIDs.includes(mark.id)) oldLostMarks.push(mark);
       });
 
+      history.entries[entryName].lost = oldLostMarks;
+
       return history;
     }, area);
   },
-  syncEntry(name, val) {
-    _STORAGE.sync(name, val)
-      .then(() => this.emit('synced:entry', name, val))
-      .catch(() => this.emit('failed:sync-entry', name));
+  syncEntry(name, val) {console.log('sync', name);
+    const area_1 = val ? 'local' : 'sync';
+    const area_2 = val ? 'sync' : 'local';
+
+    let entry;
+
+    _STORAGE.update('history', history => {
+      entry = _COPY(history.entries[name]);
+      entry.synced = val;
+      delete history.entries[name];
+      return history;
+    }, area_1)
+
+      .then(() => {
+        _STORAGE.update('history', history => {
+          history.entries[name] = entry;
+          return history;
+        }, area_2)
+
+        .then(() => this.emit('updated:entry updated:entry-sync', entry))
+        .catch(() => this.emit('failed:sync-entry', name));
+      });
   },
   tagEntries(names, tag) {
     _STORAGE.update('history', history => {
@@ -375,8 +421,10 @@ new _MODULE({
   },
   removeTag(tag, entry) {
     const area = entry.synced ? 'sync' : 'local';
+    const name = entry.name;
+
     _STORAGE.update('history', history => {
-      const storedEntry = history.entries[entry.name];
+      const storedEntry = history.entries[name];
       const rx = new RegExp('^'+tag+'$|^'+tag+'\\s|\\s'+tag+'\\s|\\s'+tag+'$');
       if (storedEntry.tag) {
         storedEntry.tag = storedEntry.tag
@@ -385,16 +433,18 @@ new _MODULE({
           .replace(/\s{2,}/, ' ');
       }
       return history;
-    }, area);
+    }, area)
+      .then(history => this.emit('updated:entry updated:entry-tags', history.entries[name]));
   },
   addTag(tag, entry) {
     const area = entry.synced ? 'sync' : 'local';
+    const name = entry.name;
     _STORAGE.update('history', history => {
-      this.addTagToEntry(history.entries[entry.name], tag);
+      this.addTagToEntry(history.entries[name], tag);
       return history;
     }, area);
   },
-  addTagToEntry(entry, tag) {
+  addTagToEntry(entry, tag) {console.log('add tag', tag);
     if (!tag) entry.tag = '';
     else if (!entry.tag) entry.tag = tag;
     else {
@@ -403,14 +453,18 @@ new _MODULE({
         entry.tag += ' ' + tag;
       }
     }
+    this.emit('updated:entry updated:entry-tags', entry);
     return entry;
   },
+
+  // PAGE NOTE METHODS
   updatePageNotes(url, notes) {
     _STORAGE.update('pagenotes', pagenotes => {
       pagenotes[url] = notes;
       return pagenotes;
     });
   },
+
   registerStorageChangedHandler() {
     browser.storage.onChanged.addListener(this.proxy(this, this.onStorageChanged));
   },

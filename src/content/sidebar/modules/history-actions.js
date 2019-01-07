@@ -8,7 +8,7 @@ new _DOMMODULE({
       'started:app': 'toggleSave',
       'updated:settings': 'toggleSave',
       'toggled:sync-settings': 'toggleSave',
-      'updated:entry': 'deactivateSave',
+      'updated:entry-on-save': 'deactivateSave',
       'saved:entry': 'deactivateSave',
       'unsaved-changes': 'activateSave',
       'failed:restoration': 'activateRetry',

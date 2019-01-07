@@ -154,12 +154,12 @@ new _MODULE({
     });
   },
 
-  setStorageOnUpgrade(prevVersion = '2', loadReason) {
-    _STORAGE.isEmpty('sync').then(empty => {
+  setStorageOnUpgrade(prevVersion = '2', loadReason) {console.log('set storage on upgrade. load reason:', loadReason);
+    _STORAGE.isEmpty('local').then(empty => {
       if (empty) {
-        if (loadReason !== 'install') this.emit('error', 'error_empty_synced_storage_onupdate');
+        if (loadReason !== 'install') this.emit('error', 'error_empty_local_storage_onupdate');
       }
-      return _STORAGE.set('storage', 'sync');
+      return _STORAGE.set('storage', 'local');
     })
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'))
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'))
