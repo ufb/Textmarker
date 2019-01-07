@@ -160,15 +160,11 @@ new _utils._MODULE({
     var _this = this;
 
     var currentVersion = this.version = browser.runtime.getManifest().version;
-    console.log('current version:', currentVersion);
     browser.runtime.onInstalled.addListener(function (details) {
       _storage.default.get('version').then(function (version) {
         if (!version || version !== currentVersion) {
-          console.log('version changed');
           var loadReason = _this.loadReason = details.reason;
           var prevVersion = details.previousVersion || '2';
-          console.log('load reason:', loadReason);
-          console.log('prev version:', prevVersion);
 
           if (loadReason && (loadReason === 'update' || loadReason === 'install')) {
             _this.emit(loadReason + ':app', prevVersion, loadReason);
@@ -180,7 +176,6 @@ new _utils._MODULE({
     });
 
     _storage.default.get('version').then(function (version) {
-      console.log('new version:', version);
       if (version && version === currentVersion) _this.emit('check:storage');
     });
   },
@@ -826,7 +821,6 @@ function _default() {
     updateEntry: function updateEntry(entry) {
       var _this2 = this;
 
-      console.log('save updated entry', entry);
       var entries = this.entries;
 
       for (var id in entries) {
@@ -839,8 +833,6 @@ function _default() {
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
         if (tab.url === entry.url) {
-          console.log('send entry on update');
-
           _this2.emit('entry:found-for-tab', entry);
         }
       });
@@ -860,8 +852,6 @@ function _default() {
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
         if (tab.url === url) {
-          console.log('send entry on delete');
-
           _this3.emit('entry:deleted-for-tab');
         }
       });
@@ -874,7 +864,6 @@ function _default() {
 
         var entriesForThisTab = _this4.entries[tab.id];
         var entry = entriesForThisTab ? entriesForThisTab[url] : null;
-        console.log('send entry on opened sb');
 
         _this4.emit('entry:found-for-tab', entry);
       });
@@ -958,8 +947,6 @@ new _utils._MODULE({
   updateOnChangedSync: false,
   // ADDON METHODS
   saveActivationState: function saveActivationState(active) {
-    console.log('update activate state');
-
     _storage.default.update('settings', function (settings) {
       settings.addon.active = active;
       return settings;
@@ -968,8 +955,6 @@ new _utils._MODULE({
   // SYNC METHODS
   toggleSync: function toggleSync(field, val) {
     var _this = this;
-
-    console.log('update sync', field, val);
 
     _storage.default.update('sync', function (sync) {
       sync[field] = val;
@@ -993,8 +978,6 @@ new _utils._MODULE({
   // SETTINGS METHODS
   updateSettings: function updateSettings(updater, setting, error) {
     var _this2 = this;
-
-    console.log('update', setting);
 
     _storage.default.update('settings', updater).then(function () {
       return _this2.emit('updated:' + setting + '-settings');
@@ -1206,8 +1189,6 @@ new _utils._MODULE({
   saveNewName: function saveNewName(oldName, newName, area) {
     var _this5 = this;
 
-    console.log('update name');
-
     _storage.default.update('history', function (history) {
       var entry = (0, _utils._COPY)(history.entries[oldName]);
       entry.name = newName;
@@ -1223,7 +1204,6 @@ new _utils._MODULE({
   updateEntryOnPageAction: function updateEntryOnPageAction(entry) {
     var _this6 = this;
 
-    console.log('update on page action', entry.name);
     var name = entry.name;
     var receivedCompleteEntry = !!entry.url;
 
@@ -1280,8 +1260,6 @@ new _utils._MODULE({
     });
   },
   updateEntryOnRestoration: function updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
-    console.log('update on restauration', entryName);
-
     _storage.default.update('history', function (history) {
       var oldLostMarks = history.entries[entryName].lost || [];
       var restoredMarksIDs = [];
@@ -1313,7 +1291,6 @@ new _utils._MODULE({
   syncEntry: function syncEntry(name, val) {
     var _this8 = this;
 
-    console.log('sync', name);
     var area_1 = val ? 'local' : 'sync';
     var area_2 = val ? 'sync' : 'local';
     var entry;
@@ -1385,7 +1362,6 @@ new _utils._MODULE({
     }, area);
   },
   addTagToEntry: function addTagToEntry(entry, tag) {
-    console.log('add tag', tag);
     if (!tag) entry.tag = '';else if (!entry.tag) entry.tag = tag;else {
       var rx = new RegExp('^' + tag + '$|^' + tag + '\\s|\\s' + tag + '\\s|\\s' + tag + '$', 'g');
 
@@ -1704,7 +1680,6 @@ new _utils._MODULE({
 
     var prevVersion = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '2';
     var loadReason = arguments.length > 1 ? arguments[1] : undefined;
-    console.log('set storage on upgrade. load reason:', loadReason);
 
     _storage.default.isEmpty('local').then(function (empty) {
       if (empty) {

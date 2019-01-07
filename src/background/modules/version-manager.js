@@ -154,7 +154,7 @@ new _MODULE({
     });
   },
 
-  setStorageOnUpgrade(prevVersion = '2', loadReason) {console.log('set storage on upgrade. load reason:', loadReason);
+  setStorageOnUpgrade(prevVersion = '2', loadReason) {
     _STORAGE.isEmpty('local').then(empty => {
       if (empty) {
         if (loadReason !== 'install') this.emit('error', 'error_empty_local_storage_onupdate');

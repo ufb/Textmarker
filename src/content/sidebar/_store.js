@@ -45,12 +45,7 @@ export default new _MODULE({
       }
     }
   },
-  storeEntry(entry) {
-    if (entry) {
-      this.entry = entry;
-      this.emit('stored:entry', entry);
-    }
-  },
+
   resume() {
     this.entry = null;
     this.locked = false;

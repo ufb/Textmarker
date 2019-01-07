@@ -14,6 +14,7 @@ new _DOMMODULE({
       'failed:restoration': 'activateRetry',
       'canceled:restoration': 'activateRetry',
       'update:entry?': 'deactivateRetry',
+      'stored:entry': 'updateImmut',
       'page-state': 'onPageState',
       'initially-stored:entry': 'updateImmut'
     },

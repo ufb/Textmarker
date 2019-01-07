@@ -39,7 +39,7 @@ export default function() {
         entries[id][tab.url] = entry;
       });
     },
-    updateEntry(entry) {console.log('save updated entry', entry);
+    updateEntry(entry) {
       const entries = this.entries;
       for (let id in entries) {
         for (let url in entries[id]) {
@@ -50,7 +50,6 @@ export default function() {
       }
       _GET_ACTIVE_TAB().then(tab => {
         if (tab.url === entry.url) {
-console.log('send entry on update');
           this.emit('entry:found-for-tab', entry);
         }
       });
@@ -66,7 +65,6 @@ console.log('send entry on update');
       }
       _GET_ACTIVE_TAB().then(tab => {
         if (tab.url === url) {
-console.log('send entry on delete');
           this.emit('entry:deleted-for-tab');
         }
       });
@@ -76,7 +74,6 @@ console.log('send entry on delete');
         const url = this.getHashlessURL(tab.url);
         const entriesForThisTab = this.entries[tab.id];
         const entry = entriesForThisTab ? entriesForThisTab[url] : null;
-console.log('send entry on opened sb');
         this.emit('entry:found-for-tab', entry);
       });
     },

@@ -25,7 +25,7 @@ export default class _SELECTION {
             .update()
             .retrieveText();
       }
-      selection.collapseToStart();//console.log('_SELECTION time:',!!node,+new Date() -t0);
+      selection.collapseToStart();
     }
   }
 
@@ -40,7 +40,7 @@ export default class _SELECTION {
     selection.removeAllRanges();
     selection.addRange(range);
     this.reduceToOneRange().update().collectNodes().retrieveText();
-		selection.collapseToStart();//console.log('resume time:',+new Date()-t0);
+		selection.collapseToStart();
   }
   update(selection) {
     if (selection) this.self = selection;

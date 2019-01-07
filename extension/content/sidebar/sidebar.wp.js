@@ -226,12 +226,6 @@ var _default = new _utils._MODULE({
       }
     }
   },
-  storeEntry: function storeEntry(entry) {
-    if (entry) {
-      this.entry = entry;
-      this.emit('stored:entry', entry);
-    }
-  },
   resume: function resume() {
     this.entry = null;
     this.locked = false;
@@ -465,6 +459,7 @@ new _utils._DOMMODULE({
       'failed:restoration': 'activateRetry',
       'canceled:restoration': 'activateRetry',
       'update:entry?': 'deactivateRetry',
+      'stored:entry': 'updateImmut',
       'page-state': 'onPageState',
       'initially-stored:entry': 'updateImmut'
     },

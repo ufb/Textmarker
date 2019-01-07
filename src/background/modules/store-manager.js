@@ -53,12 +53,12 @@ new _MODULE({
   updateOnChangedSync: false,
 
   // ADDON METHODS
-  saveActivationState(active) {console.log('update activate state');
+  saveActivationState(active) {
     _STORAGE.update('settings', settings => { settings.addon.active = active; return settings; });
   },
 
   // SYNC METHODS
-  toggleSync(field, val) {console.log('update sync', field, val);
+  toggleSync(field, val) {
     _STORAGE.update('sync', function(sync) {
 
       sync[field] = val;
@@ -85,7 +85,7 @@ new _MODULE({
   },
 
   // SETTINGS METHODS
-  updateSettings(updater, setting, error) {console.log('update', setting);
+  updateSettings(updater, setting, error) {
     _STORAGE.update('settings', updater)
       .then(() => this.emit('updated:' + setting + '-settings'))
       .catch(() => { if (error) this.emit('error', error); });
@@ -294,7 +294,7 @@ new _MODULE({
       .then(history => this.emit('saved:entry', history.entries[name]))
       .catch(() => this.emit('failed:save-entry', 'error_save_entry'));
   },
-  saveNewName(oldName, newName, area) {console.log('update name');
+  saveNewName(oldName, newName, area) {
     _STORAGE.update('history', history => {
       const entry = _COPY(history.entries[oldName]);
       entry.name = newName;
@@ -305,7 +305,7 @@ new _MODULE({
       .then(history => this.emit('updated:entry updated:entry-name', history.entries[newName], oldName))
       .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
   },
-  updateEntryOnPageAction(entry) {console.log('update on page action', entry.name);
+  updateEntryOnPageAction(entry) {
     const name = entry.name;
     const receivedCompleteEntry = !!entry.url;
 
@@ -352,7 +352,7 @@ new _MODULE({
       .then(() => { if (area === 'sync' && names_local.length) { this.deleteEntries(names_local, 'local'); }})
       .then(() => this.emit('deleted:entries'));
   },
-  updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {console.log('update on restauration', entryName);
+  updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
     _STORAGE.update('history', history => {
 	    const oldLostMarks = history.entries[entryName].lost || [];
       const restoredMarksIDs = [];
@@ -382,7 +382,7 @@ new _MODULE({
       return history;
     }, area);
   },
-  syncEntry(name, val) {console.log('sync', name);
+  syncEntry(name, val) {
     const area_1 = val ? 'local' : 'sync';
     const area_2 = val ? 'sync' : 'local';
 
@@ -444,7 +444,7 @@ new _MODULE({
       return history;
     }, area);
   },
-  addTagToEntry(entry, tag) {console.log('add tag', tag);
+  addTagToEntry(entry, tag) {
     if (!tag) entry.tag = '';
     else if (!entry.tag) entry.tag = tag;
     else {

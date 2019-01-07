@@ -3416,7 +3416,7 @@ function () {
         this.collectNodes().reduceToOneRange().update().adjust().update().retrieveText();
       }
 
-      selection.collapseToStart(); //console.log('_SELECTION time:',!!node,+new Date() -t0);
+      selection.collapseToStart();
     }
   }
 
@@ -3434,7 +3434,7 @@ function () {
       selection.removeAllRanges();
       selection.addRange(range);
       this.reduceToOneRange().update().collectNodes().retrieveText();
-      selection.collapseToStart(); //console.log('resume time:',+new Date()-t0);
+      selection.collapseToStart();
     }
   }, {
     key: "update",
