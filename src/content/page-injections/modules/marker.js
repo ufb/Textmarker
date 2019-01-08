@@ -200,9 +200,17 @@ export default function() {
     resume(arg) {
       _STORE.disabled = false;
 
-      while (this.done.length) {
-        this.undo(true);
-      }
+      // while (this.done.length) {
+      //   this.undo(true);
+      // }
+      Array.from(document.getElementsByClassName('textmarker-highlight'))
+        .forEach(highlight => {
+          const container = highlight.parentNode;
+          container.replaceChild(highlight.firstChild, highlight);
+          container.normalize();
+        });
+
+      this.done = [];
       this.undone = [];
       this.visuallyOrderedMarks = [];
       this.visuallyOrderedMarkIDs = [];
