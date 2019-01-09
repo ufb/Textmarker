@@ -603,7 +603,7 @@ class ImmutRestorer extends RestorerBase {
 
     this.selection = window.getSelection();
     this.range = document.createRange();
-    const marks = this.marks = entry.marks.sort((m1, m2) => m1.id - m2.id);
+    const marks = this.marks = [...entry.marks.sort((m1, m2) => m1.id - m2.id)];
 
     this.processInChunks(marks, this.restoreRange, this.report);
   }
