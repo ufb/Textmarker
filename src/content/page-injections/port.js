@@ -9,6 +9,7 @@ export default new _PORT({
 			'failed:restoration',
       'succeeded:restoration',
       'canceled:restoration',
+      'failed:restore-range',
       'canceled:save-after-canceled-restoration',
       'copy:marks',
       'save:entry?',

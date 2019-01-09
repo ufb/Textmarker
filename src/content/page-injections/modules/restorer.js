@@ -549,12 +549,13 @@ class Restorer extends RestorerBase {
           selection.self.removeAllRanges();
           selection.self.addRange(range);
           //selection.resume(range);
+          hallo.wo();
           this.emit('restored:range', mark);
           this.restored.push(mark);
           selection.recollectNodes(mark);
         } catch(e) {
           this.lost.push(mark);
-          this.emit('failed:restore-range', mark);
+          setTimeout(() => this.emit('failed:restore-range', e.toString()), 0);
         }
         delete mark.temp;
       }
@@ -621,11 +622,12 @@ class ImmutRestorer extends RestorerBase {
       range.setEnd(this.getNode(end.p), end.o);
       selection.removeAllRanges();
       selection.addRange(range);
+      hallo.wo();
       this.emit('restored:range', mark);
       this.restored.push(mark);
     } catch(e) {
       this.lost.push(mark);
-      this.emit('failed:restore-range', mark);
+      setTimeout(() => this.emit('failed:restore-range', e.toString()), 0);
     }
   }
   getNode(position) {

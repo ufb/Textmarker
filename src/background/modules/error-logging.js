@@ -17,7 +17,8 @@ new _MODULE({
       'failed:open-tab': 'onOpenTabFailure',
       'error:import': 'log',
       'error:browser-console': 'log',
-      'clear:logs': 'clear'
+      'clear:logs': 'clear',
+      'failed:restore-range': 'log'
     }
   },
 
@@ -26,7 +27,7 @@ new _MODULE({
     if (error.time) {
       log = [error.time, error.message + ' [' + error.location + ']'];
     } else {
-      log = [(new Date().getTime()), _LOG_KEYS[error]];
+      log = [(new Date().getTime()), _LOG_KEYS[error] || error];
     }
     _STORAGE.set('log', log).then(() => this.emit('updated:logs logged:error', log));
   },
