@@ -652,6 +652,7 @@ export default function() {
       }
     },
 
+    entries: null,
     count: 0,
     restored: 0,
     failed: 0,
@@ -680,7 +681,7 @@ export default function() {
     onFailure() {
       this.failed++;
     },
-    onFinishedRestoration(name, restored, lost, area) {
+    onFinishedRestoration() {
       console.log('time:', ((new Date()).getTime() - this.t0));
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
