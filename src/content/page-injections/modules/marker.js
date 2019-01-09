@@ -206,7 +206,7 @@ export default function() {
       Array.from(document.getElementsByClassName('textmarker-highlight'))
         .forEach(highlight => {
           const container = highlight.parentNode;
-          container.replaceChild(highlight.firstChild, highlight);
+          container.replaceChild(document.createTextNode(highlight.textContent), highlight);
           container.normalize();
         });
 
