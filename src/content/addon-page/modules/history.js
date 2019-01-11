@@ -65,7 +65,17 @@ export default function() {
     },
 
     ['delete'](names) {
-      let confirmed = window.confirm(browser.i18n.getMessage('del_confirm'));
+      let msg = 'del_confirm';
+      let l = names.length;
+
+      while (l--) {
+        if (this.entries[names[l]].locked) {
+          msg += '_locked';
+          break;
+        }
+      }
+
+      let confirmed = window.confirm(browser.i18n.getMessage(msg));
       if (confirmed) this.emit('delete:entries', names);
     },
     clean(names) {

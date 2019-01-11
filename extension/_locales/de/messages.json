@@ -470,6 +470,7 @@
 "sb74":{"message":"Kontakt"},
 "sb75":{"message":"Spenden"},
 "del_confirm":{"message":"Bitte bestätige den Löschvorgang:"},
+"del_confirm_locked":{"message":"Durch Löschen eines 'Eine-Markierung-pro-Eintrag'-Eintrages werden die Markierungen anderer Einträge mit derselben URL eventuell unwiederherstellbar!"},
 "nm_message":{"message":"Benenne den neuen Eintrag für Deine Textmarker Chronik$1:"},
 "nm_message_iframe":{"message":"\n(Dies ist ein iFrame - die Markierungen darin werden separat gespeichert)"},
 "note_saved_entry":{"message":"\nDeine Markierungen wurden in die Textmarker-Chronik gespeichert.\n\nDie Chronik ist via Textmarker-Icon in der Navigationsbar erreichbar.\n\n"},

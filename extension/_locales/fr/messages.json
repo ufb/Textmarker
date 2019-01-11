@@ -475,6 +475,7 @@
 "sb74":{"message":""},
 "sb75":{"message":""},
 "del_confirm":{"message":"Veuillez confirmer votre demande de suppression."},
+"del_confirm_locked":{"message":""},
 "nm_message":{"message":"Donnez un nom à cette nouvelle entrée de Textmarker$1 :"},
 "nm_message_iframe":{"message":"\n(cadre intégré : surlignages enregistrés séparément)"},
 "note_saved_entry":{"message":"\nVos surlignages ont été enregistrés dans l’historique.\n\nL’historique est accessible par le menu de l’icône de Textmarker dans la barre de navigation.\n\n"},

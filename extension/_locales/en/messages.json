@@ -470,6 +470,7 @@
 "sb74":{"message":"Contact"},
 "sb75":{"message":"Donate"},
 "del_confirm":{"message":"Please confirm your delete request:"},
+"del_confirm_locked":{"message":"Deleting a 'One highlight per entry'-entries could make other entries for the same URL unrecoverable!"},
 "nm_message":{"message":"Name your new Textmarker entry$1:"},
 "nm_message_iframe":{"message":"\n(This is an iFrame - its highlights will be saved seperately)"},
 "note_saved_entry":{"message":"\nYour highlights have been saved.\n\nOpen it via Textmarker icon in navigation bar and choose \"History\"\n\n"},
