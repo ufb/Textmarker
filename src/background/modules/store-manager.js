@@ -315,6 +315,7 @@ new _MODULE({
       if (receivedCompleteEntry) {
         history.entries[name] = entry;
       } else {
+        delete entry.synced;
         for (let e in entry) {
           history.entries[name][e] = entry[e];
         }

@@ -9,7 +9,6 @@ export default function() {
       ENV: {
         'started:app': 'checkURL',
         'toggled:addon': 'power',
-        'deleted:entry': 'unset',
         'saved:entry': 'update',
         'opened:sidebar': 'sendPageState',
         'failed:restoration': 'activateRetry',
@@ -161,22 +160,13 @@ export default function() {
           if (data) this.onUrlFound(this.filterEntries(data.entries), data.recentlyOpenedEntry);
         });
     },
-    unset(name) {
-      if (_STORE.name && _STORE.name === name) {
-        _STORE.name = undefined;
-        _STORE.entry = null;
-        _STORE.isNew = true;
-      }
-    },
     update(entries, force) {
       force = force === true ? true : false;
       entries = Array.isArray(entries) ? entries : [entries];
-      let entry = entries[0];
-
-      if (force || entry.url.split('#')[0] === this.url) {
-        if (!_STORE.locked) _STORE.name = entry.name;
-        _STORE.isNew = false;
-        _STORE.entry = entry;
+      let firstEntry = entries[0];
+      if (force || firstEntry.url.split('#')[0] === this.url) {
+        _STORE.addEntries(entries);
+        //_STORE.entry = entry;
         if (force) this.emit('set:entries', entries);
       }
     },

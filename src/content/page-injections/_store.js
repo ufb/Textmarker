@@ -6,7 +6,8 @@ export default new _MODULE({
       'toggled:sync': 'setAreas',
       'updated:naming-settings': 'updateLockedStatus',
       'updated:entry-sync': 'setSyncForEntry',
-      'updated:entry-name': 'renameEntry'
+      'updated:entry-name': 'renameEntry',
+      'deleted:entry': 'removeEntry'
     }
   },
   initialized: false,
@@ -18,7 +19,8 @@ export default new _MODULE({
   iframe: false,
   name: undefined,
   isNew: true,
-  entry: null,
+  //entry: null,
+  entries: {},
   locked: false,
   tmid: '',
   noteColor: 'yellow',
@@ -43,16 +45,43 @@ export default new _MODULE({
   },
 
   renameEntry(entry, oldName) {
-    if (this.name && this.name === oldName) {
+    if (this.name && this.name === oldName && !this.locked) {
       this.name = entry.name;
-      if (this.entry) this.entry.name = entry.name;
+      if (this.entries[oldName]) {
+        this.entries[entry.name] = this.entries[oldName];
+        delete this.entries[oldName];
+      }
     }
   },
 
   setSyncForEntry(entry) {
-    if (this.name && this.name === entry.name && this.entry) {
-      this.entry.synced = entry.synced;
+    if (!this.locked && this.entries[entry.name]) {
+      this.entries[entry.name].synced = entry.synced;
     }
+  },
+
+  removeEntry(deletedEntry) {
+    if (this.locked) return false;
+    
+    const entries = this.entries;
+    for (let name in entries) {
+      if (entries.hasOwnProperty(name) && name === deletedEntry) {
+        delete this.entries[name];
+        break;
+      }
+    }
+    this.name = undefined;
+    this.isNew = true;
+  },
+
+  addEntries(entries) {
+    if (!this.locked) this.name = entries[0].name;
+    const e = entries.length;
+    for (let i = 0, entry; i < e; i++) {
+      entry = entries[i];
+      this.entries[entry.name] = entry;
+    }
+    this.isNew = false;
   },
 
   get(field = 'storage') {

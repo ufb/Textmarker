@@ -219,7 +219,9 @@ export default function() {
       this.idcount = 0;
       this.markScrollPos = -1;
 
-      this.emit('resumed:markers', arg ? null : _STORE.entry);
+      const entry = !arg && _STORE.name && _STORE.entries[_STORE.name] ? _STORE.entries[_STORE.name] : null;
+
+      this.emit('resumed:markers', entry);
     },
     immut(immutable) {
       this.isImmut = immutable;
@@ -494,7 +496,11 @@ export default function() {
 			return this;
 		},
 		retrieveEntry() {
-      let entry = _STORE.entry || {};
+      const locked = _STORE.locked;
+      const isNew = _STORE.isNew;
+      const name = _STORE.name;
+
+      const entry = !locked && _STORE.entries[name] ? _STORE.entries[name] : {};
 
       entry.marks = this.collectMarks();
 			entry.last = new Date().getTime();
@@ -504,16 +510,16 @@ export default function() {
 			entry.idcount = this.idcount;
       entry.immut = this.isImmut;
 
-      if (_STORE.isNew || _STORE.locked) {
+      if (isNew || locked) {
         entry.first = entry.last;
         entry.url = window.document.URL;
         entry.synced = _STORE.area_history === 'sync';
-        entry.locked = _STORE.locked;
+        entry.locked = locked;
       }
 
-      entry.name = _STORE.locked ?
+      entry.name = locked ?
         entry.marks[0].text.trim().substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1) :
-        _STORE.isNew ? _STORE.name : entry.name;
+        isNew ? name : entry.name;
 
 			return entry;
 		},
