@@ -513,6 +513,7 @@
 "error_add_marker":{"message":"Réglages : surligneurs\nImpossible d’enregistrer le nouveau surligneur."},
 "error_remove_marker":{"message":"Réglages : surligneurs\nImpossible de supprimer le surligneur."},
 "error_save_entry":{"message":"Impossible d’enregistrer vos surlignages."},
+"error_double_locked_name":{"message":""},
 "error_update_entry":{"message":"Impossible d’enregistrer vos modifications."},
 "error_del_entry":{"message":"Impossible de supprimer l’entrée."},
 "error_empty_synced_storage_onstart":{"message":"Votre stockage Textmarker synchronisé est vide.\nC’est probablement dû à un plantage de Firefox.\nhttps://support.mozilla.org/fr/kb/firefox-plante-resoudre-prevenir-obtenir-aide"},

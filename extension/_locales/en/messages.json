@@ -508,6 +508,7 @@
 "error_add_marker":{"message":"Settings: Markers\nUnable to save your new marker."},
 "error_remove_marker":{"message":"Settings: Markers\nUnable to delete custom marker."},
 "error_save_entry":{"message":"Unable to save your highlights."},
+"error_double_locked_name":{"message":"Entry $1 already exists.\nEntries named after a highlight must have different names."},
 "error_update_entry":{"message":"Unable to save your changes."},
 "error_del_entry":{"message":"Unable to remove entry from memory."},
 "error_empty_synced_storage_onstart":{"message":"Your synced Textmarker storage is empty.\nIf this is unexpected then it's likely due to a FF crash.\nsupport.mozilla.org/en-US/kb/firefox-crashes-troubleshoot-prevent-and-get-help"},

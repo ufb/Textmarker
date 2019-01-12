@@ -8,6 +8,7 @@ export default function() {
         'saved:entry': 'onSavedEntry',
         'failed:save-entry': 'onSaveError',
         'failed:update-entry': 'onSaveError',
+        'failed:save-entry-double-locked': 'onSaveLockedDoubleNameError',
         'failed:delete-entries': 'onDeleteError',
         'failed:open-tab': 'onOpenTabFailure',
         'failed:restoration': 'onFailedRestoration',
@@ -130,6 +131,14 @@ export default function() {
       this.notify(
         settings => settings.history.saveNote,
         browser.i18n.getMessage('note_save_failure', browser.i18n.getMessage(error)),
+        'error'
+      );
+    },
+
+    onSaveLockedDoubleNameError(error, name) {
+      this.notify(
+        settings => settings.history.saveNote,
+        browser.i18n.getMessage('note_save_failure', browser.i18n.getMessage(error, name)),
         'error'
       );
     },

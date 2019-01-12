@@ -36,9 +36,14 @@ export default function() {
 
       _STORAGE.get('history').then(history => {
         let counter = this.getDoubleNameCount(history, name);
-        if (counter) name += ' (' + (counter + 1) + ')';
-        entry.name = name;
-        this.emit('named:entry', entry);
+
+        if (counter && entry.locked) {
+          this.emit('failed:save-entry-double-locked', 'error_double_locked_name', name);
+        } else {
+          if (counter) name += ' (' + (counter + 1) + ')';
+          entry.name = name;
+          this.emit('named:entry', entry);
+        }
       })
       .catch(() => this.emit('error', 'error_naming'));
     },
