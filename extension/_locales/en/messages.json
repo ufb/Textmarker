@@ -473,6 +473,7 @@
 "del_confirm_locked":{"message":"Deleting a 'One highlight per entry'-entries could make other entries for the same URL unrecoverable!"},
 "nm_message":{"message":"Name your new Textmarker entry$1:"},
 "nm_message_iframe":{"message":"\n(This is an iFrame - its highlights will be saved seperately)"},
+"nm_message_edit":{"message":"Enter new name:"},
 "note_saved_entry":{"message":"\nYour highlights have been saved.\n\nOpen it via Textmarker icon in navigation bar and choose \"History\"\n\n"},
 "note_pbm":{"message":"\nSaving failed.\nAllow saving in private browsing mode under Settings > History.\n\n"},
 "note_updated_entry":{"message":"\n\nYour changes have been saved.\n\n"},

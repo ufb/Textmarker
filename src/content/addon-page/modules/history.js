@@ -137,7 +137,7 @@ export default function() {
       this.emit('open:entries', el.getAttribute('data-url'), el.getAttribute('data-name'));
     },
     edit(e, el) {
-      const newName = window.prompt(browser.i18n.getMessage('nm_message'));
+      const newName = window.prompt(browser.i18n.getMessage('nm_message_edit'));
       if (newName) {
         const oldName = el.getAttribute('data-name');
         const area = el.parentNode.getElementsByClassName('switch--sync')[0].classList.contains('active') ?
