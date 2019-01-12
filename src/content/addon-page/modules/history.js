@@ -239,11 +239,15 @@ export default function() {
             input.className = 'entry-cb';
             input.id = 'entry-cb-' + j;
             input.setAttribute('data-name', name);
-            edit.setAttribute('data-name', name);
             view.setAttribute('data-name', name);
             label.setAttribute('for', 'entry-cb-' + j);
 
-            if (locked) lockedEl.classList.remove('u-display--none');
+            if (locked) {
+              lockedEl.classList.remove('u-display--none');
+            } else {
+              edit.classList.remove('u-display--none');
+              edit.setAttribute('data-name', name);
+            }
             if (immut) immutEl.classList.remove('u-display--none');
 
             if (tags) {
