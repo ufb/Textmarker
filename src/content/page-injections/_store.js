@@ -62,7 +62,7 @@ export default new _MODULE({
 
   removeEntry(deletedEntry) {
     if (this.locked) return false;
-    
+
     const entries = this.entries;
     for (let name in entries) {
       if (entries.hasOwnProperty(name) && name === deletedEntry) {
