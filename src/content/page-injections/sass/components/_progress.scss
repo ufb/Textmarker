@@ -9,6 +9,7 @@ tmprogressmodal {
   transform: translate(-50%, -50%);
   padding: 19px;
   box-shadow: 0 5px 19px -5px #555;
+  font-family: Verdana, sans-serif;
   box-sizing: border-box !important;
 }
 
@@ -38,12 +39,27 @@ tmprogress {
   box-sizing: border-box !important;
 }
 
-tmprogresscancel {
+tmprogresscancel,
+tmprogressclose {
   display: block;
   color: $color-text--grey;
   float: right;
   padding: 5px 11px;
+  margin-left: 20px;
   cursor: pointer;
   border: 1px solid $color-border;
   box-sizing: border-box !important;
+}
+
+tmprogressclose {
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border: 0;
+  padding: 0 4px;
+
+  &:hover {
+    color: $color-text--red;
+  }
 }

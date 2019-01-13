@@ -34,6 +34,9 @@ export default function() {
         type: 'tmprogressheader',
         text: browser.i18n.getMessage('restoring')
       }, {
+        type: 'tmprogressclose',
+        text: String.fromCharCode(10005)
+      }, {
         type: 'tmprogressbar',
         child: {
           type: 'tmprogress'
@@ -64,9 +67,11 @@ export default function() {
     start(len) {
       if (!this.active) return;
       this.resume(len);
-      const handler = this.cancelHandler = this.cancel.bind(this);
+      const cancelHandler = this.cancelHandler = this.cancel.bind(this);
+      const closeHandler = this.closeHandler = this.stop.bind(this);
       DOC.body.appendChild(this.el);
-      this.tmprogresscancel.addEventListener('click', handler, false);
+      this.tmprogresscancel.addEventListener('click', cancelHandler, false);
+      this.tmprogressclose.addEventListener('click', closeHandler, false);
     },
     progress() {
       const width = this.currentWidth += this.stepLength;
@@ -76,6 +81,7 @@ export default function() {
       try {
         DOC.body.removeChild(this.el);
         this.tmprogresscancel.removeEventListener('click', this.cancelHandler, false);
+        this.tmprogressclose.removeEventListener('click', this.closeHandler, false);
       } catch(e) {}
     },
     cancel() {
