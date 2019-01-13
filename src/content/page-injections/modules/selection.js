@@ -34,14 +34,6 @@ export default class _SELECTION {
 
     return this;
   }
-  resume(range) {
-    let selection = this.self;
-
-    selection.removeAllRanges();
-    selection.addRange(range);
-    this.reduceToOneRange().update().collectNodes().retrieveText();
-		selection.collapseToStart();
-  }
   update(selection) {
     if (selection) this.self = selection;
     else selection = this.self;
@@ -85,7 +77,7 @@ export default class _SELECTION {
         range = this.range,
         container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
         filter = wholeDocument ?
-          (node) => (!self.isBlank(node) && self.hasNormalParent(node)) :
+          (node) => (self.isSelectable(node) && !self.isBlank(node) && self.hasNormalParent(node)) :
           (node) => (selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(node)),
 
         iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {
@@ -228,12 +220,13 @@ export default class _SELECTION {
       tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' &&
       tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' &&
       tag !== 'MATH' && tag !== 'OBJECT' &&
-      !this.isInsideSVG(parent)
+      !this.isChildOf(parent, 'svg') //&&
+      //!this.isChildOf(parent, 'math')
     );
   }
-  isInsideSVG(node) {
+  isChildOf(node, nodeType) {
     while (node) {
-      if (node.nodeName === 'svg') return true;
+      if (node.nodeName === nodeType) return true;
       node = node.parentNode;
     }
     return false;
@@ -265,5 +258,9 @@ export default class _SELECTION {
       anchorNode === focusNode &&
       anchorNode.nodeType === 3 &&
       (!anchorNode.nextSibling || (anchorNode.nextSibling.compareDocumentPosition(focusNode) !== 4)));
+  }
+  isSelectable(node) {
+    this.range.selectNode(node);
+    return !!this.self.toString();
   }
 }
