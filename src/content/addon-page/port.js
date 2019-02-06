@@ -14,6 +14,7 @@ export default new _PORT({
       'change:saveopt-setting',
       'toggle:priv-setting',
       'change:immut-setting',
+      'change:dropLosses-setting',
       'change:namingopt-setting',
       'change:sort-setting',
       'change:view-setting',

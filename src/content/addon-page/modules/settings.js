@@ -34,6 +34,7 @@ export default function() {
           '#private-save': 'togglePrivSave',
           '#auto-note': 'toggleAutoNoteOpt',
           '#immut': 'toggleImmutOpt',
+          '#drop-losses': 'toggleDropLossesOpt',
           '#autonote-color': 'changeAutoNoteOpt'
         },
         click: {
@@ -220,6 +221,9 @@ export default function() {
     },
     toggleImmutOpt(e, el) {
       this.emit('change:immut-setting', el.checked);
+    },
+    toggleDropLossesOpt(e, el) {
+      this.emit('change:dropLosses-setting', el.checked);
     },
     addMarker(e, el) {
       let key = el.value,

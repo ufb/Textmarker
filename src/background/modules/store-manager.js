@@ -18,6 +18,7 @@ new _MODULE({
       'toggle:ctm-setting': 'toggleCtmSetting',
       'change:saveopt-setting': 'changeSaveOpt',
       'change:immut-setting': 'toggleImmutOpt',
+      'change:dropLosses-setting': 'toggleDropLossesOpt',
       'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
@@ -207,6 +208,13 @@ new _MODULE({
     this.updateSettings(
       settings => { settings.history.immut = val; return settings; },
       'immutopt',
+      'error_save_autosave'
+    );
+  },
+  toggleDropLossesOpt(val) {
+    this.updateSettings(
+      settings => { settings.history.dropLosses = val; return settings; },
+      'droplossesopt',
       'error_save_autosave'
     );
   },
