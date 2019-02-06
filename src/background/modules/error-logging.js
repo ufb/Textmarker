@@ -22,12 +22,15 @@ new _MODULE({
     }
   },
 
-  log(error) {
-    let log;
+  log(error, report) {
+    let log, msg;
     if (error.time) {
       log = [error.time, error.message + ' [' + error.location + ']'];
     } else {
       log = [(new Date().getTime()), _LOG_KEYS[error] || error];
+      if (report && typeof report === 'string') {
+        log.push(report);
+      }
     }
     _STORAGE.set('log', log).then(() => this.emit('updated:logs logged:error', log));
   },
@@ -40,8 +43,8 @@ new _MODULE({
   onMultipleUnlockedEntries() {
     this.log('note_restoration_warning_2');
   },
-  onFailedRestoration() {
-    this.log('note_restoration_failure');
+  onFailedRestoration(report) {
+    this.log('note_restoration_failure', report);
   },
   onOpenTabFailure() {
     this.log('note_url');

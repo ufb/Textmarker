@@ -24,7 +24,7 @@ export default function() {
         let tableBody = this.el.getElementsByTagName('tbody')[0],
             l = logs.length,
             frag = document.createDocumentFragment(),
-            tr, td_date, td_msg, node_date, node_msg, log, time, msg;
+            tr, td_date, td_msg, node_date, node_msg, log, time, msg, reason;
 
         if (l) {
           this.el.classList.remove('nologs');
@@ -42,6 +42,12 @@ export default function() {
 
             td_date.appendChild(node_date);
             td_msg.appendChild(node_msg);
+            if (log[2]) {
+              reason = document.createElement('div');
+              //reason.appendChild(document.createTextNode(log[2]));
+              reason.innerText = log[2];
+              td_msg.appendChild(reason);
+            }
             tr.appendChild(td_date);
             tr.appendChild(td_msg);
             frag.appendChild(tr);

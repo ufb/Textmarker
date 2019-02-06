@@ -9,6 +9,7 @@ class RestorerBase extends _MODULE {
 
     this.entry = entry;
     this.lost = [];
+    this.failureReport = {};
     this.restored = [];
     this.area = entry.synced ? 'sync' : 'local';
 
@@ -44,7 +45,7 @@ class RestorerBase extends _MODULE {
       while(ll--) {
         delete this.lost[ll].temp;
       }
-      this.emit('lost:marks');
+      this.emit('lost:marks', this.failureReport);
     }
     this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
   }
@@ -221,6 +222,7 @@ class Restorer extends RestorerBase {
 
         if (!markTemp.possiblePositions.length) {
           this.lost.push(mark);
+          this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_1') };
         }
       }
     }
@@ -415,7 +417,10 @@ class Restorer extends RestorerBase {
     }
     if (phase !== 1) {
       for (m in this.marks) {
-        if (!satisfied.includes(this.marks[m].id)) this.lost.push(mark);
+        if (!satisfied.includes(this.marks[m].id)) {
+          this.lost.push(mark);
+          this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_2') };
+        }
       }
     }
     return this;
@@ -544,11 +549,12 @@ class Restorer extends RestorerBase {
       end = markTemp.endNode;
       focusOffset = markTemp.focusOffset;
 
-      if (!start || !end || !(typeof focusOffset === 'number'))
+      if (!start || !end || !(typeof focusOffset === 'number')) {
         this.lost.push(mark);
-      else {
+        this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_3') };
+      } else {
         try {
-          range.setStart(start, mark.conds.o);
+          range.setStart(start, -1);//mark.conds.o);
           range.setEnd(end, focusOffset);
           selection.self.removeAllRanges();
           selection.self.addRange(range);
@@ -660,6 +666,7 @@ export default function() {
     count: 0,
     restored: 0,
     failed: 0,
+    failureReport: {},
 
     restore(entries) {this.t0 = (new Date()).getTime();console.log('start:',this.t0);
       if (!entries) return;
@@ -676,22 +683,32 @@ export default function() {
     resume() {
       this.restored = 0;
       this.failed = 0;
+      this.failureReport = {};
     },
     retry(entry) {
       entry = entry ? [entry] : this.entries;
       this.resume();
       this.restore(entry);
     },
-    onFailure() {
+    onFailure(report) {
       this.failed++;
+      for (let i in report) this.failureReport[i] = report[i];
     },
     onFinishedRestoration() {
       console.log('time:', ((new Date()).getTime() - this.t0));
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
-        if (this.failed) this.emit('failed:restoration');
+        if (this.failed) this.emit('failed:restoration', this.getReport());
         else this.emit('succeeded:restoration');
       }
+    },
+    getReport() {
+      const report = this.failureReport;
+      let msg = '';
+      for (let i in report) {
+        msg += `${report[i].reason} : ${report[i].text}\n`;
+      }
+      return msg;
     }
   });
 }

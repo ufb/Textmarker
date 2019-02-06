@@ -31,5 +31,10 @@
     tr:last-child & {
       border: 0;
     }
+
+    div {
+      margin-top: 5px;
+      color: $color-text--grey;
+    }
   }
 }
