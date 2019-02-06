@@ -354,34 +354,38 @@ new _MODULE({
       .then(() => this.emit('deleted:entries'));
   },
   updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
-    _STORAGE.update('history', history => {
-	    const oldLostMarks = history.entries[entryName].lost || [];
-      const restoredMarksIDs = [];
-      const oldLostMarksIDs = [];
+    _STORAGE.get('settings').then(settings => {console.log('drop losses',settings.history.dropLosses);
+      if (settings.history.dropLosses === true) {
+        _STORAGE.update('history', history => {
+          const oldLostMarks = history.entries[entryName].lost || [];
+          const restoredMarksIDs = [];
+          const oldLostMarksIDs = [];
 
-      history.entries[entryName].marks = restoredMarks;
+          history.entries[entryName].marks = restoredMarks;
 
-      restoredMarks.forEach(mark => restoredMarksIDs.push(mark.id));
+          restoredMarks.forEach(mark => restoredMarksIDs.push(mark.id));
 
-      let l = oldLostMarks.length, id;
+          let l = oldLostMarks.length, id;
 
-      while (l--) {
-        id = oldLostMarks[l].id;
-        if (restoredMarksIDs.includes(id)) {
-          oldLostMarks.splice(l, 1);
-        } else {
-          oldLostMarksIDs.push(id);
-        }
+          while (l--) {
+            id = oldLostMarks[l].id;
+            if (restoredMarksIDs.includes(id)) {
+              oldLostMarks.splice(l, 1);
+            } else {
+              oldLostMarksIDs.push(id);
+            }
+          }
+
+          lostMarks.forEach(mark => {
+            if (!oldLostMarksIDs.includes(mark.id)) oldLostMarks.push(mark);
+          });
+
+          history.entries[entryName].lost = oldLostMarks;
+
+          return history;
+        }, area);
       }
-
-      lostMarks.forEach(mark => {
-        if (!oldLostMarksIDs.includes(mark.id)) oldLostMarks.push(mark);
-      });
-
-      history.entries[entryName].lost = oldLostMarks;
-
-      return history;
-    }, area);
+    });
   },
   syncEntry(name, val) {
     const area_1 = val ? 'local' : 'sync';

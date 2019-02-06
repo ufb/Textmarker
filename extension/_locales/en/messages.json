@@ -297,6 +297,7 @@
 "t4321":{"message":"Unlike with above options multiple entries per URL are allowed."},
 "t4322":{"message":"Attention: You cannot save entries both in this mode and one of the above modes for the same URL."},
 "t4323":{"message":"I save my highlights on immutable pages"},
+"t4324":{"message":"If a highlight wasn't restorable: Don't try again next time"},
 "h434":{"message":"Customize download-buttons on history page"},
 "t437":{"message":"Text file"},
 "t438":{"message":"Marks (including meta infos)"},

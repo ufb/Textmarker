@@ -302,6 +302,7 @@
 "t4321":{"message":"Plusieurs entrées par URL sont autorisées contrairement aux autres options."},
 "t4322":{"message":"Attention : il est impossible, pour une même URL, d’enregistrer des entrées dans ce mode et dans l’un des autres modes."},
 "t4323":{"message":""},
+"t4324":{"message":""},
 "h434":{"message":""},
 "t437":{"message":""},
 "t438":{"message":"Surlignages (avec les métadonnées)"},

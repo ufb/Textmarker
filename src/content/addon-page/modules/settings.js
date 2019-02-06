@@ -172,6 +172,7 @@ export default function() {
       document.getElementById('name-' + historySettings.naming).checked = true;
       document.getElementById('private-save').checked = historySettings.saveInPriv;
       document.getElementById('immut').checked = historySettings.immut;
+      document.getElementById('drop-losses').checked = historySettings.dropLosses;
       document.getElementById('notes-new').checked = historySettings.saveNote;
 
       if (historySettings.download === 'json') {

@@ -61,6 +61,9 @@ new _MODULE({
       if (typeof history.immut !== 'boolean') {
         history.immut = defaultStorage.history.immut;
       }
+      if (typeof history.dropLosses !== 'boolean') {
+        history.dropLosses = true;
+      }
 
       noteTypes.forEach(noteType => {
         if (!misc[noteType]) {
