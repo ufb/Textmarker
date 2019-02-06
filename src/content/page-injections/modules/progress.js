@@ -65,7 +65,7 @@ export default function() {
       this.tmprogress.style.width = 0;
     },
     start(len) {
-      if (!this.active) return;
+      if (!len || !this.active) return;
       this.resume(len);
       const cancelHandler = this.cancelHandler = this.cancel.bind(this);
       const closeHandler = this.closeHandler = this.stop.bind(this);
