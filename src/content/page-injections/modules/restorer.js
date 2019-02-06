@@ -24,7 +24,11 @@ class RestorerBase extends _MODULE {
 			let expire = +new Date() + 500;
 
 			do {
-				proc(data.shift());
+				try {
+          proc(data.shift());
+        } catch(e) {
+          setTimeout(() => this.emit('failed:restore-range', e.toString()), 0);
+        }
 
 			} while (data.length > 0 && expire > +new Date());
 
