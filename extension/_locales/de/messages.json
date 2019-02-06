@@ -208,6 +208,7 @@
 "x241":{"message":"Darüber liegende Markierungen werden mit entfernt !"},
 "x242":{"message":"PDF: Textmarker scrollt erst dann zum Lesezeichen, wenn die entspr. Seite geladen ist, auf der sich das Lesezeichen befindet."},
 "x251":{"message":"Markierungen in iFrames werden jetzt in separate Chronik-Einträge gespeichert."},
+"x252":{"message":"Das Wiederherstellen gespeicherter Markierungen kann aus unterschiedlichen Gründen fehlschlagen - insbesondere dann, wenn sich der Textinhalt der entspr. Seite ändert."},
 "x261":{"message":"Shortcut-Probleme"},
 "x262":{"message":"Du kannst Shortcuts (de-)aktivieren unter Einstellungen > Shortcuts."},
 "x264":{"message":"Besser ist es, die PDF zu downloaden und die Markier-Funktion deines PDF-Viewers zu benutzen."},

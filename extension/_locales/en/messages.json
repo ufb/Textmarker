@@ -208,6 +208,7 @@
 "x241":{"message":"Overrlying marks will be deleted with it !"},
 "x242":{"message":"On PDFs you need to be on the page the bookmark is on for scrolling automatically to it."},
 "x251":{"message":"Highlights in iFrames will get a seperate history entry - 1 entry per frame."},
+"x252":{"message":"The restoration of saved highlights can fail for several reasons - especially when the corresp. page's text content chages."},
 "x261":{"message":"Shortcut problems"},
 "x262":{"message":"You can (de-)activate all shortcus under Settings > Shortcuts."},
 "x264":{"message":"It's generally better to just download the PDF and use the built-in highlighter of your PDF-viewer."},

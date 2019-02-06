@@ -213,6 +213,7 @@
 "x241":{"message":"Attention, les surlignages sus-jacents sont supprimés avec !"},
 "x242":{"message":"fonctionnel dans un PDF à condition d’être sur la page contenant le signet"},
 "x251":{"message":"Les surlignages dans un cadre intégré sont enregistrés dans une entrée d’historique distincte."},
+"x252":{"message":""},
 "x261":{"message":"Problèmes avec les raccourcis"},
 "x262":{"message":"Vous pouvez activer ou désactiver les raccourcis sous Réglages > Raccourcis."},
 "x264":{"message":"Il est préférable de télécharger le PDF et d’utiliser la fonction de surlignage de votre lecteur PDF."},
