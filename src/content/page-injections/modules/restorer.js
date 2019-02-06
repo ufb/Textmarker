@@ -554,7 +554,7 @@ class Restorer extends RestorerBase {
         this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_3') };
       } else {
         try {
-          range.setStart(start, -1);//mark.conds.o);
+          range.setStart(start, mark.conds.o);
           range.setEnd(end, focusOffset);
           selection.self.removeAllRanges();
           selection.self.addRange(range);
