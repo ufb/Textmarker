@@ -560,6 +560,7 @@ class Restorer extends RestorerBase {
           selection.self.addRange(range);
           //selection.resume(range);
           this.emit('restored:range', mark);
+          delete mark.synced;
           this.restored.push(mark);
           selection.recollectNodes(mark);
         } catch(e) {
@@ -632,6 +633,7 @@ class ImmutRestorer extends RestorerBase {
       selection.removeAllRanges();
       selection.addRange(range);
       this.emit('restored:range', mark);
+      delete mark.synced;
       this.restored.push(mark);
     } catch(e) {
       this.lost.push(mark);

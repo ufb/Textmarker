@@ -305,27 +305,36 @@ new _MODULE({
       .then(history => this.emit('updated:entry updated:entry-name', history.entries[newName], oldName))
       .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
   },
-  updateEntryOnPageAction(entry) {
+  updateEntryOnPageAction(entry, area) {
+    area = typeof area === 'string' ? area : entry.synced ? 'sync' : 'local';
+
     const name = entry.name;
     const receivedCompleteEntry = !!entry.url;
+    let found = true;
 
     _STORAGE.update('history', history => {
-      const lost = history.entries[name].lost;
-
       if (receivedCompleteEntry) {
         history.entries[name] = entry;
+        history.entries[name].lost = history.entries[name].lost || [];
       } else {
-        delete entry.synced;
-        for (let e in entry) {
-          history.entries[name][e] = entry[e];
+        if (!history.entries[name]) {
+          found = false;
+        } else {
+          delete entry.synced;
+          for (let e in entry) {
+            if (entry.hasOwnProperty(e)) {
+              history.entries[name][e] = entry[e];
+            }
+          }
+          history.entries[name].lost = history.entries[name].lost || [];
         }
       }
-      history.entries[name].lost = lost || [];
 
       return history;
-    }, entry.synced ? 'sync' : 'local')
-      .then(() => this.emit('updated:entry updated:entry-on-save', entry))
-      .catch((e) => this.emit('failed:update-entry', 'error_update_entry'));
+    }, area)
+      .catch((e) => this.emit('failed:update-entry', 'error_update_entry'))
+      .then(() => { if (!found) { this.updateEntryOnPageAction(entry, entry.synced ? 'local' : 'sync'); }})
+      .then(() => this.emit('updated:entry updated:entry-on-save', entry));
   },
   deleteEntries(names, area) {
     if (!names.length) return;
