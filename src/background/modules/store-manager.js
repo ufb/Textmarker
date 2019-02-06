@@ -354,7 +354,7 @@ new _MODULE({
       .then(() => this.emit('deleted:entries'));
   },
   updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
-    _STORAGE.get('settings').then(settings => {console.log('drop losses',settings.history.dropLosses);
+    _STORAGE.get('settings').then(settings => {
       if (settings.history.dropLosses === true) {
         _STORAGE.update('history', history => {
           const oldLostMarks = history.entries[entryName].lost || [];

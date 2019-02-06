@@ -668,7 +668,7 @@ export default function() {
     failed: 0,
     failureReport: {},
 
-    restore(entries) {this.t0 = (new Date()).getTime();console.log('start:',this.t0);
+    restore(entries) {
       if (!entries) return;
       if (!Array.isArray(entries)) entries = [entries];
 
@@ -695,7 +695,6 @@ export default function() {
       for (let i in report) this.failureReport[i] = report[i];
     },
     onFinishedRestoration() {
-      console.log('time:', ((new Date()).getTime() - this.t0));
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
         if (this.failed) this.emit('failed:restoration', this.getReport());
