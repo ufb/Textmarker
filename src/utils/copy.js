@@ -1,17 +1,16 @@
-const _COPY = function(original, clone) {
-  clone = clone || {};
-
-  for (let i in original) {
-    if (original.hasOwnProperty(i)) {
-      if (typeof original[i] === 'object') {
-        clone[i] = Array.isArray(original[i]) ? [] : {};
-        _COPY(original[i], clone[i]);
-      } else {
-        clone[i] = original[i];
-      }
+const _COPY = function(src) {
+  const target = Array.isArray(src) ? [] : {};
+  let val;
+  for (let prop in src) {
+    if (src.hasOwnProperty(prop)) {
+      val = src[prop];
+      if (val !== null && typeof val === 'object') {
+        target[prop] = _COPY(val);
+      } else
+        target[prop] = val;
     }
   }
-  return clone;
+  return target;
 }
 
 export { _COPY }
