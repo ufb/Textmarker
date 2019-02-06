@@ -159,6 +159,7 @@ class Restorer extends RestorerBase {
       }
       else this.report();
     }
+    else this.report();
   }
   sortQueueById() {
     let marks = this.queue,
