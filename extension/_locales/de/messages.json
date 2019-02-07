@@ -299,6 +299,7 @@
 "t4322":{"message":"Achtung: Für Seiten, auf denen Markierungen mit dieser Option gespeichert werden, können keine Chronikeinträge mit einer der anderen Optionen gespeichert werden."},
 "t4323":{"message":"Ich speichere Markierungen auf unveränderbaren Seiten"},
 "t4324":{"message":"Nicht wiederherstellbare Markierungen bei Seitenneuaufruf nicht wieder versuchen, herzustellen"},
+"t4325":{"message":"Lesezeichen und Markierung löschen sind für diese Option nicht verfügbar."},
 "h434":{"message":"Download-Buttons in Chronik anpassen"},
 "t437":{"message":"Textdatei"},
 "t438":{"message":"Markierungen (inkl. Metadaten)"},
