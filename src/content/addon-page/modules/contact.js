@@ -40,7 +40,7 @@ export default function() {
 
         while(l--) {
           log = logs[l];
-          href += log[1] + ' - ' + encodeURIComponent((new Date(log[0]).toUTCString()) + '\n');
+          href += (log[2] ? log[2] : log[1]) + ' - ' + encodeURIComponent((new Date(log[0]).toUTCString()) + '\n');
         }
         logLink.href = href;
       });
