@@ -46,11 +46,15 @@ new _DOMMODULE({
       marks = entry.marks;
     }
     const markIDs = this.markIDs;
-    this.length = marks.length;
-    this.marks = markIDs ? marks.sort((m1, m2) => markIDs.indexOf(m1.id) < markIDs.indexOf(m2.id)) : marks;
+    //this.length = marks.length;
+    //this.marks = markIDs ? marks.sort((m1, m2) => markIDs.indexOf(m1.id) < markIDs.indexOf(m2.id)) : marks;
+    this.marks = markIDs ?
+      markIDs.map(id => marks.find(mark => mark.id == id)) :
+      marks;
+    this.length = this.marks.length;
   },
   setMarkIDs(ids) {
-    this.markIDs = ids.reverse();
+    this.markIDs = ids;
     this.render();
   },
   renderSVGFilters() {
@@ -83,34 +87,35 @@ new _DOMMODULE({
     marksContainer.innerText = '';
 
     this.marks.forEach((mark, i) => {
+      if (mark) {
+        markContainer = markTmpl.cloneNode(true);
+        markContainer.id = '';
+        markContainer.classList.remove('u-display--none');
+        markContainer.setAttribute('data-id', i);
 
-      markContainer = markTmpl.cloneNode(true);
-      markContainer.id = '';
-      markContainer.classList.remove('u-display--none');
-      markContainer.setAttribute('data-id', i);
+        const textNode = markContainer.getElementsByClassName('mark__text')[0];
+        const textContent = document.createTextNode(mark.text);
+        let color = mark.style.indexOf('background-color');
+        let note = mark.note;
+        color = color === -1 ? 'transparent' : mark.style.substr(color + 17, 7);
+        let noteColor = note ? note.color : '';
+        let noteBtn, noteNode;
 
-      const textNode = markContainer.getElementsByClassName('mark__text')[0];
-      const textContent = document.createTextNode(mark.text);
-      let color = mark.style.indexOf('background-color');
-      let note = mark.note;
-      color = color === -1 ? 'transparent' : mark.style.substr(color + 17, 7);
-      let noteColor = note ? note.color : '';
-      let noteBtn, noteNode;
+        textNode.style.borderColor = color;
+        textNode.appendChild(textContent);
 
-      textNode.style.borderColor = color;
-      textNode.appendChild(textContent);
-
-      if (note) {
-        markContainer.classList.add('mark--note');
-        noteBtn = markContainer.getElementsByClassName('mark__note-btn')[0];
-        noteBtn.classList.remove('u-display--none');
-        noteBtn.classList.add('mark__note-btn--' + noteColor);
-        noteNode = markContainer.getElementsByClassName('mark__note')[0];
-        noteNode.appendChild(document.createTextNode(note.text));
-        noteNode.classList.remove('u-display--none');
-        noteNode.classList.add('mark__note--' + noteColor);
+        if (note) {
+          markContainer.classList.add('mark--note');
+          noteBtn = markContainer.getElementsByClassName('mark__note-btn')[0];
+          noteBtn.classList.remove('u-display--none');
+          noteBtn.classList.add('mark__note-btn--' + noteColor);
+          noteNode = markContainer.getElementsByClassName('mark__note')[0];
+          noteNode.appendChild(document.createTextNode(note.text));
+          noteNode.classList.remove('u-display--none');
+          noteNode.classList.add('mark__note--' + noteColor);
+        }
+        fragment.appendChild(markContainer);
       }
-      fragment.appendChild(markContainer);
     });
     marksContainer.appendChild(fragment);
   },
