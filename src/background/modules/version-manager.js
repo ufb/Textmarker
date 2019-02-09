@@ -59,7 +59,7 @@ new _MODULE({
         history.saveInPriv = defaultSettings.history.saveInPriv;
       }
       if (typeof history.immut !== 'boolean') {
-        history.immut = defaultStorage.history.immut;
+        history.immut = defaultSettings.history.immut;
       }
       if (typeof history.dropLosses !== 'boolean') {
         history.dropLosses = true;
@@ -89,22 +89,21 @@ new _MODULE({
     }
     return settings;
   },
-  updateHistory(history, includingDates) {
+  updateHistory(history) {
     delete history.order;
 
-    if (includingDates) {
-      let entries = history.entries,
-          names = Object.keys(entries),
-          l = names.length,
-          entry;
+    let entries = history.entries,
+        names = Object.keys(entries),
+        l = names.length,
+        entry;
 
-      if (!l) return history;
+    if (!l) return history;
 
-      while (l--) {
-        entry = this.fixHistoryDates(entries[names[l]]);
-        entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
-      }
+    while (l--) {
+      entry = this.fixHistoryDates(entries[names[l]]);
+      entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
     }
+
     return history;
   },
   fixHistoryDates(entry) {
@@ -166,14 +165,14 @@ new _MODULE({
     })
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'))
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'))
-    .then(() => _STORAGE.update('history', history => this.updateHistory(history, prevVersion < '3'), 'sync'))
-    .then(() => _STORAGE.update('history', history => this.updateHistory(history, prevVersion < '3'), 'local'))
+    .then(() => { return prevVersion < '3' ? _STORAGE.update('history', history => this.updateHistory(history), 'sync') : true })
+    .then(() => { return prevVersion < '3' ? _STORAGE.update('history', history => this.updateHistory(history), 'local') : true })
     .then(() => _STORAGE.set('storage', 'sync'))
     .then(() => _STORAGE.set('storage', 'local'))
     .then(() => this.emit('initialized:storage', prevVersion))
-    .catch(() => {
+    .catch(e => {
       this.emit('initialized:storage', prevVersion);
-      this.emit('error', 'error_storage_migration');
+      this.emit('error', 'error_storage_migration', e.toString());
     });
   },
   checkStorageOnStart() {

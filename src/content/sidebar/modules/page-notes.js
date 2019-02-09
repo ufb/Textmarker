@@ -36,7 +36,7 @@ new _DOMMODULE({
     _GET_ACTIVE_TAB().then(tab => {
       const url = this.url = tab.url;
       _STORE.get('pagenotes').then(pagenotes => {
-        pagenotes = pagenotes ? pagenotes[url] : null;
+        pagenotes = pagenotes && pagenotes[url] ? pagenotes[url] : null;
         let l, id;
         if (pagenotes && (l = pagenotes.length)) {
           this.notes = pagenotes;
