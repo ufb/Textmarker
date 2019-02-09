@@ -14,6 +14,6 @@ new _DOMMODULE({
 
   link(e, el) {
     el = el.classList.contains('link') ? el : el.parentNode;
-    this.emit('open:addon-page', el.getAttribute('data-id'));
+    this.emit('open:addon-page(sb)', el.getAttribute('data-id'));
   }
 });

@@ -22,7 +22,7 @@ export default new _PORT({
       'sidebar:next-mark',
       'remove:tag',
       'add:tag',
-      'open:addon-page',
+      'open:addon-page(sb)',
       'opened:sidebar',
       'updated:page-note',
       'toggled:sidebar-tab',

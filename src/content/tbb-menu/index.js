@@ -36,7 +36,7 @@ new _DOMMODULE({
   },
   open(e, el) {
     const page = el.nodeName === 'SPAN' ? el.parentNode.id : el.id;
-    this.emit('open:addon-page', page);
+    this.emit('open:addon-page(tbb)', page);
     window.close();
   },
   setActivateText(active) {

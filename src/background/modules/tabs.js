@@ -6,7 +6,9 @@ export default function() {
     events: {
       ENV: {
         //'started:app': 'openInitPage',
-        'open:addon-page': 'openAddonPage',
+        'open:addon-page(sb)': 'openAddonPage',
+        'open:addon-page(tbb)': 'openAddonPage',
+        'open:addon-page(am)': 'openAddonPage',
         'lookup:word': 'openSearch',
         'open:entries': 'open'
       }
