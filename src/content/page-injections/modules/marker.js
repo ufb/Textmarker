@@ -267,8 +267,8 @@ export default function() {
       if (save !== false) this.autosave();
 			if (order) this.orderMarksVisually();
 		},
-    recreate(mark, bodyTextNodes) {
-      this.selection = new _SELECTION(null, { bodyTextNodes });
+    recreate(mark) {
+      this.selection = new _SELECTION(null, { programmatically: true });
       this.store(this.mark(mark.key, mark), false, false);
     },
     onFinishedRestoration() {

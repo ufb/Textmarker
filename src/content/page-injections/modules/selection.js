@@ -4,9 +4,9 @@ export default class _SELECTION {
 
   constructor(node, options) {
 
-    let selection = this.self = window.getSelection();
+    this.options = options || {};
 
-    this.bodyTextNodes = options ? options.bodyTextNodes : null;
+    let selection = this.self = window.getSelection();
 
     if (selection.rangeCount) this.range = selection.getRangeAt(0);
 
@@ -80,8 +80,6 @@ export default class _SELECTION {
         container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
         filter = wholeDocument ?
           (node) => (self.isSelectable(node) && !self.isBlank(node) && self.hasNormalParent(node)) :
-            this.bodyTextNodes ?
-          (node) => (selection.containsNode(node) && this.bodyTextNodes.includes(node)) :
           (node) => (selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(node)),
 
         iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {
@@ -97,7 +95,8 @@ export default class _SELECTION {
     while(textNode = iterator.nextNode()) {
       nodes.push(textNode);
     }
-    this.nodes = this.getReducedNodeCollection(nodes);
+    nodes = this.trimSelection(nodes);
+    this.nodes = this.options.programmatically ? this.reduceToSelectable(nodes) : nodes;
     this.parentNodes = this.collectParentNodes(this.nodes);
 
     return this;
@@ -122,7 +121,7 @@ export default class _SELECTION {
 
     this.nodes.splice(start, end - start + 1, ...newSegment);
   }
-  getReducedNodeCollection(nodes) {
+  trimSelection(nodes) {
     const selection = this.self;
     let firstNode, lastNode;
 
@@ -136,6 +135,23 @@ export default class _SELECTION {
         nodes.pop();
       }
     }
+    return nodes;
+  }
+  reduceToSelectable(nodes) {
+    const sel = this.self;
+    const rg = document.createRange();
+
+    sel.removeAllRanges();
+    sel.addRange(rg);
+
+    nodes = nodes.filter(node => {
+      rg.selectNode(node);
+      return !!sel.toString();
+    });
+
+    sel.removeAllRanges();
+    sel.addRange(this.range);
+
     return nodes;
   }
   collectParentNodes(nodes) {
