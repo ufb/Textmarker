@@ -59,7 +59,7 @@ class Restorer extends RestorerBase {
     this.queue = [];
     this.cache = [];
     this.phase = 1;
-    this.chunkDuration = 500;
+    this.chunkDuration = 5;
     this._timer = +new Date() + this.chunkDuration;
 
     this.init();
@@ -153,7 +153,7 @@ class Restorer extends RestorerBase {
       this.phase++;
 
       if (this.queue.length && !this.canceled) {
-        if (this.timer < +new Date()) setTimeout(() => this.restore(), 0);
+        if (this.timer < +new Date()) setTimeout(() => this.restore(), 1000);
         else this.restore();
         //this.restore();
       }
@@ -560,7 +560,7 @@ class Restorer extends RestorerBase {
           selection.self.removeAllRanges();
           selection.self.addRange(range);
           //selection.resume(range);
-          this.emit('restored:range', mark);
+          this.emit('restored:range', mark, this.bodyTextNodes);
           delete mark.synced;
           this.restored.push(mark);
           selection.recollectNodes(mark);
@@ -579,7 +579,7 @@ class Restorer extends RestorerBase {
       this.trimmedSelectionText = this.squeeze(this.selection.text);
     }
 
-    this.bodyTextNodes = this.selection.nodes;
+    this.bodyTextNodes = this.selection.nodes.slice();
 
     return this;
   }

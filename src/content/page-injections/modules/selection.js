@@ -2,9 +2,11 @@ import _STORE from './../_store'
 
 export default class _SELECTION {
 
-  constructor(node) {
+  constructor(node, options) {
 
     let selection = this.self = window.getSelection();
+
+    this.bodyTextNodes = options ? options.bodyTextNodes : null;
 
     if (selection.rangeCount) this.range = selection.getRangeAt(0);
 
@@ -78,6 +80,8 @@ export default class _SELECTION {
         container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
         filter = wholeDocument ?
           (node) => (self.isSelectable(node) && !self.isBlank(node) && self.hasNormalParent(node)) :
+            this.bodyTextNodes ?
+          (node) => (selection.containsNode(node) && this.bodyTextNodes.includes(node)) :
           (node) => (selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(node)),
 
         iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {

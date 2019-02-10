@@ -216,7 +216,6 @@ export default function() {
       this.visuallyOrderedMarkIDs = [];
       this.bookmark = null;
       this.removedBookmark = null;
-      this.idcount = 0;
       this.markScrollPos = -1;
 
       const entry = !arg && _STORE.name && _STORE.entries[_STORE.name] ? _STORE.entries[_STORE.name] : null;
@@ -268,8 +267,8 @@ export default function() {
       if (save !== false) this.autosave();
 			if (order) this.orderMarksVisually();
 		},
-    recreate(mark) {
-      this.selection = new _SELECTION();
+    recreate(mark, bodyTextNodes) {
+      this.selection = new _SELECTION(null, { bodyTextNodes });
       this.store(this.mark(mark.key, mark), false, false);
     },
     onFinishedRestoration() {
