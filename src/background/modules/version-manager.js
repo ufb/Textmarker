@@ -101,7 +101,7 @@ new _MODULE({
 
     while (l--) {
       entry = this.fixHistoryDates(entries[names[l]]);
-      entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
+      entry.synced = typeof entry.synced === 'undefined' ? false : entry.synced;
     }
 
     return history;
@@ -165,8 +165,6 @@ new _MODULE({
     })
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'))
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'))
-    .then(() => { return prevVersion < '3' ? _STORAGE.update('history', history => this.updateHistory(history), 'sync') : true })
-    .then(() => { return prevVersion < '3' ? _STORAGE.update('history', history => this.updateHistory(history), 'local') : true })
     .then(() => _STORAGE.set('storage', 'sync'))
     .then(() => _STORAGE.set('storage', 'local'))
     .then(() => this.emit('initialized:storage', prevVersion))
