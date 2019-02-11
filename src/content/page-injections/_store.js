@@ -48,7 +48,7 @@ export default new _MODULE({
     if (this.name && this.name === oldName && !this.locked) {
       this.name = entry.name;
       if (this.entries[oldName]) {
-        this.entries[entry.name] = this.entries[oldName];
+        this.entries[entry.name] = entry;
         delete this.entries[oldName];
       }
     }
