@@ -1,6 +1,5 @@
 .news-box {
-  background: #fff;
-  box-shadow: 3px 3px 0 $color-border--light;
+  border: 1px solid $color-border--light;
   padding: $spacing--small;
   margin-bottom: $spacing--small;
 
@@ -19,7 +18,12 @@
       top: 3px;
       @include icon('down');
       transform: rotate(90deg);
-      opacity: .5;
+      opacity: .25;
+    }
+    &:hover {
+      &:after {
+        opacity: .5;
+      }
     }
   }
 
