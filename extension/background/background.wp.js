@@ -379,18 +379,23 @@ new _utils._MODULE({
       'failed:open-tab': 'onOpenTabFailure',
       'error:import': 'log',
       'error:browser-console': 'log',
-      'clear:logs': 'clear'
+      'clear:logs': 'clear',
+      'failed:restore-range': 'log'
     }
   },
-  log: function log(error) {
+  log: function log(error, report) {
     var _this = this;
 
-    var log;
+    var log, msg;
 
     if (error.time) {
       log = [error.time, error.message + ' [' + error.location + ']'];
     } else {
-      log = [new Date().getTime(), _logKeys.default[error]];
+      log = [new Date().getTime(), _logKeys.default[error] || error];
+
+      if (report && typeof report === 'string') {
+        log.push(report);
+      }
     }
 
     _storage.default.set('log', log).then(function () {
@@ -412,8 +417,8 @@ new _utils._MODULE({
   onMultipleUnlockedEntries: function onMultipleUnlockedEntries() {
     this.log('note_restoration_warning_2');
   },
-  onFailedRestoration: function onFailedRestoration() {
-    this.log('note_restoration_failure');
+  onFailedRestoration: function onFailedRestoration(report) {
+    this.log('note_restoration_failure', report);
   },
   onOpenTabFailure: function onOpenTabFailure() {
     this.log('note_url');
@@ -596,10 +601,14 @@ function _default() {
       _storage.default.get('history').then(function (history) {
         var counter = _this3.getDoubleNameCount(history, name);
 
-        if (counter) name += ' (' + (counter + 1) + ')';
-        entry.name = name;
+        if (counter && entry.locked) {
+          _this3.emit('failed:save-entry-double-locked', 'error_double_locked_name', name);
+        } else {
+          if (counter) name += ' (' + (counter + 1) + ')';
+          entry.name = name;
 
-        _this3.emit('named:entry', entry);
+          _this3.emit('named:entry', entry);
+        }
       }).catch(function () {
         return _this3.emit('error', 'error_naming');
       });
@@ -660,6 +669,7 @@ function _default() {
         'saved:entry': 'onSavedEntry',
         'failed:save-entry': 'onSaveError',
         'failed:update-entry': 'onSaveError',
+        'failed:save-entry-double-locked': 'onSaveLockedDoubleNameError',
         'failed:delete-entries': 'onDeleteError',
         'failed:open-tab': 'onOpenTabFailure',
         'failed:restoration': 'onFailedRestoration',
@@ -747,6 +757,11 @@ function _default() {
       this.notify(function (settings) {
         return settings.history.saveNote;
       }, browser.i18n.getMessage('note_save_failure', browser.i18n.getMessage(error)), 'error');
+    },
+    onSaveLockedDoubleNameError: function onSaveLockedDoubleNameError(error, name) {
+      this.notify(function (settings) {
+        return settings.history.saveNote;
+      }, browser.i18n.getMessage('note_save_failure', browser.i18n.getMessage(error, name)), 'error');
     },
     onDeleteError: function onDeleteError(error) {
       this.notify(function (settings) {
@@ -916,6 +931,7 @@ new _utils._MODULE({
       'toggle:ctm-setting': 'toggleCtmSetting',
       'change:saveopt-setting': 'changeSaveOpt',
       'change:immut-setting': 'toggleImmutOpt',
+      'change:dropLosses-setting': 'toggleDropLossesOpt',
       'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
@@ -1094,6 +1110,12 @@ new _utils._MODULE({
       return settings;
     }, 'immutopt', 'error_save_autosave');
   },
+  toggleDropLossesOpt: function toggleDropLossesOpt(val) {
+    this.updateSettings(function (settings) {
+      settings.history.dropLosses = val;
+      return settings;
+    }, 'droplossesopt', 'error_save_autosave');
+  },
   togglePrivSaveOpt: function togglePrivSaveOpt(val) {
     this.updateSettings(function (settings) {
       settings.history.saveInPriv = val;
@@ -1201,29 +1223,43 @@ new _utils._MODULE({
       return _this5.emit('failed:update-entry', 'error_update_entry');
     });
   },
-  updateEntryOnPageAction: function updateEntryOnPageAction(entry) {
+  updateEntryOnPageAction: function updateEntryOnPageAction(entry, area) {
     var _this6 = this;
 
+    area = typeof area === 'string' ? area : entry.synced ? 'sync' : 'local';
     var name = entry.name;
     var receivedCompleteEntry = !!entry.url;
+    var found = true;
 
     _storage.default.update('history', function (history) {
-      var lost = history.entries[name].lost;
-
       if (receivedCompleteEntry) {
         history.entries[name] = entry;
+        history.entries[name].lost = history.entries[name].lost || [];
       } else {
-        for (var e in entry) {
-          history.entries[name][e] = entry[e];
+        if (!history.entries[name]) {
+          found = false;
+        } else {
+          delete entry.synced;
+
+          for (var e in entry) {
+            if (entry.hasOwnProperty(e)) {
+              history.entries[name][e] = entry[e];
+            }
+          }
+
+          history.entries[name].lost = history.entries[name].lost || [];
         }
       }
 
-      history.entries[name].lost = lost || [];
       return history;
-    }, entry.synced ? 'sync' : 'local').then(function () {
-      return _this6.emit('updated:entry updated:entry-on-save', entry);
-    }).catch(function (e) {
+    }, area).catch(function (e) {
       return _this6.emit('failed:update-entry', 'error_update_entry');
+    }).then(function () {
+      if (!found) {
+        _this6.updateEntryOnPageAction(entry, entry.synced ? 'local' : 'sync');
+      }
+    }).then(function () {
+      return _this6.emit('updated:entry updated:entry-on-save', entry);
     });
   },
   deleteEntries: function deleteEntries(names, area) {
@@ -1260,33 +1296,37 @@ new _utils._MODULE({
     });
   },
   updateEntryOnRestoration: function updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
-    _storage.default.update('history', function (history) {
-      var oldLostMarks = history.entries[entryName].lost || [];
-      var restoredMarksIDs = [];
-      var oldLostMarksIDs = [];
-      history.entries[entryName].marks = restoredMarks;
-      restoredMarks.forEach(function (mark) {
-        return restoredMarksIDs.push(mark.id);
-      });
-      var l = oldLostMarks.length,
-          id;
+    _storage.default.get('settings').then(function (settings) {
+      if (settings.history.dropLosses === true) {
+        _storage.default.update('history', function (history) {
+          var oldLostMarks = history.entries[entryName].lost || [];
+          var restoredMarksIDs = [];
+          var oldLostMarksIDs = [];
+          history.entries[entryName].marks = restoredMarks;
+          restoredMarks.forEach(function (mark) {
+            return restoredMarksIDs.push(mark.id);
+          });
+          var l = oldLostMarks.length,
+              id;
 
-      while (l--) {
-        id = oldLostMarks[l].id;
+          while (l--) {
+            id = oldLostMarks[l].id;
 
-        if (restoredMarksIDs.includes(id)) {
-          oldLostMarks.splice(l, 1);
-        } else {
-          oldLostMarksIDs.push(id);
-        }
+            if (restoredMarksIDs.includes(id)) {
+              oldLostMarks.splice(l, 1);
+            } else {
+              oldLostMarksIDs.push(id);
+            }
+          }
+
+          lostMarks.forEach(function (mark) {
+            if (!oldLostMarksIDs.includes(mark.id)) oldLostMarks.push(mark);
+          });
+          history.entries[entryName].lost = oldLostMarks;
+          return history;
+        }, area);
       }
-
-      lostMarks.forEach(function (mark) {
-        if (!oldLostMarksIDs.includes(mark.id)) oldLostMarks.push(mark);
-      });
-      history.entries[entryName].lost = oldLostMarks;
-      return history;
-    }, area);
+    });
   },
   syncEntry: function syncEntry(name, val) {
     var _this8 = this;
@@ -1417,7 +1457,9 @@ function _default() {
     events: {
       ENV: {
         //'started:app': 'openInitPage',
-        'open:addon-page': 'openAddonPage',
+        'open:addon-page(sb)': 'openAddonPage',
+        'open:addon-page(tbb)': 'openAddonPage',
+        'open:addon-page(am)': 'openAddonPage',
         'lookup:word': 'openSearch',
         'open:entries': 'open'
       }
@@ -1437,7 +1479,7 @@ function _default() {
       var _this = this;
 
       browser.tabs.onActivated.addListener(function (tab) {
-        return _this.emit('activated:tab', tab.tabId, tab.url);
+        return _this.emit('activated:tab', tab.tabId, tab.url || '');
       });
       browser.tabs.onUpdated.addListener(function (tabId, changed) {
         return _this.emit('updated:tab', tabId, changed);
@@ -1571,7 +1613,11 @@ new _utils._MODULE({
       }
 
       if (typeof history.immut !== 'boolean') {
-        history.immut = defaultStorage.history.immut;
+        history.immut = defaultSettings.history.immut;
+      }
+
+      if (typeof history.dropLosses !== 'boolean') {
+        history.dropLosses = true;
       }
 
       noteTypes.forEach(function (noteType) {
@@ -1603,20 +1649,17 @@ new _utils._MODULE({
 
     return settings;
   },
-  updateHistory: function updateHistory(history, includingDates) {
+  updateHistory: function updateHistory(history) {
     delete history.order;
+    var entries = history.entries,
+        names = Object.keys(entries),
+        l = names.length,
+        entry;
+    if (!l) return history;
 
-    if (includingDates) {
-      var entries = history.entries,
-          names = Object.keys(entries),
-          l = names.length,
-          entry;
-      if (!l) return history;
-
-      while (l--) {
-        entry = this.fixHistoryDates(entries[names[l]]);
-        entry.synced = typeof entry.synced === 'undefined' ? true : entry.synced;
-      }
+    while (l--) {
+      entry = this.fixHistoryDates(entries[names[l]]);
+      entry.synced = typeof entry.synced === 'undefined' ? false : entry.synced;
     }
 
     return history;
@@ -1696,23 +1739,15 @@ new _utils._MODULE({
         return _this.updateSettings(settings);
       }, 'local');
     }).then(function () {
-      return _storage.default.update('history', function (history) {
-        return _this.updateHistory(history, prevVersion < '3');
-      }, 'sync');
-    }).then(function () {
-      return _storage.default.update('history', function (history) {
-        return _this.updateHistory(history, prevVersion < '3');
-      }, 'local');
-    }).then(function () {
       return _storage.default.set('storage', 'sync');
     }).then(function () {
       return _storage.default.set('storage', 'local');
     }).then(function () {
       return _this.emit('initialized:storage', prevVersion);
-    }).catch(function () {
+    }).catch(function (e) {
       _this.emit('initialized:storage', prevVersion);
 
-      _this.emit('error', 'error_storage_migration');
+      _this.emit('error', 'error_storage_migration', e.toString());
     });
   },
   checkStorageOnStart: function checkStorageOnStart() {
@@ -2248,6 +2283,7 @@ var _default = {
     history: {
       autosave: true,
       saveInPriv: false,
+      dropLosses: true,
       immut: false,
       naming: 'title',
       download: 'json',
@@ -2518,22 +2554,21 @@ exports._COPY = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var _COPY = function _COPY(original, clone) {
-  clone = clone || {};
+var _COPY = function _COPY(src) {
+  var target = Array.isArray(src) ? [] : {};
+  var val;
 
-  for (var i in original) {
-    if (original.hasOwnProperty(i)) {
-      if (_typeof(original[i]) === 'object') {
-        clone[i] = Array.isArray(original[i]) ? [] : {};
+  for (var prop in src) {
+    if (src.hasOwnProperty(prop)) {
+      val = src[prop];
 
-        _COPY(original[i], clone[i]);
-      } else {
-        clone[i] = original[i];
-      }
+      if (val !== null && _typeof(val) === 'object') {
+        target[prop] = _COPY(val);
+      } else target[prop] = val;
     }
   }
 
-  return clone;
+  return target;
 };
 
 exports._COPY = _COPY;

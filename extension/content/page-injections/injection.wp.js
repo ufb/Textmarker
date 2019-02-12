@@ -191,7 +191,8 @@ var _default = new _utils._MODULE({
       'toggled:sync': 'setAreas',
       'updated:naming-settings': 'updateLockedStatus',
       'updated:entry-sync': 'setSyncForEntry',
-      'updated:entry-name': 'renameEntry'
+      'updated:entry-name': 'renameEntry',
+      'deleted:entry': 'removeEntry'
     }
   },
   initialized: false,
@@ -202,7 +203,8 @@ var _default = new _utils._MODULE({
   iframe: false,
   name: undefined,
   isNew: true,
-  entry: null,
+  //entry: null,
+  entries: {},
   locked: false,
   tmid: '',
   noteColor: 'yellow',
@@ -230,15 +232,44 @@ var _default = new _utils._MODULE({
     });
   },
   renameEntry: function renameEntry(entry, oldName) {
-    if (this.name && this.name === oldName) {
+    if (this.name && this.name === oldName && !this.locked) {
       this.name = entry.name;
-      if (this.entry) this.entry.name = entry.name;
+
+      if (this.entries[oldName]) {
+        this.entries[entry.name] = entry;
+        delete this.entries[oldName];
+      }
     }
   },
   setSyncForEntry: function setSyncForEntry(entry) {
-    if (this.name && this.name === entry.name && this.entry) {
-      this.entry.synced = entry.synced;
+    if (!this.locked && this.entries[entry.name]) {
+      this.entries[entry.name].synced = entry.synced;
     }
+  },
+  removeEntry: function removeEntry(deletedEntry) {
+    if (this.locked) return false;
+    var entries = this.entries;
+
+    for (var name in entries) {
+      if (entries.hasOwnProperty(name) && name === deletedEntry) {
+        delete this.entries[name];
+        break;
+      }
+    }
+
+    this.name = undefined;
+    this.isNew = true;
+  },
+  addEntries: function addEntries(entries) {
+    if (!this.locked) this.name = entries[0].name;
+    var e = entries.length;
+
+    for (var i = 0, entry; i < e; i++) {
+      entry = entries[i];
+      this.entries[entry.name] = entry;
+    }
+
+    this.isNew = false;
   },
   get: function get() {
     var _this3 = this;
@@ -709,7 +740,7 @@ function () {
     var selection, defaults;
     this.marker = marker;
     selection = this.selection = marker.selection;
-    this.immut = _store.default.redescribing ? marker.immut : immut;
+    this.immut = _store.default.redescribing ? marker.isImmut : immut;
     defaults = {
       style: '',
       bookmark: false,
@@ -1316,21 +1347,25 @@ function _default() {
 
       this.emit('removed:mark', id[0]);
     },
-    resume: function resume() {
-      _store.default.disabled = false;
+    resume: function resume(arg) {
+      _store.default.disabled = false; // while (this.done.length) {
+      //   this.undo(true);
+      // }
 
-      while (this.done.length) {
-        this.undo(true);
-      }
-
+      Array.from(document.getElementsByClassName('textmarker-highlight')).forEach(function (highlight) {
+        var container = highlight.parentNode;
+        container.replaceChild(document.createTextNode(highlight.textContent), highlight);
+        container.normalize();
+      });
+      this.done = [];
       this.undone = [];
       this.visuallyOrderedMarks = [];
       this.visuallyOrderedMarkIDs = [];
       this.bookmark = null;
       this.removedBookmark = null;
-      this.idcount = 0;
       this.markScrollPos = -1;
-      this.emit('resumed:markers');
+      var entry = !arg && _store.default.name && _store.default.entries[_store.default.name] ? _store.default.entries[_store.default.name] : null;
+      this.emit('resumed:markers', entry);
     },
     immut: function immut(immutable) {
       this.isImmut = immutable;
@@ -1380,7 +1415,9 @@ function _default() {
       if (order) this.orderMarksVisually();
     },
     recreate: function recreate(mark) {
-      this.selection = new _selection.default();
+      this.selection = new _selection.default(null, {
+        programmatically: true
+      });
       this.store(this.mark(mark.key, mark), false, false);
     },
     onFinishedRestoration: function onFinishedRestoration() {
@@ -1630,7 +1667,10 @@ function _default() {
       return this;
     },
     retrieveEntry: function retrieveEntry() {
-      var entry = _store.default.entry || {};
+      var locked = _store.default.locked;
+      var isNew = _store.default.isNew;
+      var name = _store.default.name;
+      var entry = !locked && _store.default.entries[name] ? _store.default.entries[name] : {};
       entry.marks = this.collectMarks();
       entry.last = new Date().getTime();
       entry.bookmarked = !!this.bookmark;
@@ -1639,14 +1679,14 @@ function _default() {
       entry.idcount = this.idcount;
       entry.immut = this.isImmut;
 
-      if (_store.default.isNew || _store.default.locked) {
+      if (isNew || locked) {
         entry.first = entry.last;
         entry.url = window.document.URL;
         entry.synced = _store.default.area_history === 'sync';
-        entry.locked = _store.default.locked;
+        entry.locked = locked;
       }
 
-      entry.name = _store.default.locked ? entry.marks[0].text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1) : _store.default.isNew ? _store.default.name : entry.name;
+      entry.name = locked ? entry.marks[0].text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1) : isNew ? name : entry.name;
       return entry;
     },
     collectMarks: function collectMarks() {
@@ -2182,7 +2222,6 @@ function _default() {
       ENV: {
         'started:app': 'checkURL',
         'toggled:addon': 'power',
-        'deleted:entry': 'unset',
         'saved:entry': 'update',
         'opened:sidebar': 'sendPageState',
         'failed:restoration': 'activateRetry',
@@ -2324,22 +2363,15 @@ function _default() {
         if (data) _this3.onUrlFound(_this3.filterEntries(data.entries), data.recentlyOpenedEntry);
       });
     },
-    unset: function unset(name) {
-      if (_store.default.name && _store.default.name === name) {
-        _store.default.name = undefined;
-        _store.default.entry = null;
-        _store.default.isNew = true;
-      }
-    },
     update: function update(entries, force) {
       force = force === true ? true : false;
       entries = Array.isArray(entries) ? entries : [entries];
-      var entry = entries[0];
+      var firstEntry = entries[0];
 
-      if (force || entry.url.split('#')[0] === this.url) {
-        if (!_store.default.locked) _store.default.name = entry.name;
-        _store.default.isNew = false;
-        _store.default.entry = entry;
+      if (force || firstEntry.url.split('#')[0] === this.url) {
+        _store.default.addEntries(entries); //_STORE.entry = entry;
+
+
         if (force) this.emit('set:entries', entries);
       }
     },
@@ -2474,6 +2506,9 @@ function _default() {
         type: 'tmprogressheader',
         text: browser.i18n.getMessage('restoring')
       }, {
+        type: 'tmprogressclose',
+        text: String.fromCharCode(10005)
+      }, {
         type: 'tmprogressbar',
         child: {
           type: 'tmprogress'
@@ -2501,11 +2536,13 @@ function _default() {
       this.tmprogress.style.width = 0;
     },
     start: function start(len) {
-      if (!this.active) return;
+      if (!len || !this.active) return;
       this.resume(len);
-      var handler = this.cancelHandler = this.cancel.bind(this);
+      var cancelHandler = this.cancelHandler = this.cancel.bind(this);
+      var closeHandler = this.closeHandler = this.stop.bind(this);
       DOC.body.appendChild(this.el);
-      this.tmprogresscancel.addEventListener('click', handler, false);
+      this.tmprogresscancel.addEventListener('click', cancelHandler, false);
+      this.tmprogressclose.addEventListener('click', closeHandler, false);
     },
     progress: function progress() {
       var width = this.currentWidth += this.stepLength;
@@ -2515,6 +2552,7 @@ function _default() {
       try {
         DOC.body.removeChild(this.el);
         this.tmprogresscancel.removeEventListener('click', this.cancelHandler, false);
+        this.tmprogressclose.removeEventListener('click', this.closeHandler, false);
       } catch (e) {}
     },
     cancel: function cancel() {
@@ -2556,6 +2594,14 @@ var _selection = _interopRequireDefault(__webpack_require__(/*! ./selection */ "
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2587,6 +2633,7 @@ function (_MODULE2) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(RestorerBase).call(this, entry));
     _this.entry = entry;
     _this.lost = [];
+    _this.failureReport = {};
     _this.restored = [];
     _this.area = entry.synced ? 'sync' : 'local';
 
@@ -2606,10 +2653,18 @@ function (_MODULE2) {
       cb = cb.bind(this);
 
       (function rec() {
+        var _this2 = this;
+
         var expire = +new Date() + 500;
 
         do {
-          proc(data.shift());
+          try {
+            proc(data.shift());
+          } catch (e) {
+            setTimeout(function () {
+              return _this2.emit('failed:restore-range', e.toString());
+            }, 0);
+          }
         } while (data.length > 0 && expire > +new Date());
 
         if (data.length > 0) window.setTimeout(function () {
@@ -2628,7 +2683,7 @@ function (_MODULE2) {
           delete this.lost[ll].temp;
         }
 
-        this.emit('lost:marks');
+        this.emit('lost:marks', this.failureReport);
       }
 
       this.emit('finished:restoration', this.entry.name, this.restored, this.lost, this.area);
@@ -2644,20 +2699,20 @@ function (_RestorerBase) {
   _inherits(Restorer, _RestorerBase);
 
   function Restorer(entry) {
-    var _this2;
+    var _this3;
 
     _classCallCheck(this, Restorer);
 
-    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(Restorer).call(this, entry));
-    _this2.queue = [];
-    _this2.cache = [];
-    _this2.phase = 1;
-    _this2.chunkDuration = 500;
-    _this2._timer = +new Date() + _this2.chunkDuration;
+    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(Restorer).call(this, entry));
+    _this3.queue = [];
+    _this3.cache = [];
+    _this3.phase = 1;
+    _this3.chunkDuration = 500;
+    _this3._timer = +new Date() + _this3.chunkDuration;
 
-    _this2.init();
+    _this3.init();
 
-    return _this2;
+    return _this3;
   }
 
   _createClass(Restorer, [{
@@ -2728,7 +2783,7 @@ function (_RestorerBase) {
   }, {
     key: "restore",
     value: function restore() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.phase === 2) this.sortQueueById();
       var marks = this.marks = this.queue.shift(),
@@ -2743,10 +2798,10 @@ function (_RestorerBase) {
 
         if (this.queue.length && !this.canceled) {
           if (this.timer < +new Date()) setTimeout(function () {
-            return _this3.restore();
-          }, 0);else this.restore(); //this.restore();
+            return _this4.restore();
+          }, 0);else this.restore();
         } else this.report();
-      }
+      } else this.report();
     }
   }, {
     key: "sortQueueById",
@@ -2819,6 +2874,10 @@ function (_RestorerBase) {
 
           if (!markTemp.possiblePositions.length) {
             this.lost.push(mark);
+            this.failureReport[mark.id] = {
+              text: mark.text,
+              reason: browser.i18n.getMessage('note_restoration_failure_reason_1')
+            };
           }
         }
       }
@@ -3047,7 +3106,13 @@ function (_RestorerBase) {
 
       if (phase !== 1) {
         for (m in this.marks) {
-          if (!satisfied.includes(this.marks[m].id)) this.lost.push(mark);
+          if (!satisfied.includes(this.marks[m].id)) {
+            this.lost.push(mark);
+            this.failureReport[mark.id] = {
+              text: mark.text,
+              reason: browser.i18n.getMessage('note_restoration_failure_reason_2')
+            };
+          }
         }
       }
 
@@ -3173,6 +3238,8 @@ function (_RestorerBase) {
   }, {
     key: "restoreRanges",
     value: function restoreRanges() {
+      var _this5 = this;
+
       var range = document.createRange(),
           selection = this.selection,
           marks = this.cache,
@@ -3189,7 +3256,14 @@ function (_RestorerBase) {
         start = markTemp.startNode;
         end = markTemp.endNode;
         focusOffset = markTemp.focusOffset;
-        if (!start || !end || !(typeof focusOffset === 'number')) this.lost.push(mark);else {
+
+        if (!start || !end || !(typeof focusOffset === 'number')) {
+          this.lost.push(mark);
+          this.failureReport[mark.id] = {
+            text: mark.text,
+            reason: browser.i18n.getMessage('note_restoration_failure_reason_3')
+          };
+        } else {
           try {
             range.setStart(start, mark.conds.o);
             range.setEnd(end, focusOffset);
@@ -3197,11 +3271,14 @@ function (_RestorerBase) {
             selection.self.addRange(range); //selection.resume(range);
 
             this.emit('restored:range', mark);
+            delete mark.synced;
             this.restored.push(mark);
             selection.recollectNodes(mark);
           } catch (e) {
             this.lost.push(mark);
-            this.emit('failed:restore-range', mark);
+            setTimeout(function () {
+              return _this5.emit('failed:restore-range', e.toString());
+            }, 0);
           }
 
           delete mark.temp;
@@ -3216,7 +3293,7 @@ function (_RestorerBase) {
         this.trimmedSelectionText = this.squeeze(this.selection.text);
       }
 
-      this.bodyTextNodes = this.selection.nodes;
+      this.bodyTextNodes = this.selection.nodes.slice();
       return this;
     }
   }, {
@@ -3263,25 +3340,28 @@ function (_RestorerBase2) {
   _inherits(ImmutRestorer, _RestorerBase2);
 
   function ImmutRestorer(entry) {
-    var _this4;
+    var _this6;
 
     _classCallCheck(this, ImmutRestorer);
 
-    _this4 = _possibleConstructorReturn(this, _getPrototypeOf(ImmutRestorer).call(this, entry));
-    _this4.selection = window.getSelection();
-    _this4.range = document.createRange();
-    var marks = _this4.marks = entry.marks.sort(function (m1, m2) {
+    _this6 = _possibleConstructorReturn(this, _getPrototypeOf(ImmutRestorer).call(this, entry));
+    _this6.selection = window.getSelection();
+    _this6.range = document.createRange();
+
+    var marks = _this6.marks = _toConsumableArray(entry.marks.sort(function (m1, m2) {
       return m1.id - m2.id;
-    });
+    }));
 
-    _this4.processInChunks(marks, _this4.restoreRange, _this4.report);
+    _this6.processInChunks(marks, _this6.restoreRange, _this6.report);
 
-    return _this4;
+    return _this6;
   }
 
   _createClass(ImmutRestorer, [{
     key: "restoreRange",
     value: function restoreRange(mark) {
+      var _this7 = this;
+
       if (this.canceled) return this.marks = [];
       var conds = mark.conds;
       var start = conds.s;
@@ -3295,10 +3375,13 @@ function (_RestorerBase2) {
         selection.removeAllRanges();
         selection.addRange(range);
         this.emit('restored:range', mark);
+        delete mark.synced;
         this.restored.push(mark);
       } catch (e) {
         this.lost.push(mark);
-        this.emit('failed:restore-range', mark);
+        setTimeout(function () {
+          return _this7.emit('failed:restore-range', e.toString());
+        }, 0);
       }
     }
   }, {
@@ -3329,12 +3412,14 @@ function _default() {
         'resumed:markers': 'retry'
       }
     },
+    entries: null,
     count: 0,
     restored: 0,
     failed: 0,
+    failureReport: {},
     restore: function restore(entries) {
-      this.t0 = new Date().getTime();
-      console.log('start:', this.t0);
+      if (!entries) return;
+      if (!Array.isArray(entries)) entries = [entries];
       this.entries = entries;
       this.count = entries.length;
       entries.forEach(function (entry) {
@@ -3344,21 +3429,35 @@ function _default() {
     resume: function resume() {
       this.restored = 0;
       this.failed = 0;
+      this.failureReport = {};
     },
-    retry: function retry() {
+    retry: function retry(entry) {
+      entry = entry ? [entry] : this.entries;
       this.resume();
-      this.restore(this.entries);
+      this.restore(entry);
     },
-    onFailure: function onFailure() {
+    onFailure: function onFailure(report) {
       this.failed++;
-    },
-    onFinishedRestoration: function onFinishedRestoration(name, restored, lost, area) {
-      console.log('time:', new Date().getTime() - this.t0);
 
+      for (var i in report) {
+        this.failureReport[i] = report[i];
+      }
+    },
+    onFinishedRestoration: function onFinishedRestoration() {
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
-        if (this.failed) this.emit('failed:restoration');else this.emit('succeeded:restoration');
+        if (this.failed) this.emit('failed:restoration', this.getReport());else this.emit('succeeded:restoration');
       }
+    },
+    getReport: function getReport() {
+      var report = this.failureReport;
+      var msg = '';
+
+      for (var i in report) {
+        msg += "".concat(report[i].reason, " : ").concat(report[i].text, "\n");
+      }
+
+      return msg;
     }
   });
 }
@@ -3401,10 +3500,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var _SELECTION =
 /*#__PURE__*/
 function () {
-  function _SELECTION(node) {
+  function _SELECTION(node, options) {
     _classCallCheck(this, _SELECTION);
 
-    //var t0=+new Date();
+    this.options = options || {};
     var selection = this.self = window.getSelection();
     if (selection.rangeCount) this.range = selection.getRangeAt(0);
 
@@ -3425,16 +3524,6 @@ function () {
     value: function create(node) {
       this.self.selectAllChildren(node);
       return this;
-    }
-  }, {
-    key: "resume",
-    value: function resume(range) {
-      //var t0=+new Date();
-      var selection = this.self;
-      selection.removeAllRanges();
-      selection.addRange(range);
-      this.reduceToOneRange().update().collectNodes().retrieveText();
-      selection.collapseToStart();
     }
   }, {
     key: "update",
@@ -3478,7 +3567,7 @@ function () {
           range = this.range,
           container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
           filter = wholeDocument ? function (node) {
-        return !self.isBlank(node) && self.hasNormalParent(node);
+        return self.isSelectable(node) && !self.isBlank(node) && self.hasNormalParent(node);
       } : function (node) {
         return selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(node);
       },
@@ -3499,7 +3588,8 @@ function () {
         nodes.push(textNode);
       }
 
-      this.nodes = this.getReducedNodeCollection(nodes);
+      nodes = this.trimSelection(nodes);
+      this.nodes = this.options.programmatically ? this.reduceToSelectable(nodes) : nodes;
       this.parentNodes = this.collectParentNodes(this.nodes);
       return this;
     }
@@ -3529,8 +3619,8 @@ function () {
       (_this$nodes = this.nodes).splice.apply(_this$nodes, [start, end - start + 1].concat(_toConsumableArray(newSegment)));
     }
   }, {
-    key: "getReducedNodeCollection",
-    value: function getReducedNodeCollection(nodes) {
+    key: "trimSelection",
+    value: function trimSelection(nodes) {
       var selection = this.self;
       var firstNode, lastNode;
 
@@ -3548,6 +3638,21 @@ function () {
         }
       }
 
+      return nodes;
+    }
+  }, {
+    key: "reduceToSelectable",
+    value: function reduceToSelectable(nodes) {
+      var sel = this.self;
+      var rg = document.createRange();
+      sel.removeAllRanges();
+      sel.addRange(rg);
+      nodes = nodes.filter(function (node) {
+        rg.selectNode(node);
+        return !!sel.toString();
+      });
+      sel.removeAllRanges();
+      sel.addRange(this.range);
       return nodes;
     }
   }, {
@@ -3639,13 +3744,15 @@ function () {
     value: function hasNormalParent(node) {
       var parent = node.parentNode;
       var tag = parent.tagName.toUpperCase();
-      return tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' && tag !== 'BASE' && tag !== 'TITLE' && tag !== 'NOSCRIPT' && tag !== 'IMG' && tag !== 'IFRAME' && tag !== 'EMBED' && tag !== 'PARAM' && tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' && tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' && tag !== 'MATH' && tag !== 'OBJECT' && !this.isInsideSVG(parent);
+      return tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' && tag !== 'BASE' && tag !== 'TITLE' && tag !== 'NOSCRIPT' && tag !== 'IMG' && tag !== 'IFRAME' && tag !== 'EMBED' && tag !== 'PARAM' && tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' && tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' && tag !== 'MATH' && tag !== 'OBJECT' && !this.isChildOf(parent, 'svg') //&&
+      //!this.isChildOf(parent, 'math')
+      ;
     }
   }, {
-    key: "isInsideSVG",
-    value: function isInsideSVG(node) {
+    key: "isChildOf",
+    value: function isChildOf(node, nodeType) {
       while (node) {
-        if (node.nodeName === 'svg') return true;
+        if (node.nodeName === nodeType) return true;
         node = node.parentNode;
       }
 
@@ -3674,6 +3781,12 @@ function () {
           anchorNode = selection.anchorNode,
           focusNode = selection.focusNode;
       return anchorNode === focusNode && anchorNode.nodeType === 3 && (!anchorNode.nextSibling || anchorNode.nextSibling.compareDocumentPosition(focusNode) !== 4);
+    }
+  }, {
+    key: "isSelectable",
+    value: function isSelectable(node) {
+      this.range.selectNode(node);
+      return !!this.self.toString();
     }
   }]);
 
@@ -3876,7 +3989,7 @@ var _default = new _utils._PORT({
   name: 'injection',
   type: 'content',
   events: {
-    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'canceled:restoration', 'canceled:save-after-canceled-restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'activated:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries', 'page-state', 'notes-state', 'visually-ordered:marks']
+    ONEOFF: ['finished:restoration', 'failed:restoration', 'succeeded:restoration', 'canceled:restoration', 'failed:restore-range', 'canceled:save-after-canceled-restoration', 'copy:marks', 'save:entry?', 'update:entry?', 'lookup:word', 'error:browser-console', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'activated:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'warn:mixed-entry-types', 'warn:multiple-unlocked-entries', 'page-state', 'notes-state', 'visually-ordered:marks']
   }
 });
 
@@ -3943,22 +4056,21 @@ exports._COPY = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var _COPY = function _COPY(original, clone) {
-  clone = clone || {};
+var _COPY = function _COPY(src) {
+  var target = Array.isArray(src) ? [] : {};
+  var val;
 
-  for (var i in original) {
-    if (original.hasOwnProperty(i)) {
-      if (_typeof(original[i]) === 'object') {
-        clone[i] = Array.isArray(original[i]) ? [] : {};
+  for (var prop in src) {
+    if (src.hasOwnProperty(prop)) {
+      val = src[prop];
 
-        _COPY(original[i], clone[i]);
-      } else {
-        clone[i] = original[i];
-      }
+      if (val !== null && _typeof(val) === 'object') {
+        target[prop] = _COPY(val);
+      } else target[prop] = val;
     }
   }
 
-  return clone;
+  return target;
 };
 
 exports._COPY = _COPY;

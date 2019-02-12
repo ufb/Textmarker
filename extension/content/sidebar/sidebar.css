@@ -706,11 +706,14 @@ label span {
   margin-right: 8px; }
 
 .tab__header {
-  position: relative; }
+  position: relative;
+  color: #aaa; }
+  .tab__header:hover {
+    color: #000; }
 
-.tab__name {
+.tab__title {
   border-bottom: 1px solid #e1e2e3; }
-  .tab--folded .tab__name {
+  .tab--folded .tab__title {
     border-top: 1px solid #e1e2e3;
     border-bottom: 0; }
 

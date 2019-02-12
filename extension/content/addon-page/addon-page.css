@@ -1193,10 +1193,12 @@ a .at {
     font-size: 13px; }
     tr:last-child #logs-table td {
       border: 0; }
+    #logs-table td div {
+      margin-top: 5px;
+      color: #777; }
 
 .news-box {
-  background: #fff;
-  box-shadow: 3px 3px 0 #e1e2e3;
+  border: 1px solid #e1e2e3;
   padding: 10px;
   margin-bottom: 10px; }
   .news-box h3 {
@@ -1216,6 +1218,8 @@ a .at {
       background-position: 0 0, 0 0;
       background-size: unset, 100%;
       transform: rotate(90deg);
+      opacity: .25; }
+    .news-box h3:hover:after {
       opacity: .5; }
   .news-box p {
     display: none; }

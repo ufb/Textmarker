@@ -492,7 +492,7 @@ function _default() {
 
         while (l--) {
           log = logs[l];
-          href += log[1] + ' - ' + encodeURIComponent(new Date(log[0]).toUTCString() + '\n');
+          href += log[1] + (log[2] ? ' (' + log[2] + ')' : '') + ' - ' + encodeURIComponent(new Date(log[0]).toUTCString() + '\n');
         }
 
         logLink.href = href;
@@ -786,7 +786,17 @@ function _default() {
       this.tags = [];
     }
   }, _defineProperty(_ref, 'delete', function _delete(names) {
-    var confirmed = window.confirm(browser.i18n.getMessage('del_confirm'));
+    var msg = 'del_confirm';
+    var l = names.length;
+
+    while (l--) {
+      if (this.entries[names[l]].locked) {
+        msg += '_locked';
+        break;
+      }
+    }
+
+    var confirmed = window.confirm(browser.i18n.getMessage(msg));
     if (confirmed) this.emit('delete:entries', names);
   }), _defineProperty(_ref, "clean", function clean(names) {
     this.emit('clean:entries', names);
@@ -846,7 +856,7 @@ function _default() {
   }), _defineProperty(_ref, "open", function open(e, el) {
     this.emit('open:entries', el.getAttribute('data-url'), el.getAttribute('data-name'));
   }), _defineProperty(_ref, "edit", function edit(e, el) {
-    var newName = window.prompt(browser.i18n.getMessage('nm_message'));
+    var newName = window.prompt(browser.i18n.getMessage('nm_message_edit'));
 
     if (newName) {
       var oldName = el.getAttribute('data-name');
@@ -966,10 +976,16 @@ function _default() {
           input.className = 'entry-cb';
           input.id = 'entry-cb-' + j;
           input.setAttribute('data-name', name);
-          edit.setAttribute('data-name', name);
           view.setAttribute('data-name', name);
           label.setAttribute('for', 'entry-cb-' + j);
-          if (locked) lockedEl.classList.remove('u-display--none');
+
+          if (locked) {
+            lockedEl.classList.remove('u-display--none');
+          } else {
+            edit.classList.remove('u-display--none');
+            edit.setAttribute('data-name', name);
+          }
+
           if (immut) immutEl.classList.remove('u-display--none');
 
           if (tags) {
@@ -1533,7 +1549,8 @@ function _default() {
             node_msg,
             log,
             time,
-            msg;
+            msg,
+            reason;
 
         if (l) {
           _this.el.classList.remove('nologs');
@@ -1551,6 +1568,14 @@ function _default() {
             node_msg = document.createTextNode(msg);
             td_date.appendChild(node_date);
             td_msg.appendChild(node_msg);
+
+            if (log[2]) {
+              reason = document.createElement('div'); //reason.appendChild(document.createTextNode(log[2]));
+
+              reason.innerText = log[2];
+              td_msg.appendChild(reason);
+            }
+
             tr.appendChild(td_date);
             tr.appendChild(td_msg);
             frag.appendChild(tr);
@@ -1944,7 +1969,6 @@ function _default() {
       ENV: {
         'imported:settings': 'update',
         'updated:bg-color-settings': 'update',
-        'updated:saveopt-settings': 'update',
         'updated:custom-search-settings': 'showCustomSearchSettingSuccess',
         'toggled:sync-settings': 'update'
       },
@@ -1969,6 +1993,7 @@ function _default() {
           '#private-save': 'togglePrivSave',
           '#auto-note': 'toggleAutoNoteOpt',
           '#immut': 'toggleImmutOpt',
+          '#drop-losses': 'toggleDropLossesOpt',
           '#autonote-color': 'changeAutoNoteOpt'
         },
         click: {
@@ -2101,6 +2126,7 @@ function _default() {
       document.getElementById('name-' + historySettings.naming).checked = true;
       document.getElementById('private-save').checked = historySettings.saveInPriv;
       document.getElementById('immut').checked = historySettings.immut;
+      document.getElementById('drop-losses').checked = historySettings.dropLosses;
       document.getElementById('notes-new').checked = historySettings.saveNote;
 
       if (historySettings.download === 'json') {
@@ -2146,6 +2172,9 @@ function _default() {
     },
     toggleImmutOpt: function toggleImmutOpt(e, el) {
       this.emit('change:immut-setting', el.checked);
+    },
+    toggleDropLossesOpt: function toggleDropLossesOpt(e, el) {
+      this.emit('change:dropLosses-setting', el.checked);
     },
     addMarker: function addMarker(e, el) {
       var key = el.value,
@@ -2389,7 +2418,7 @@ var _default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 
@@ -2491,22 +2520,21 @@ exports._COPY = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var _COPY = function _COPY(original, clone) {
-  clone = clone || {};
+var _COPY = function _COPY(src) {
+  var target = Array.isArray(src) ? [] : {};
+  var val;
 
-  for (var i in original) {
-    if (original.hasOwnProperty(i)) {
-      if (_typeof(original[i]) === 'object') {
-        clone[i] = Array.isArray(original[i]) ? [] : {};
+  for (var prop in src) {
+    if (src.hasOwnProperty(prop)) {
+      val = src[prop];
 
-        _COPY(original[i], clone[i]);
-      } else {
-        clone[i] = original[i];
-      }
+      if (val !== null && _typeof(val) === 'object') {
+        target[prop] = _COPY(val);
+      } else target[prop] = val;
     }
   }
 
-  return clone;
+  return target;
 };
 
 exports._COPY = _COPY;

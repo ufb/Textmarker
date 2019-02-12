@@ -206,12 +206,12 @@ var _default = new _utils._MODULE({
     if (entry) {
       var isArr = Array.isArray(entry);
       var currentEntry = !!this.entry;
-      this.locked = this.locked || isArr;
+      this.locked = this.locked || isArr || entry.locked;
 
       if (!this.locked || isArr) {
         this.entry = entry;
       } else if (this.locked && !isArr) {
-        if (this.entry) this.entry.push(entry);else this.entry = [entry];
+        if (this.entry && Array.isArray(this.entry)) this.entry.push(entry);else this.entry = [entry];
       }
 
       if (currentEntry) this.emit('updated:stored-entry', this.entry);else this.emit('stored:entry', this.entry);
@@ -293,7 +293,7 @@ var _default = new _utils._MODULE({
   },
   _get_pagenotes: function _get_pagenotes() {
     return browser.storage[this.area_settings].get().then(function (storage) {
-      return storage.pagenotes;
+      return storage.pagenotes || null;
     });
   }
 });
@@ -353,7 +353,8 @@ new _utils._MODULE({
       'started:app': 'onStart',
       'toggled:addon': 'power',
       'stored:entry': 'toggle',
-      'updated:stored-entry': 'toggle'
+      'updated:stored-entry': 'toggle',
+      'initially-stored:entry': 'toggle'
     }
   },
   autoinit: function autoinit() {
@@ -456,8 +457,7 @@ new _utils._DOMMODULE({
       'updated:entry-on-save': 'deactivateSave',
       'saved:entry': 'deactivateSave',
       'unsaved-changes': 'activateSave',
-      'failed:restoration': 'activateRetry',
-      'canceled:restoration': 'activateRetry',
+      'finished:restoration': 'activateRetry',
       'update:entry?': 'deactivateRetry',
       'stored:entry': 'updateImmut',
       'page-state': 'onPageState',
@@ -564,7 +564,7 @@ new _utils._DOMMODULE({
   },
   link: function link(e, el) {
     el = el.classList.contains('link') ? el : el.parentNode;
-    this.emit('open:addon-page', el.getAttribute('data-id'));
+    this.emit('open:addon-page(sb)', el.getAttribute('data-id'));
   }
 });
 
@@ -877,14 +877,18 @@ new _utils._DOMMODULE({
       marks = entry.marks;
     }
 
-    var markIDs = this.markIDs;
-    this.length = marks.length;
-    this.marks = markIDs ? marks.sort(function (m1, m2) {
-      return markIDs.indexOf(m1.id) < markIDs.indexOf(m2.id);
+    var markIDs = this.markIDs; //this.length = marks.length;
+    //this.marks = markIDs ? marks.sort((m1, m2) => markIDs.indexOf(m1.id) < markIDs.indexOf(m2.id)) : marks;
+
+    this.marks = markIDs ? markIDs.map(function (id) {
+      return marks.find(function (mark) {
+        return mark.id == id;
+      });
     }) : marks;
+    this.length = this.marks.length;
   },
   setMarkIDs: function setMarkIDs(ids) {
-    this.markIDs = ids.reverse();
+    this.markIDs = ids;
     this.render();
   },
   renderSVGFilters: function renderSVGFilters() {
@@ -919,32 +923,34 @@ new _utils._DOMMODULE({
     var markContainer;
     marksContainer.innerText = '';
     this.marks.forEach(function (mark, i) {
-      markContainer = markTmpl.cloneNode(true);
-      markContainer.id = '';
-      markContainer.classList.remove('u-display--none');
-      markContainer.setAttribute('data-id', i);
-      var textNode = markContainer.getElementsByClassName('mark__text')[0];
-      var textContent = document.createTextNode(mark.text);
-      var color = mark.style.indexOf('background-color');
-      var note = mark.note;
-      color = color === -1 ? 'transparent' : mark.style.substr(color + 17, 7);
-      var noteColor = note ? note.color : '';
-      var noteBtn, noteNode;
-      textNode.style.borderColor = color;
-      textNode.appendChild(textContent);
+      if (mark) {
+        markContainer = markTmpl.cloneNode(true);
+        markContainer.id = '';
+        markContainer.classList.remove('u-display--none');
+        markContainer.setAttribute('data-id', i);
+        var textNode = markContainer.getElementsByClassName('mark__text')[0];
+        var textContent = document.createTextNode(mark.text);
+        var color = mark.style.indexOf('background-color');
+        var note = mark.note;
+        color = color === -1 ? 'transparent' : mark.style.substr(color + 17, 7);
+        var noteColor = note ? note.color : '';
+        var noteBtn, noteNode;
+        textNode.style.borderColor = color;
+        textNode.appendChild(textContent);
 
-      if (note) {
-        markContainer.classList.add('mark--note');
-        noteBtn = markContainer.getElementsByClassName('mark__note-btn')[0];
-        noteBtn.classList.remove('u-display--none');
-        noteBtn.classList.add('mark__note-btn--' + noteColor);
-        noteNode = markContainer.getElementsByClassName('mark__note')[0];
-        noteNode.appendChild(document.createTextNode(note.text));
-        noteNode.classList.remove('u-display--none');
-        noteNode.classList.add('mark__note--' + noteColor);
+        if (note) {
+          markContainer.classList.add('mark--note');
+          noteBtn = markContainer.getElementsByClassName('mark__note-btn')[0];
+          noteBtn.classList.remove('u-display--none');
+          noteBtn.classList.add('mark__note-btn--' + noteColor);
+          noteNode = markContainer.getElementsByClassName('mark__note')[0];
+          noteNode.appendChild(document.createTextNode(note.text));
+          noteNode.classList.remove('u-display--none');
+          noteNode.classList.add('mark__note--' + noteColor);
+        }
+
+        fragment.appendChild(markContainer);
       }
-
-      fragment.appendChild(markContainer);
     });
     marksContainer.appendChild(fragment);
   },
@@ -1161,7 +1167,7 @@ new _utils._DOMMODULE({
       var url = _this.url = tab.url;
 
       _store.default.get('pagenotes').then(function (pagenotes) {
-        pagenotes = pagenotes ? pagenotes[url] : null;
+        pagenotes = pagenotes && pagenotes[url] ? pagenotes[url] : null;
         var l, id;
 
         if (pagenotes && (l = pagenotes.length)) {
@@ -1322,6 +1328,7 @@ new _utils._DOMMODULE({
     },
     DOM: {
       click: {
+        '.tab__title': 'toggle',
         '.tab__name': 'toggle',
         '.tab__toggle': 'toggle'
       }
@@ -1348,6 +1355,7 @@ new _utils._DOMMODULE({
     this.tabs[tab].classList.add('tab--folded');
   },
   toggle: function toggle(e, el) {
+    el = el.nodeName === 'H2' ? el : el.parentNode;
     var id = el.getAttribute('data-target');
     var tab = id.split('--').pop();
     var tabEl = document.getElementById(id);
@@ -1457,7 +1465,7 @@ var _default = new _utils._PORT({
   name: 'sidebar',
   type: 'privileged',
   events: {
-    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page', 'opened:sidebar', 'updated:page-note', 'toggled:sidebar-tab', 'sidebar:selected-marker']
+    CONNECTION: ['change:bg-setting', 'error:browser-console', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:retry-restoration', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'remove:tag', 'add:tag', 'open:addon-page(sb)', 'opened:sidebar', 'updated:page-note', 'toggled:sidebar-tab', 'sidebar:selected-marker']
   }
 });
 
@@ -1524,22 +1532,21 @@ exports._COPY = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var _COPY = function _COPY(original, clone) {
-  clone = clone || {};
+var _COPY = function _COPY(src) {
+  var target = Array.isArray(src) ? [] : {};
+  var val;
 
-  for (var i in original) {
-    if (original.hasOwnProperty(i)) {
-      if (_typeof(original[i]) === 'object') {
-        clone[i] = Array.isArray(original[i]) ? [] : {};
+  for (var prop in src) {
+    if (src.hasOwnProperty(prop)) {
+      val = src[prop];
 
-        _COPY(original[i], clone[i]);
-      } else {
-        clone[i] = original[i];
-      }
+      if (val !== null && _typeof(val) === 'object') {
+        target[prop] = _COPY(val);
+      } else target[prop] = val;
     }
   }
 
-  return clone;
+  return target;
 };
 
 exports._COPY = _COPY;

@@ -224,7 +224,7 @@ new _utils._DOMMODULE({
   },
   open: function open(e, el) {
     var page = el.nodeName === 'SPAN' ? el.parentNode.id : el.id;
-    this.emit('open:addon-page', page);
+    this.emit('open:addon-page(tbb)', page);
     window.close();
   },
   setActivateText: function setActivateText(active) {
@@ -264,7 +264,7 @@ var _default = new _utils._PORT({
   name: 'tbb-menu',
   type: 'privileged',
   events: {
-    CONNECTION: ['toggle:addon', 'open:addon-page', 'error:browser-console']
+    CONNECTION: ['toggle:addon', 'open:addon-page(tbb)', 'error:browser-console']
   }
 });
 
@@ -300,22 +300,21 @@ exports._COPY = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var _COPY = function _COPY(original, clone) {
-  clone = clone || {};
+var _COPY = function _COPY(src) {
+  var target = Array.isArray(src) ? [] : {};
+  var val;
 
-  for (var i in original) {
-    if (original.hasOwnProperty(i)) {
-      if (_typeof(original[i]) === 'object') {
-        clone[i] = Array.isArray(original[i]) ? [] : {};
+  for (var prop in src) {
+    if (src.hasOwnProperty(prop)) {
+      val = src[prop];
 
-        _COPY(original[i], clone[i]);
-      } else {
-        clone[i] = original[i];
-      }
+      if (val !== null && _typeof(val) === 'object') {
+        target[prop] = _COPY(val);
+      } else target[prop] = val;
     }
   }
 
-  return clone;
+  return target;
 };
 
 exports._COPY = _COPY;
