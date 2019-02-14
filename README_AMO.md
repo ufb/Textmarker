@@ -3,7 +3,7 @@
 ## Summarized
 
 __Source code:__  
-The _src/_ folder contains the JavaScript ans SASS source files.
+The _src/_ folder contains the JavaScript and SASS source files.
 
 _webpack_ is used for precompiling and bundling.  
 
@@ -12,7 +12,7 @@ The _extension/_ folder contains the addon code.
 
 ### Prerequisites
 
-* __node.js__ v6.11.4
+* __node.js__ v10.15.0
 * __npm__ 6.1.0
 
 ### Installing modules
