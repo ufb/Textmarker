@@ -306,6 +306,9 @@ body {
 .u-align--bottom {
   vertical-align: bottom; }
 
+.u-align--0 {
+  vertical-align: 0 !important; }
+
 .switch {
   box-shadow: 0 0 2px #aaa inset; }
 

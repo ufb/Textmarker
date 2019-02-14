@@ -172,6 +172,9 @@ $spacing-sizes: (
   &--bottom {
     vertical-align: bottom;
   }
+  &--0 {
+    vertical-align: 0 !important;
+  }
 }
 
 // media queries
