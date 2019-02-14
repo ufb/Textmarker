@@ -63,6 +63,7 @@
 "by":{"message":"by"},
 "default":{"message":"default"},
 "shift":{"message":"Shift"},
+"marker":{"message":"Marker"},
 "experimental":{"message":"experimentell"},
 "see":{"message":"Siehe"},
 "h10":{"message":"Neu in v.4.0.0"},
