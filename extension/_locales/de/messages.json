@@ -62,6 +62,7 @@
 "ph_tag":{"message":"tag"},
 "by":{"message":"by"},
 "default":{"message":"default"},
+"shift":{"message":"Shift"},
 "experimental":{"message":"experimentell"},
 "see":{"message":"Siehe"},
 "h10":{"message":"Neu in v.4.0.0"},
