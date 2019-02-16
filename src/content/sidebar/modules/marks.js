@@ -96,21 +96,23 @@ new _DOMMODULE({
         const textNode = markContainer.getElementsByClassName('mark__text')[0];
         const textContent = document.createTextNode(mark.text);
         let color = mark.style.indexOf('background-color');
-        let note = mark.note;
+        let hasNote = mark.note && (typeof mark.note === 'string' || mark.note.text);
         color = color === -1 ? 'transparent' : mark.style.substr(color + 17, 7);
-        let noteColor = note ? note.color : '';
-        let noteBtn, noteNode;
+        let note, noteColor, noteText, noteBtn, noteNode;
 
         textNode.style.borderColor = color;
         textNode.appendChild(textContent);
 
-        if (note) {
+        if (hasNote) {
+          note = mark.note;
+          noteColor = note.color || 'yellow';
+          noteText = note.text || note;
           markContainer.classList.add('mark--note');
           noteBtn = markContainer.getElementsByClassName('mark__note-btn')[0];
           noteBtn.classList.remove('u-display--none');
           noteBtn.classList.add('mark__note-btn--' + noteColor);
           noteNode = markContainer.getElementsByClassName('mark__note')[0];
-          noteNode.appendChild(document.createTextNode(note.text));
+          noteNode.appendChild(document.createTextNode(noteText));
           noteNode.classList.remove('u-display--none');
           noteNode.classList.add('mark__note--' + noteColor);
         }
