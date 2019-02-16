@@ -796,6 +796,7 @@ new _utils._DOMMODULE({
     });
   },
   toggleMarkerButtons: function toggleMarkerButtons(show) {
+    if (this.automarkEnabled) return;
     var meth = show ? 'removeAttribute' : 'setAttribute';
     Array.from(document.getElementsByClassName('marker__apply')).forEach(function (btn) {
       return btn[meth]('disabled', true);
@@ -931,20 +932,22 @@ new _utils._DOMMODULE({
         var textNode = markContainer.getElementsByClassName('mark__text')[0];
         var textContent = document.createTextNode(mark.text);
         var color = mark.style.indexOf('background-color');
-        var note = mark.note;
+        var hasNote = mark.note && (typeof mark.note === 'string' || mark.note.text);
         color = color === -1 ? 'transparent' : mark.style.substr(color + 17, 7);
-        var noteColor = note ? note.color : '';
-        var noteBtn, noteNode;
+        var note, noteColor, noteText, noteBtn, noteNode;
         textNode.style.borderColor = color;
         textNode.appendChild(textContent);
 
-        if (note) {
+        if (hasNote) {
+          note = mark.note;
+          noteColor = note.color || 'yellow';
+          noteText = note.text || note;
           markContainer.classList.add('mark--note');
           noteBtn = markContainer.getElementsByClassName('mark__note-btn')[0];
           noteBtn.classList.remove('u-display--none');
           noteBtn.classList.add('mark__note-btn--' + noteColor);
           noteNode = markContainer.getElementsByClassName('mark__note')[0];
-          noteNode.appendChild(document.createTextNode(note.text));
+          noteNode.appendChild(document.createTextNode(noteText));
           noteNode.classList.remove('u-display--none');
           noteNode.classList.add('mark__note--' + noteColor);
         }
