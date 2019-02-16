@@ -1559,92 +1559,97 @@ new _utils._MODULE({
     }
   },
   updateSettings: function updateSettings(settings) {
-    var defaultSettings = _defaultStorage.default.settings;
+    try {
+      var defaultSettings = _defaultStorage.default.settings;
 
-    if (!settings.shortcuts) {
-      settings = defaultSettings;
-    } else {
-      var shortcuts = settings.shortcuts;
-      var markers = settings.markers;
-      var history = settings.history;
-      var misc = settings.misc;
-      var noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
+      if (!settings.shortcuts) {
+        settings = defaultSettings;
+      } else {
+        var shortcuts = settings.shortcuts;
+        var markers = settings.markers;
+        var history = settings.history;
+        var misc = settings.misc;
+        var noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
 
-      if (!shortcuts.n) {
-        shortcuts.n = defaultSettings.shortcuts.n;
-        misc.noteicon = defaultSettings.misc.noteicon;
-        misc.noteonclick = defaultSettings.misc.noteonclick;
-      }
+        if (!shortcuts.n) {
+          shortcuts.n = defaultSettings.shortcuts.n;
+          misc.noteicon = defaultSettings.misc.noteicon;
+          misc.noteonclick = defaultSettings.misc.noteonclick;
+        }
 
-      if (!shortcuts.arrowup) {
-        shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
-        shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
-      }
+        if (!shortcuts.arrowup) {
+          shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
+          shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
+        }
 
-      if (!shortcuts.d[0]) {
-        shortcuts.d[0] = defaultSettings.shortcuts.d[0];
-      }
+        if (!shortcuts.d[0]) {
+          shortcuts.d[0] = defaultSettings.shortcuts.d[0];
+        }
 
-      if (!shortcuts.sb) {
-        shortcuts.sb = defaultSettings.shortcuts.sb;
-      }
+        if (!shortcuts.sb) {
+          shortcuts.sb = defaultSettings.shortcuts.sb;
+        }
 
-      if (!markers.m.style) {
-        var style;
+        if (!markers.m.style) {
+          var style;
 
-        for (var m in markers) {
-          style = markers[m];
-          markers[m] = {
-            style: style
-          };
+          for (var m in markers) {
+            style = markers[m];
+            markers[m] = {
+              style: style
+            };
+          }
+        }
+
+        if (!history.sorted) {
+          history.sorted = defaultSettings.history.sorted;
+        }
+
+        if (!history.view) {
+          history.view = defaultSettings.history.view;
+        }
+
+        if (typeof history.saveInPriv !== 'boolean') {
+          history.saveInPriv = defaultSettings.history.saveInPriv;
+        }
+
+        if (typeof history.immut !== 'boolean') {
+          history.immut = defaultSettings.history.immut;
+        }
+
+        if (typeof history.dropLosses !== 'boolean') {
+          history.dropLosses = true;
+        }
+
+        noteTypes.forEach(function (noteType) {
+          if (!misc[noteType]) {
+            misc[noteType] = defaultSettings.misc[noteType];
+          }
+        });
+
+        if (!misc.tmuipos) {
+          misc.tmuipos = defaultSettings.misc.tmuipos;
+        }
+
+        if (typeof misc.notetransp !== 'boolean') {
+          misc.notetransp = defaultSettings.misc.notetransp;
+        }
+
+        if (!misc.markmethod) {
+          misc.markmethod = defaultSettings.misc.markmethod;
+        }
+
+        if (typeof misc.progressbar !== 'boolean') {
+          misc.progressbar = defaultSettings.misc.progressbar;
+        }
+
+        if (!settings.sb) {
+          settings.sb = defaultSettings.sb;
         }
       }
-
-      if (!history.sorted) {
-        history.sorted = defaultSettings.history.sorted;
-      }
-
-      if (!history.view) {
-        history.view = defaultSettings.history.view;
-      }
-
-      if (typeof history.saveInPriv !== 'boolean') {
-        history.saveInPriv = defaultSettings.history.saveInPriv;
-      }
-
-      if (typeof history.immut !== 'boolean') {
-        history.immut = defaultSettings.history.immut;
-      }
-
-      if (typeof history.dropLosses !== 'boolean') {
-        history.dropLosses = true;
-      }
-
-      noteTypes.forEach(function (noteType) {
-        if (!misc[noteType]) {
-          misc[noteType] = defaultSettings.misc[noteType];
-        }
-      });
-
-      if (!misc.tmuipos) {
-        misc.tmuipos = defaultSettings.misc.tmuipos;
-      }
-
-      if (typeof misc.notetransp !== 'boolean') {
-        misc.notetransp = defaultSettings.misc.notetransp;
-      }
-
-      if (!misc.markmethod) {
-        misc.markmethod = defaultSettings.misc.markmethod;
-      }
-
-      if (typeof misc.progressbar !== 'boolean') {
-        misc.progressbar = defaultSettings.misc.progressbar;
-      }
-
-      if (!settings.sb) {
-        settings.sb = defaultSettings.sb;
-      }
+    } catch (e) {
+      this.emit('error', 'error_import_settings_not_found');
+      return settings;
     }
 
     return settings;
@@ -1727,9 +1732,10 @@ new _utils._MODULE({
     _storage.default.isEmpty('local').then(function (empty) {
       if (empty) {
         if (loadReason !== 'install') _this.emit('error', 'error_empty_local_storage_onupdate');
+        return _storage.default.set('storage', 'local');
       }
 
-      return _storage.default.set('storage', 'local');
+      return true;
     }).then(function () {
       return _storage.default.update('settings', function (settings) {
         return _this.updateSettings(settings);
@@ -1740,9 +1746,8 @@ new _utils._MODULE({
       }, 'local');
     }).then(function () {
       return _storage.default.set('storage', 'sync');
-    }).then(function () {
-      return _storage.default.set('storage', 'local');
-    }).then(function () {
+    }) //.then(() => _STORAGE.set('storage', 'local'))
+    .then(function () {
       return _this.emit('initialized:storage', prevVersion);
     }).catch(function (e) {
       _this.emit('initialized:storage', prevVersion);
@@ -2283,7 +2288,7 @@ var _default = {
     history: {
       autosave: true,
       saveInPriv: false,
-      dropLosses: true,
+      dropLosses: false,
       immut: false,
       naming: 'title',
       download: 'json',

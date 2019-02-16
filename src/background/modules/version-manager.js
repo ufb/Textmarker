@@ -14,78 +14,83 @@ new _MODULE({
   },
 
   updateSettings(settings) {
-    const defaultSettings = _DEFAULT_STORAGE.settings;
+    try {
+      const defaultSettings = _DEFAULT_STORAGE.settings;
 
-    if (!settings.shortcuts) {
-      settings = defaultSettings;
-    } else {
-      const shortcuts = settings.shortcuts;
-      const markers = settings.markers;
-      const history = settings.history;
-      const misc = settings.misc;
-      const noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
+      if (!settings.shortcuts) {
+        settings = defaultSettings;
+      } else {
+        const shortcuts = settings.shortcuts;
+        const markers = settings.markers;
+        const history = settings.history;
+        const misc = settings.misc;
+        const noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
 
-      if (!shortcuts.n) {
-        shortcuts.n = defaultSettings.shortcuts.n;
-        misc.noteicon = defaultSettings.misc.noteicon;
-        misc.noteonclick = defaultSettings.misc.noteonclick;
-      }
-      if (!shortcuts.arrowup) {
-        shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
-        shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
-      }
-      if (!shortcuts.d[0]) {
-        shortcuts.d[0] = defaultSettings.shortcuts.d[0];
-      }
-      if (!shortcuts.sb) {
-        shortcuts.sb = defaultSettings.shortcuts.sb;
-      }
+        if (!shortcuts.n) {
+          shortcuts.n = defaultSettings.shortcuts.n;
+          misc.noteicon = defaultSettings.misc.noteicon;
+          misc.noteonclick = defaultSettings.misc.noteonclick;
+        }
+        if (!shortcuts.arrowup) {
+          shortcuts.arrowup = defaultSettings.shortcuts.arrowup;
+          shortcuts.arrowdown = defaultSettings.shortcuts.arrowdown;
+        }
+        if (!shortcuts.d[0]) {
+          shortcuts.d[0] = defaultSettings.shortcuts.d[0];
+        }
+        if (!shortcuts.sb) {
+          shortcuts.sb = defaultSettings.shortcuts.sb;
+        }
 
-      if (!markers.m.style) {
-        let style;
-        for (let m in markers) {
-          style = markers[m];
-          markers[m] = { style };
+        if (!markers.m.style) {
+          let style;
+          for (let m in markers) {
+            style = markers[m];
+            markers[m] = { style };
+          }
+        }
+
+        if (!history.sorted) {
+          history.sorted = defaultSettings.history.sorted;
+        }
+        if (!history.view) {
+          history.view = defaultSettings.history.view;
+        }
+        if (typeof history.saveInPriv !== 'boolean') {
+          history.saveInPriv = defaultSettings.history.saveInPriv;
+        }
+        if (typeof history.immut !== 'boolean') {
+          history.immut = defaultSettings.history.immut;
+        }
+        if (typeof history.dropLosses !== 'boolean') {
+          history.dropLosses = true;
+        }
+
+        noteTypes.forEach(noteType => {
+          if (!misc[noteType]) {
+            misc[noteType] = defaultSettings.misc[noteType];
+          }
+        });
+        if (!misc.tmuipos) {
+          misc.tmuipos = defaultSettings.misc.tmuipos;
+        }
+        if (typeof misc.notetransp !== 'boolean') {
+          misc.notetransp = defaultSettings.misc.notetransp;
+        }
+        if (!misc.markmethod) {
+          misc.markmethod = defaultSettings.misc.markmethod;
+        }
+        if (typeof misc.progressbar !== 'boolean') {
+          misc.progressbar = defaultSettings.misc.progressbar;
+        }
+
+        if (!settings.sb) {
+          settings.sb = defaultSettings.sb;
         }
       }
-
-      if (!history.sorted) {
-        history.sorted = defaultSettings.history.sorted;
-      }
-      if (!history.view) {
-        history.view = defaultSettings.history.view;
-      }
-      if (typeof history.saveInPriv !== 'boolean') {
-        history.saveInPriv = defaultSettings.history.saveInPriv;
-      }
-      if (typeof history.immut !== 'boolean') {
-        history.immut = defaultSettings.history.immut;
-      }
-      if (typeof history.dropLosses !== 'boolean') {
-        history.dropLosses = true;
-      }
-
-      noteTypes.forEach(noteType => {
-        if (!misc[noteType]) {
-          misc[noteType] = defaultSettings.misc[noteType];
-        }
-      });
-      if (!misc.tmuipos) {
-        misc.tmuipos = defaultSettings.misc.tmuipos;
-      }
-      if (typeof misc.notetransp !== 'boolean') {
-        misc.notetransp = defaultSettings.misc.notetransp;
-      }
-      if (!misc.markmethod) {
-        misc.markmethod = defaultSettings.misc.markmethod;
-      }
-      if (typeof misc.progressbar !== 'boolean') {
-        misc.progressbar = defaultSettings.misc.progressbar;
-      }
-
-      if (!settings.sb) {
-        settings.sb = defaultSettings.sb;
-      }
+    } catch(e) {
+      this.emit('error', 'error_import_settings_not_found');
+      return settings;
     }
     return settings;
   },
@@ -160,13 +165,14 @@ new _MODULE({
     _STORAGE.isEmpty('local').then(empty => {
       if (empty) {
         if (loadReason !== 'install') this.emit('error', 'error_empty_local_storage_onupdate');
+        return _STORAGE.set('storage', 'local');
       }
-      return _STORAGE.set('storage', 'local');
+      return true;
     })
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'sync'))
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'))
     .then(() => _STORAGE.set('storage', 'sync'))
-    .then(() => _STORAGE.set('storage', 'local'))
+    //.then(() => _STORAGE.set('storage', 'local'))
     .then(() => this.emit('initialized:storage', prevVersion))
     .catch(e => {
       this.emit('initialized:storage', prevVersion);

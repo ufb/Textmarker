@@ -314,7 +314,8 @@ new _utils._DOMMODULE({
         noteColor = _globalSettings.default.NOTE_COLORS.YELLOW;
       } else {
         noteText = mark.note.text || '';
-        noteColor = _globalSettings.default.NOTE_COLORS[mark.note.color.toUpperCase()];
+        noteColor = mark.note.color || 'yellow';
+        noteColor = _globalSettings.default.NOTE_COLORS[noteColor.toUpperCase()];
       }
 
       if (noteText) {

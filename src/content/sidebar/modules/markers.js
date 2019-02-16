@@ -145,6 +145,7 @@ new _DOMMODULE({
     this.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: 'active' });
   },
   toggleMarkerButtons(show) {
+    if (this.automarkEnabled) return;
     const meth = show ? 'removeAttribute' : 'setAttribute';
     Array.from(document.getElementsByClassName('marker__apply')).forEach(btn => btn[meth]('disabled', true));
   },
