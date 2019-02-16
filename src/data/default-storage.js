@@ -30,7 +30,7 @@ export default {
     history: {
       autosave: true,
       saveInPriv: false,
-      dropLosses: true,
+      dropLosses: false,
       immut: false,
       naming: 'title',
       download: 'json',
