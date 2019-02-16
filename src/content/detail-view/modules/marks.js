@@ -51,7 +51,8 @@ new _DOMMODULE({
         noteColor = _SETTINGS.NOTE_COLORS.YELLOW;
       } else {
         noteText = mark.note.text || '';
-        noteColor = _SETTINGS.NOTE_COLORS[mark.note.color.toUpperCase()];
+        noteColor = mark.note.color || 'yellow';
+        noteColor = _SETTINGS.NOTE_COLORS[noteColor.toUpperCase()];
       }
       if (noteText) {
         td_note.innerText = noteText;
