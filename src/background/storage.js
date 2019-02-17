@@ -1,5 +1,6 @@
 import { _MODULE } from './utils'
 import _DEFAULT_STORAGE from './../data/default-storage'
+import _GLOBAL_SETTINGS from './../data/global-settings'
 import { _COPY } from './utils'
 
 export default new _MODULE({
@@ -162,7 +163,7 @@ export default new _MODULE({
     }
     return this._get_logs().then(logs => {
       logs.push(log);
-      if (logs.length > 200) logs.shift();
+      if (logs.length > _GLOBAL_SETTINGS.MAX_LOG_ENTRIES) logs.shift();
       return browser.storage.local.set({ logs: logs });
     });
   },
