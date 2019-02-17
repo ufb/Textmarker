@@ -59,6 +59,7 @@ class Restorer extends RestorerBase {
     this.queue = [];
     this.cache = [];
     this.phase = 1;
+    this.selectionTrial = 0;
     this.chunkDuration = 500;
     this._timer = +new Date() + this.chunkDuration;
 
@@ -573,8 +574,19 @@ class Restorer extends RestorerBase {
   }
 
   setBodySelection(el) {
+    this.selectionTrial++;
+
     if (this.phase === 1) {
       this.selection = new _SELECTION(el);
+      if (!this.selection.text) {
+        if (this.selectionTrial < 4) {
+          return this.setBodySelection(el);
+        } else {
+          this.trimmedSelectionText = ' ';
+          this.bodyTextNodes = [];
+          return this;
+        }
+      }
       this.trimmedSelectionText = this.squeeze(this.selection.text);
     }
 
