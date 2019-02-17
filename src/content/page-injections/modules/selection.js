@@ -27,7 +27,7 @@ export default class _SELECTION {
             .update()
             .retrieveText();
       }
-      selection.collapseToStart();
+      try { selection.collapseToStart(); } catch(e) {}
     }
   }
 
