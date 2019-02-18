@@ -1,5 +1,5 @@
 import _STORAGE from './../storage'
-import { _MODULE } from './../utils'
+import { _MODULE, _HASHLESS } from './../utils'
 
 new _MODULE({
   events: {
@@ -21,7 +21,7 @@ new _MODULE({
           entry;
       for (let e in entries) {
         entry = entries[e];
-        if (url === this.getHashlessURL(entry.url)) {
+        if (url === _HASHLESS(entry.url)) {
           matches.push(entry);
           if (entry.locked) lockedMatches.push(entry);
         }
@@ -72,11 +72,6 @@ new _MODULE({
           });
         }
       });
-  },
-  getHashlessURL(url) {
-    const h = url.lastIndexOf('#');
-    if (h === -1) return url;
-    else return url.substr(0, h);
   },
   tempSaveEntryMetaData(data) {
     this.recentlyOpenedEntry = data;

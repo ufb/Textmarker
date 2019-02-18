@@ -1,4 +1,4 @@
-import { _DOMMODULE } from './../../_shared/utils'
+import { _DOMMODULE, _HASHLESS } from './../../_shared/utils'
 import _STORE from './../_store'
 
 export default function() {
@@ -63,7 +63,7 @@ export default function() {
 
         _STORE.iframe = this.isIFrame();
 
-        this.setURL();
+        this.url = _HASHLESS(window.document.URL);
         this.checkURL();
         this.removeListeners();
 
@@ -71,13 +71,6 @@ export default function() {
 
         this.set = true;
       });
-    },
-    setURL() {
-      const url = window.document.URL,
-            hash = window.document.location.hash,
-            hashIdx = url.indexOf(hash) || url.length;
-
-      this.url = url.substr(0, hashIdx);
     },
     isPdf() {
       return window.location.pathname.split('.').pop().substr(0, 3) === 'pdf';
@@ -164,7 +157,7 @@ export default function() {
       force = force === true ? true : false;
       entries = Array.isArray(entries) ? entries : [entries];
       let firstEntry = entries[0];
-      if (force || firstEntry.url.split('#')[0] === this.url) {
+      if (force || _HASHLESS(firstEntry.url) === this.url) {
         _STORE.addEntries(entries);
         //_STORE.entry = entry;
         if (force) this.emit('set:entries', entries);
@@ -179,7 +172,7 @@ export default function() {
       if (this.active && !this.initialized && !document.querySelector('[data-tm-id]')) {
         this.initialized = true;
 
-        if (recentlyOpenedEntry && recentlyOpenedEntry.url.split('#')[0] === this.url) {
+        if (recentlyOpenedEntry && _HASHLESS(recentlyOpenedEntry.url) === this.url) {
           _STORE.name = recentlyOpenedEntry.name;
         }
         /*if (_READER)

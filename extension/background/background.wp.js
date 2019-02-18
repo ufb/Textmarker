@@ -469,7 +469,7 @@ new _utils._MODULE({
       for (var e in entries) {
         entry = entries[e];
 
-        if (url === _this.getHashlessURL(entry.url)) {
+        if (url === (0, _utils._HASHLESS)(entry.url)) {
           matches.push(entry);
           if (entry.locked) lockedMatches.push(entry);
         }
@@ -523,10 +523,6 @@ new _utils._MODULE({
         });
       }
     });
-  },
-  getHashlessURL: function getHashlessURL(url) {
-    var h = url.lastIndexOf('#');
-    if (h === -1) return url;else return url.substr(0, h);
   },
   tempSaveEntryMetaData: function tempSaveEntryMetaData(data) {
     this.recentlyOpenedEntry = data;
@@ -595,7 +591,7 @@ function _default() {
     adjustName: function adjustName(name, entry, method) {
       var _this3 = this;
 
-      name = name ? name : method === 'title' ? entry.title.trim() ? entry.title.trim() : entry.url : method === 'date' ? new Date(entry.first).toLocaleString() : '';
+      name = name ? name : method === 'title' ? entry.title.trim() ? entry.title.trim() : (0, _utils._HASHLESS)(entry.url) : method === 'date' ? new Date(entry.first).toLocaleString() : '';
       name = name.substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1);
 
       _storage.default.get('history').then(function (history) {
@@ -814,7 +810,7 @@ function _default() {
       this.isOpen().then(function (open) {
         if (open) {
           browser.sidebarAction.setPanel({
-            panel: browser.runtime.getURL('content/sidebar/sidebar.html#' + tabId + '_' + url),
+            panel: browser.runtime.getURL('content/sidebar/sidebar.html#' + tabId + '_' + (0, _utils._HASHLESS)(url)),
             tabId: tabId
           });
         }
@@ -830,7 +826,7 @@ function _default() {
         var entries = _this.entries;
         var id = tab.id;
         entries[id] = entries[id] || [];
-        entries[id][tab.url] = entry;
+        entries[id][(0, _utils._HASHLESS)(tab.url)] = entry;
       });
     },
     updateEntry: function updateEntry(entry) {
@@ -840,14 +836,14 @@ function _default() {
 
       for (var id in entries) {
         for (var url in entries[id]) {
-          if (url === entry.url) {
+          if (url === (0, _utils._HASHLESS)(entry.url)) {
             entries[id][url] = entry;
           }
         }
       }
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        if (tab.url === entry.url) {
+        if ((0, _utils._HASHLESS)(tab.url) === (0, _utils._HASHLESS)(entry.url)) {
           _this2.emit('entry:found-for-tab', entry);
         }
       });
@@ -859,14 +855,14 @@ function _default() {
 
       for (var id in entries) {
         for (var savedUrl in entries[id]) {
-          if (savedUrl === url) {
-            delete entries[id][url];
+          if (savedUrl === (0, _utils._HASHLESS)(url)) {
+            delete entries[id][savedUrl];
           }
         }
       }
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        if (tab.url === url) {
+        if ((0, _utils._HASHLESS)(tab.url) === (0, _utils._HASHLESS)(url)) {
           _this3.emit('entry:deleted-for-tab');
         }
       });
@@ -875,8 +871,7 @@ function _default() {
       var _this4 = this;
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        var url = _this4.getHashlessURL(tab.url);
-
+        var url = (0, _utils._HASHLESS)(tab.url);
         var entriesForThisTab = _this4.entries[tab.id];
         var entry = entriesForThisTab ? entriesForThisTab[url] : null;
 
@@ -890,10 +885,6 @@ function _default() {
       if (changed.url) {
         this.setPanel(tab, changed.url);
       }
-    },
-    getHashlessURL: function getHashlessURL(url) {
-      var h = url.lastIndexOf('#');
-      if (h === -1) return url;else return url.substr(0, h);
     }
   });
 }
@@ -1920,6 +1911,8 @@ var _utils = __webpack_require__(/*! ./utils */ "./background/utils.js");
 
 var _defaultStorage = _interopRequireDefault(__webpack_require__(/*! ./../data/default-storage */ "./data/default-storage.js"));
 
+var _globalSettings = _interopRequireDefault(__webpack_require__(/*! ./../data/global-settings */ "./data/global-settings.js"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _default = new _utils._MODULE({
@@ -2124,7 +2117,7 @@ var _default = new _utils._MODULE({
 
     return this._get_logs().then(function (logs) {
       logs.push(log);
-      if (logs.length > 200) logs.shift();
+      if (logs.length > _globalSettings.default.MAX_LOG_ENTRIES) logs.shift();
       return browser.storage.local.set({
         logs: logs
       });
@@ -2207,6 +2200,12 @@ Object.defineProperty(exports, "_PORT", {
     return _port._PORT;
   }
 });
+Object.defineProperty(exports, "_HASHLESS", {
+  enumerable: true,
+  get: function get() {
+    return _hashless._HASHLESS;
+  }
+});
 Object.defineProperty(exports, "_ERRORTRACKER", {
   enumerable: true,
   get: function get() {
@@ -2223,6 +2222,8 @@ var _getActiveTab = __webpack_require__(/*! ./../utils/getActiveTab */ "./utils/
 var _module = __webpack_require__(/*! ./../utils/module */ "./utils/module.js");
 
 var _port = __webpack_require__(/*! ./../utils/port */ "./utils/port.js");
+
+var _hashless = __webpack_require__(/*! ./../utils/hashless */ "./utils/hashless.js");
 
 var _errorTracker = _interopRequireDefault(__webpack_require__(/*! ./../utils/error-tracker */ "./utils/error-tracker.js"));
 
@@ -2373,6 +2374,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _default = {
   MAX_ENTRY_NAME_CHARS: 70,
+  MAX_LOG_ENTRIES: 20,
   NOTE_COLORS: {
     TURQUOISE: '#b9e4ec',
     GREEN: '#ccffcc',
@@ -2670,6 +2672,30 @@ var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
 };
 
 exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
+
+/***/ }),
+
+/***/ "./utils/hashless.js":
+/*!***************************!*\
+  !*** ./utils/hashless.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._HASHLESS = void 0;
+
+var _HASHLESS = function _HASHLESS(url) {
+  var h = url.lastIndexOf('#');
+  if (h === -1) return url;else return url.substr(0, h);
+};
+
+exports._HASHLESS = _HASHLESS;
 
 /***/ }),
 
