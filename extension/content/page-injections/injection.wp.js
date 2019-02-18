@@ -135,6 +135,12 @@ Object.defineProperty(exports, "_PORT", {
     return _port._PORT;
   }
 });
+Object.defineProperty(exports, "_HASHLESS", {
+  enumerable: true,
+  get: function get() {
+    return _hashless._HASHLESS;
+  }
+});
 Object.defineProperty(exports, "_L10N", {
   enumerable: true,
   get: function get() {
@@ -159,6 +165,8 @@ var _module = __webpack_require__(/*! ./../../utils/module */ "./utils/module.js
 var _dommodule = __webpack_require__(/*! ./../../utils/dommodule */ "./utils/dommodule.js");
 
 var _port = __webpack_require__(/*! ./../../utils/port */ "./utils/port.js");
+
+var _hashless = __webpack_require__(/*! ./../../utils/hashless */ "./utils/hashless.js");
 
 var _l10n = _interopRequireDefault(__webpack_require__(/*! ./../../utils/l10n */ "./utils/l10n.js"));
 
@@ -2277,8 +2285,7 @@ function _default() {
           return _this.setup();
         }, window);
         _store.default.iframe = _this.isIFrame();
-
-        _this.setURL();
+        _this.url = (0, _utils._HASHLESS)(window.document.URL);
 
         _this.checkURL();
 
@@ -2287,12 +2294,6 @@ function _default() {
         if (active) _this.addListeners();
         _this.set = true;
       });
-    },
-    setURL: function setURL() {
-      var url = window.document.URL,
-          hash = window.document.location.hash,
-          hashIdx = url.indexOf(hash) || url.length;
-      this.url = url.substr(0, hashIdx);
     },
     isPdf: function isPdf() {
       return window.location.pathname.split('.').pop().substr(0, 3) === 'pdf';
@@ -2368,7 +2369,7 @@ function _default() {
       entries = Array.isArray(entries) ? entries : [entries];
       var firstEntry = entries[0];
 
-      if (force || firstEntry.url.split('#')[0] === this.url) {
+      if (force || (0, _utils._HASHLESS)(firstEntry.url) === this.url) {
         _store.default.addEntries(entries); //_STORE.entry = entry;
 
 
@@ -2384,7 +2385,7 @@ function _default() {
       if (this.active && !this.initialized && !document.querySelector('[data-tm-id]')) {
         this.initialized = true;
 
-        if (recentlyOpenedEntry && recentlyOpenedEntry.url.split('#')[0] === this.url) {
+        if (recentlyOpenedEntry && (0, _utils._HASHLESS)(recentlyOpenedEntry.url) === this.url) {
           _store.default.name = recentlyOpenedEntry.name;
         }
         /*if (_READER)
@@ -2707,6 +2708,7 @@ function (_RestorerBase) {
     _this3.queue = [];
     _this3.cache = [];
     _this3.phase = 1;
+    _this3.selectionTrial = 0;
     _this3.chunkDuration = 500;
     _this3._timer = +new Date() + _this3.chunkDuration;
 
@@ -3288,8 +3290,21 @@ function (_RestorerBase) {
   }, {
     key: "setBodySelection",
     value: function setBodySelection(el) {
+      this.selectionTrial++;
+
       if (this.phase === 1) {
         this.selection = new _selection.default(el);
+
+        if (!this.selection.text) {
+          if (this.selectionTrial < 4) {
+            return this.setBodySelection(el);
+          } else {
+            this.trimmedSelectionText = ' ';
+            this.bodyTextNodes = [];
+            return this;
+          }
+        }
+
         this.trimmedSelectionText = this.squeeze(this.selection.text);
       }
 
@@ -3515,7 +3530,9 @@ function () {
         this.collectNodes().reduceToOneRange().update().adjust().update().retrieveText();
       }
 
-      selection.collapseToStart();
+      try {
+        selection.collapseToStart();
+      } catch (e) {}
     }
   }
 
@@ -4024,6 +4041,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _default = {
   MAX_ENTRY_NAME_CHARS: 70,
+  MAX_LOG_ENTRIES: 20,
   NOTE_COLORS: {
     TURQUOISE: '#b9e4ec',
     GREEN: '#ccffcc',
@@ -4316,6 +4334,30 @@ var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
 };
 
 exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
+
+/***/ }),
+
+/***/ "./utils/hashless.js":
+/*!***************************!*\
+  !*** ./utils/hashless.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._HASHLESS = void 0;
+
+var _HASHLESS = function _HASHLESS(url) {
+  var h = url.lastIndexOf('#');
+  if (h === -1) return url;else return url.substr(0, h);
+};
+
+exports._HASHLESS = _HASHLESS;
 
 /***/ }),
 

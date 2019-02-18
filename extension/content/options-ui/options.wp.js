@@ -135,6 +135,12 @@ Object.defineProperty(exports, "_PORT", {
     return _port._PORT;
   }
 });
+Object.defineProperty(exports, "_HASHLESS", {
+  enumerable: true,
+  get: function get() {
+    return _hashless._HASHLESS;
+  }
+});
 Object.defineProperty(exports, "_L10N", {
   enumerable: true,
   get: function get() {
@@ -159,6 +165,8 @@ var _module = __webpack_require__(/*! ./../../utils/module */ "./utils/module.js
 var _dommodule = __webpack_require__(/*! ./../../utils/dommodule */ "./utils/dommodule.js");
 
 var _port = __webpack_require__(/*! ./../../utils/port */ "./utils/port.js");
+
+var _hashless = __webpack_require__(/*! ./../../utils/hashless */ "./utils/hashless.js");
 
 var _l10n = _interopRequireDefault(__webpack_require__(/*! ./../../utils/l10n */ "./utils/l10n.js"));
 
@@ -482,6 +490,30 @@ var _GET_ACTIVE_TAB = function _GET_ACTIVE_TAB() {
 };
 
 exports._GET_ACTIVE_TAB = _GET_ACTIVE_TAB;
+
+/***/ }),
+
+/***/ "./utils/hashless.js":
+/*!***************************!*\
+  !*** ./utils/hashless.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports._HASHLESS = void 0;
+
+var _HASHLESS = function _HASHLESS(url) {
+  var h = url.lastIndexOf('#');
+  if (h === -1) return url;else return url.substr(0, h);
+};
+
+exports._HASHLESS = _HASHLESS;
 
 /***/ }),
 
