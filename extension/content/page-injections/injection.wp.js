@@ -2158,6 +2158,7 @@ function _default() {
     },
     updateTransp: function updateTransp() {
       var bodyClasses = DOC.body.classList;
+      console.log(69, 'n');
 
       _store.default.get('notetransp').then(function (transp) {
         if (transp) bodyClasses.add('tmnotes--0_8');else bodyClasses.remove('tmnotes--0_8');

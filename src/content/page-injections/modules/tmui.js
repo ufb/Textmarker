@@ -3,8 +3,6 @@ import _STORE from './../_store'
 
 export default function(mark) {
 
-  const DOC = window.document;
-
   return new _DOMMODULE({
 		events: {
       ENV: {
@@ -63,8 +61,8 @@ export default function(mark) {
       let buttons = this.buttons, btn;
 
       if (!this.attached) {
-        const el = this.el = DOC.createElement('tmui');
-        DOC.body.appendChild(el);
+        const el = this.el = window.document.createElement('tmui');
+        window.document.body.appendChild(el);
       }
       for (let b in buttons) {
         btn = buttons[b];
@@ -91,13 +89,13 @@ export default function(mark) {
           }
         }
 
-        DOC.body.removeChild(tmui);
+        window.document.body.removeChild(tmui);
         this.attached = false;
       }
     },
     createButtons() {
-      const notesButton = this.buttons.notes.el = DOC.createElement('tmnotestoggle');
-      const bookmarkButton = this.buttons.bookmark.el = DOC.createElement('tmbm');
+      const notesButton = this.buttons.notes.el = window.document.createElement('tmnotestoggle');
+      const bookmarkButton = this.buttons.bookmark.el = window.document.createElement('tmbm');
       notesButton.title = browser.i18n.getMessage('toggle_notes');
       bookmarkButton.title = browser.i18n.getMessage('bm_scroll');
     },

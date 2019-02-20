@@ -3,8 +3,6 @@ import _STORE from './../_store'
 
 export default function() {
 
-  const DOC = window.document;
-
   return new _DOMMODULE({
 		events: {
       ENV: {
@@ -28,7 +26,7 @@ export default function() {
     },
 
     create() {
-      const modal = this.el = DOC.createElement('tmprogressmodal');
+      const modal = this.el = window.document.createElement('tmprogressmodal');
 
       [{
         type: 'tmprogressheader',
@@ -46,12 +44,12 @@ export default function() {
         text: browser.i18n.getMessage('cancel')
       }]
         .forEach(obj => {
-          const el = DOC.createElement(obj.type);
+          const el = window.document.createElement(obj.type);
           modal.appendChild(el);
           this[obj.type] = el;
           if (obj.text) el.textContent = obj.text;
           if (obj.child) {
-            const child = DOC.createElement(obj.child.type);
+            const child = window.document.createElement(obj.child.type);
             el.appendChild(child);
             this[obj.child.type] = child;
           }
@@ -69,7 +67,7 @@ export default function() {
       this.resume(len);
       const cancelHandler = this.cancelHandler = this.cancel.bind(this);
       const closeHandler = this.closeHandler = this.stop.bind(this);
-      DOC.body.appendChild(this.el);
+      window.document.body.appendChild(this.el);
       this.tmprogresscancel.addEventListener('click', cancelHandler, false);
       this.tmprogressclose.addEventListener('click', closeHandler, false);
     },
@@ -79,7 +77,7 @@ export default function() {
     },
     stop() {
       try {
-        DOC.body.removeChild(this.el);
+        window.document.body.removeChild(this.el);
         this.tmprogresscancel.removeEventListener('click', this.cancelHandler, false);
         this.tmprogressclose.removeEventListener('click', this.closeHandler, false);
       } catch(e) {}

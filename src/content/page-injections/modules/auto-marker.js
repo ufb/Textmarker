@@ -3,8 +3,6 @@ import _STORE from './../_store'
 
 export default function() {
 
-  const DOC = window.document;
-
   return new _DOMMODULE({
 		events: {
       ENV: {
@@ -45,13 +43,13 @@ export default function() {
     startListening() {
       if (!this.listening) {
         const handler = this.handler = this.onMouseup.bind(this);
-        DOC.body.addEventListener('mouseup', handler, false);
+        window.document.body.addEventListener('mouseup', handler, false);
         this.listening = true;
       }
     },
     stopListening() {
       if (this.listening) {
-        DOC.body.removeEventListener('mouseup', this.handler, false);
+        window.document.body.removeEventListener('mouseup', this.handler, false);
         this.listening = false;
       }
     },
