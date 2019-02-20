@@ -3,8 +3,6 @@ import _STORE from './../_store'
 
 export default function() {
 
-  const DOC = window.document;
-
   return new _DOMMODULE({
 		events: {
       ENV: {
@@ -34,7 +32,7 @@ export default function() {
       for (let m in this.markers) {
         bgColor = this.markers[m].style.match(bgColorRegExp);
         if (bgColor) {
-          colorBtn = DOC.createElement('tmpopupcolor');
+          colorBtn = window.document.createElement('tmpopupcolor');
           popup.appendChild(colorBtn);
           colorBtn.style.background = bgColor.pop();
           colorBtn.id = 'tmpopupcolor--' + m;
@@ -43,7 +41,7 @@ export default function() {
     },
     remove() {
       if (this.appended) {
-        DOC.body.removeChild(this.el);
+        window.document.body.removeChild(this.el);
         this.el.removeEventListener('mousedown', this.handler, false);
         this.appended = false;
       }
@@ -54,7 +52,7 @@ export default function() {
       let popupHeight;
 
       if (!this.appended) {
-        DOC.body.appendChild(popup);
+        window.document.body.appendChild(popup);
         const handler = this.handler = this.onMousedown.bind(this);
         popup.addEventListener('mousedown', handler, false);
         this.appended = true;

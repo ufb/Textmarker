@@ -4,8 +4,6 @@ import _NOTE from './note'
 
 export default function() {
 
-  const DOC = window.document;
-
   return new _MODULE({
     events: {
       ENV: {
@@ -55,7 +53,7 @@ export default function() {
     toggleAll() {
       if (!this.notes) return;
       const notes = this.notes;
-      let meth = DOC.getElementsByTagName('tmnote').length ? 'hide' : 'show',
+      let meth = window.document.getElementsByTagName('tmnote').length ? 'hide' : 'show',
           condition = meth === 'hide' ? true : false,
           note;
       for (let n in notes) {
@@ -66,7 +64,7 @@ export default function() {
       }
     },
     updateTransp() {
-      const bodyClasses = DOC.body.classList;
+      const bodyClasses = window.document.body.classList;
       _STORE.get('notetransp').then(transp => {
         if (transp) bodyClasses.add('tmnotes--0_8');
         else bodyClasses.remove('tmnotes--0_8');
@@ -78,16 +76,18 @@ export default function() {
     startDraggingNote(note) {
       const dragHandler = this.dragHandler = (e) => this.emitDragEvent(note, e);
       const dragStopHandler = this.dragStopHandler = (e) => this.stopDraggingNote(note, e);
-      DOC.addEventListener('mousemove', dragHandler, false);
-      DOC.addEventListener('mouseup', dragStopHandler, false);
-      DOC.addEventListener('touchmove', dragHandler, false);
-      DOC.addEventListener('touchend', dragStopHandler, false);
+      const doc = window.document;
+      doc.addEventListener('mousemove', dragHandler, false);
+      doc.addEventListener('mouseup', dragStopHandler, false);
+      doc.addEventListener('touchmove', dragHandler, false);
+      doc.addEventListener('touchend', dragStopHandler, false);
     },
     stopDraggingNote(note, e) {
-      DOC.removeEventListener('mousemove', this.dragHandler, false);
-      DOC.removeEventListener('mouseup', this.dragStopHandler, false);
-      DOC.removeEventListener('touchmove', this.dragHandler, false);
-      DOC.removeEventListener('touchend', this.dragStopHandler, false);
+      const doc = window.document;
+      doc.removeEventListener('mousemove', this.dragHandler, false);
+      doc.removeEventListener('mouseup', this.dragStopHandler, false);
+      doc.removeEventListener('touchmove', this.dragHandler, false);
+      doc.removeEventListener('touchend', this.dragStopHandler, false);
 
       this.emit('dragstop:note', note, e);
     },
