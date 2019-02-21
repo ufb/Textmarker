@@ -507,7 +507,7 @@ export default function() {
       entry.title = window.document.title;
 			entry.count = entry.marks.length;
 			entry.idcount = this.idcount;
-      entry.immut = this.isImmut;
+      entry.immut = typeof this.isImmut === 'boolean' ? this.isImmut : entry.immut;
 
       if (isNew || locked) {
         entry.first = entry.last;
