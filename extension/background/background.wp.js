@@ -1581,6 +1581,10 @@ new _utils._MODULE({
           shortcuts.sb = defaultSettings.shortcuts.sb;
         }
 
+        if (!shortcuts.cm) {
+          shortcuts.cm = defaultSettings.shortcuts.cm;
+        }
+
         if (!markers.m.style) {
           var style;
 

@@ -517,7 +517,6 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _default() {
-  var DOC = window.document;
   return new _utils._DOMMODULE({
     events: {
       ENV: {
@@ -555,13 +554,13 @@ function _default() {
     startListening: function startListening() {
       if (!this.listening) {
         var handler = this.handler = this.onMouseup.bind(this);
-        DOC.body.addEventListener('mouseup', handler, false);
+        window.document.body.addEventListener('mouseup', handler, false);
         this.listening = true;
       }
     },
     stopListening: function stopListening() {
       if (this.listening) {
-        DOC.body.removeEventListener('mouseup', this.handler, false);
+        window.document.body.removeEventListener('mouseup', this.handler, false);
         this.listening = false;
       }
     },
@@ -1052,7 +1051,6 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _default() {
-  var DOC = window.document;
   return new _utils._DOMMODULE({
     events: {
       ENV: {
@@ -1087,7 +1085,7 @@ function _default() {
         bgColor = this.markers[m].style.match(bgColorRegExp);
 
         if (bgColor) {
-          colorBtn = DOC.createElement('tmpopupcolor');
+          colorBtn = window.document.createElement('tmpopupcolor');
           popup.appendChild(colorBtn);
           colorBtn.style.background = bgColor.pop();
           colorBtn.id = 'tmpopupcolor--' + m;
@@ -1096,7 +1094,7 @@ function _default() {
     },
     remove: function remove() {
       if (this.appended) {
-        DOC.body.removeChild(this.el);
+        window.document.body.removeChild(this.el);
         this.el.removeEventListener('mousedown', this.handler, false);
         this.appended = false;
       }
@@ -1107,7 +1105,7 @@ function _default() {
       var popupHeight;
 
       if (!this.appended) {
-        DOC.body.appendChild(popup);
+        window.document.body.appendChild(popup);
         var handler = this.handler = this.onMousedown.bind(this);
         popup.addEventListener('mousedown', handler, false);
         this.appended = true;
@@ -2075,7 +2073,6 @@ var _note = _interopRequireDefault(__webpack_require__(/*! ./note */ "./content/
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _default() {
-  var DOC = window.document;
   return new _utils._MODULE({
     events: {
       ENV: {
@@ -2144,7 +2141,7 @@ function _default() {
     toggleAll: function toggleAll() {
       if (!this.notes) return;
       var notes = this.notes;
-      var meth = DOC.getElementsByTagName('tmnote').length ? 'hide' : 'show',
+      var meth = window.document.getElementsByTagName('tmnote').length ? 'hide' : 'show',
           condition = meth === 'hide' ? true : false,
           note;
 
@@ -2157,8 +2154,7 @@ function _default() {
       }
     },
     updateTransp: function updateTransp() {
-      var bodyClasses = DOC.body.classList;
-      console.log(69, 'n');
+      var bodyClasses = window.document.body.classList;
 
       _store.default.get('notetransp').then(function (transp) {
         if (transp) bodyClasses.add('tmnotes--0_8');else bodyClasses.remove('tmnotes--0_8');
@@ -2178,16 +2174,18 @@ function _default() {
         return _this.stopDraggingNote(note, e);
       };
 
-      DOC.addEventListener('mousemove', dragHandler, false);
-      DOC.addEventListener('mouseup', dragStopHandler, false);
-      DOC.addEventListener('touchmove', dragHandler, false);
-      DOC.addEventListener('touchend', dragStopHandler, false);
+      var doc = window.document;
+      doc.addEventListener('mousemove', dragHandler, false);
+      doc.addEventListener('mouseup', dragStopHandler, false);
+      doc.addEventListener('touchmove', dragHandler, false);
+      doc.addEventListener('touchend', dragStopHandler, false);
     },
     stopDraggingNote: function stopDraggingNote(note, e) {
-      DOC.removeEventListener('mousemove', this.dragHandler, false);
-      DOC.removeEventListener('mouseup', this.dragStopHandler, false);
-      DOC.removeEventListener('touchmove', this.dragHandler, false);
-      DOC.removeEventListener('touchend', this.dragStopHandler, false);
+      var doc = window.document;
+      doc.removeEventListener('mousemove', this.dragHandler, false);
+      doc.removeEventListener('mouseup', this.dragStopHandler, false);
+      doc.removeEventListener('touchmove', this.dragHandler, false);
+      doc.removeEventListener('touchend', this.dragStopHandler, false);
       this.emit('dragstop:note', note, e);
     },
     emitDragEvent: function emitDragEvent(note, e) {
@@ -2475,7 +2473,6 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _default() {
-  var DOC = window.document;
   return new _utils._DOMMODULE({
     events: {
       ENV: {
@@ -2503,7 +2500,7 @@ function _default() {
     create: function create() {
       var _this2 = this;
 
-      var modal = this.el = DOC.createElement('tmprogressmodal');
+      var modal = this.el = window.document.createElement('tmprogressmodal');
       [{
         type: 'tmprogressheader',
         text: browser.i18n.getMessage('restoring')
@@ -2519,13 +2516,13 @@ function _default() {
         type: 'tmprogresscancel',
         text: browser.i18n.getMessage('cancel')
       }].forEach(function (obj) {
-        var el = DOC.createElement(obj.type);
+        var el = window.document.createElement(obj.type);
         modal.appendChild(el);
         _this2[obj.type] = el;
         if (obj.text) el.textContent = obj.text;
 
         if (obj.child) {
-          var child = DOC.createElement(obj.child.type);
+          var child = window.document.createElement(obj.child.type);
           el.appendChild(child);
           _this2[obj.child.type] = child;
         }
@@ -2542,7 +2539,7 @@ function _default() {
       this.resume(len);
       var cancelHandler = this.cancelHandler = this.cancel.bind(this);
       var closeHandler = this.closeHandler = this.stop.bind(this);
-      DOC.body.appendChild(this.el);
+      window.document.body.appendChild(this.el);
       this.tmprogresscancel.addEventListener('click', cancelHandler, false);
       this.tmprogressclose.addEventListener('click', closeHandler, false);
     },
@@ -2552,7 +2549,7 @@ function _default() {
     },
     stop: function stop() {
       try {
-        DOC.body.removeChild(this.el);
+        window.document.body.removeChild(this.el);
         this.tmprogresscancel.removeEventListener('click', this.cancelHandler, false);
         this.tmprogressclose.removeEventListener('click', this.closeHandler, false);
       } catch (e) {}
@@ -3837,7 +3834,6 @@ var _store = _interopRequireDefault(__webpack_require__(/*! ./../_store */ "./co
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _default(mark) {
-  var DOC = window.document;
   return new _utils._DOMMODULE({
     events: {
       ENV: {
@@ -3895,8 +3891,8 @@ function _default(mark) {
           btn;
 
       if (!this.attached) {
-        var el = this.el = DOC.createElement('tmui');
-        DOC.body.appendChild(el);
+        var el = this.el = window.document.createElement('tmui');
+        window.document.body.appendChild(el);
       }
 
       for (var b in buttons) {
@@ -3924,13 +3920,13 @@ function _default(mark) {
           }
         }
 
-        DOC.body.removeChild(tmui);
+        window.document.body.removeChild(tmui);
         this.attached = false;
       }
     },
     createButtons: function createButtons() {
-      var notesButton = this.buttons.notes.el = DOC.createElement('tmnotestoggle');
-      var bookmarkButton = this.buttons.bookmark.el = DOC.createElement('tmbm');
+      var notesButton = this.buttons.notes.el = window.document.createElement('tmnotestoggle');
+      var bookmarkButton = this.buttons.bookmark.el = window.document.createElement('tmbm');
       notesButton.title = browser.i18n.getMessage('toggle_notes');
       bookmarkButton.title = browser.i18n.getMessage('bm_scroll');
     },
