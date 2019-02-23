@@ -2709,6 +2709,7 @@ function (_RestorerBase) {
     _this3.selectionTrial = 0;
     _this3.chunkDuration = 500;
     _this3._timer = +new Date() + _this3.chunkDuration;
+    _this3.oom = entry.marks.length === 1 && entry.marks[0].id == 1;
 
     _this3.init();
 
@@ -3105,15 +3106,24 @@ function (_RestorerBase) {
       }
 
       if (phase !== 1) {
-        for (m in this.marks) {
-          if (!satisfied.includes(this.marks[m].id)) {
-            this.lost.push(mark);
-            this.failureReport[mark.id] = {
-              text: mark.text,
+        for (var _i = 0; _i < this.marks.length; _i++) {
+          var _mark = this.marks[_i];
+
+          if (!satisfied.includes(_mark.id)) {
+            this.lost.push(_mark);
+            this.failureReport[_mark.id] = {
+              text: _mark.text,
               reason: browser.i18n.getMessage('note_restoration_failure_reason_2')
             };
           }
         }
+      } else if (this.oom) {
+        var _mark2 = this.marks[0];
+        this.lost.push(_mark2);
+        this.failureReport[_mark2.id] = {
+          text: _mark2.text,
+          reason: browser.i18n.getMessage('note_restoration_failure_reason_2')
+        };
       }
 
       return this;
