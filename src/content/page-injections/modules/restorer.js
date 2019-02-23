@@ -417,19 +417,13 @@ class Restorer extends RestorerBase {
 
       if (chars > this.maxPosition) break;
     }
-    if (phase !== 1) {
+    if (phase !== 1 || this.oom) {
       for (let i = 0; i < this.marks.length; i++) {
         let mark = this.marks[i];
         if (!satisfied.includes(mark.id)) {
           this.lost.push(mark);
           this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_2') };
         }
-      }
-    } else if (this.oom) {
-      let mark = this.marks[0];
-      if (!satisfied.includes(mark.id)) {
-        this.lost.push(mark);
-        this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_2') };
       }
     }
     return this;
