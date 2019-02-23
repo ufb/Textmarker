@@ -427,8 +427,10 @@ class Restorer extends RestorerBase {
       }
     } else if (this.oom) {
       let mark = this.marks[0];
-      this.lost.push(mark);
-      this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_2') };
+      if (!satisfied.includes(mark.id)) {
+        this.lost.push(mark);
+        this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_2') };
+      }
     }
     return this;
   }
