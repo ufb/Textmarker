@@ -62,6 +62,7 @@ class Restorer extends RestorerBase {
     this.selectionTrial = 0;
     this.chunkDuration = 500;
     this._timer = +new Date() + this.chunkDuration;
+    this.oom = entry.marks.length === 1 && entry.marks[0].id == 1;
 
     this.init();
   }
@@ -417,12 +418,17 @@ class Restorer extends RestorerBase {
       if (chars > this.maxPosition) break;
     }
     if (phase !== 1) {
-      for (m in this.marks) {
-        if (!satisfied.includes(this.marks[m].id)) {
+      for (let i = 0; i < this.marks.length; i++) {
+        let mark = this.marks[i];
+        if (!satisfied.includes(mark.id)) {
           this.lost.push(mark);
           this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_2') };
         }
       }
+    } else if (this.oom) {
+      let mark = this.marks[0];
+      this.lost.push(mark);
+      this.failureReport[mark.id] = { text: mark.text, reason: browser.i18n.getMessage('note_restoration_failure_reason_2') };
     }
     return this;
   }
