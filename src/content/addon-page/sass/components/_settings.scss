@@ -90,6 +90,16 @@
 #download-text:checked + label + #quickbutton-download-select {
   display: inline-block;
 }
+#drop-losses-box {
+  &:hover small {
+    display: block !important;
+  }
+}
+#name-mark-box {
+  &:hover small {
+    display: block !important;
+  }
+}
 /* misc */
 .tmuipos {
   display: none;

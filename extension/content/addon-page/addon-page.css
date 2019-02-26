@@ -305,10 +305,10 @@ body {
   display: block !important; }
 
 .u-display--inline {
-  display: inline; }
+  display: inline !important; }
 
 .u-display--inline-block {
-  display: inline-block; }
+  display: inline-block !important; }
 
 .u-overflow--ellipsis {
   overflow: hidden;
@@ -889,6 +889,12 @@ aside {
 
 #download-text:checked + label + #quickbutton-download-select {
   display: inline-block; }
+
+#drop-losses-box:hover small {
+  display: block !important; }
+
+#name-mark-box:hover small {
+  display: block !important; }
 
 /* misc */
 .tmuipos {

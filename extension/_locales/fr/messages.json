@@ -304,6 +304,8 @@
 "t4323":{"message":"Enregistrer des surlignages sur des pages immuables"},
 "t4324":{"message":"Ne plus tenter de restaurer un surlignage qui n’a pas pu l’être précédemment"},
 "t4325":{"message":"Le marquage et la suppression des surlignages sont indisponibles avec cette option."},
+"t4326":{"message":""},
+"t4327":{"message":""},
 "h434":{"message":"Télécharger avec le bouton dédié sur la page de l’historique dans un…"},
 "t437":{"message":"fichier texte"},
 "t438":{"message":"Surlignages (avec les métadonnées)"},
@@ -543,4 +545,3 @@
 "restoring":{"message":"Restauration des surlignages…"},
 "cancel":{"message":"Annuler"}
 }
-

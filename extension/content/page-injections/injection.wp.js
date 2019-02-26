@@ -3105,7 +3105,7 @@ function (_RestorerBase) {
         if (chars > this.maxPosition) break;
       }
 
-      if (phase !== 1) {
+      if (phase !== 1 || this.oom) {
         for (var _i = 0; _i < this.marks.length; _i++) {
           var _mark = this.marks[_i];
 
@@ -3117,13 +3117,6 @@ function (_RestorerBase) {
             };
           }
         }
-      } else if (this.oom) {
-        var _mark2 = this.marks[0];
-        this.lost.push(_mark2);
-        this.failureReport[_mark2.id] = {
-          text: _mark2.text,
-          reason: browser.i18n.getMessage('note_restoration_failure_reason_2')
-        };
       }
 
       return this;

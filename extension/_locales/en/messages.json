@@ -304,6 +304,8 @@
 "t4323":{"message":"I save my highlights on immutable pages"},
 "t4324":{"message":"If a highlight wasn't restorable: Don't try again next time"},
 "t4325":{"message":"Bookmarking and deleting highlights are not available with this option."},
+"t4326":{"message":"Please use with caution:"},
+"t4327":{"message":"Making new highlights after Textmarker wasn't able to restore all previous highlights can result in non-resolvable conflicts at next restoration!"},
 "h434":{"message":"Customize download-buttons on history page"},
 "t437":{"message":"Text file"},
 "t438":{"message":"Marks (including meta infos)"},
