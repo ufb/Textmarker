@@ -124,6 +124,12 @@ export default new _MODULE({
       return storage.settings.history.naming;
     });
   },
+  _get_tbbpower() {
+    return browser.storage[this.area_settings].get().then(storage => {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.misc.tbbpower;
+    });
+  },
   _get_markers() {
     return browser.storage[this.area_settings].get().then(storage => storage.settings.markers);
   },

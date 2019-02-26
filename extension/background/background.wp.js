@@ -150,7 +150,8 @@ new _utils._MODULE({
       'initialized:storage': 'start',
       'migrated:storage': 'start',
       'checked:storage': 'start',
-      'toggle:addon': 'toggle'
+      'toggle:addon': 'toggle',
+      'updated:tbbpower-settings': 'setTBBAction'
     }
   },
   active: true,
@@ -203,6 +204,7 @@ new _utils._MODULE({
   activate: function activate(_activate) {
     var active = this.active = _activate;
     this.toggleBrowserActionIcon(active);
+    this.setTBBAction();
   },
   toggle: function toggle() {
     var mode = !this.active;
@@ -228,6 +230,40 @@ new _utils._MODULE({
         32: '../icons/off32.png'
       }
     });
+  },
+  setTBBAction: function setTBBAction(add) {
+    var _this4 = this;
+
+    if (typeof add === 'boolean') {
+      if (add) this.addTBBHandler();else this.removeTBBHandler();
+    } else {
+      _storage.default.get('tbbpower').then(function (enabled) {
+        if (enabled) _this4.addTBBHandler();else _this4.removeTBBHandler();
+      });
+    }
+  },
+  addTBBHandler: function addTBBHandler() {
+    var _this5 = this;
+
+    if (!this.tbbHandler) {
+      var tbbHandler = this.tbbHandler = function () {
+        return _this5.toggle();
+      };
+
+      browser.browserAction.setPopup({
+        popup: ''
+      });
+      browser.browserAction.onClicked.addListener(tbbHandler);
+    }
+  },
+  removeTBBHandler: function removeTBBHandler() {
+    if (this.tbbHandler) {
+      browser.browserAction.setPopup({
+        popup: 'content/tbb-menu/tbb-menu.html'
+      });
+      browser.browserAction.onClicked.removeListener(this.tbbHandler);
+      this.tbbHandler = null;
+    }
   }
 });
 
@@ -931,6 +967,7 @@ new _utils._MODULE({
       'toggle:notification-setting': 'toggleNotificationOpt',
       'toggle:misc-setting': 'changeMiscSetting',
       'change:misc-setting': 'changeMiscSetting',
+      'toggle:tbbpower-setting': 'toggleTBBPowerSetting',
       'change:sort-setting': 'changeSortOpt',
       'change:view-setting': 'changeViewOpt',
       'change:custom-search-setting': 'changeCustomSearch',
@@ -1148,6 +1185,12 @@ new _utils._MODULE({
       settings.misc[prop] = val;
       return settings;
     }, 'misc', 'error_save_bmicon');
+  },
+  toggleTBBPowerSetting: function toggleTBBPowerSetting(prop, val) {
+    this.updateSettings(function (settings) {
+      settings.misc[prop] = val;
+      return settings;
+    }, 'tbbpower', 'error_save_bmicon');
   },
   changeSBSettings: function changeSBSettings(tab, unfolded) {
     _storage.default.update('settings', function (settings) {
@@ -1637,6 +1680,10 @@ new _utils._MODULE({
           misc.progressbar = defaultSettings.misc.progressbar;
         }
 
+        if (typeof misc.tbbpower !== 'boolean') {
+          misc.tbbpower = defaultSettings.misc.tbbpower;
+        }
+
         if (!settings.sb) {
           settings.sb = defaultSettings.sb;
         }
@@ -2053,6 +2100,12 @@ var _default = new _utils._MODULE({
       return storage.settings.history.naming;
     });
   },
+  _get_tbbpower: function _get_tbbpower() {
+    return browser.storage[this.area_settings].get().then(function (storage) {
+      if (!storage || !storage.settings) return false;
+      return storage.settings.misc.tbbpower;
+    });
+  },
   _get_markers: function _get_markers() {
     return browser.storage[this.area_settings].get().then(function (storage) {
       return storage.settings.markers;
@@ -2319,7 +2372,8 @@ var _default = {
       customSearch: false,
       tmuipos: 'top-right',
       markmethod: '',
-      progressbar: true
+      progressbar: true,
+      tbbpower: false
     },
     sb: {
       tabs: {

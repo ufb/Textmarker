@@ -24,6 +24,7 @@ export default new _PORT({
       'toggle:notification-setting',
       'toggle:misc-setting',
       'change:misc-setting',
+      'toggle:tbbpower-setting',
       'add:custom-marker',
       'remove:custom-marker',
       'delete:entries',
