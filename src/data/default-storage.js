@@ -57,7 +57,8 @@ export default {
       customSearch: false,
       tmuipos: 'top-right',
       markmethod: '',
-      progressbar: true
+      progressbar: true,
+      tbbpower: false
     },
     sb: {
       tabs: {

@@ -29,6 +29,7 @@ export default function() {
           '.ctm-cb': 'toggleCtm',
           '.notes-cb': 'toggleNotes',
           '.misc-cb': 'toggleMisc',
+          '.tbbpower-opt': 'toggleTBBPowerOpt',
           '.tmuipos': 'changeTmuiPositionOpt',
           '#private-save': 'togglePrivSave',
           '#auto-note': 'toggleAutoNoteOpt',
@@ -198,6 +199,14 @@ export default function() {
       document.getElementById('tmuipos--noteicon').value = miscSettings.tmuipos;
       document.getElementById('tmuipos--bmicon').value = miscSettings.tmuipos;
       document.getElementById('misc-progressbar').checked = miscSettings.progressbar;
+
+      if (miscSettings.tbbpower) {
+        document.getElementById('tbbpower-on').checked = true;
+      } else {
+        document.getElementById('tbbpower-off').checked = true;
+      }
+
+      document.getElementById('misc-tbbpower').checked = miscSettings.tbbpower;
     },
     showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('u-display--none');
@@ -314,6 +323,10 @@ export default function() {
     },
     toggleMisc(e, el) {
       this.emit('toggle:misc-setting', el.name, el.checked);
+    },
+    toggleTBBPowerOpt(e, el) {
+      const val = !!(el.getAttribute('data-id')*1);
+      this.emit('toggle:tbbpower-setting', el.name, val);
     },
     changeTmuiPositionOpt(e, el) {
       this.emit('change:misc-setting', el.name, el.value);

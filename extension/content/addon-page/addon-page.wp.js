@@ -1997,6 +1997,7 @@ function _default() {
           '.ctm-cb': 'toggleCtm',
           '.notes-cb': 'toggleNotes',
           '.misc-cb': 'toggleMisc',
+          '.tbbpower-opt': 'toggleTBBPowerOpt',
           '.tmuipos': 'changeTmuiPositionOpt',
           '#private-save': 'togglePrivSave',
           '#auto-note': 'toggleAutoNoteOpt',
@@ -2159,6 +2160,14 @@ function _default() {
       document.getElementById('tmuipos--noteicon').value = miscSettings.tmuipos;
       document.getElementById('tmuipos--bmicon').value = miscSettings.tmuipos;
       document.getElementById('misc-progressbar').checked = miscSettings.progressbar;
+
+      if (miscSettings.tbbpower) {
+        document.getElementById('tbbpower-on').checked = true;
+      } else {
+        document.getElementById('tbbpower-off').checked = true;
+      }
+
+      document.getElementById('misc-tbbpower').checked = miscSettings.tbbpower;
     },
     showCustomSearchSettingSuccess: function showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('u-display--none');
@@ -2263,6 +2272,10 @@ function _default() {
     },
     toggleMisc: function toggleMisc(e, el) {
       this.emit('toggle:misc-setting', el.name, el.checked);
+    },
+    toggleTBBPowerOpt: function toggleTBBPowerOpt(e, el) {
+      var val = !!(el.getAttribute('data-id') * 1);
+      this.emit('toggle:tbbpower-setting', el.name, val);
     },
     changeTmuiPositionOpt: function changeTmuiPositionOpt(e, el) {
       this.emit('change:misc-setting', el.name, el.value);
@@ -2426,7 +2439,7 @@ var _default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'toggle:tbbpower-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 

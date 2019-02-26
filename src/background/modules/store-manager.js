@@ -27,6 +27,7 @@ new _MODULE({
       'toggle:notification-setting': 'toggleNotificationOpt',
       'toggle:misc-setting': 'changeMiscSetting',
       'change:misc-setting': 'changeMiscSetting',
+      'toggle:tbbpower-setting': 'toggleTBBPowerSetting',
       'change:sort-setting': 'changeSortOpt',
       'change:view-setting': 'changeViewOpt',
       'change:custom-search-setting': 'changeCustomSearch',
@@ -264,6 +265,13 @@ new _MODULE({
     this.updateSettings(
       settings => { settings.misc[prop] = val; return settings; },
       'misc',
+      'error_save_bmicon'
+    );
+  },
+  toggleTBBPowerSetting(prop, val) {
+    this.updateSettings(
+      settings => { settings.misc[prop] = val; return settings; },
+      'tbbpower',
       'error_save_bmicon'
     );
   },

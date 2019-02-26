@@ -86,6 +86,9 @@ new _MODULE({
         if (typeof misc.progressbar !== 'boolean') {
           misc.progressbar = defaultSettings.misc.progressbar;
         }
+        if (typeof misc.tbbpower !== 'boolean') {
+          misc.tbbpower = defaultSettings.misc.tbbpower;
+        }
 
         if (!settings.sb) {
           settings.sb = defaultSettings.sb;

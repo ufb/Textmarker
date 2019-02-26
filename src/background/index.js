@@ -30,7 +30,8 @@ new _MODULE({
       'initialized:storage': 'start',
       'migrated:storage': 'start',
       'checked:storage': 'start',
-      'toggle:addon': 'toggle'
+      'toggle:addon': 'toggle',
+      'updated:tbbpower-settings': 'setTBBAction'
     }
   },
 
@@ -77,6 +78,7 @@ new _MODULE({
   activate(activate) {
     const active = this.active = activate;
     this.toggleBrowserActionIcon(active);
+    this.setTBBAction();
   },
   toggle() {
     let mode = !this.active;
@@ -98,5 +100,31 @@ new _MODULE({
         32: '../icons/off32.png'
       }
     });
+  },
+  setTBBAction(add) {
+    if (typeof add === 'boolean') {
+      if (add) this.addTBBHandler();
+      else this.removeTBBHandler();
+    } else {
+      _STORAGE.get('tbbpower').then(enabled => {
+        if (enabled) this.addTBBHandler();
+        else this.removeTBBHandler();
+      });
+    }
+  },
+  addTBBHandler() {
+    if (!this.tbbHandler) {
+      const tbbHandler = this.tbbHandler = () => this.toggle();
+
+      browser.browserAction.setPopup({ popup: '' });
+      browser.browserAction.onClicked.addListener(tbbHandler);
+    }
+  },
+  removeTBBHandler() {
+    if (this.tbbHandler) {
+      browser.browserAction.setPopup({ popup: 'content/tbb-menu/tbb-menu.html' });
+      browser.browserAction.onClicked.removeListener(this.tbbHandler);
+      this.tbbHandler = null;
+    }
   }
 });
