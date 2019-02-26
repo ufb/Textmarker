@@ -1077,6 +1077,7 @@ function _default() {
       });
     },
     create: function create() {
+      console.log('create');
       var popup = this.el = DOC.createElement('tmpopup');
       var bgColorRegExp = /background-color:(#[a-f0-9]{6})/;
       var bgColor, colorBtn;
