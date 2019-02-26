@@ -26,7 +26,7 @@ export default function() {
       });
     },
     create() {
-      const popup = this.el = DOC.createElement('tmpopup');
+      const popup = this.el = window.document.createElement('tmpopup');
       const bgColorRegExp = /background-color:(#[a-f0-9]{6})/;
       let bgColor, colorBtn;
       for (let m in this.markers) {
