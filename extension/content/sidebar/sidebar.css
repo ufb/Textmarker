@@ -287,10 +287,10 @@ body {
   display: block !important; }
 
 .u-display--inline {
-  display: inline; }
+  display: inline !important; }
 
 .u-display--inline-block {
-  display: inline-block; }
+  display: inline-block !important; }
 
 .u-overflow--ellipsis {
   overflow: hidden;

@@ -304,6 +304,8 @@
 "t4323":{"message":"Ich speichere Markierungen auf unveränderbaren Seiten"},
 "t4324":{"message":"Nicht wiederherstellbare Markierungen bei Seitenneuaufruf nicht wieder versuchen, herzustellen"},
 "t4325":{"message":"Lesezeichen und Markierung löschen sind für diese Option nicht verfügbar."},
+"t4326":{"message":"Diese Option mit Vorsicht genießen:"},
+"t4327":{"message":"Sobald nach Nicht-Wiederherstellbarkeit neue Markierungen vorgenommen werden, kann es zu Konflikten bei der nächsten Wiederherstellung kommen!"},
 "h434":{"message":"Download-Buttons in Chronik anpassen"},
 "t437":{"message":"Textdatei"},
 "t438":{"message":"Markierungen (inkl. Metadaten)"},

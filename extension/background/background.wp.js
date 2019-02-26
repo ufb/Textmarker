@@ -1610,11 +1610,10 @@ new _utils._MODULE({
 
         if (typeof history.immut !== 'boolean') {
           history.immut = defaultSettings.history.immut;
-        }
+        } //if (typeof history.dropLosses !== 'boolean') {
 
-        if (typeof history.dropLosses !== 'boolean') {
-          history.dropLosses = true;
-        }
+
+        history.dropLosses = true; //}
 
         noteTypes.forEach(function (noteType) {
           if (!misc[noteType]) {
@@ -2293,7 +2292,7 @@ var _default = {
     history: {
       autosave: true,
       saveInPriv: false,
-      dropLosses: false,
+      dropLosses: true,
       immut: false,
       naming: 'title',
       download: 'json',
