@@ -27,6 +27,7 @@ export default new _MODULE({
   hashSensitive: false,
   tmid: '',
   noteColor: 'yellow',
+  immut: false,
   redescribing: false,
 
   autoinit() {
@@ -99,6 +100,7 @@ export default new _MODULE({
       this.entries[entry.name] = entry;
     }
     this.isNew = false;
+    this.immut = !!entries[0].immut;
   },
 
   get(field = 'storage') {

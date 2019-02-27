@@ -226,6 +226,7 @@ export default function() {
     immut(immutable) {
       this.isImmut = immutable;
       _STORE.redescribing = true;
+      _STORE.immut = immutable;
       this.resume();
     },
     save() {
@@ -472,7 +473,11 @@ export default function() {
 			}
 
       _STORE.get('settings').then(settings => {
-        this.isImmut = typeof this.isImmut === 'boolean' ? this.isImmut : !!settings.history.immut;
+        if (_STORE.isNew) {
+          this.isImmut = typeof this.isImmut === 'boolean' ? this.isImmut : !!settings.history.immut;
+        } else {
+          this.isImmut = typeof this.isImmut === 'boolean' ? this.isImmut : _STORE.immut;
+        }
         this.store(this.mark(key, settings.markers[key], this.isImmut), true, true);
       });
 		},
