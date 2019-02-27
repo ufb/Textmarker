@@ -1,6 +1,7 @@
 tm {display: inline !important;}
 span.textmarker-highlight {
   all: inherit;
+  background-image: none !important;
   display: inline !important;
   position: static !important;
   padding: 0 !important;
@@ -18,5 +19,5 @@ span.textmarker-highlight {
 
 #textmarker-bookmark-anchor {
   padding-left: 15px !important;
-  @include icon('bm2', -2px 0);
+  @include icon('bm2', -2px 0, $important: !important);
 }

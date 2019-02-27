@@ -1,17 +1,17 @@
-@mixin button_icon($name, $gradient: true) {
+@mixin button_icon($name, $gradient: true, $important: '') {
   @if ($gradient) {
     background-image: url(../../../icons/#{$name}.png), $gradient--button;
     &:hover {
       background-image: url(../../../icons/#{$name}.png), $gradient--button-hover;
     }
   } @else {
-    background-image: url(../../../icons/#{$name}.png);
+    background-image: url(../../../icons/#{$name}.png) #{$important};
   }
 }
 
-@mixin icon($name: '', $position: 0 0, $size: unset, $repeat: no-repeat, $gradient: false) {
+@mixin icon($name: '', $position: 0 0, $size: unset, $repeat: no-repeat, $gradient: false, $important: '') {
   @if ($name) {
-    @include button_icon($name, $gradient);
+    @include button_icon($name, $gradient, $important);
   }
   background-repeat: $repeat;
   background-position: $position, 0 0;
