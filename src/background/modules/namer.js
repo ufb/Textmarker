@@ -1,5 +1,5 @@
 import _STORAGE from './../storage'
-import { _MODULE, _HASHLESS } from './../utils'
+import { _MODULE } from './../utils'
 import _GLOBAL_SETTINGS from './../../data/global-settings'
 
 export default function() {
@@ -29,7 +29,7 @@ export default function() {
     },
     adjustName(name, entry, method) {
       name = name ? name :
-             method === 'title' ? entry.title.trim() ? entry.title.trim() : _HASHLESS(entry.url) :
+             method === 'title' ? entry.title.trim() ? entry.title.trim() : entry.url :
              method === 'date' ? (new Date(entry.first).toLocaleString()) : '';
 
       name = name.substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1);

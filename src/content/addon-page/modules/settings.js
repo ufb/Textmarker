@@ -35,7 +35,8 @@ export default function() {
           '#auto-note': 'toggleAutoNoteOpt',
           '#immut': 'toggleImmutOpt',
           '#drop-losses': 'toggleDropLossesOpt',
-          '#autonote-color': 'changeAutoNoteOpt'
+          '#autonote-color': 'changeAutoNoteOpt',
+          '#ignore-hash': 'changeHashOpt'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -175,6 +176,7 @@ export default function() {
       document.getElementById('immut').checked = historySettings.immut;
       document.getElementById('drop-losses').checked = historySettings.dropLosses;
       document.getElementById('notes-new').checked = historySettings.saveNote;
+      document.getElementById('ignore-hash').checked = !historySettings.ignoreHash;
 
       if (historySettings.download === 'json') {
         document.getElementById('download-json').checked = true;
@@ -226,6 +228,9 @@ export default function() {
     changeAutoNoteOpt(e, el) {
       const val = document.getElementById('auto-note').checked ? el.value : false;
       this.emit('change:autonote-setting', this.marker.key, val);
+    },
+    changeHashOpt(e, el) {
+      this.emit('change:hash-setting', !el.checked);
     },
     toggleImmutOpt(e, el) {
       this.emit('change:immut-setting', el.checked);

@@ -389,7 +389,7 @@ new _utils._DOMMODULE({
   },
   setLink: function setLink(entry) {
     var link = document.getElementById('url');
-    var url = (0, _utils._HASHLESS)(entry.url);
+    var url = entry.url;
     link.href = url;
     link.innerText = url;
   },

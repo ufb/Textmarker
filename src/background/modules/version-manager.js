@@ -65,6 +65,9 @@ new _MODULE({
         if (typeof history.immut !== 'boolean') {
           history.immut = defaultSettings.history.immut;
         }
+        if (typeof history.ignoreHash !== 'boolean') {
+          history.ignoreHash = defaultSettings.history.ignoreHash;
+        }
         //if (typeof history.dropLosses !== 'boolean') {
           history.dropLosses = true;
         //}

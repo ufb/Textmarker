@@ -14,14 +14,20 @@ new _MODULE({
   recentlyOpenedEntry: null,
 
   checkUrl(url, sender, sendResponse) {
+    const hashlessPageUrl =  _HASHLESS(url);
+
     _STORAGE.get('history').then(history => {
       let entries = history.entries,
           matches = [],
           lockedMatches = [],
-          entry;
+          entry, pageUrl, entryUrl;
+
       for (let e in entries) {
         entry = entries[e];
-        if (url === _HASHLESS(entry.url)) {
+        pageUrl = entry.hashSensitive ? url : hashlessPageUrl;
+        entryUrl = entry.hashSensitive ? entry.url : _HASHLESS(entry.url);
+
+        if (pageUrl === entryUrl) {
           matches.push(entry);
           if (entry.locked) lockedMatches.push(entry);
         }

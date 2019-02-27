@@ -38,7 +38,8 @@ export default {
       saveNote: true,
       sorted: 'date-last',
       view: 'list',
-      pp: 10
+      pp: 10,
+      ignoreHash: true
     },
     addon: {
       active: true

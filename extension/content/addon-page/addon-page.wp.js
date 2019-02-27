@@ -2003,7 +2003,8 @@ function _default() {
           '#auto-note': 'toggleAutoNoteOpt',
           '#immut': 'toggleImmutOpt',
           '#drop-losses': 'toggleDropLossesOpt',
-          '#autonote-color': 'changeAutoNoteOpt'
+          '#autonote-color': 'changeAutoNoteOpt',
+          '#ignore-hash': 'changeHashOpt'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -2137,6 +2138,7 @@ function _default() {
       document.getElementById('immut').checked = historySettings.immut;
       document.getElementById('drop-losses').checked = historySettings.dropLosses;
       document.getElementById('notes-new').checked = historySettings.saveNote;
+      document.getElementById('ignore-hash').checked = !historySettings.ignoreHash;
 
       if (historySettings.download === 'json') {
         document.getElementById('download-json').checked = true;
@@ -2186,6 +2188,9 @@ function _default() {
     changeAutoNoteOpt: function changeAutoNoteOpt(e, el) {
       var val = document.getElementById('auto-note').checked ? el.value : false;
       this.emit('change:autonote-setting', this.marker.key, val);
+    },
+    changeHashOpt: function changeHashOpt(e, el) {
+      this.emit('change:hash-setting', !el.checked);
     },
     toggleImmutOpt: function toggleImmutOpt(e, el) {
       this.emit('change:immut-setting', el.checked);
@@ -2439,7 +2444,7 @@ var _default = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'toggle:tbbpower-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'change:hash-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'toggle:tbbpower-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 

@@ -890,10 +890,9 @@ aside {
 #download-text:checked + label + #quickbutton-download-select {
   display: inline-block; }
 
-#drop-losses-box:hover small {
-  display: block !important; }
-
-#name-mark-box:hover small {
+#drop-losses-box:hover small,
+#name-mark-box:hover small,
+#ignore-hash-box:hover small {
   display: block !important; }
 
 /* misc */

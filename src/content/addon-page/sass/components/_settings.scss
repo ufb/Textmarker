@@ -90,12 +90,9 @@
 #download-text:checked + label + #quickbutton-download-select {
   display: inline-block;
 }
-#drop-losses-box {
-  &:hover small {
-    display: block !important;
-  }
-}
-#name-mark-box {
+#drop-losses-box,
+#name-mark-box,
+#ignore-hash-box {
   &:hover small {
     display: block !important;
   }

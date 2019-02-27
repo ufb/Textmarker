@@ -19,6 +19,7 @@ new _MODULE({
       'change:saveopt-setting': 'changeSaveOpt',
       'change:immut-setting': 'toggleImmutOpt',
       'change:dropLosses-setting': 'toggleDropLossesOpt',
+      'change:hash-setting': 'toggleHashOpt',
       'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
@@ -219,6 +220,12 @@ new _MODULE({
       'error_save_autosave'
     );
   },
+  toggleHashOpt(val) {
+    this.updateSettings(
+      settings => { settings.history.ignoreHash = val; return settings; },
+      'hashopt'
+    );
+  },
   togglePrivSaveOpt(val) {
     this.updateSettings(
       settings => { settings.history.saveInPriv = val; return settings; },
@@ -360,14 +367,16 @@ new _MODULE({
     let names_local = [];
 
     return _STORAGE.update('history', history => {
-      let name, url;
+      let name, url, hashSensitive;
 
       while (names.length) {
         name = names.pop();
         if (history.entries && Object.keys(history.entries).indexOf(name) !== -1) {
           url = history.entries[name].url;
+          hashSensitive = history.entries[name].hashSensitive;
+
           delete history.entries[name];
-          this.emit('deleted:entry', name, url);
+          this.emit('deleted:entry', name, url, hashSensitive);
         } else {
           names_local.push(name);
         }

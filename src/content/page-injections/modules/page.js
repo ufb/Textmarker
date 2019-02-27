@@ -13,7 +13,9 @@ export default function() {
         'opened:sidebar': 'sendPageState',
         'failed:restoration': 'activateRetry',
         'succeeded:restoration': 'deactivateRetry',
-        'update:entry?': 'deactivateRetry'
+        'update:entry?': 'deactivateRetry',
+        'changed:url': 'onUrlChange',
+        'resumed-on-hashchange': 'setup'
       },
       DOM: {
         keydown: {
@@ -39,7 +41,6 @@ export default function() {
     },
 
     autoinit() {
-
       //_READER = this.readerMode = this.isReaderMode();
       this.setup();
     },
@@ -63,7 +64,9 @@ export default function() {
 
         _STORE.iframe = this.isIFrame();
 
-        this.url = _HASHLESS(window.document.URL);
+        this.url = window.document.URL;
+        this.hashlessURL = _HASHLESS(this.url);
+
         this.checkURL();
         this.removeListeners();
 
@@ -156,8 +159,11 @@ export default function() {
     update(entries, force) {
       force = force === true ? true : false;
       entries = Array.isArray(entries) ? entries : [entries];
-      let firstEntry = entries[0];
-      if (force || _HASHLESS(firstEntry.url) === this.url) {
+      const firstEntry = entries[0];
+      const ignoreHash = !firstEntry.hashSensitive;
+      const url = ignoreHash ? this.hashlessURL : this.url;
+
+      if (force || firstEntry.url === url) {
         _STORE.addEntries(entries);
         //_STORE.entry = entry;
         if (force) this.emit('set:entries', entries);
@@ -172,8 +178,13 @@ export default function() {
       if (this.active && !this.initialized && !document.querySelector('[data-tm-id]')) {
         this.initialized = true;
 
-        if (recentlyOpenedEntry && _HASHLESS(recentlyOpenedEntry.url) === this.url) {
-          _STORE.name = recentlyOpenedEntry.name;
+        if (recentlyOpenedEntry) {
+          const ignoreHash = !firstEntry.hashSensitive;
+          const url = ignoreHash ? this.hashlessURL : this.url;
+
+          if (recentlyOpenedEntry.url === url) {
+            _STORE.name = recentlyOpenedEntry.name;
+          }
         }
         /*if (_READER)
           window.setTimeout(() => this.emit('restore:marks', name), 500);*/
@@ -215,6 +226,21 @@ export default function() {
     },
     onSelectionChange(e) {
       this.emit('changed:selection', !window.getSelection().isCollapsed);
+    },
+    onUrlChange(tab, newUrl) {
+      const entry = _STORE.entries[Object.keys(_STORE.entries)[0]];
+
+      if (
+        !_STORE.isNew &&
+        entry &&
+        entry.hashSensitive &&
+        _HASHLESS(newUrl) === this.hashlessURL &&
+        newUrl !== this.url
+      ) {
+        this.set = false;
+        this.initialized = false;
+        this.emit('hashchange');
+      }
     },
     activateRetry() {
       this.retryActive = true;
