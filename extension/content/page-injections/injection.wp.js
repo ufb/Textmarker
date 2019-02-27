@@ -197,10 +197,12 @@ var _default = new _utils._MODULE({
   events: {
     ENV: {
       'toggled:sync': 'setAreas',
-      'updated:naming-settings': 'updateLockedStatus',
+      'updated:naming-settings': 'updateStatus',
+      'updated:hashopt-settings': 'updateStatus',
       'updated:entry-sync': 'setSyncForEntry',
       'updated:entry-name': 'renameEntry',
-      'deleted:entry': 'removeEntry'
+      'deleted:entry': 'removeEntry',
+      'hashchange': 'resume'
     }
   },
   initialized: false,
@@ -214,19 +216,31 @@ var _default = new _utils._MODULE({
   //entry: null,
   entries: {},
   locked: false,
+  hashSensitive: false,
   tmid: '',
   noteColor: 'yellow',
   redescribing: false,
   autoinit: function autoinit() {
-    this.updateLockedStatus();
+    this.updateStatus();
   },
-  updateLockedStatus: function updateLockedStatus() {
+  resume: function resume() {
+    this.entries = {};
+    this.name = undefined;
+    this.tmid = '';
+    this.isNew = true;
+  },
+  updateStatus: function updateStatus() {
     var _this = this;
 
     if (!this.isNew || document.querySelector('[data-tm-id]')) return; //show notification
 
-    this.get('naming').then(function (naming) {
-      return _this.locked = naming === 'mark';
+    this.get('settings').then(function (settings) {
+      var historySettings = settings ? settings.history : null;
+
+      if (historySettings) {
+        _this.locked = historySettings.naming === 'mark';
+        _this.hashSensitive = historySettings.ignoreHash === false;
+      }
     });
   },
   setAreas: function setAreas() {
@@ -1206,7 +1220,8 @@ function _default() {
         'sidebar:next-mark': 'gotoMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark',
-        'clicked:mark': 'gotoMark'
+        'clicked:mark': 'gotoMark',
+        'hashchange': 'onHashChange'
       }
     },
     selection: null,
@@ -1353,7 +1368,7 @@ function _default() {
 
       this.emit('removed:mark', id[0]);
     },
-    resume: function resume(arg) {
+    resume: function resume(arg, options) {
       _store.default.disabled = false; // while (this.done.length) {
       //   this.undo(true);
       // }
@@ -1371,7 +1386,7 @@ function _default() {
       this.removedBookmark = null;
       this.markScrollPos = -1;
       var entry = !arg && _store.default.name && _store.default.entries[_store.default.name] ? _store.default.entries[_store.default.name] : null;
-      this.emit('resumed:markers', entry);
+      if (!options || !options.silent) this.emit('resumed:markers', entry);
     },
     immut: function immut(immutable) {
       this.isImmut = immutable;
@@ -1687,9 +1702,10 @@ function _default() {
 
       if (isNew || locked) {
         entry.first = entry.last;
-        entry.url = window.document.URL;
+        entry.url = _store.default.hashSensitive ? window.document.URL : (0, _utils._HASHLESS)(window.document.URL);
         entry.synced = _store.default.area_history === 'sync';
         entry.locked = locked;
+        entry.hashSensitive = _store.default.hashSensitive;
       }
 
       entry.name = locked ? entry.marks[0].text.trim().substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1) : isNew ? name : entry.name;
@@ -1713,6 +1729,12 @@ function _default() {
       }
 
       return marks;
+    },
+    onHashChange: function onHashChange() {
+      this.resume(null, {
+        silent: true
+      });
+      this.emit('resumed-on-hashchange');
     }
   });
 }
@@ -2233,7 +2255,9 @@ function _default() {
         'opened:sidebar': 'sendPageState',
         'failed:restoration': 'activateRetry',
         'succeeded:restoration': 'deactivateRetry',
-        'update:entry?': 'deactivateRetry'
+        'update:entry?': 'deactivateRetry',
+        'changed:url': 'onUrlChange',
+        'resumed-on-hashchange': 'setup'
       },
       DOM: {
         keydown: {
@@ -2284,7 +2308,8 @@ function _default() {
           return _this.setup();
         }, window);
         _store.default.iframe = _this.isIFrame();
-        _this.url = (0, _utils._HASHLESS)(window.document.URL);
+        _this.url = window.document.URL;
+        _this.hashlessURL = (0, _utils._HASHLESS)(_this.url);
 
         _this.checkURL();
 
@@ -2367,8 +2392,10 @@ function _default() {
       force = force === true ? true : false;
       entries = Array.isArray(entries) ? entries : [entries];
       var firstEntry = entries[0];
+      var ignoreHash = !firstEntry.hashSensitive;
+      var url = ignoreHash ? this.hashlessURL : this.url;
 
-      if (force || (0, _utils._HASHLESS)(firstEntry.url) === this.url) {
+      if (force || firstEntry.url === url) {
         _store.default.addEntries(entries); //_STORE.entry = entry;
 
 
@@ -2384,8 +2411,13 @@ function _default() {
       if (this.active && !this.initialized && !document.querySelector('[data-tm-id]')) {
         this.initialized = true;
 
-        if (recentlyOpenedEntry && (0, _utils._HASHLESS)(recentlyOpenedEntry.url) === this.url) {
-          _store.default.name = recentlyOpenedEntry.name;
+        if (recentlyOpenedEntry) {
+          var ignoreHash = !firstEntry.hashSensitive;
+          var url = ignoreHash ? this.hashlessURL : this.url;
+
+          if (recentlyOpenedEntry.url === url) {
+            _store.default.name = recentlyOpenedEntry.name;
+          }
         }
         /*if (_READER)
           window.setTimeout(() => this.emit('restore:marks', name), 500);*/
@@ -2432,6 +2464,15 @@ function _default() {
     },
     onSelectionChange: function onSelectionChange(e) {
       this.emit('changed:selection', !window.getSelection().isCollapsed);
+    },
+    onUrlChange: function onUrlChange(tab, newUrl) {
+      var entry = _store.default.entries[Object.keys(_store.default.entries)[0]];
+
+      if (!_store.default.isNew && entry && entry.hashSensitive && (0, _utils._HASHLESS)(newUrl) === this.hashlessURL && newUrl !== this.url) {
+        this.set = false;
+        this.initialized = false;
+        this.emit('hashchange');
+      }
     },
     activateRetry: function activateRetry() {
       this.retryActive = true;
@@ -3434,6 +3475,7 @@ function _default() {
     failed: 0,
     failureReport: {},
     restore: function restore(entries) {
+      console.log('restore', entries);
       if (!entries) return;
       if (!Array.isArray(entries)) entries = [entries];
       this.entries = entries;

@@ -1,4 +1,4 @@
-import { _MODULE } from './../../_shared/utils'
+import { _MODULE, _HASHLESS } from './../../_shared/utils'
 import _GLOBAL_SETTINGS from './../../../data/global-settings'
 import _STORE from './../_store'
 import _MARK from './mark-item'
@@ -41,7 +41,8 @@ export default function() {
         'sidebar:next-mark': 'gotoMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark',
-        'clicked:mark': 'gotoMark'
+        'clicked:mark': 'gotoMark',
+        'hashchange': 'onHashChange'
 			}
 		},
 		selection: null,
@@ -197,7 +198,7 @@ export default function() {
       }
       this.emit('removed:mark', id[0]);
     },
-    resume(arg) {
+    resume(arg, options) {
       _STORE.disabled = false;
 
       // while (this.done.length) {
@@ -220,7 +221,7 @@ export default function() {
 
       const entry = !arg && _STORE.name && _STORE.entries[_STORE.name] ? _STORE.entries[_STORE.name] : null;
 
-      this.emit('resumed:markers', entry);
+      if (!options || !options.silent) this.emit('resumed:markers', entry);
     },
     immut(immutable) {
       this.isImmut = immutable;
@@ -511,9 +512,10 @@ export default function() {
 
       if (isNew || locked) {
         entry.first = entry.last;
-        entry.url = window.document.URL;
+        entry.url = _STORE.hashSensitive ? window.document.URL : _HASHLESS(window.document.URL);
         entry.synced = _STORE.area_history === 'sync';
         entry.locked = locked;
+        entry.hashSensitive = _STORE.hashSensitive;
       }
 
       entry.name = locked ?
@@ -539,6 +541,10 @@ export default function() {
 				marks.push(kD);
 			}
       return marks;
+    },
+    onHashChange() {
+      this.resume(null, { silent: true });
+      this.emit('resumed-on-hashchange');
     }
 	});
 }

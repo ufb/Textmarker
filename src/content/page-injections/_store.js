@@ -4,10 +4,12 @@ export default new _MODULE({
   events: {
     ENV: {
       'toggled:sync': 'setAreas',
-      'updated:naming-settings': 'updateLockedStatus',
+      'updated:naming-settings': 'updateStatus',
+      'updated:hashopt-settings': 'updateStatus',
       'updated:entry-sync': 'setSyncForEntry',
       'updated:entry-name': 'renameEntry',
-      'deleted:entry': 'removeEntry'
+      'deleted:entry': 'removeEntry',
+      'hashchange': 'resume'
     }
   },
   initialized: false,
@@ -22,17 +24,32 @@ export default new _MODULE({
   //entry: null,
   entries: {},
   locked: false,
+  hashSensitive: false,
   tmid: '',
   noteColor: 'yellow',
   redescribing: false,
 
   autoinit() {
-    this.updateLockedStatus();
+    this.updateStatus();
   },
 
-  updateLockedStatus() {
+  resume() {
+    this.entries = {};
+    this.name = undefined;
+    this.tmid = '';
+    this.isNew = true;
+  },
+
+  updateStatus() {
     if (!this.isNew || document.querySelector('[data-tm-id]')) return;//show notification
-    this.get('naming').then(naming => this.locked = (naming === 'mark'));
+
+    this.get('settings').then(settings => {
+      const historySettings = settings ? settings.history : null;
+      if (historySettings) {
+        this.locked = historySettings.naming === 'mark';
+        this.hashSensitive = historySettings.ignoreHash === false;
+      }
+    });
   },
 
   setAreas() {

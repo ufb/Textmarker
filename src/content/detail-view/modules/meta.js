@@ -1,4 +1,4 @@
-import { _DOMMODULE, _HASHLESS } from './../../_shared/utils'
+import { _DOMMODULE } from './../../_shared/utils'
 
 new _DOMMODULE({
   el: document.getElementById('meta'),
@@ -18,7 +18,7 @@ new _DOMMODULE({
   },
   setLink(entry) {
     const link = document.getElementById('url');
-    const url = _HASHLESS(entry.url);
+    const url = entry.url;
     link.href = url;
     link.innerText = url;
   },

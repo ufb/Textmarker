@@ -496,16 +496,22 @@ new _utils._MODULE({
   checkUrl: function checkUrl(url, sender, sendResponse) {
     var _this = this;
 
+    var hashlessPageUrl = (0, _utils._HASHLESS)(url);
+
     _storage.default.get('history').then(function (history) {
       var entries = history.entries,
           matches = [],
           lockedMatches = [],
-          entry;
+          entry,
+          pageUrl,
+          entryUrl;
 
       for (var e in entries) {
         entry = entries[e];
+        pageUrl = entry.hashSensitive ? url : hashlessPageUrl;
+        entryUrl = entry.hashSensitive ? entry.url : (0, _utils._HASHLESS)(entry.url);
 
-        if (url === (0, _utils._HASHLESS)(entry.url)) {
+        if (pageUrl === entryUrl) {
           matches.push(entry);
           if (entry.locked) lockedMatches.push(entry);
         }
@@ -627,7 +633,7 @@ function _default() {
     adjustName: function adjustName(name, entry, method) {
       var _this3 = this;
 
-      name = name ? name : method === 'title' ? entry.title.trim() ? entry.title.trim() : (0, _utils._HASHLESS)(entry.url) : method === 'date' ? new Date(entry.first).toLocaleString() : '';
+      name = name ? name : method === 'title' ? entry.title.trim() ? entry.title.trim() : entry.url : method === 'date' ? new Date(entry.first).toLocaleString() : '';
       name = name.substring(0, _globalSettings.default.MAX_ENTRY_NAME_CHARS - 1);
 
       _storage.default.get('history').then(function (history) {
@@ -832,7 +838,7 @@ function _default() {
     events: {
       ENV: {
         'activated:tab': 'setPanel',
-        'updated:tab': 'onUpdatedTab',
+        'changed:url': 'setPanel',
         'entry:found': 'storeEntry',
         'saved:entry': 'storeEntry',
         'updated:entry': 'updateEntry',
@@ -846,7 +852,7 @@ function _default() {
       this.isOpen().then(function (open) {
         if (open) {
           browser.sidebarAction.setPanel({
-            panel: browser.runtime.getURL('content/sidebar/sidebar.html#' + tabId + '_' + (0, _utils._HASHLESS)(url)),
+            panel: browser.runtime.getURL("content/sidebar/sidebar.html#".concat(tabId, "_").concat(url)),
             tabId: tabId
           });
         }
@@ -856,71 +862,77 @@ function _default() {
       return browser.sidebarAction.isOpen({});
     },
     storeEntry: function storeEntry(entry) {
-      var _this = this;
-
+      var ignoreHash = !entry.hashSensitive;
+      var entries = this.entries;
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        var entries = _this.entries;
         var id = tab.id;
+        var url = ignoreHash ? (0, _utils._HASHLESS)(tab.url) : tab.url;
         entries[id] = entries[id] || [];
-        entries[id][(0, _utils._HASHLESS)(tab.url)] = entry;
+        entries[id][url] = entry;
       });
     },
     updateEntry: function updateEntry(entry) {
-      var _this2 = this;
+      var _this = this;
 
+      var ignoreHash = !entry.hashSensitive;
       var entries = this.entries;
+      var entryUrl = ignoreHash ? (0, _utils._HASHLESS)(entry.url) : entry.url;
 
       for (var id in entries) {
         for (var url in entries[id]) {
-          if (url === (0, _utils._HASHLESS)(entry.url)) {
+          if (url === entryUrl) {
             entries[id][url] = entry;
           }
         }
       }
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        if ((0, _utils._HASHLESS)(tab.url) === (0, _utils._HASHLESS)(entry.url)) {
-          _this2.emit('entry:found-for-tab', entry);
+        var tabUrl = ignoreHash ? (0, _utils._HASHLESS)(tab.url) : tab.url;
+
+        if (tabUrl === entryUrl) {
+          _this.emit('entry:found-for-tab', entry);
         }
       });
     },
-    removeEntry: function removeEntry(name, url) {
-      var _this3 = this;
+    removeEntry: function removeEntry(name, url, hashSensitive) {
+      var _this2 = this;
 
       var entries = this.entries;
+      var entryUrl = hashSensitive ? url : (0, _utils._HASHLESS)(url);
 
       for (var id in entries) {
         for (var savedUrl in entries[id]) {
-          if (savedUrl === (0, _utils._HASHLESS)(url)) {
+          if (savedUrl === entryUrl) {
             delete entries[id][savedUrl];
           }
         }
       }
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        if ((0, _utils._HASHLESS)(tab.url) === (0, _utils._HASHLESS)(url)) {
-          _this3.emit('entry:deleted-for-tab');
+        var tabUrl = hashSensitive ? tab.url : (0, _utils._HASHLESS)(tab.url);
+
+        if (tabUrl === entryUrl) {
+          _this2.emit('entry:deleted-for-tab');
         }
       });
     },
     sendEntry: function sendEntry() {
-      var _this4 = this;
+      var _this3 = this;
 
       (0, _utils._GET_ACTIVE_TAB)().then(function (tab) {
-        var url = (0, _utils._HASHLESS)(tab.url);
-        var entriesForThisTab = _this4.entries[tab.id];
-        var entry = entriesForThisTab ? entriesForThisTab[url] : null;
+        var hashlessUrl = (0, _utils._HASHLESS)(tab.url);
+        var entriesForThisTab = _this3.entries[tab.id];
+        var entry = null;
 
-        _this4.emit('entry:found-for-tab', entry);
+        if (entriesForThisTab) {
+          entry = entriesForThisTab[tab.url] || entriesForThisTab[hashlessUrl];
+        }
+
+        _this3.emit('entry:found-for-tab', entry);
       });
     },
     sendOrderedMarks: function sendOrderedMarks(marks) {
       this.emit('entry:ordered-marks', marks);
-    },
-    onUpdatedTab: function onUpdatedTab(tab, changed) {
-      if (changed.url) {
-        this.setPanel(tab, changed.url);
-      }
     }
   });
 }
@@ -959,6 +971,7 @@ new _utils._MODULE({
       'change:saveopt-setting': 'changeSaveOpt',
       'change:immut-setting': 'toggleImmutOpt',
       'change:dropLosses-setting': 'toggleDropLossesOpt',
+      'change:hash-setting': 'toggleHashOpt',
       'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
       'toggle:noteopt-setting': 'toggleNoteOpt',
@@ -1144,6 +1157,12 @@ new _utils._MODULE({
       return settings;
     }, 'droplossesopt', 'error_save_autosave');
   },
+  toggleHashOpt: function toggleHashOpt(val) {
+    this.updateSettings(function (settings) {
+      settings.history.ignoreHash = val;
+      return settings;
+    }, 'hashopt');
+  },
   togglePrivSaveOpt: function togglePrivSaveOpt(val) {
     this.updateSettings(function (settings) {
       settings.history.saveInPriv = val;
@@ -1303,16 +1322,17 @@ new _utils._MODULE({
     area = typeof area === 'string' ? area : 'sync';
     var names_local = [];
     return _storage.default.update('history', function (history) {
-      var name, url;
+      var name, url, hashSensitive;
 
       while (names.length) {
         name = names.pop();
 
         if (history.entries && Object.keys(history.entries).indexOf(name) !== -1) {
           url = history.entries[name].url;
+          hashSensitive = history.entries[name].hashSensitive;
           delete history.entries[name];
 
-          _this7.emit('deleted:entry', name, url);
+          _this7.emit('deleted:entry', name, url, hashSensitive);
         } else {
           names_local.push(name);
         }
@@ -1490,7 +1510,7 @@ function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
-        //'started:app': 'openInitPage',
+        'started:app': 'openInitPage',
         'open:addon-page(sb)': 'openAddonPage',
         'open:addon-page(tbb)': 'openAddonPage',
         'open:addon-page(am)': 'openAddonPage',
@@ -1516,7 +1536,9 @@ function _default() {
         return _this.emit('activated:tab', tab.tabId, tab.url || '');
       });
       browser.tabs.onUpdated.addListener(function (tabId, changed) {
-        return _this.emit('updated:tab', tabId, changed);
+        if (changed.url) {
+          _this.emit('changed:url', tabId, changed.url);
+        }
       });
     },
     open: function open(urls, names) {
@@ -1547,7 +1569,7 @@ function _default() {
       this.open(this.urls[id]);
     },
     openInitPage: function openInitPage(version, loadReason) {
-      if (version && version < '3') this.openAddonPage('help');else if (loadReason && loadReason === 'install') this.openAddonPage('help');
+      if (loadReason && loadReason === 'install' || loadReason === 'update') this.openAddonPage('news');
     },
     openSearch: function openSearch(word) {
       var _this2 = this;
@@ -1653,6 +1675,10 @@ new _utils._MODULE({
 
         if (typeof history.immut !== 'boolean') {
           history.immut = defaultSettings.history.immut;
+        }
+
+        if (typeof history.ignoreHash !== 'boolean') {
+          history.ignoreHash = defaultSettings.history.ignoreHash;
         } //if (typeof history.dropLosses !== 'boolean') {
 
 
@@ -1935,7 +1961,7 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:entry-sync', 'updated:entry-name', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar'],
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'toggled:sync-settings', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:entry-sync', 'updated:entry-name', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar', 'changed:url'],
     CONNECTION: ['started:app', 'toggled:addon', 'updated:settings', 'updated:entry-on-save', 'saved:entry', 'updated:pagenotes', 'toggled:sync-settings', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab', 'entry:deleted-for-tab', 'entry:ordered-marks']
   }
 });
@@ -2353,7 +2379,8 @@ var _default = {
       saveNote: true,
       sorted: 'date-last',
       view: 'list',
-      pp: 10
+      pp: 10,
+      ignoreHash: true
     },
     addon: {
       active: true

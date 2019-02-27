@@ -433,7 +433,9 @@ new _utils._DOMMODULE({
     this.updateName(entry.name);
   },
   updateName: function updateName(name) {
-    this.el.getElementsByClassName('header__name')[0].innerText = name;
+    var el = this.el.getElementsByClassName('header__name')[0];
+    el.innerText = name;
+    el.title = name;
   }
 });
 

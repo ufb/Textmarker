@@ -5,7 +5,7 @@ export default function() {
   return new _MODULE({
     events: {
       ENV: {
-        //'started:app': 'openInitPage',
+        'started:app': 'openInitPage',
         'open:addon-page(sb)': 'openAddonPage',
         'open:addon-page(tbb)': 'openAddonPage',
         'open:addon-page(am)': 'openAddonPage',
@@ -27,7 +27,11 @@ export default function() {
 
     autoinit() {
       browser.tabs.onActivated.addListener(tab => this.emit('activated:tab', tab.tabId, (tab.url || '')));
-      browser.tabs.onUpdated.addListener((tabId, changed) => this.emit('updated:tab', tabId, changed));
+      browser.tabs.onUpdated.addListener((tabId, changed) => {
+        if (changed.url) {
+          this.emit('changed:url', tabId, changed.url);
+        }
+      });
     },
 
     open(urls, names) {
@@ -54,8 +58,7 @@ export default function() {
       this.open(this.urls[id]);
     },
     openInitPage(version, loadReason) {
-      if (version && version < '3') this.openAddonPage('help');
-      else if (loadReason && loadReason === 'install') this.openAddonPage('help');
+      if (loadReason && loadReason === 'install' || loadReason === 'update') this.openAddonPage('news');
     },
     openSearch(word) {
       _STORAGE.get('settings').then(settings => {

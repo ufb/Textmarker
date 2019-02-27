@@ -47,7 +47,8 @@ new _PORT({
       'sidebar:next-mark',
       'sidebar:retry-restoration',
       'sidebar:selected-marker',
-      'opened:sidebar'
+      'opened:sidebar',
+      'changed:url'
     ],
     CONNECTION: [
       'started:app',

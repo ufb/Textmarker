@@ -21,6 +21,8 @@ new _DOMMODULE({
   },
 
   updateName(name) {
-    this.el.getElementsByClassName('header__name')[0].innerText = name;
+    const el = this.el.getElementsByClassName('header__name')[0];
+    el.innerText = name;
+    el.title = name;
   }
 });
