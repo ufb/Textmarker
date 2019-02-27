@@ -3,6 +3,7 @@ tm {
 
 span.textmarker-highlight {
   all: inherit;
+  background-image: none !important;
   display: inline !important;
   position: static !important;
   padding: 0 !important;
@@ -17,7 +18,7 @@ span.textmarker-highlight {
 
 #textmarker-bookmark-anchor {
   padding-left: 15px !important;
-  background-image: url(../../icons/bm2.png);
+  background-image: url(../../icons/bm2.png) !important;
   background-repeat: no-repeat;
   background-position: -2px 0, 0 0;
   background-size: unset, 100%; }

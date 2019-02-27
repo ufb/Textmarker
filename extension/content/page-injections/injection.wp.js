@@ -219,6 +219,7 @@ var _default = new _utils._MODULE({
   hashSensitive: false,
   tmid: '',
   noteColor: 'yellow',
+  immut: false,
   redescribing: false,
   autoinit: function autoinit() {
     this.updateStatus();
@@ -292,6 +293,7 @@ var _default = new _utils._MODULE({
     }
 
     this.isNew = false;
+    this.immut = !!entries[0].immut;
   },
   get: function get() {
     var _this3 = this;
@@ -1391,6 +1393,7 @@ function _default() {
     immut: function immut(immutable) {
       this.isImmut = immutable;
       _store.default.redescribing = true;
+      _store.default.immut = immutable;
       this.resume();
     },
     save: function save() {
@@ -1641,7 +1644,11 @@ function _default() {
       }
 
       _store.default.get('settings').then(function (settings) {
-        _this3.isImmut = typeof _this3.isImmut === 'boolean' ? _this3.isImmut : !!settings.history.immut;
+        if (_store.default.isNew) {
+          _this3.isImmut = typeof _this3.isImmut === 'boolean' ? _this3.isImmut : !!settings.history.immut;
+        } else {
+          _this3.isImmut = typeof _this3.isImmut === 'boolean' ? _this3.isImmut : _store.default.immut;
+        }
 
         _this3.store(_this3.mark(key, settings.markers[key], _this3.isImmut), true, true);
       });
@@ -2412,6 +2419,7 @@ function _default() {
         this.initialized = true;
 
         if (recentlyOpenedEntry) {
+          var firstEntry = entries[0];
           var ignoreHash = !firstEntry.hashSensitive;
           var url = ignoreHash ? this.hashlessURL : this.url;
 
@@ -3475,7 +3483,6 @@ function _default() {
     failed: 0,
     failureReport: {},
     restore: function restore(entries) {
-      console.log('restore', entries);
       if (!entries) return;
       if (!Array.isArray(entries)) entries = [entries];
       this.entries = entries;
