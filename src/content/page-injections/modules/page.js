@@ -179,6 +179,7 @@ export default function() {
         this.initialized = true;
 
         if (recentlyOpenedEntry) {
+          const firstEntry = entries[0];
           const ignoreHash = !firstEntry.hashSensitive;
           const url = ignoreHash ? this.hashlessURL : this.url;
 

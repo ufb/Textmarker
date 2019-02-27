@@ -684,7 +684,7 @@ export default function() {
     failed: 0,
     failureReport: {},
 
-    restore(entries) {console.log('restore', entries);
+    restore(entries) {
       if (!entries) return;
       if (!Array.isArray(entries)) entries = [entries];
 
