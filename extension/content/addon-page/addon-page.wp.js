@@ -2168,8 +2168,6 @@ function _default() {
       } else {
         document.getElementById('tbbpower-off').checked = true;
       }
-
-      document.getElementById('misc-tbbpower').checked = miscSettings.tbbpower;
     },
     showCustomSearchSettingSuccess: function showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('u-display--none');
