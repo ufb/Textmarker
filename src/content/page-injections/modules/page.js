@@ -197,7 +197,7 @@ export default function() {
       let lockedEntries = [],
           l = entries.length,
           lockedEntriesExist = false,
-          nonLockedEntries = 0;
+          nonLockedEntries = [];
 
       for (let i = 0, entry; i < l; i++) {
         entry = entries[i];
@@ -205,15 +205,15 @@ export default function() {
           lockedEntries.push(entry);
           lockedEntriesExist = true;
         } else {
-          entries = [entry];
-          nonLockedEntries++;
+          nonLockedEntries.push(entry);
         }
       }
-      if (lockedEntriesExist && nonLockedEntries) {
+      if (lockedEntriesExist && nonLockedEntries.length) {
         this.emit('warn:mixed-entry-types');
       }
-      else if (nonLockedEntries > 1) {
+      else if (nonLockedEntries.length > 1) {
         this.emit('warn:multiple-unlocked-entries');
+        entries = [nonLockedEntries[0]];
       }
 
       if (lockedEntries.length) {
