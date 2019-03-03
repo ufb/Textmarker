@@ -5,7 +5,7 @@ export default function() {
   return new _MODULE({
     events: {
       ENV: {
-        'started:app': 'openInitPage',
+        //'started:app': 'openInitPage',
         'open:addon-page(sb)': 'openAddonPage',
         'open:addon-page(tbb)': 'openAddonPage',
         'open:addon-page(am)': 'openAddonPage',

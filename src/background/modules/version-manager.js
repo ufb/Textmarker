@@ -68,9 +68,9 @@ new _MODULE({
         if (typeof history.ignoreHash !== 'boolean') {
           history.ignoreHash = defaultSettings.history.ignoreHash;
         }
-        //if (typeof history.dropLosses !== 'boolean') {
-          history.dropLosses = true;
-        //}
+        if (typeof history.dropLosses !== 'boolean') {
+          history.dropLosses = defaultSettings.history.dropLosses;
+        }
 
         noteTypes.forEach(noteType => {
           if (!misc[noteType]) {
