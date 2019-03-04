@@ -321,7 +321,7 @@ class Restorer extends RestorerBase {
   }
   findPossibleExtrema() {
     let nodes = this.bodyTextNodes,
-        n = nodes.length,
+        n = nodes ? nodes.length : 0,
         indices = this.allPossibleStartPositions,
         phase = this.phase,
         cache = this.cache = [],
@@ -592,7 +592,7 @@ class Restorer extends RestorerBase {
       this.trimmedSelectionText = this.squeeze(this.selection.text);
     }
 
-    this.bodyTextNodes = this.selection.nodes.slice();
+    this.bodyTextNodes = this.selection.nodes ? this.selection.nodes.slice() : [];
 
     return this;
   }
