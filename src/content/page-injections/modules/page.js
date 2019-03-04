@@ -42,7 +42,6 @@ export default function() {
     },
 
     autoinit() {
-      //_READER = this.readerMode = this.isReaderMode();
       this.setup();
     },
 
@@ -58,7 +57,7 @@ export default function() {
       _STORE.get('mode').then(active => {
         this.active = active;
 
-        if (this.set || !active || this.isPdf()) return false;
+        if (this.set || !active) return false;
 
         if (window.parent.window.document.readyState !== 'complete' && !this.registeredLoadHandler) {
           this.registeredLoadHandler = true;
@@ -79,15 +78,9 @@ export default function() {
         this.set = true;
       });
     },
-    isPdf() {
-      return window.location.pathname.split('.').pop().substr(0, 3) === 'pdf';
-    },
     isIFrame() {
       return window !== window.parent.window;
     },
-    /*isReaderMode() {
-      return this.url.split('?')[0] === 'about:reader';
-    },*/
     isEditable(el) {
       const name = el.tagName;
 
@@ -191,9 +184,6 @@ export default function() {
             _STORE.name = recentlyOpenedEntry.name;
           }
         }
-        /*if (_READER)
-          window.setTimeout(() => this.emit('restore:marks', name), 500);*/
-        //else
         this.emit('restore:marks', entries);
       }
     },
