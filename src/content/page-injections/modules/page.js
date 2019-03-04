@@ -33,6 +33,7 @@ export default function() {
     initialized: false,
     retryActive: false,
     shiftSensitiveKeys: [13, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 171, 173],
+    registeredLoadHandler: false,
     keyCodeMap: {
       '13': 'Enter',
       '48': '0', '49': '1', '50': '2', '51': '3', '52': '4',
@@ -59,8 +60,11 @@ export default function() {
 
         if (this.set || !active || this.isPdf()) return false;
 
-        if (window.document.readyState !== 'complete')
-          return this.addListener('load', () => this.setup(), window);
+        if (window.parent.window.document.readyState !== 'complete' && !this.registeredLoadHandler) {
+          this.registeredLoadHandler = true;
+
+          return this.addListener('load', () => this.setup(), window.parent.window);
+        }
 
         _STORE.iframe = this.isIFrame();
 
