@@ -2281,6 +2281,7 @@ function _default() {
     initialized: false,
     retryActive: false,
     shiftSensitiveKeys: [13, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 171, 173],
+    registeredLoadHandler: false,
     keyCodeMap: {
       '13': 'Enter',
       '48': '0',
@@ -2297,7 +2298,6 @@ function _default() {
       '173': '-'
     },
     autoinit: function autoinit() {
-      //_READER = this.readerMode = this.isReaderMode();
       this.setup();
     },
     power: function power(on) {
@@ -2310,10 +2310,15 @@ function _default() {
 
       _store.default.get('mode').then(function (active) {
         _this.active = active;
-        if (_this.set || !active || _this.isPdf()) return false;
-        if (window.document.readyState !== 'complete') return _this.addListener('load', function () {
-          return _this.setup();
-        }, window);
+        if (_this.set || !active) return false;
+
+        if (window.parent.window.document.readyState !== 'complete' && !_this.registeredLoadHandler) {
+          _this.registeredLoadHandler = true;
+          return _this.addListener('load', function () {
+            return _this.setup();
+          }, window.parent.window);
+        }
+
         _store.default.iframe = _this.isIFrame();
         _this.url = window.document.URL;
         _this.hashlessURL = (0, _utils._HASHLESS)(_this.url);
@@ -2326,16 +2331,9 @@ function _default() {
         _this.set = true;
       });
     },
-    isPdf: function isPdf() {
-      return window.location.pathname.split('.').pop().substr(0, 3) === 'pdf';
-    },
     isIFrame: function isIFrame() {
       return window !== window.parent.window;
     },
-
-    /*isReaderMode() {
-      return this.url.split('?')[0] === 'about:reader';
-    },*/
     isEditable: function isEditable(el) {
       var name = el.tagName;
       return name === 'TEXTAREA' || name === 'INPUT' || el.contentEditable === 'true';
@@ -2427,10 +2425,6 @@ function _default() {
             _store.default.name = recentlyOpenedEntry.name;
           }
         }
-        /*if (_READER)
-          window.setTimeout(() => this.emit('restore:marks', name), 500);*/
-        //else
-
 
         this.emit('restore:marks', entries);
       }
@@ -2439,7 +2433,7 @@ function _default() {
       var lockedEntries = [],
           l = entries.length,
           lockedEntriesExist = false,
-          nonLockedEntries = 0;
+          nonLockedEntries = [];
 
       for (var i = 0, entry; i < l; i++) {
         entry = entries[i];
@@ -2448,15 +2442,15 @@ function _default() {
           lockedEntries.push(entry);
           lockedEntriesExist = true;
         } else {
-          entries = [entry];
-          nonLockedEntries++;
+          nonLockedEntries.push(entry);
         }
       }
 
-      if (lockedEntriesExist && nonLockedEntries) {
+      if (lockedEntriesExist && nonLockedEntries.length) {
         this.emit('warn:mixed-entry-types');
-      } else if (nonLockedEntries > 1) {
+      } else if (nonLockedEntries.length > 1) {
         this.emit('warn:multiple-unlocked-entries');
+        entries = [nonLockedEntries[0]];
       }
 
       if (lockedEntries.length) {
@@ -3042,7 +3036,7 @@ function (_RestorerBase) {
     key: "findPossibleExtrema",
     value: function findPossibleExtrema() {
       var nodes = this.bodyTextNodes,
-          n = nodes.length,
+          n = nodes ? nodes.length : 0,
           indices = this.allPossibleStartPositions,
           phase = this.phase,
           cache = this.cache = [],
@@ -3358,7 +3352,7 @@ function (_RestorerBase) {
         this.trimmedSelectionText = this.squeeze(this.selection.text);
       }
 
-      this.bodyTextNodes = this.selection.nodes.slice();
+      this.bodyTextNodes = this.selection.nodes ? this.selection.nodes.slice() : [];
       return this;
     }
   }, {

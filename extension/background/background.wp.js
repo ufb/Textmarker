@@ -1510,7 +1510,7 @@ function _default() {
   return new _utils._MODULE({
     events: {
       ENV: {
-        'started:app': 'openInitPage',
+        //'started:app': 'openInitPage',
         'open:addon-page(sb)': 'openAddonPage',
         'open:addon-page(tbb)': 'openAddonPage',
         'open:addon-page(am)': 'openAddonPage',
@@ -1679,10 +1679,11 @@ new _utils._MODULE({
 
         if (typeof history.ignoreHash !== 'boolean') {
           history.ignoreHash = defaultSettings.history.ignoreHash;
-        } //if (typeof history.dropLosses !== 'boolean') {
+        }
 
-
-        history.dropLosses = true; //}
+        if (typeof history.dropLosses !== 'boolean') {
+          history.dropLosses = defaultSettings.history.dropLosses;
+        }
 
         noteTypes.forEach(function (noteType) {
           if (!misc[noteType]) {
