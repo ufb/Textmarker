@@ -28,11 +28,11 @@ new _DOMMODULE({
   },
   update(theme) {
     this.theme = theme;
-    if (theme === 'default') return;
-    const className = `textmarker-sidebar--${theme}`;
     const sidebar = document.getElementById('textmarker-sidebar');
-
-    if (!sidebar.classList.contains(className)) {
+    const className = 'textmarker-sidebar--dark';
+    if (theme === 'default') {
+      sidebar.classList.remove(className);
+    } else {
       sidebar.classList.add(className);
     }
   }
