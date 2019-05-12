@@ -30,6 +30,8 @@ label.fake-rb {
 }
 input[type="radio"] + label span {
   border-radius: 50%;
+  line-height: 1;
+  vertical-align: -2px;
 }
 input[type="radio"]:checked + label span {
   text-indent: 0;

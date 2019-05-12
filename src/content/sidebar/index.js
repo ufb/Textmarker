@@ -17,6 +17,7 @@ import './modules/mark-actions'
 import './modules/page-actions'
 import './modules/marks'
 import './modules/links'
+import './modules/themes'
 
 _L10N();
 

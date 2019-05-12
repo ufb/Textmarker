@@ -49,7 +49,7 @@ new _MODULE({
       'add:tag': 'addTag',
 
       'toggled:sidebar-tab': 'changeSBSettings',
-
+      'changed:sidebar-theme': 'changeThemeSettings',
       'updated:page-note': 'updatePageNotes'
     }
   },
@@ -284,6 +284,9 @@ new _MODULE({
   },
   changeSBSettings(tab, unfolded) {
     _STORAGE.update('settings', settings => { settings.sb.tabs[tab].unfolded = unfolded; return settings; });
+  },
+  changeThemeSettings(theme) {
+    _STORAGE.update('settings', settings => { settings.sb.theme = theme; return settings; });
   },
 
   // HISTORY METHODS

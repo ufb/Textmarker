@@ -26,7 +26,8 @@ export default new _PORT({
       'opened:sidebar',
       'updated:page-note',
       'toggled:sidebar-tab',
-      'sidebar:selected-marker'
+      'sidebar:selected-marker',
+      'changed:sidebar-theme'
     ]
   }
 })

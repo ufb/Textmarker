@@ -19,8 +19,14 @@
 @import './components/page-notes';
 @import './components/links';
 
+@import './themes/dark';
+
 @include links(inherit);
 
+#textmarker-sidebar {
+  min-height: 100vh;
+  padding: 10px 15px;
+}
 #textmarker-sidebar--paused {
   padding: 10px 20px;
   color: $color-text--red;

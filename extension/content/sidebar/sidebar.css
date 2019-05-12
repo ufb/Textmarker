@@ -597,7 +597,7 @@ body {
   font-size: 13px;
   color: #777;
   font-family: inherit;
-  padding: 10px 15px 0; }
+  padding: 0; }
 
 #header {
   margin-bottom: 15px; }
@@ -689,7 +689,9 @@ label.fake-rb {
   width: auto; }
 
 input[type="radio"] + label span {
-  border-radius: 50%; }
+  border-radius: 50%;
+  line-height: 1;
+  vertical-align: -2px; }
 
 input[type="radio"]:checked + label span {
   text-indent: 0; }
@@ -1095,12 +1097,87 @@ tmnoteminimize:before {
   background-position: 0 0, 0 0;
   background-size: 12px, 100%; }
 
+.textmarker-sidebar--dark {
+  background: #38383d;
+  color: #fff; }
+  .textmarker-sidebar--dark button {
+    border-color: transparent;
+    color: #38383d;
+    background-color: #aaa !important; }
+    .textmarker-sidebar--dark button:hover {
+      background-color: #c8c8c8 !important; }
+  .textmarker-sidebar--dark #mark-action--delete-highlight {
+    background-image: url(../../icons/bin.png); }
+  .textmarker-sidebar--dark #mark-action--bookmark {
+    background-image: url(../../icons/bm3.png); }
+  .textmarker-sidebar--dark #mark-action--delete-bookmark {
+    background-image: url(../../icons/del-bm.png); }
+  .textmarker-sidebar--dark #mark-action--add-note {
+    background-image: url(../../icons/note2.png); }
+  .textmarker-sidebar--dark #page-action--save {
+    background-image: url(../../icons/save.png); }
+  .textmarker-sidebar--dark #page-action--retry {
+    background-image: url(../../icons/retry.png); }
+  .textmarker-sidebar--dark #page-action--undo {
+    background-image: url(../../icons/undo.png); }
+  .textmarker-sidebar--dark #page-action--redo {
+    background-image: url(../../icons/redo.png); }
+  .textmarker-sidebar--dark #page-action--scroll {
+    background-image: url(../../icons/to-bm.png); }
+  .textmarker-sidebar--dark #page-action--notes {
+    background-image: url(../../icons/toggle-notes.png); }
+  .textmarker-sidebar--dark #nav-action--up {
+    background-image: url(../../icons/up.png); }
+  .textmarker-sidebar--dark #nav-action--down {
+    background-image: url(../../icons/down.png); }
+  .textmarker-sidebar--dark .marker__apply {
+    background-image: url(../../icons/highlight.png); }
+  .textmarker-sidebar--dark input[type="text"] {
+    background-color: rgba(255, 255, 255, 0.1); }
+  .textmarker-sidebar--dark select {
+    background-color: transparent;
+    color: #777; }
+  .textmarker-sidebar--dark .switch__indicator {
+    background-color: rgba(255, 255, 255, 0.1); }
+  .textmarker-sidebar--dark .tab__header {
+    position: relative;
+    color: #aaa; }
+    .textmarker-sidebar--dark .tab__header:hover {
+      color: #fbfbfb; }
+  .textmarker-sidebar--dark .tab__title {
+    border-color: #777; }
+    .tab--folded .textmarker-sidebar--dark .tab__title {
+      border-color: #777; }
+  .textmarker-sidebar--dark .tab__toggle {
+    border-color: #777; }
+  .textmarker-sidebar--dark .tags__item {
+    background: #37414b; }
+  .textmarker-sidebar--dark .tags__remove:hover {
+    color: #d37a7a; }
+  .textmarker-sidebar--dark .mark__text-container {
+    border-color: #37414b;
+    background-color: #4c4c51;
+    color: #e1e2e3; }
+  .textmarker-sidebar--dark .mark__text {
+    border-color: #37414b; }
+  .textmarker-sidebar--dark .mark__note {
+    color: #38383d; }
+  .textmarker-sidebar--dark .link {
+    opacity: 1;
+    color: #fff; }
+    .textmarker-sidebar--dark .link:hover {
+      color: #2ba5b7; }
+
 a, .link {
   color: inherit;
   text-decoration: none;
   cursor: pointer; }
   a:hover, .link:hover {
     text-decoration: underline; }
+
+#textmarker-sidebar {
+  min-height: 100vh;
+  padding: 10px 15px; }
 
 #textmarker-sidebar--paused {
   padding: 10px 20px;
@@ -1116,3 +1193,5 @@ a, .link {
 .textmarker-sidebar--locked #page-action--undo,
 .textmarker-sidebar--locked #page-action--redo {
   display: none !important; }
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjb250ZW50L3NpZGViYXIvc2lkZWJhci5jc3MiLCJzb3VyY2VSb290IjoiIn0=*/

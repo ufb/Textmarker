@@ -69,8 +69,10 @@ export default {
         markers: { unfolded: true },
         actions: { unfolded: true },
         marks: { unfolded: false },
-        links: { unfolded: false }
-      }
+        links: { unfolded: false },
+        themes: { unfolded: false }
+      },
+      theme: 'default'
     }
   },
   history: {

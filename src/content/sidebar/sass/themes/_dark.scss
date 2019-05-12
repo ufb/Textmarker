@@ -1,0 +1,109 @@
+.textmarker-sidebar {
+
+  &--dark {
+    background: #38383d;
+    color: #fff;
+
+    button {
+      border-color: transparent;
+      color: #38383d;
+      background-color: $color-grey--medium-light !important;
+
+      &:hover {
+        background-color: $color-grey--light !important;
+      }
+    }
+
+    $action-buttons: (
+      '#mark-action--delete-highlight' : 'bin',
+      '#mark-action--bookmark' : 'bm3',
+      '#mark-action--delete-bookmark': 'del-bm',
+      '#mark-action--add-note': 'note2',
+      '#page-action--save': 'save',
+      '#page-action--retry': 'retry',
+      '#page-action--undo': 'undo',
+      '#page-action--redo': 'redo',
+      '#page-action--scroll': 'to-bm',
+      '#page-action--notes': 'toggle-notes',
+      '#nav-action--up': 'up',
+      '#nav-action--down': 'down',
+
+      '.marker__apply': 'highlight'
+    );
+
+    @each $selector, $icon in $action-buttons {
+      #{$selector} {
+        @include button_icon($icon, $gradient: false);
+      }
+    }
+
+    input[type="text"] {
+      background-color: transparentize(#fff, .9);
+    }
+
+    select {
+      background-color: transparent;
+      color: $color-grey--medium;
+    }
+
+    .switch__indicator {
+      background-color: transparentize(#fff, .9);
+    }
+
+    .tab {
+      &__header {
+        position: relative;
+        color: $color-grey--medium-light;
+
+        &:hover {
+          color: $color-white;
+        }
+      }
+      &__title {
+        border-color: $color-grey--medium;
+
+        .tab--folded & {
+          border-color: $color-grey--medium;
+        }
+      }
+
+      &__toggle {
+        border-color: $color-grey--medium;
+      }
+    }
+
+    .tags {
+      &__item {
+        background: $color-bg--dark;
+      }
+      &__remove {
+        &:hover {
+          color: lighten($color-text--red, 20);
+        }
+      }
+    }
+
+    .mark {
+      &__text-container {
+        border-color: $color-border--dark;
+        background-color: #4c4c51;
+        color: $color-text--light-grey;
+      }
+      &__text {
+        border-color: $color-border--dark;
+      }
+      &__note {
+        color: #38383d;
+      }
+    }
+
+    .link {
+      opacity: 1;
+      color: #fff;
+
+      &:hover {
+        color: $color-text--turquoise;
+      }
+    }
+  }
+}

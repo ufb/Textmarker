@@ -95,6 +95,9 @@ new _MODULE({
 
         if (!settings.sb) {
           settings.sb = defaultSettings.sb;
+        } else if (typeof settings.sb.themes !== 'boolean') {
+          settings.sb.tabs.themes = defaultSettings.sb.tabs.themes;
+          settings.sb.theme = defaultSettings.sb.theme;
         }
       }
     } catch(e) {
