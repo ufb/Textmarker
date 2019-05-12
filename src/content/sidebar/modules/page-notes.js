@@ -10,7 +10,7 @@ new _DOMMODULE({
     },
     DOM: {
       click: {
-        '#add-note': 'addNote',
+        '.add-note': 'addNote',
         'tmnotecolor': 'changeColor',
         'tmnotecustomize': 'togglePalette',
         'tmnotedelete': 'removeNote',
