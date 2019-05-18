@@ -38,6 +38,8 @@ export default function() {
         'sidebar:retry-restoration': 'resume',
         'sidebar:undo': 'undo',
         'sidebar:redo': 'redo',
+        'sidebar:copy': 'copy',
+        'sidebar:copy-all': 'copyAll',
         'sidebar:next-mark': 'gotoMark',
         'sidebar:scroll-to-bookmark': 'scrollToBookmark',
         'scroll-to-bookmark': 'scrollToBookmark',
@@ -264,7 +266,51 @@ export default function() {
         else this.emit('unsaved-changes');
       });
     },
-		store(mark, save, order) {
+    copy() {
+      mark = mark || this.findMark();
+
+      const range = mark.range;
+      const selection = mark.selection.self;
+      const wrappers = mark.wrappers;
+
+      range.setStart(wrappers[0], 0);
+      range.setEnd(wrappers[wrappers.length - 1], 1);
+      selection.addRange(range);
+			navigator.clipboard.writeText(selection.toString().trim().replace(/(\r\n){1,}/g, '\r\n'));
+      selection.collapseToStart();
+      selection.removeAllRanges();
+    },
+    copyAll() {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      const copyshop = document.createElement('copyshop');
+      const fragment = document.createDocumentFragment();
+      selection.addRange(range);
+
+      let mark, wrappers, span;
+
+      this.visuallyOrderedMarkIDs.forEach(id => {
+        mark = this.getById(id);
+        wrappers = mark.wrappers;
+        span = document.createElement('span');
+
+        range.setStart(wrappers[0], 0);
+        range.setEnd(wrappers[wrappers.length - 1], 1);
+
+        span.innerText = selection.toString().trim().replace(/(\r\n){1,}/g, '\r\n');
+        fragment.appendChild(span);
+        fragment.appendChild(document.createElement('br'));
+        fragment.appendChild(document.createElement('br'));
+      });
+
+      copyshop.appendChild(fragment);
+      document.body.appendChild(copyshop);
+      selection.selectAllChildren(copyshop);
+      navigator.clipboard.writeText(selection.toString());
+      selection.collapseToStart();
+      document.body.removeChild(copyshop);
+    },
+    store(mark, save, order) {
 			this.done.push(mark);
       if (save !== false) this.autosave();
 			if (order) this.orderMarksVisually();

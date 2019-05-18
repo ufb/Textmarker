@@ -6,6 +6,7 @@ import { _L10N } from './../_shared/utils'
 import _PORT from './port'
 import _STORE from './_store'
 
+import './modules/themes'
 import './modules/tabs'
 import './modules/header'
 import './modules/meta-infos'
@@ -17,7 +18,6 @@ import './modules/mark-actions'
 import './modules/page-actions'
 import './modules/marks'
 import './modules/links'
-import './modules/themes'
 
 _L10N();
 

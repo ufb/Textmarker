@@ -15,6 +15,7 @@ new _DOMMODULE({
         '.mark__text': 'activate',
         '.mark__note-btn': 'toggleNote',
         '.action-button--nav': 'nav',
+        '#page-action--copy-all': 'copy'
       },
       change: {
         '#fold-marks': 'foldList'
@@ -158,5 +159,8 @@ new _DOMMODULE({
     const meth = show ? 'add' : 'remove';
     Array.from(this.el.getElementsByClassName('mark__' + type))
       .forEach(el => el.classList[meth]('unfolded'));
+  },
+  copy() {
+    this.emit('sidebar:copy-all', { tab: 'active' });
   }
 });

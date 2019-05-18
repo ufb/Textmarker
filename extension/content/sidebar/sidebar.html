@@ -93,7 +93,8 @@
           </div>
           <button type="button" id="mark-action--delete-highlight" data-l10n-attr data-l10n-title="sb56" data-action="delete-highlight" class="u-ml-tiny action-button action-button--mark" disabled></button>
           <button type="button" id="page-action--redo" data-l10n-attr data-l10n-title="sb55" data-action="redo" class="u-ml-tiny action-button action-button--page"></button>
-          <button type="button" id="page-action--undo" data-l10n-attr data-l10n-title="sb54" data-action="undo" class="action-button action-button--page"></button>
+          <button type="button" id="page-action--undo" data-l10n-attr data-l10n-title="sb54" data-action="undo" class="u-ml-tiny action-button action-button--page"></button>
+          <button type="button" id="mark-action--copy" data-l10n-attr data-l10n-title="sb510" data-action="copy" class="action-button action-button--mark" disabled></button>
         </article>
         <article class="u-cf">
           <div id="note-actions" class="u-cf u-float--right u-ml-tiny">
@@ -113,19 +114,22 @@
       </header>
       <div class="tab__content">
         <div class="u-cf u-mb-small">
+          <div class="u-float--left">
+            <button type="button" id="page-action--copy-all" data-l10n-attr data-l10n-title="sb510" data-action="copy" class="u-ml-tiny action-button action-button--copy-all"></button>
+          </div>
           <div class="u-float--right">
-            <button type="button" id="nav-action--up" data-value="-1" class="action-button--nav u-ml-tiny"></button>
+            <button type="button" id="nav-action--up" data-value="-1" class="action-button--nav u-mb-tiny"></button><br>
             <button type="button" id="nav-action--down" data-value="1" class="action-button--nav"></button>
           </div>
-          <select id="fold-marks">
-            <option value="0" disabled hidden></option>
-            <option value="1" data-l10n-id="sb61"></option>
-            <option value="2" data-l10n-id="sb62"></option>
-            <option value="3" data-l10n-id="sb63"></option>
-            <option value="4" data-l10n-id="sb64">Unfold all</option>
-          </select>
         </div>
-        <div id="marks" data-folded="1"></div>
+        <select id="fold-marks">
+          <option value="0" disabled hidden></option>
+          <option value="1" data-l10n-id="sb61"></option>
+          <option value="2" data-l10n-id="sb62"></option>
+          <option value="3" data-l10n-id="sb63"></option>
+          <option value="4" data-l10n-id="sb64">Unfold all</option>
+        </select>
+        <div id="marks" class="u-pt-small u-clear" data-folded="1"></div>
         <div id="mark-template" class="mark u-cf u-display--none"><div class="mark__text-container"><div class="mark__text u-overflow--ellipsis"></div></div><div class="mark__note-btn u-display--none"></div><div class="mark__note u-display--none"></div></div>
       </div>
     </section>

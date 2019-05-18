@@ -31,7 +31,8 @@
     "activeTab",
     "tabs",
     "notifications",
-    "menus"
+    "menus",
+    "clipboardWrite"
   ],
 
   "icons": {

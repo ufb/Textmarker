@@ -1,4 +1,5 @@
 import { _DOMMODULE } from './../../_shared/utils'
+import _STORE from './../_store'
 
 new _DOMMODULE({
   el: document.getElementById('tab--actions'),
@@ -26,6 +27,7 @@ new _DOMMODULE({
     this.buttons.forEach(btn => {
       let type = btn.getAttribute('data-action');
       if (
+        type === 'copy' ||
         type === 'delete-highlight' ||
         (typeof markInfos[type] === 'boolean' && !markInfos[type]) ||
         (type === 'delete-bookmark' && markInfos.bookmark)
