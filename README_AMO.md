@@ -10,12 +10,12 @@ _webpack_ is used for precompiling and bundling.
 __Production code:__
 The _extension/_ folder contains the addon code.
 
-### Prerequisites
+## Prerequisites
 
-* __node.js__ v10.15.0
+* __node.js__ v10.15.3
 * __npm__ 6.1.0
 
-### Installing modules
+## Installing modules
 
 __Run the following from console/terminal (root folder):__  
 for installing all required node modules (see: _package.json_)
@@ -23,7 +23,7 @@ for installing all required node modules (see: _package.json_)
 npm install
 ```
 
-### Webpack
+## Webpack
 __Run the following from console/terminal (root folder):__  
 for bundling the source code
 ```
