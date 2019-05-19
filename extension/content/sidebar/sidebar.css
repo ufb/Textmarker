@@ -922,6 +922,11 @@ label span {
   #mark-action--add-note:hover {
     background-image: url(../../icons/note2.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
+#mark-action--copy {
+  background-image: url(../../icons/copy.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
+  #mark-action--copy:hover {
+    background-image: url(../../icons/copy.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+
 #page-action--save {
   background-image: url(../../icons/save.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
   #page-action--save:hover {
@@ -951,6 +956,11 @@ label span {
   background-image: url(../../icons/toggle-notes.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
   #page-action--notes:hover {
     background-image: url(../../icons/toggle-notes.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+
+#page-action--copy-all {
+  background-image: url(../../icons/copy.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
+  #page-action--copy-all:hover {
+    background-image: url(../../icons/copy.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
 #nav-action--up {
   background-image: url(../../icons/up.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }

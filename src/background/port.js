@@ -43,7 +43,6 @@ new _PORT({
       'sidebar:undo',
       'sidebar:redo',
       'sidebar:copy',
-      'sidebar:copy-all',
       'sidebar:scroll-to-bookmark',
       'sidebar:toggle-notes',
       'sidebar:next-mark',
