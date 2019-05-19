@@ -434,6 +434,7 @@
 "ctx_w":{"message":"Wort nachschlagen"},
 "ctx_n":{"message":"Notiz hinzufügen"},
 "ctx_sb":{"message":"Sidebar öffnen"},
+"ctx_c":{"message":"Kopiere markierten Text"},
 "detail_tag":{"message":"Tags"},
 "detail_notag":{"message":"Kein Tag zugeordnet"},
 "detail_meta":{"message":"Metadaten"},

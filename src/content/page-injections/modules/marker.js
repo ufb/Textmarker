@@ -23,6 +23,7 @@ export default function() {
         'ctx:d': 'remove',
         'ctx:m': 'onMarkerKey',
         'ctx:n': 'addNote',
+        'ctx:c': 'copy',
         'updated:note': 'saveNote',
         'removed:note': 'saveNote',
 				'changed:note-color': 'saveNote',
@@ -267,6 +268,7 @@ export default function() {
     },
     copy() {
       const mark = this.findMark();
+      if (!mark) return false;
       const range = mark.range;
       const selection = mark.selection.self;
       const wrappers = mark.wrappers;
@@ -494,7 +496,7 @@ export default function() {
         this.store(this.mark(key, settings.markers[key], this.isImmut), true, true);
       });
 		},
-    onHotkey(key) {
+    onHotkey(key) {console.log('hotkey', key);
       let self = this;
       switch(key) {
         case 'z': self.undo(); break;
@@ -504,6 +506,7 @@ export default function() {
 				case 'arrowup': self.gotoNextMark(-1); break;
 				case 'arrowdown': self.gotoNextMark(1); break;
 				case 'd': self.remove(); break;
+        case 'c': self.copy(); break;
       }
     },
     preventDefault(e) {

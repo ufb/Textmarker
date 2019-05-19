@@ -17,7 +17,8 @@ export default function() {
       b: { contexts: ['frame', 'link', 'page'] },
       '-b': { contexts: ['frame', 'link', 'page'] },
       n: { contexts: ['frame', 'link', 'page'] },
-      sb: { contexts: ['all', 'tab'] }
+      sb: { contexts: ['all', 'tab'] },
+      c: { contexts: ['frame', 'link', 'page'] }
     },
     created: [],
 

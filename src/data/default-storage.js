@@ -5,7 +5,7 @@ export default {
       z: ['ctrlKey-altKey', true],
       y: ['ctrlKey-altKey', true],
       s: ['ctrlKey-altKey', true],
-      c: ['ctrlKey-altKey', false],
+      c: ['ctrlKey-altKey', false, true],
       b: ['ctrlKey-altKey', true, true],
       d: ['shiftKey', false, true],
       '-b': ['', '', true],

@@ -33,6 +33,7 @@ new _PORT({
       'ctx:b',
       'ctx:-b',
       'ctx:n',
+      'ctx:c',
       'sidebar:highlight',
       'sidebar:delete-highlight',
       'sidebar:bookmark',
