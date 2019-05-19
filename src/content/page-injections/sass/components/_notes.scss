@@ -14,9 +14,7 @@ $colors:
     tmnoteheader {
       background: $val3;
     }
-    tmnotedelete,
-    tmnoteminimize,
-    tmnotecustomize {
+    tmnoteactions {
       background: $val2;
       &:hover {
         background: $val;
@@ -54,8 +52,12 @@ tmnoteheader {
   height: 22px;
   position: relative;
   z-index: 1;
-  display: block;
+  display: none;
   cursor: move;
+
+  tmnote:hover & {
+    display: block;
+  }
 }
 tmnotepalette {
   position: absolute;
@@ -83,15 +85,25 @@ tmnotecolor {
     filter: brightness(1.02);
   }
 }
+tmnoteactions {
+  position: absolute;
+  display: none;
+  right: -22px;
+  background: #ffe;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  border-radius: 0 2px 2px 2px;
+  box-sizing: border-box !important;
+
+  tmnote:hover & {
+    display: block;
+  }
+}
 tmnotedelete,
 tmnoteminimize,
 tmnotecustomize {
-  position: absolute;
   display: block;
   font-size: 14px;
-  right: -20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  border-radius: 0 2px 2px 0;
+  border-radius: 2px;
   cursor: pointer;
   color: $color-text--disabled;
   line-height: 1;
@@ -103,30 +115,33 @@ tmnotecustomize {
   }
 }
 tmnotedelete {
-  top: 44px;
+  top: 40px;
   font-size: 10px;
   font-weight: bold;
-  padding: 5px 6px 0 10px;
+  padding: 5px 6px 0 6px;
 }
 tmnoteminimize {
-  top: 66px;
+  top: 60px;
   font-size: 18px;
-  padding: 0px 4px 0 10px;
+  padding: 0px 4px 0 5px;
 }
 tmnotecustomize {
-  top: 22px;
+  top: 20px;
   font-size: 16px;
-  padding: 1px 3px 2px 10px;
+  padding: 1px 3px 2px 5px;
 }
-body > tmnote > textarea[data-tm-note] {
-  display: block !important;
-  padding: 10px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
-  position: relative !important;
-  width: 300px;
-  font-family: Verdana, sans-serif !important;
-  font-size: 12px !important;
-  border: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
+body > tmnote {
+  > textarea[data-tm-note] {
+    display: block !important;
+    padding: 10px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+    position: relative !important;
+    width: 300px;
+    min-height: 3em !important;
+    font-family: Verdana, sans-serif !important;
+    font-size: 12px !important;
+    border: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
 }

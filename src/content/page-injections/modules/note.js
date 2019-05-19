@@ -68,6 +68,7 @@ export default function(mark, color) {
     createNoteElement() {
       const note = this.el = document.createElement('tmnote');
       const header = this.header = document.createElement('tmnoteheader');
+      const actions = this.actions = document.createElement('tmnoteactions');
       const del = this.del = document.createElement('tmnotedelete');
       const min = this.min = document.createElement('tmnoteminimize');
       const gear = document.createElement('tmnotecustomize');
@@ -91,10 +92,11 @@ export default function(mark, color) {
       del.appendChild(delText);
       min.appendChild(minText);
       gear.appendChild(gearText);
-      note.append(header);
-      note.appendChild(gear);
-      note.appendChild(del);
-      note.appendChild(min);
+      note.appendChild(header);
+      actions.appendChild(gear);
+      actions.appendChild(del);
+      actions.appendChild(min);
+      note.appendChild(actions);
       note.appendChild(p);
       note.classList.add('tmnote--' + color);
       if (text) p.value = text;
