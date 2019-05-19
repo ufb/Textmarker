@@ -155,14 +155,14 @@ new _MODULE({
   },
   toggleShortcutSetting(key, status) {
     this.updateSettings(
-      settings => { settings.shortcuts[key][1] = status;console.log(settings.shortcuts); return settings; },
+      settings => { settings.shortcuts[key][1] = status; return settings; },
       'shortcut',
       'error_save__toggle_sc'
     );
   },
   changeShortcutSetting(key, value) {
     this.updateSettings(
-      settings => { settings.shortcuts[key][0] = value;console.log(settings.shortcuts); return settings; },
+      settings => { settings.shortcuts[key][0] = value; return settings; },
       'shortcut',
       'error_save_change_sc'
     );

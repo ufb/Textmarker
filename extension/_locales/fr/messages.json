@@ -434,6 +434,7 @@
 "ctx_w":{"message":"Rechercher le mot"},
 "ctx_n":{"message":"Joindre une note"},
 "ctx_sb":{"message":"Ouvrir la barre latérale"},
+"ctx_c":{"message":""},
 "detail_tag":{"message":"Étiquettes "},
 "detail_notag":{"message":"aucune étiquette attribuée"},
 "detail_meta":{"message":"Métadonnées"},

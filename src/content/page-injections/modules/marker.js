@@ -496,7 +496,7 @@ export default function() {
         this.store(this.mark(key, settings.markers[key], this.isImmut), true, true);
       });
 		},
-    onHotkey(key) {console.log('hotkey', key);
+    onHotkey(key) {
       let self = this;
       switch(key) {
         case 'z': self.undo(); break;

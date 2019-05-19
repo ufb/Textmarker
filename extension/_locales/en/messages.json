@@ -434,6 +434,7 @@
 "ctx_w":{"message":"Look up selected word"},
 "ctx_n":{"message":"Add note"},
 "ctx_sb":{"message":"Open sidebar"},
+"ctx_c":{"message":"Copy highlighted text"},
 "detail_tag":{"message":"Tags"},
 "detail_notag":{"message":"No tag assigned"},
 "detail_meta":{"message":"Meta Data"},
