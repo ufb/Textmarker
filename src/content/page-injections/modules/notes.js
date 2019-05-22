@@ -65,9 +65,13 @@ export default function() {
     },
     updateTransp() {
       const bodyClasses = window.document.body.classList;
-      _STORE.get('notetransp').then(transp => {
-        if (transp) bodyClasses.add('tmnotes--0_8');
-        else bodyClasses.remove('tmnotes--0_8');
+      _STORE.get('settings').then(settings => {
+        if (settings && settings.misc) {
+          if (settings.misc.notetransp) bodyClasses.add('tmnotes--0_8');
+          else bodyClasses.remove('tmnotes--0_8');
+          if (settings.misc.noteplainview) bodyClasses.add('tmnotes--plain-view');
+          else bodyClasses.remove('tmnotes--plain-view');          
+        }
       });
     },
     isEmpty(obj) {

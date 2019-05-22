@@ -192,6 +192,7 @@ export default function() {
       document.getElementById('misc-noteicon').checked = miscSettings.noteicon;
       document.getElementById('misc-noteonclick').checked = miscSettings.noteonclick;
       document.getElementById('misc-notetransp').checked = miscSettings.notetransp;
+      document.getElementById('misc-noteplainview').checked = miscSettings.noteplainview;
       document.getElementById('notes-restoration-failure').checked = miscSettings.failureNote;
       document.getElementById('notes-restoration-success').checked = miscSettings.successNote;
       document.getElementById('notes-pbm').checked = miscSettings.pbmNote;

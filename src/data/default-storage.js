@@ -49,6 +49,7 @@ export default {
       noteicon: true,
       noteonclick: true,
       notetransp: false,
+      noteplainview: false,
       overwrite: false,
       failureNote: true,
       successNote: true,

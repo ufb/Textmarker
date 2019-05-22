@@ -422,7 +422,7 @@
         <h2 data-l10n-id="h40"></h2>
         <nav class="subnav nav">
           <ul>
-            <li data-target="settings-markers" class="nav-button active" data-l10n-id="subnav_settings_mark"></li><li data-target="settings-shortcuts" class="nav-button" data-l10n-id="subnav_settings_sc"></li><li data-target="settings-history" class="nav-button" data-l10n-id="subnav_settings_history"></li><li data-target="settings-notifications" class="nav-button" data-l10n-id="subnav_settings_notifications"></li><li data-target="settings-misc" class="nav-button" data-l10n-id="subnav_settings_misc"></li>
+            <li data-target="settings-markers" class="nav-button active" data-l10n-id="subnav_settings_mark"></li><li data-target="settings-shortcuts" class="nav-button" data-l10n-id="subnav_settings_sc"></li><li data-target="settings-history" class="nav-button" data-l10n-id="subnav_settings_history"></li><li data-target="settings-notes" class="nav-button" data-l10n-id="subnav_settings_notes"></li><li data-target="settings-notifications" class="nav-button" data-l10n-id="subnav_settings_notifications"></li><li data-target="settings-misc" class="nav-button" data-l10n-id="subnav_settings_misc"></li>
           </ul>
         </nav>
         <div id="settings-markers" class="tab u-display--none">
@@ -954,6 +954,32 @@
             </div>
           </section>
         </div>
+        <div id="settings-notes" class="tab u-display--none">
+          <h3 class="u-display--inline-block" data-l10n-id="h461"></h3>
+          <section>
+            <div class="option-row">
+              <input type="checkbox" id="misc-noteicon" name="noteicon" class="misc-cb">
+              <label for="misc-noteicon" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t447"></sup></label>
+              <select id="tmuipos--noteicon" class="cb-sub-select border-top tmuipos" name="tmuipos">
+                <option value="top-right" data-l10n-id="tmuipos_topright"></option>
+                <option value="bottom-right" data-l10n-id="tmuipos_bottomright"></option>
+                <option value="top-left" data-l10n-id="tmuipos_topleft"></option>
+                <option value="bottom-left" data-l10n-id="tmuipos_bottomleft"></option>
+              </select>
+              <br><br>
+              <input type="checkbox" id="misc-noteonclick" name="noteonclick" class="misc-cb">
+              <label for="misc-noteonclick" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t448"></sup></label>
+              <br><br>
+              <input type="checkbox" id="misc-notetransp" name="notetransp" class="misc-cb">
+              <label for="misc-notetransp" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t448b"></sup></label>
+              <br><br>
+              <input type="checkbox" id="misc-noteplainview" name="noteplainview" class="misc-cb">
+              <label for="misc-noteplainview" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t448c"></sup></label>
+            </div>
+            <br><br>
+            <small data-l10n-id="t449"></small>
+          </section>
+        </div>
         <div id="settings-notifications" class="tab u-display--none">
           <section id="customize-notifications">
             <h3 class="u-display--inline-block" data-l10n-id="h451"></h3>
@@ -987,26 +1013,6 @@
         <div id="settings-misc" class="tab u-display--none">
           <section id="customize-misc">
             <h3 class="u-display--inline-block" data-l10n-id="h441"></h3>
-            <br>
-            <div class="option-row">
-              <h4 data-l10n-id="h444"></h4>
-              <input type="checkbox" id="misc-noteicon" name="noteicon" class="misc-cb">
-              <label for="misc-noteicon" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t447"></sup></label>
-              <select id="tmuipos--noteicon" class="cb-sub-select border-top tmuipos" name="tmuipos">
-                <option value="top-right" data-l10n-id="tmuipos_topright"></option>
-                <option value="bottom-right" data-l10n-id="tmuipos_bottomright"></option>
-                <option value="top-left" data-l10n-id="tmuipos_topleft"></option>
-                <option value="bottom-left" data-l10n-id="tmuipos_bottomleft"></option>
-              </select>
-              <br><br>
-              <input type="checkbox" id="misc-noteonclick" name="noteonclick" class="misc-cb">
-              <label for="misc-noteonclick" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t448"></sup></label>
-              <br><br>
-              <input type="checkbox" id="misc-notetransp" name="notetransp" class="misc-cb">
-              <label for="misc-notetransp" class="fake-cb width--full"><span>&#10003;</span> <sup data-l10n-id="t448b"></sup></label>
-              <br><br>
-              <small data-l10n-id="t449"></small>
-            </div>
             <br>
             <div class="option-row">
               <h4 data-l10n-id="h442"></h4>

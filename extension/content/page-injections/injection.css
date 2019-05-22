@@ -169,11 +169,13 @@ tmnote {
 tmnoteheader {
   height: 22px;
   position: relative;
+  display: block;
   z-index: 1;
-  display: none;
   cursor: move; }
+  .tmnotes--plain-view tmnoteheader {
+    display: none; }
   tmnote:hover tmnoteheader {
-    display: block; }
+    display: block !important; }
 
 tmnotepalette {
   position: absolute;
@@ -202,14 +204,16 @@ tmnotecolor {
 
 tmnoteactions {
   position: absolute;
-  display: none;
+  display: block;
   right: -20px;
   background: #ffe;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   border-radius: 0 2px 2px 2px;
   box-sizing: border-box !important; }
+  .tmnotes--plain-view tmnoteactions {
+    display: none; }
   tmnote:hover tmnoteactions {
-    display: block; }
+    display: block !important; }
 
 tmnotedelete,
 tmnoteminimize,

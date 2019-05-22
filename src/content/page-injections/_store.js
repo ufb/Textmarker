@@ -158,12 +158,6 @@ export default new _MODULE({
       return storage.settings.misc.noteonclick;
     });
   },
-  _get_notetransp() {
-    return browser.storage[this.area_settings].get().then(storage => {
-      if (!storage || !storage.settings) return false;
-      return storage.settings.misc.notetransp;
-    });
-  },
   _get_tmuipos() {
     return browser.storage[this.area_settings].get().then(storage => {
       if (!storage || !storage.settings) return true;

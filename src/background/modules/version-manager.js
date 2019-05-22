@@ -83,6 +83,9 @@ new _MODULE({
         if (typeof misc.notetransp !== 'boolean') {
           misc.notetransp = defaultSettings.misc.notetransp;
         }
+        if (typeof misc.noteplainview !== 'boolean') {
+          misc.noteplainview = defaultSettings.misc.noteplainview;
+        }
         if (!misc.markmethod) {
           misc.markmethod = defaultSettings.misc.markmethod;
         }
