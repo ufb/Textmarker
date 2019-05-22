@@ -1110,10 +1110,11 @@
               <input type="text" id="tag" class="border-top u-float--left u-display--none" data-l10n-attr data-l10n-placeholder="attr_4">
               <button type="button" class="action-button btn--small" data-action="processSelection" data-l10n-attr data-l10n-title="title_submit_action"></button>
             </div>
-            <div id="search" class="u-display--none">
+            <div id="search" class="u-display--none u-cf">
               <span id="search-count" class="u-color--turquoise"></span>
               <button type="button" id="search-toggle" class="btn--small u-pull--right">&#10005;</button>
-              <input id="search-entries" class="u-pull--right border-top" data-l10n-attr data-l10n-placeholder="attr_1" type="search">
+              <input id="search-entries--full-text" class="search-entries border-top" data-l10n-attr data-l10n-placeholder="attr_1b" data-type="full-text" type="search">
+              <input id="search-entries--name" class="search-entries border-top" data-l10n-attr data-l10n-placeholder="attr_1" data-type="name" type="search">
             </div>
           </div>
           <div id="checkmark-all-container" class="u-clear">
@@ -1146,6 +1147,7 @@
                 <li><span data-l10n-id="t5111"></span> <span class="count"></span></li>
               </ul>
             </div>
+            <div class="search-results"></div>
           </div>
         </section>
         <section id="paginator">

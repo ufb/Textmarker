@@ -33,7 +33,7 @@ export default function() {
           '#action': 'onChangeAction'
         },
         keyup: {
-          '#search-entries': 'search'
+          '.search-entries': 'search'
         }
       }
     },
@@ -186,11 +186,14 @@ export default function() {
       let template = this.entryTmpl,
           container = this.entriesContainer,
           entries = this.entries,
-          searched = !!this.searchTerm,
+          searchTerm = this.searchTerm,
+          searchTermLength = searchTerm ? searchTerm.length : 0,
+          searched = !!searchTerm,
+          searchedFullText = this.searchedFullText,
           names = searched ? this.searched : this.names,
           l = searched ? names.length : this.page * this.perPage,
           i = searched ? 0 : l - this.perPage,
-          clone, entry, name, nameField, input, label, infoButton, details,
+          clone, entry, name, nameField, input, label, infoButton, details, searchResults,
           buttons, edit, view, tags, immut, immutEl, locked, lockedEl, tagEl, b, j;
 
       if (this.filtered) {
@@ -222,6 +225,7 @@ export default function() {
             input = clone.getElementsByTagName('input')[0];
             label = clone.getElementsByTagName('label')[0];
             details = clone.getElementsByClassName('details')[0];
+            searchResults = clone.getElementsByClassName('search-results')[0];
             buttons = clone.getElementsByClassName('quick-action');
             edit = clone.getElementsByClassName('edit')[0];
             view = clone.getElementsByClassName('view')[0];
@@ -269,6 +273,37 @@ export default function() {
 
             if (entry.synced === undefined || entry.synced) {
               clone.getElementsByClassName('switch--sync')[0].classList.add('active');
+            }
+
+            if (searchedFullText) {
+              const fullTextSearchResults = this.fullTextSearchResults[name];
+
+              if (fullTextSearchResults) {
+                let r = 0, res, mark, pos, markText, markTextEl, highlight, t1, t2, t3;
+
+                for (; r < fullTextSearchResults.length; r++) {
+                  res = fullTextSearchResults[r];
+                  mark = entry.marks[res.mark];
+                  pos = res.pos;
+                  markText = mark.text;
+                  markTextEl = document.createElement('div');
+
+                  t1 = markText.substring(Math.max(pos-16, 0), pos);
+                  t2 = markText.substr(pos, searchTermLength);
+                  t3 = markText.substr(pos+searchTermLength, 16);
+                  t1 = t1 ? '... ' + t1 : t1;
+                  t3 = t3 ? t3 + ' ...' : t3;
+
+                  highlight = document.createElement('span');
+                  highlight.className = 'highlight';
+                  highlight.appendChild(document.createTextNode(t2));
+                  markTextEl.appendChild(document.createTextNode(t1));
+                  markTextEl.appendChild(highlight);
+                  markTextEl.appendChild(document.createTextNode(t3));
+
+                  searchResults.appendChild(markTextEl);
+                }
+              }
             }
           }
         })(i, l-i-1);
@@ -470,14 +505,15 @@ export default function() {
 
     search(e, el) {
       const term = el.value.toLowerCase();
+      const searchType = el.getAttribute ? el.getAttribute('data-type') : '';
       const countSelect = document.getElementById('count');
       const classMeth = term ? 'add' : 'remove';
       const toggle = document.getElementById('search-toggle');
-      this.setupSearch(term).renderEntries();
+      this.setupSearch(term, searchType).renderEntries();
       countSelect.classList[classMeth]('u-display--none');
       toggle.classList[classMeth]('active');
     },
-    setupSearch(term) {
+    setupSearch(term, searchType) {
       term = typeof term === 'string' ? term : this.searchTerm;
       const history = this.el;
       const searchCount = document.getElementById('search-count');
@@ -485,11 +521,26 @@ export default function() {
       this.searchTerm = term;
       if (!term) {
         history.classList.remove('searched');
+        history.classList.remove('searched--full-text');
         searchCount.innerText = '';
+        this.searchedFullText = false;
         return this;
       } else {
         history.classList.add('searched');
+        if (searchType === 'full-text') {
+          history.classList.add('searched--full-text');
+          this.searchFullText(term);
+          this.searchedFullText = true;
+        } else {
+          history.classList.remove('searched--full-text');
+          this.searchByName(term);
+          this.searchedFullText = false;
+        }
+        searchCount.innerText = this.searched.length || '';
       }
+      return this;
+    },
+    searchByName(term) {
       const names = this.names;
       let l = names.length, i = 0, name;
 
@@ -499,12 +550,34 @@ export default function() {
           this.searched.push(name);
         }
       }
-      searchCount.innerText = this.searched.length || '';
-      return this;
+    },
+    searchFullText(text) {
+      const entries = this.origEntries;
+      let name, marks, i, markText, pos, found;
+
+      const results = this.fullTextSearchResults = {};
+
+      for (name in entries) {
+        marks = entries[name].marks;
+        found = false;
+        for (i = 0; i < marks.length; i++) {
+          markText = marks[i].text;
+          pos = markText.toLowerCase().search(text);
+          if (pos !== -1) {
+            found = true;
+            results[name] = results[name] || [];
+            results[name].push({ mark: i, pos });
+          }
+        }
+        if (found) {
+          this.searched.push(name);
+        }
+      }
     },
     toggleSearch(e, el) {
       if (el.classList.contains('active')) {
-        document.getElementById('search-entries').value = '';
+        document.getElementById('search-entries--name').value = '';
+          document.getElementById('search-entries--full-text').value = '';
         if (this.searchTerm) this.search(null, { value: '' });
       }
     },

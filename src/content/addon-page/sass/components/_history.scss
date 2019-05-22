@@ -84,11 +84,29 @@
       @include icon('download', 4px 4px, $gradient: true);
     }
   }
+  .search-results {
+    display: none;
+    margin: 10px 0 0 34px;
+  	width: calc(100% - 165px);
+    color: $color-grey--medium-light;
+
+    .searched--full-text & {
+      display: block;
+    }
+
+    .highlight {
+      background-color: #fff788;
+    }
+  }
   .details {
     display: none;
   	margin-left: 34px;
   	width: calc(100% - 165px);
     color: $color-text--disabled;
+
+    .searched--full-text & {
+      display: none !important;
+    }
 
     .tags {
       margin: 3px 0;
@@ -163,9 +181,34 @@
 
 #search {
   position: relative;
+
+  &:hover {
+    input::-moz-placeholder,
+    input:placeholder-shown {
+      color: $color-text--grey;
+    }
+  }
 }
-#search-entries {
-  width: calc(100% - 27px);
+.search-entries {
+  position: absolute;
+  top: 0;
+  right: 27px;
+  width: calc(50% - 16px);
+  transition: width .25s ease-in, background .5s ease-in, color .5s ease-in;;
+
+  &:last-child {
+    left: 0;
+    right: auto;
+  }
+
+  &:focus {
+    width: calc(100% - 27px);
+    left: 0;
+    right: auto;
+    z-index: 1;
+    background-color: $color-bg--turquoise;
+    color: $color-text--light;
+  }
 }
 #search-toggle {
   @include icon('search', 5px 6px, 12px);

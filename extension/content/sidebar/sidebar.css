@@ -736,7 +736,7 @@ label span {
     position: relative;
     top: -1px; }
     .tab--folded .tab__toggle:before {
-      content: '+'; }
+      content: '\002B'; }
   .tab--folded .tab__toggle {
     top: -1px;
     bottom: auto; }
