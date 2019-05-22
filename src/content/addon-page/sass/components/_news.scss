@@ -2,10 +2,20 @@
   border: 1px solid $color-border--light;
   padding: $spacing--small;
   margin-bottom: $spacing--small;
+  overflow: hidden;
+  max-height: 43px;
+  transition: none;
+
+  &.open {
+    max-height: 1000px;
+    transition: max-height 1s ease-in;
+  }
 
   h3 {
-    padding-bottom: 0;
     padding-right: $spacing--large;
+    padding-bottom: $spacing--small;
+    margin-bottom: $spacing--medium;
+    border-bottom: 1px solid $color-border--light;
     position: relative;
 
     &:after {
@@ -32,10 +42,6 @@
   }
   &.open {
     h3 {
-      padding-bottom: $spacing--small;
-      margin-bottom: $spacing--medium;
-      border-bottom: 1px solid $color-border--light;
-
       &:after {
         transform: none;
       }

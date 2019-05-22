@@ -15,13 +15,20 @@ label span {
   height: 22px;
   width: 22px;
   text-align: center;
-  color: $color-text--turquoise;
+  color: transparent;
+  background-color: transparent;
   text-indent: -1000px;
   overflow: hidden;
   border: 1px solid $color-border;
   border-radius: 2px;
   vertical-align: -5px;
   margin-right: 8px;
+  transition: color .3s ease-in, border .3s ease-in;
+
+  &:hover {
+    border-color: $color-grey--medium-light;
+    background-color: #fff;
+  }
 }
 select {
   @include icon('arrow-down', right 7px);
@@ -31,6 +38,12 @@ select {
   height: 22px;
   min-width: 34px;
   padding-right: 20px;
+  transition: color .3s ease-in, border .3s ease-in;
+
+  &:hover {
+    border-color: $color-grey--medium-light;
+    background-color: #fff;
+  }
 }
 select.small {
   width: 68px;
@@ -105,6 +118,7 @@ label.fake-cb + label {
 input[type="checkbox"]:checked + label span,
 input[type="radio"]:checked + label span {
   text-indent: 0;
+  color: $color-text--turquoise;
 }
 input[type="number"] {
   width: 35px;

@@ -8,6 +8,14 @@ button, .btn {
     background-size: 13px, 100%;
     margin-left: 5px;
   }
+  &:not(.btn--small) {
+    background: #fff;
+
+    &:hover {
+      background: $color-bg--turquoise;
+      color: $color-text--light;
+    }
+  }
 }
 
 aside {

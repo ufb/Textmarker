@@ -41,9 +41,11 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 #mainnav li {
+  height: 53px;
   padding: 14px 20px 20px 37px;
   background-repeat: no-repeat;
   background-position: 12px 16px;
+  transition: background-color .3s ease-in, color .3s ease-in, padding .3s ease-out;
 }
 #mainnav-news {
   @include icon('forklift');
@@ -75,6 +77,8 @@
   background-position: 0 6px;
   color: $color-text--dark;
 	background-image: none;
+  font-size: 17px;
+  padding-left: 12px;
 }
 #mainnav li.deactivated {
 	color: rgba(255, 255, 255, 0.25);
