@@ -89,9 +89,6 @@ new _MODULE({
         if (!misc.markmethod) {
           misc.markmethod = defaultSettings.misc.markmethod;
         }
-        if (typeof misc.progressbar !== 'boolean') {
-          misc.progressbar = defaultSettings.misc.progressbar;
-        }
         if (typeof misc.tbbpower !== 'boolean') {
           misc.tbbpower = defaultSettings.misc.tbbpower;
         }

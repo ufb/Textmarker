@@ -176,12 +176,6 @@ export default new _MODULE({
       return storage.settings.history.immut;
     });
   },
-  _get_progressbar() {
-    return browser.storage[this.area_settings].get().then(storage => {
-      if (!storage || !storage.settings) return true;
-      return storage.settings.misc.progressbar;
-    });
-  },
   _get_markers() {
     return browser.storage[this.area_settings].get().then(storage => storage.settings.markers);
   },

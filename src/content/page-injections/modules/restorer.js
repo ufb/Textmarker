@@ -14,7 +14,6 @@ class RestorerBase extends _MODULE {
     this.area = entry.synced ? 'sync' : 'local';
 
     this.emit('started:restoration', entry.marks.length);
-    this.on('canceled:restoration', () => this.canceled = true);
   }
 
   processInChunks(data, proc, cb) {
@@ -38,8 +37,6 @@ class RestorerBase extends _MODULE {
 		})();
 	}
   report() {
-    if (this.canceled) return false;
-
     let ll = this.lost.length;
     if (ll) {
       while(ll--) {
@@ -154,7 +151,7 @@ class Restorer extends RestorerBase {
 
       this.phase++;
 
-      if (this.queue.length && !this.canceled) {
+      if (this.queue.length) {
         if (this.timer < +new Date()) setTimeout(() => this.restore(), 0);
         else this.restore();
       }
@@ -634,7 +631,6 @@ class ImmutRestorer extends RestorerBase {
   }
 
   restoreRange(mark) {
-    if (this.canceled) return this.marks = [];
     const conds = mark.conds;
     const start = conds.s;
     const end = conds.e;

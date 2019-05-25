@@ -17,7 +17,6 @@ export default function() {
         'selection-end': 'onMarkerKey',
         'restored:range': 'recreate',
         'finished:all-restorations': 'onFinishedRestoration',
-        'canceled:restoration': 'onCanceledRestoration',
         'ctx:b': 'setBookmark',
         'ctx:-b': 'removeBookmark',
         'ctx:d': 'remove',
@@ -201,11 +200,6 @@ export default function() {
       this.emit('removed:mark', id[0]);
     },
     resume(arg, options) {
-      _STORE.disabled = false;
-
-      // while (this.done.length) {
-      //   this.undo(true);
-      // }
       Array.from(document.getElementsByClassName('textmarker-highlight'))
         .forEach(highlight => {
           const container = highlight.parentNode;
@@ -232,8 +226,6 @@ export default function() {
       this.resume();
     },
     save() {
-      if (_STORE.disabled) return this.emit('canceled:save-after-canceled-restoration');
-
       const iframe = _STORE.iframe;
       const locked = _STORE.locked;
 
@@ -308,9 +300,6 @@ export default function() {
         _STORE.redescribing = false;
         this.save();
       }
-    },
-    onCanceledRestoration() {
-      _STORE.disabled = true;
     },
     addNote(id) {
       this.emit('add:note', this.findMark(id));

@@ -4,7 +4,6 @@ import _STORE from './_store'
 import _PAGE from './modules/page'
 import _CTM from './modules/contextmenu'
 import _MARKER from './modules/marker'
-import _PROGRESS from './modules/progress'
 import _RESTORER from './modules/restorer'
 import _NOTES from './modules/notes'
 import _TMUI from './modules/tmui'
@@ -33,7 +32,6 @@ new _MODULE({
 
     _PAGE();
     _CTM();
-    _PROGRESS();
     _RESTORER();
     _MARKER();
     _NOTES();

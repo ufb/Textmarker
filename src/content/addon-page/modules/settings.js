@@ -201,7 +201,6 @@ export default function() {
       document.getElementById('custom-search--end').value = miscSettings.customSearch ? miscSettings.customSearch[1] : '';
       document.getElementById('tmuipos--noteicon').value = miscSettings.tmuipos;
       document.getElementById('tmuipos--bmicon').value = miscSettings.tmuipos;
-      document.getElementById('misc-progressbar').checked = miscSettings.progressbar;
 
       if (miscSettings.tbbpower) {
         document.getElementById('tbbpower-on').checked = true;

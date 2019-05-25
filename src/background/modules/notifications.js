@@ -13,7 +13,6 @@ export default function() {
         'failed:open-tab': 'onOpenTabFailure',
         'failed:restoration': 'onFailedRestoration',
         'succeeded:restoration': 'onSuccessfulRestoration',
-        'canceled:save-after-canceled-restoration': 'onCanceledSave',
         'failed:pbm': 'onFailedPBM',
         'failed:import': 'onFailedImport',
         'error:import': 'onImportError',
@@ -116,14 +115,6 @@ export default function() {
         settings => settings.misc.failureNote,
         browser.i18n.getMessage('note_restoration_failure'),
         'error'
-      );
-    },
-
-    onCanceledSave() {
-      this.notify(
-        settings => settings.history.saveNote,
-        browser.i18n.getMessage('canceled_save_warning'),
-        'warning'
       );
     },
 
