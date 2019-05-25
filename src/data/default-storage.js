@@ -59,7 +59,7 @@ export default {
       errorNote: true,
       customSearch: false,
       tmuipos: 'top-right',
-      markmethod: '',
+      markmethod: 'popup',
       progressbar: true,
       tbbpower: false
     },
