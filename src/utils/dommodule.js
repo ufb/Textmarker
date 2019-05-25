@@ -9,6 +9,7 @@ export class _DOMMODULE extends _MODULE {
     super(obj)
 
     this.addListenersManually || this.addListeners();
+    !this.autoPause || this.setAutoPause();
   }
   generalHandler(subMap, type, e) {
     let el = e.target,
@@ -37,6 +38,12 @@ export class _DOMMODULE extends _MODULE {
         break;
       }
     }
+  }
+  setAutoPause() {
+    this.on('toggled:addon', on => {
+      if (on) this.addListeners();
+      else this.removeListeners();
+    });
   }
   addListener(type, meth, el) {
     el = el || this.el;

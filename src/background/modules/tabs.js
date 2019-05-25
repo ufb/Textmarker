@@ -5,6 +5,7 @@ export default function() {
   return new _MODULE({
     events: {
       ENV: {
+        'toggled:addon': 'toggleTabEventHandlers',
         //'started:app': 'openInitPage',
         'open:addon-page(sb)': 'openAddonPage',
         'open:addon-page(tbb)': 'openAddonPage',
@@ -24,14 +25,48 @@ export default function() {
       export: 'content/addon-page/addon-page.html#page=export',
       sync: 'content/addon-page/addon-page.html#page=sync'
     },
+    tabEventHandlers: {
+      onActivated: null,
+      onUpdated: null
+    },
 
     autoinit() {
-      browser.tabs.onActivated.addListener(tab => this.emit('activated:tab', tab.tabId, (tab.url || '')));
-      browser.tabs.onUpdated.addListener((tabId, changed) => {
-        if (changed.url) {
-          this.emit('changed:url', tabId, changed.url);
+      _STORAGE.get('mode').then(mode => this.toggleTabEventHandlers(mode));
+    },
+
+    addTabEventHandlers() {
+      if (!this.tabEventHandlers.onActivated) {
+        const onActivated = this.tabEventHandlers.onActivated = this.onActivated.bind(this);
+        browser.tabs.onActivated.addListener(onActivated);
+      }
+
+      if (!this.tabEventHandlers.onUpdated) {
+        const onUpdated = this.tabEventHandlers.onUpdated = this.onUpdated.bind(this);
+        browser.tabs.onUpdated.addListener(onUpdated, { properties: ['status'] });
+      }
+    },
+    removeTabEventHandlers() {
+      ['onActivated', 'onUpdated'].forEach(ev => {
+        if (this.tabEventHandlers[ev]) {
+          browser.tabs[ev].removeListener(this.tabEventHandlers[ev]);
         }
       });
+      this.tabEventHandlers = {};
+    },
+    toggleTabEventHandlers(on) {
+      if (on) this.addTabEventHandlers();
+      else this.removeTabEventHandlers();
+    },
+    onActivated(tab) {
+      this.emit('activated:tab', tab.tabId, (tab.url || ''));
+    },
+    onUpdated(tabId, changed) {
+      if (changed.url) {
+        this.emit('changed:url', tabId, changed);
+      }
+      else if (changed.status && changed.status === 'complete') {
+        this.emit('completed:tab', tabId);
+      }
     },
 
     open(urls, names) {

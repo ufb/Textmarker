@@ -18,6 +18,9 @@ export default new _MODULE({
   area_history: 'sync',
   area_entry: 'sync',
 
+  url: '',
+  hashlessURL: '',
+
   iframe: false,
   name: undefined,
   isNew: true,

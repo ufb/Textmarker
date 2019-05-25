@@ -18,7 +18,9 @@ new _MODULE({
       'error:import': 'log',
       'error:browser-console': 'log',
       'clear:logs': 'clear',
-      'failed:restore-range': 'log'
+      'failed:restore-range': 'log',
+      'failed:inject-content-script': 'onScriptInjectionFailure',
+      'failed:inject-stylesheet': 'onCSSInjectionFailure'
     }
   },
 
@@ -51,5 +53,11 @@ new _MODULE({
   },
   onFailedPBM() {
     this.log('note_pbm');
+  },
+  onScriptInjectionFailure() {
+    this.log('js_injection_failure');
+  },
+  onCSSInjectionFailure() {
+    this.log('css_injection_failure');
   }
 });

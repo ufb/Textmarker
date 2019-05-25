@@ -1,14 +1,10 @@
-import { _PORT } from './../_shared/utils'
+import { _PORT } from '../_shared/utils'
 
 export default new _PORT({
   name: 'injection',
   type: 'content',
   events: {
     ONEOFF: [
-      'finished:restoration',
-			'failed:restoration',
-      'succeeded:restoration',
-      'failed:restore-range',
       'copy:marks',
       'save:entry?',
       'update:entry?',
@@ -22,11 +18,16 @@ export default new _PORT({
       'removed:bookmark',
       'added:note',
       'removed:last-note',
-      'warn:mixed-entry-types',
-      'warn:multiple-unlocked-entries',
       'page-state',
       'notes-state',
-      'visually-ordered:marks'
+      'visually-ordered:marks',
+
+      // @RESTORER
+      'finished:restoration',
+  		'failed:restoration',
+      'succeeded:restoration',
+      'failed:restore-range',
+      'canceled:save-after-canceled-restoration'
     ]
   }
 });

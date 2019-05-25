@@ -13,8 +13,14 @@ export class _PORT extends _MODULE {
 
     if (type === 'privileged' || type === 'background') this.initPorting();
 
-    let events = this.events,
-        oneOffEvents, connectionBasedEvents;
+    this.registerPortEvents();
+  }
+  extend(events) {
+    this.registerPortEvents(events);
+  }
+  registerPortEvents(events) {
+    events = events || this.events;
+    let oneOffEvents, connectionBasedEvents;
 
     if (events) {
       oneOffEvents = events.ONEOFF;

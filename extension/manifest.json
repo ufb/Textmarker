@@ -16,17 +16,8 @@
     "scripts": ["background/background.wp.js"]
   },
 
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "exclude_globs": ["moz-extension://*/content/addon-page/addon-page.html*"],
-      "js": ["content/page-injections/injection.wp.js"],
-      "css": ["content/page-injections/injection.css"],
-      "all_frames": true
-    }
-  ],
-
   "permissions": [
+    "<all_urls>",
     "storage",
     "activeTab",
     "tabs",

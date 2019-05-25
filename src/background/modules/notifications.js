@@ -19,7 +19,9 @@ export default function() {
         'imported:storage': 'onImportSuccess',
         'error': 'onError',
         'warn:mixed-entry-types': 'onMixedEntryTypes',
-        'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries'
+        'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries',
+        'failed:inject-content-script': 'onScriptInjectionFailure',
+        'failed:inject-stylesheet': 'onCSSInjectionFailure
       }
     },
 
@@ -138,6 +140,22 @@ export default function() {
       this.notify(
         settings => settings.misc.errorNote,
         browser.i18n.getMessage('note_error', browser.i18n.getMessage(error)),
+        'error'
+      );
+    },
+
+    onScriptInjectionFailure() {
+      this.notify(
+        settings => true,
+        browser.i18n.getMessage('js_injection_failure'),
+        'error'
+      );
+    },
+
+    onCSSInjectionFailure() {
+      this.notify(
+        settings => true,
+        browser.i18n.getMessage('css_injection_failure'),
         'error'
       );
     },
