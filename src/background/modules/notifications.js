@@ -56,7 +56,7 @@ export default function() {
 
     onOpenTabFailure() {
       this.notify(
-        settings => true,
+        settings => settings.misc.vipNote,
         browser.i18n.getMessage('note_url'),
         'error'
       );
@@ -66,7 +66,7 @@ export default function() {
       const errMessage1 = browser.i18n.getMessage(error1);
       const errMessage2 = error2 ? '\n\n' + browser.i18n.getMessage(error2) : '';
       this.notify(
-        settings => true,
+        settings => settings.misc.vipNote,
         browser.i18n.getMessage('note_import_failure', errMessage1 + errMessage2),
         'error'
       );
@@ -74,7 +74,7 @@ export default function() {
 
     onImportError(error) {
       this.notify(
-        settings => true,
+        settings => settings.misc.vipNote,
         browser.i18n.getMessage('note_import_warning', browser.i18n.getMessage(error)),
         'warning'
       );
@@ -82,7 +82,7 @@ export default function() {
 
     onImportSuccess() {
       this.notify(
-        settings => true,
+        settings => settings.misc.vipNote,
         browser.i18n.getMessage('note_import_success'),
         'success'
       );
@@ -146,7 +146,7 @@ export default function() {
 
     onScriptInjectionFailure() {
       this.notify(
-        settings => true,
+        settings => settings.misc.vipNote,
         browser.i18n.getMessage('js_injection_failure'),
         'error'
       );
@@ -154,7 +154,7 @@ export default function() {
 
     onCSSInjectionFailure() {
       this.notify(
-        settings => true,
+        settings => settings.misc.vipNote,
         browser.i18n.getMessage('css_injection_failure'),
         'error'
       );

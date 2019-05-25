@@ -57,6 +57,7 @@ export default {
       pbmNote: true,
       changedNote: false,
       errorNote: true,
+      vipNote: true,
       customSearch: false,
       tmuipos: 'top-right',
       markmethod: 'popup',

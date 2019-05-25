@@ -359,6 +359,8 @@
 "t453":{"message":"keine Markierungen gespeichert werden können, weil du dich im privaten Browser-Modus befindest."},
 "t454":{"message":"es Fehler bei der Wiederherstellung von gespeicherten Markierungen bei Neuaufruf der entspr. Seite gab."},
 "t455":{"message":"ein unerwarteter Fehler aufgetreten ist - Kurzbericht inklusive."},
+"t458":{"message":"Für sonstige schwere Fehler oder wichtige Hinweise."},
+"t459":{"message":"Fehlermeldungen und wichtige Hinweise findest du auch in Textmarkers Fehlerprotokoll."},
 "x423":{"message":"Alle Markierungen (inkl. verlorene)"},
 "x424":{"message":"Verlorene Markierungen"},
 "t456":{"message":"die Wiederherstellung von gespeicherten Markierungen bei Neuaufruf der entspr. Seite erfolgreich war."},

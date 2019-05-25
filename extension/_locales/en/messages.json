@@ -359,6 +359,8 @@
 "t453":{"message":"if highlights can't be saved, because you are in private browsing mode."},
 "t454":{"message":"if Textmarker is unable to restore all your saved highlights on page revisit."},
 "t455":{"message":"if an unexpected error occurred (short description included)."},
+"t458":{"message":"Miscellaneous errors and important indications."},
+"t459":{"message":"Hint: Error messages and important notes are also being logged to Textmarker's error logs page."},
 "x423":{"message":"All marks (including lost ones)"},
 "x424":{"message":"All lost marks"},
 "t456":{"message":"restoring your highlights on page revisit has been successful."},

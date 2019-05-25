@@ -24,7 +24,7 @@ new _MODULE({
         const markers = settings.markers;
         const history = settings.history;
         const misc = settings.misc;
-        const noteTypes = 'pbmNote changedNote errorNote successNote'.split(' ');
+        const noteTypes = 'pbmNote changedNote errorNote successNote vipNote'.split(' ');
 
         if (!shortcuts.n) {
           shortcuts.n = defaultSettings.shortcuts.n;
@@ -73,7 +73,7 @@ new _MODULE({
         }
 
         noteTypes.forEach(noteType => {
-          if (!misc[noteType]) {
+          if (typeof misc[noteType] !== 'boolean') {
             misc[noteType] = defaultSettings.misc[noteType];
           }
         });
