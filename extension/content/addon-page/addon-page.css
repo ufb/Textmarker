@@ -929,6 +929,9 @@ aside {
     margin-top: 10px;
     vertical-align: -2px; } }
 
+#addon-autocs:checked + label + small {
+  display: none !important; }
+
 #history select {
   margin-bottom: 4px;
   border-color: #e1e2e3;

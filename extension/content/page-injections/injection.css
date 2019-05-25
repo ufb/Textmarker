@@ -260,64 +260,6 @@ body > tmnote > textarea[data-tm-note] {
   margin: 0 !important;
   box-sizing: border-box !important; }
 
-tmprogressmodal {
-  display: block;
-  z-index: 2147483646;
-  position: fixed;
-  background: #fbfbfb;
-  width: 457px;
-  left: 50%;
-  top: 50vh;
-  transform: translate(-50%, -50%);
-  padding: 19px;
-  box-shadow: 0 5px 19px -5px #555;
-  font-family: Verdana, sans-serif;
-  box-sizing: border-box !important; }
-
-tmprogressheader {
-  display: block;
-  color: #777;
-  font-size: 19px;
-  margin-bottom: 19px;
-  box-sizing: border-box !important; }
-
-tmprogressbar {
-  display: block;
-  height: 29px;
-  margin-bottom: 29px;
-  padding: 2px;
-  border: 1px solid #c8c8c8;
-  box-sizing: border-box !important; }
-
-tmprogress {
-  display: block;
-  height: 23px;
-  max-width: 413px;
-  background: #2ba5b7;
-  transition: width .29s;
-  box-sizing: border-box !important; }
-
-tmprogresscancel,
-tmprogressclose {
-  display: block;
-  color: #777;
-  float: right;
-  padding: 5px 11px;
-  margin-left: 20px;
-  cursor: pointer;
-  border: 1px solid #c8c8c8;
-  box-sizing: border-box !important; }
-
-tmprogressclose {
-  display: block;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  border: 0;
-  padding: 0 4px; }
-  tmprogressclose:hover {
-    color: #ad3a3a; }
-
 tmui {
   display: block;
   z-index: 2147483646;

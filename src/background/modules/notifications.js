@@ -21,7 +21,7 @@ export default function() {
         'warn:mixed-entry-types': 'onMixedEntryTypes',
         'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries',
         'failed:inject-content-script': 'onScriptInjectionFailure',
-        'failed:inject-stylesheet': 'onCSSInjectionFailure
+        'failed:inject-stylesheet': 'onCSSInjectionFailure'
       }
     },
 
