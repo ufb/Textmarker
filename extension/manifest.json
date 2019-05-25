@@ -42,6 +42,14 @@
     "browser_style": true
   },
 
+  "page_action": {
+    "browser_style": true,
+    "default_icon": {
+      "16": "icons/pageaction16.png",
+      "32": "icons/pageaction32.png"
+    }
+  },
+
   "sidebar_action": {
     "default_title": "Textmarker",
     "default_panel": "content/sidebar/sidebar.html",

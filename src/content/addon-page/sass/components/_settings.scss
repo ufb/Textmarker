@@ -112,3 +112,6 @@
     vertical-align: -2px;
   }
 }
+#addon-autocs:checked + label + small {
+  display: none !important;
+}

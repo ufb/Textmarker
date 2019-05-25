@@ -36,7 +36,8 @@ export default function() {
           '#immut': 'toggleImmutOpt',
           '#drop-losses': 'toggleDropLossesOpt',
           '#autonote-color': 'changeAutoNoteOpt',
-          '#ignore-hash': 'changeHashOpt'
+          '#ignore-hash': 'changeHashOpt',
+          '#addon-autocs': 'toggleAutocsOpt'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -207,6 +208,8 @@ export default function() {
       } else {
         document.getElementById('tbbpower-off').checked = true;
       }
+
+      document.getElementById('addon-autocs').checked = settings.addon.autocs;
     },
     showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('u-display--none');
@@ -235,6 +238,9 @@ export default function() {
     },
     toggleDropLossesOpt(e, el) {
       this.emit('change:dropLosses-setting', el.checked);
+    },
+    toggleAutocsOpt(e, el) {
+      this.emit('change:autocs-setting', el.checked);
     },
     addMarker(e, el) {
       let key = el.value,

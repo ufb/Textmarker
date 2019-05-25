@@ -18,6 +18,7 @@ import _WINDOWS from './modules/windows'
 import _SIDEBARS from './modules/sidebars'
 import _NAMER from './modules/namer'
 import _CTM from './modules/context-menu'
+import _PAGEACTION from './modules/page-action'
 //import _IDB from './modules/indexeddb'
 import { _MODULE } from './utils'
 import './modules/version-manager'
@@ -70,6 +71,7 @@ new _MODULE({
     _CTM();
     _WINDOWS();
     _SIDEBARS();
+    _PAGEACTION();
 
     _STORAGE.get('mode').then(mode => this.activate(mode))
       .catch(() => this.activate(true))

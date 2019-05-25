@@ -99,6 +99,10 @@ new _MODULE({
           settings.sb.tabs.themes = defaultSettings.sb.tabs.themes;
           settings.sb.theme = defaultSettings.sb.theme;
         }
+
+        if (typeof settings.addon.autocs !== 'boolean') {
+          settings.addon.autocs = defaultSettings.addon.autocs;
+        }
       }
     } catch(e) {
       this.emit('error', 'error_import_settings_not_found');

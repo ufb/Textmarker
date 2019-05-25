@@ -6,6 +6,7 @@ new _MODULE({
     ENV: {
       'changed:url': 'onURLChange',
       'completed:tab': 'onTabCompleted',
+      'clicked:page-action': 'handleInjections',
       'save:entry?': 'onSaveNewRequest',
       'update:entry?': 'onUpdateRequest',
       'name:entry?': 'onNamingRequest',
@@ -136,7 +137,7 @@ new _MODULE({
     }
     return entries;
   },
-  
+
   onNamingRequest(sender, sendResponse) {
     return browser.windows.getLastFocused()
       .then(windowInfo => {

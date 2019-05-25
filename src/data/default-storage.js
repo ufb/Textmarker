@@ -42,7 +42,8 @@ export default {
       ignoreHash: true
     },
     addon: {
-      active: true
+      active: true,
+      autocs: true
     },
     misc: {
       bmicon: true,

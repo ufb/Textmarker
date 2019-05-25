@@ -26,6 +26,7 @@ export default new _PORT({
       'toggle:misc-setting',
       'change:misc-setting',
       'toggle:tbbpower-setting',
+      'change:autocs-setting',
       'add:custom-marker',
       'remove:custom-marker',
       'delete:entries',

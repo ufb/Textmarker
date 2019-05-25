@@ -33,6 +33,7 @@ new _MODULE({
       'change:view-setting': 'changeViewOpt',
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
+      'change:autocs-setting': 'toggleAutocsOpt',
 
       'remove:custom-marker': 'removeCustomMarker',
       'add:custom-marker': 'addCustomMarker',
@@ -280,6 +281,13 @@ new _MODULE({
       settings => { settings.misc[prop] = val; return settings; },
       'tbbpower',
       'error_save_bmicon'
+    );
+  },
+  toggleAutocsOpt(val) {
+    this.updateSettings(
+      settings => { settings.addon.autocs = val; return settings; },
+      'autocs',
+      'error_save_autocs'
     );
   },
   changeSBSettings(tab, unfolded) {
