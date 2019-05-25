@@ -17,7 +17,7 @@ export default function() {
     },
 
     show(tabId) {
-      _STORAGE.get('settings').then(settings => {console.log('show page action for '+tabId+':', !settings.addon.autocs);
+      _STORAGE.get('settings').then(settings => {
         if (!settings.addon.autocs) {
           browser.pageAction.show(tabId);
         }

@@ -27,7 +27,6 @@ new _MODULE({
     _STORE.iframe = window !== window.parent.window;
     _STORE.url = window.document.URL;
     _STORE.hashlessURL = _HASHLESS(_STORE.url);
-    console.log('set page params', _STORE);
   },
   onSavedEntry(entry) {
     const ignoreHash = !entry.hashSensitive;
@@ -52,10 +51,10 @@ new _MODULE({
   },
 
   // @RESTORER
-  onEntriesFound(info) {console.log('on found', info);
+  onEntriesFound(info) {
     _RESTORER();
-    this.updateEntryStorage(info.entries);console.log('undated entry storage');
-    if (info.recentlyOpenedEntry) this.updateNameStorage(info.entries, info.recentlyOpenedEntry);console.log('updated name storage');
+    this.updateEntryStorage(info.entries);
+    if (info.recentlyOpenedEntry) this.updateNameStorage(info.entries, info.recentlyOpenedEntry);
     this.emit('restore:marks', info.entries);
   },
   updateEntryStorage(entries) {

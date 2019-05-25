@@ -17,14 +17,14 @@ new _MODULE({
   injectedScripts: {},
   recentlyOpenedEntry: null,
 
-  onTabCompleted(tabId) {console.log('on tab completed');
+  onTabCompleted(tabId) {
     if (this.queuedForTabCompleted[tabId]) {
       this.attemptInjections(tabId, this.queuedForTabCompleted[tabId]);
       delete this.queuedForTabCompleted[tabId];
     }
   },
 
-  onURLChange(tabId, changed) {console.log('on url changed');
+  onURLChange(tabId, changed) {
     if (changed.status && changed.status !== 'complete') {
       this.queuedForTabCompleted[tabId] = changed.url;
     } else {
@@ -33,7 +33,7 @@ new _MODULE({
   },
 
   attemptInjections(tabId, newUrl) {
-    _STORAGE.get('settings').then(settings => {console.log('inject', settings.addon.autocs);
+    _STORAGE.get('settings').then(settings => {
       if (settings.addon.autocs) {
         this.handleInjections(tabId, newUrl);
       }
@@ -54,7 +54,6 @@ new _MODULE({
           const entries = this.filterMatches(matches);
 
           if (entries) {
-            console.log('reporting found entries...', entries, this.recentlyOpenedEntry);
             this.emit('entries:found', {
               entries,
               recentlyOpenedEntry: this.recentlyOpenedEntry,
@@ -71,7 +70,7 @@ new _MODULE({
     }
   },
 
-  injectContentScript(tabId, url) {console.log('injecting base script for:', tabId, url);
+  injectContentScript(tabId, url) {
     return browser.tabs.executeScript(tabId, {
       file: '../content/page-injections/injection.wp.js',
       allFrames: true,
@@ -82,12 +81,12 @@ new _MODULE({
         this.insertCSS(tabId);
       })
       .catch(e => {
-        console.log('failed to inject base script', e.toString());
+        console.log('failed to inject content script', e.toString());
         this.emit('failed:inject-content-script');
       });
   },
 
-  insertCSS(tabId) {console.log('injecting  css...', tabId);
+  insertCSS(tabId) {
     browser.tabs.insertCSS(tabId, {
       file: '../content/page-injections/injection.css',
       allFrames: true

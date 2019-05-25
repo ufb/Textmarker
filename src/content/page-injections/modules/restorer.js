@@ -1,5 +1,4 @@
 import { _MODULE } from './../../_shared/utils'
-import _STORE from './../_store'
 import _SELECTION from './selection'
 
 class RestorerBase extends _MODULE {
@@ -512,10 +511,11 @@ class Restorer extends RestorerBase {
         m = mark.temp.trimmedTextLength,
         textsMatch;
 
-    if (m <= l)
+    if (m <= l) {
       textsMatch = this.squeeze(relevantNodeText).indexOf(this.squeeze(markText)) === 0;
-    else
+    } else {
       textsMatch = this.squeeze(markText).indexOf(this.squeeze(relevantNodeText)) === 0;
+    }
 
     return (
       textsMatch &&

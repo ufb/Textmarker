@@ -1,4 +1,4 @@
-import { _DOMMODULE, _HASHLESS } from './../../_shared/utils'
+import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 
 new _DOMMODULE({

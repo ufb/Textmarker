@@ -74,22 +74,22 @@ export default class _SELECTION {
       range.setEnd(lastTextNode, lastTextNode.data.length - (lastTextNode.data.length - lastTextNode.data.trimRight().length));
   }
   collectNodes(wholeDocument) {
-    var self = this,
-        selection = this.self,
-        range = this.range,
-        container = wholeDocument ? window.document.body : this.getCommonAncestorContainer(),
-        filter = wholeDocument ?
+    const self = this;
+    const selection = this.self;
+    const container = wholeDocument ? window.document.body : this.getCommonAncestorContainer();
+    const filter = wholeDocument ?
           (node) => (self.isSelectable(node) && !self.isBlank(node) && self.hasNormalParent(node)) :
-          (node) => (selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(node)),
+          (node) => (selection.containsNode(node) && !self.isBlank(node) && self.hasNormalParent(node));
 
-        iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {
+    const iterator = window.document.createNodeIterator(container, NodeFilter.SHOW_TEXT, {
           acceptNode(node) {
             return filter(node);
           }
-        }, false),
+        }, false);
 
-        tempRange = document.createRange(),
-        nodes = [], parentNodes = [],
+    let nodes = [],
+        parentNodes = [],
+
         textNode, parent, firstNode, lastNode;
 
     while(textNode = iterator.nextNode()) {
