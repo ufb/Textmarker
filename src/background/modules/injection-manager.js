@@ -77,13 +77,14 @@ new _MODULE({
       runAt: 'document_idle'
     })
       .then(() => {
-        console.log('injected:', tabId, url);
         this.injectedScripts[tabId] = { url };
         this.insertCSS(tabId);
       })
       .catch(e => {
-        console.log('failed to inject content script', e.toString());
-        this.emit('failed:inject-content-script');
+        const msg = e.toString();
+        if (!msg.includes('Missing host permission for the tab')) {
+          this.emit('failed:inject-content-script');
+        }
       });
   },
 
@@ -93,8 +94,10 @@ new _MODULE({
       allFrames: true
     })
       .catch(e => {
-        console.log('failed to inject css', e.toString());
-        this.emit('failed:inject-stylesheet');
+        const msg = e.toString();
+        if (!msg.includes('Missing host permission for the tab')) {
+          this.emit('failed:inject-stylesheet');
+        }
       });
   },
 
