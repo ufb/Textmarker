@@ -1,3 +1,21 @@
+@keyframes nav {
+  0% { padding-left: 37px; }
+  20% { padding-left: 12px; }
+  100% { padding-left: 37px; }
+}
+
+@keyframes navicon {
+  from { left: 12px; }
+  to { left: -25px; }
+}
+
+@keyframes ghost {
+  0% { left: 12px; top: 16px; }
+  20%, 40% { left: -25px; filter: grayscale(100%); transform: scale(1); }
+  90% { left: 12px; top: 12px; transform: scale(1.7); opacity: 1; }
+  100% { left: -25px; transform: scale(0); opacity: 0; }
+}
+
 .nav li {
   cursor: default;
 }
@@ -16,6 +34,60 @@
     box-shadow: none;
     padding-top: 0;
     z-index: 2;
+  }
+
+  li {
+    height: 53px;
+    padding: 14px 20px 20px 37px;
+    position: relative;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      width: 16px;
+      height: 16px;
+      position: absolute;
+      top: 16px;
+      left: 12px;
+    }
+
+    &.active {
+      background-color: rgba(43, 165, 183, 0.5);
+      background-position: 0 6px;
+    	background-image: none;
+      animation-name: nav;
+      animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+      animation-duration: .5s;
+      animation-fill-mode: forwards;
+      transition: background-color .5s ease-out;
+
+      &:before {
+        animation-name: navicon;
+        animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        animation-duration: .5s;
+        animation-fill-mode: forwards;
+      }
+
+      &#mainnav-contact {
+        &:before {
+          animation-name: ghost;
+          animation-duration: 1.5s;
+        }
+      }
+    }
+
+    &.deactivated {
+    	color: rgba(255, 255, 255, 0.25);
+    }
+
+    span.icon {
+      color: $color-text--turquoise;
+      margin-right: 10px;
+    }
   }
 }
 .menu-toggler {
@@ -37,80 +109,54 @@
     width: 100%;
   }
 }
-#mainnav li:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+$icons: (
+  'news': 'forklift',
+  'manual': 'book',
+  'settings': 'tools',
+  'history': 'clock',
+  'sync': 'sync2',
+  'export': 'export',
+  'contact': 'ghost',
+  'logs': 'dna'
+);
+
+@each $navitem, $icon in $icons {
+  #mainnav-#{$navitem} {
+    &:before {
+      @include icon(#{$icon});
+    }
+  }
 }
-#mainnav li {
-  height: 53px;
-  padding: 14px 20px 20px 37px;
-  background-repeat: no-repeat;
-  background-position: 12px 16px;
-  transition: background-color .3s ease-in, color .3s ease-in, padding .3s ease-out;
-}
-#mainnav-news {
-  @include icon('forklift');
-}
-#mainnav-manual {
-  @include icon('book');
-}
-#mainnav-settings {
-  @include icon('tools');
-}
-#mainnav-history {
-  @include icon('clock');
-}
-#mainnav-sync {
-  @include icon('sync2');
-}
-#mainnav-export {
-  @include icon('export');
-}
-#mainnav-contact {
-  @include icon('ghost');
-  transition: background 0.5s;
-}
-#mainnav-logs {
-  @include icon('dna');
-}
-#mainnav li.active {
-  background-color: $color-bg--turquoise;
-  background-position: 0 6px;
-  color: $color-text--dark;
-	background-image: none;
-  font-size: 17px;
-  padding-left: 12px;
-}
-#mainnav li.deactivated {
-	color: rgba(255, 255, 255, 0.25);
-}
-#mainnav li span.icon {
-  color: $color-text--turquoise;
-  margin-right: 10px;
-}
+
 /* subnavs */
-.subnav ul {
-  border-bottom: 1px solid $color-border--dark;
-  border-top: 1px solid $color-border--dark;
-}
-.subnav li {
-  display: inline-block;
-  padding: 10px 10px 17px;
-
-  @include mq('desk') {
-    margin: -1px 0 0 0;
-    padding: 10px 5px 17px;
-    float: none;
+.subnav {
+  ul {
+    border-bottom: 1px solid $color-border--dark;
+    border-top: 1px solid $color-border--dark;
   }
-}
-.subnav li.active {
-  border-bottom: 4px solid $color-turquoise;
 
-  @include mq('desk') {
-    color: $color-text--turquoise;
-    border: 0;
-    text-decoration: underline;
+  li {
+    display: inline-block;
+    padding: 10px 10px 17px;
+
+    @include mq('desk') {
+      margin: -1px 0 0 0;
+      padding: 10px 5px 17px;
+      float: none;
+    }
+
+    &.active {
+      border-bottom: 4px solid $color-turquoise;
+
+      @include mq('desk') {
+        color: $color-text--turquoise;
+        border: 0;
+        text-decoration: underline;
+      }
+    }
+
+    &.disabled {
+      color: $color-text--disabled;
+    }
   }
-}
-.subnav li.disabled {
-  color: $color-text--disabled;
 }

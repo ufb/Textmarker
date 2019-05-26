@@ -77,6 +77,7 @@ new _MODULE({
       runAt: 'document_idle'
     })
       .then(() => {
+        console.log('injected:', tabId, url);
         this.injectedScripts[tabId] = { url };
         this.insertCSS(tabId);
       })
