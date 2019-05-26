@@ -28,22 +28,22 @@ new _MODULE({
     if (changed.status && changed.status !== 'complete') {
       this.queuedForTabCompleted[tabId] = changed.url;
     } else {
-      this.attemptInjections(tabId, changed.url);
+      this.attemptInjections(tabId, changed.url, true);
     }
   },
 
-  attemptInjections(tabId, newUrl) {
+  attemptInjections(tabId, newUrl, noReload) {
     _STORAGE.get('settings').then(settings => {
       if (settings.addon.autocs) {
-        this.handleInjections(tabId, newUrl);
+        this.handleInjections(tabId, newUrl, noReload);
       }
     });
   },
 
-  handleInjections(tabId, newUrl) {
+  handleInjections(tabId, newUrl, noReload) {
     const registered = this.injectedScripts[tabId];
     const sameHashlessUrls = registered && _HASHLESS(registered.url) === _HASHLESS(newUrl);
-    const reloaded = registered && (registered.url === newUrl || !sameHashlessUrls);
+    const reloaded = registered && !noReload;
 
     if (!registered || reloaded) {
 
