@@ -64,13 +64,8 @@ new _MODULE({
   // SYNC METHODS
   toggleSync(field, val) {
     _STORAGE.update('sync', function(sync) {
-
       sync[field] = val;
-
-      this.area_settings = sync.settings ? 'sync' : 'local';
-      this.area_history = sync.history ? 'sync' : 'local';
-      this.area_pagenotes = sync.pagenotes ? 'sync' : 'local';
-
+      this.setAreas(sync);
       return sync;
     }, 'local')
 
@@ -78,7 +73,7 @@ new _MODULE({
         _STORAGE.update('sync', sync => {
           sync[field] = val;
           return sync;
-        })
+        }, 'sync')
 
         .catch(() => {
           this.emit('error', 'error_toggle_sync');

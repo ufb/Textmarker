@@ -1,90 +1,12 @@
-import { _MODULE } from './../_shared/utils'
+import { _STORE } from './../_shared/utils'
 
-export default new _MODULE({
+export default new _STORE({
   events: {
     ENV: {
-      'toggled:sync': 'setAreas'
+      'toggled:sync': 'init'
     }
   },
-  initialized: false,
-  initializing: false,
-  area_settings: 'sync',
-  area_history: 'sync',
-  area_pagenotes: 'sync',
 
-  setAreas() {
-    return browser.storage.sync.get().then(storage => {
-      if (storage && storage.sync) {
-        this.area_settings = storage.sync.settings ? 'sync' : 'local';
-        this.area_history = storage.sync.history ? 'sync' : 'local';
-        this.area_pagenotes = storage.sync.pagenotes ? 'sync' : 'local';
-      }
-    });
-  },
-
-  get(field = 'storage') {
-    if (this.initializing) {
-      return (new Promise(r => window.setTimeout(() => r(this.get(field)), 10)));
-    }
-    const meth = this['_get_' + field];
-    if (!meth) throw('field ' + field + ' doesn\'t exist');
-
-    if (!this.initialized) {
-      this.initializing = true;
-      this.initialized = true;
-      return this.setAreas().then(() => {
-        this.initializing = false;
-        return this['_get_' + field]();
-      });
-    }
-    return this['_get_' + field]();
-  },
-
-  _get_storage() {
-    return browser.storage.local.get().then(localStorage => {
-      return browser.storage.sync.get().then(syncedStorage => {
-        ['version', 'logs'].forEach(field => {
-          localStorage[field] = localStorage[field] || syncedStorage[field];
-        });
-        if (this.area_settings === 'sync') localStorage.settings = syncedStorage.settings;
-        return this._get_history().then(history => {
-          localStorage.history = history;
-          return localStorage;
-        });
-      });
-    });
-  },
-  _get_local_storage() {
-    return browser.storage.local.get();
-  },
-  _get_synced_storage() {
-    return browser.storage.sync.get();
-  },
-  _get_history() {
-    return browser.storage.sync.get().then(syncedStorage => {
-      const syncedHistory = syncedStorage.history;
-
-      return browser.storage.local.get().then(localStorage => {
-        const localHistory = localStorage.history;
-        if (!syncedHistory) return localHistory;
-        if (!localHistory) return syncedHistory;
-
-        //syncedHistory.order = syncedHistory.order.concat(localHistory.order);
-        for (let e in localHistory.entries) syncedHistory.entries[e] = localHistory.entries[e];
-
-        return syncedHistory;
-      });
-    });
-  },
-  _get_settings() {
-    return browser.storage[this.area_settings].get().then(storage => storage.settings);
-  },
-  _get_logs() {
-    return browser.storage.local.get().then(localStorage => {
-      if (!localStorage || !localStorage.logs) return [];
-      return localStorage.logs;
-    });
-  },
   _get_download_option() {
     return browser.storage[this.area_settings].get().then(storage => {
       if (!storage || !storage.settings) return 'text';

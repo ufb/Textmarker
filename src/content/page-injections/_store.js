@@ -1,9 +1,9 @@
-import { _MODULE } from './../_shared/utils'
+import { _STORE } from './../_shared/utils'
 
-export default new _MODULE({
+export default new _STORE({
   events: {
     ENV: {
-      'toggled:sync': 'setAreas',
+      'toggled:sync': 'init',
       'updated:naming-settings': 'updateStatus',
       'updated:hashopt-settings': 'updateStatus',
       'updated:entry-sync': 'setSyncForEntry',
@@ -12,11 +12,6 @@ export default new _MODULE({
       'hashchange': 'resume'
     }
   },
-  initialized: false,
-  initializing: false,
-  area_settings: 'sync',
-  area_history: 'sync',
-  area_entry: 'sync',
 
   url: '',
   hashlessURL: '',
@@ -52,15 +47,6 @@ export default new _MODULE({
       if (historySettings) {
         this.locked = historySettings.naming === 'mark';
         this.hashSensitive = historySettings.ignoreHash === false;
-      }
-    });
-  },
-
-  setAreas() {
-    return browser.storage.sync.get().then(storage => {
-      if (storage && storage.sync) {
-        this.area_settings = storage.sync.settings ? 'sync' : 'local';
-        this.area_history = storage.sync.history ? 'sync' : 'local';
       }
     });
   },
@@ -106,43 +92,6 @@ export default new _MODULE({
     this.immut = !!entries[0].immut;
   },
 
-  get(field = 'storage') {
-    if (this.initializing) {
-      return (new Promise(r => window.setTimeout(() => r(this.get(field)), 10)));
-    }
-    const meth = this['_get_' + field];
-    if (!meth) throw('field ' + field + ' doesn\'t exist');
-
-    if (!this.initialized) {
-      this.initializing = true;
-      this.initialized = true;
-      return this.setAreas().then(() => {
-        this.initializing = false;
-        return this['_get_' + field]();
-      });
-    }
-    return this['_get_' + field]();
-  },
-
-  _get_history() {
-    return browser.storage.sync.get().then(syncedStorage => {
-      const syncedHistory = syncedStorage.history;
-
-      return browser.storage.local.get().then(localStorage => {
-        const localHistory = localStorage.history;
-        if (!syncedHistory) return localHistory;
-        if (!localHistory) return syncedHistory;
-
-        //syncedHistory.order = syncedHistory.order.concat(localHistory.order);
-        for (let e in localHistory.entries) syncedHistory.entries[e] = localHistory.entries[e];
-
-        return syncedHistory;
-      });
-    });
-  },
-  _get_settings() {
-    return browser.storage[this.area_settings].get().then(storage => storage.settings);
-  },
   _get_bmicon() {
     return browser.storage[this.area_settings].get().then(storage => {
       if (!storage || !storage.settings) return true;

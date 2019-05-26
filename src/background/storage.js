@@ -1,15 +1,9 @@
-import { _MODULE } from './utils'
+import { _STORE} from './utils'
 import _DEFAULT_STORAGE from './../data/default-storage'
 import _GLOBAL_SETTINGS from './../data/global-settings'
 import { _COPY } from './utils'
 
-export default new _MODULE({
-
-  initialized: false,
-  initializing: false,
-  area_settings: _DEFAULT_STORAGE.sync.settings ? 'sync' : 'local',
-  area_history: _DEFAULT_STORAGE.sync.history ? 'sync' : 'local',
-  area_pagenotes: _DEFAULT_STORAGE.sync.pagenotes ? 'sync' : 'local',
+export default new _STORE({
 
   init() {
     browser.storage.sync.remove('logs');
@@ -20,23 +14,6 @@ export default new _MODULE({
     });
   },
 
-  get(field = 'storage') {
-    if (this.initializing) {
-      return (new Promise(r => window.setTimeout(() => r(this.get(field)), 10)));
-    }
-    const meth = this['_get_' + field];
-    if (!meth) throw('field ' + field + ' doesn\'t exist');
-
-    if (!this.initialized) {
-      this.initializing = true;
-      this.initialized = true;
-      return this.init().then(() => {
-        this.initializing = false;
-        return this['_get_' + field]();
-      });
-    }
-    return this['_get_' + field]();
-  },
   set(field, val) {
     const meth = this['_set_' + field];
     if (!meth) throw('field ' + field + ' doesn\'t exist');
@@ -50,60 +27,6 @@ export default new _MODULE({
     return browser.storage[area].get().then(storage => {
       if (!storage || (!Object.keys(storage).length && storage.constructor === Object) || !storage.history) return true;
       return false;
-    });
-  },
-
-  _get_storage() {
-    return browser.storage.local.get().then(localStorage => {
-      return browser.storage.sync.get().then(syncedStorage => {
-        ['version', 'logs'].forEach(field => {
-          localStorage[field] = localStorage[field] || syncedStorage[field];
-        });
-        if (this.area_settings === 'sync') localStorage.settings = syncedStorage.settings;
-        return this._get_history().then(history => {
-          localStorage.history = history;
-          return localStorage;
-        });
-      });
-    });
-  },
-  _get_local_storage() {
-    return browser.storage.local.get();
-  },
-  _get_synced_storage() {
-    return browser.storage.sync.get();
-  },
-  _get_history() {
-    return browser.storage.sync.get().then(syncedStorage => {
-      const syncedHistory = syncedStorage.history;
-
-      return browser.storage.local.get().then(localStorage => {
-        const localHistory = localStorage.history;
-        if (!syncedHistory) return localHistory;
-        if (!localHistory) return syncedHistory;
-
-        //syncedHistory.order = syncedHistory.order.concat(localHistory.order);
-        for (let e in localHistory.entries) syncedHistory.entries[e] = localHistory.entries[e];
-
-        return syncedHistory;
-      });
-    });
-  },
-  _get_settings() {
-    return browser.storage[this.area_settings].get().then(storage => storage.settings);
-  },
-  _get_logs() {
-    return browser.storage.local.get().then(localStorage => {
-      if (!localStorage || !localStorage.logs) return [];
-      return localStorage.logs;
-    });
-  },
-  _get_version() {
-    return browser.storage.local.get().then(localStorage => {
-      if (!localStorage || !localStorage.version) {
-        return browser.storage.sync.get().then(syncedStorage => (syncedStorage.version || ''));
-      }
-      return localStorage.version;
     });
   },
   _get_mode() {
@@ -143,11 +66,7 @@ export default new _MODULE({
   _set_sync(sync) {
     return browser.storage.local.set({ sync: sync })
       .then(() => browser.storage.sync.set({ sync: sync }))
-      .then(() => {
-        this.area_settings = sync.settings ? 'sync' : 'local';
-        this.area_history = sync.history ? 'sync' : 'local';
-        this.area_pagenotes = sync.pagenotes ? 'sync' : 'local';
-      });
+      .then(() => this.setAreas(sync));
   },
   _set_settings(area = this.area_settings) {
     return browser.storage[area].get().then(storage => {
