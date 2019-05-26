@@ -137,6 +137,10 @@ new _MODULE({
       if (nonLockedEntriesCount > 1) {
         this.emit('warn:multiple-unlocked-entries');
       }
+      this.emit('entry:found', entries[0]);
+    }
+    if (lockedEntriesCount) {
+      this.emit('entry:found', lockedEntries);
     }
     return entries;
   },

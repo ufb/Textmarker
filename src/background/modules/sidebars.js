@@ -17,7 +17,7 @@ export default function() {
 
     entries: {},
 
-    setPanel(tabId, url) {
+    setPanel(tabId, url) {console.log('set panel');
       this.isOpen().then(open => {
         if (open) {
           browser.sidebarAction.setPanel({
@@ -31,7 +31,7 @@ export default function() {
       return browser.sidebarAction.isOpen({});
     },
     storeEntry(entry) {
-      const ignoreHash = !entry.hashSensitive;
+      const ignoreHash = Array.isArray(entry) ? !entry[0].hashSensitive : !entry.hashSensitive;
       const entries = this.entries;
 
       _GET_ACTIVE_TAB().then(tab => {
@@ -42,7 +42,7 @@ export default function() {
         entries[id][url] = entry;
       });
     },
-    updateEntry(entry) {
+    updateEntry(entry) {console.log('update entry...', entry);
       const ignoreHash = !entry.hashSensitive;
       const entries = this.entries;
       const entryUrl = ignoreHash ? _HASHLESS(entry.url) : entry.url;
@@ -57,7 +57,7 @@ export default function() {
       _GET_ACTIVE_TAB().then(tab => {
         const tabUrl = ignoreHash ? _HASHLESS(tab.url) : tab.url;
 
-        if (tabUrl === entryUrl) {
+        if (tabUrl === entryUrl) {console.log('send', entry);
           this.emit('entry:found-for-tab', entry);
         }
       });
@@ -80,15 +80,15 @@ export default function() {
         }
       });
     },
-    sendEntry() {
-      _GET_ACTIVE_TAB().then(tab => {
+    sendEntry() {console.log('send entry...');
+      _GET_ACTIVE_TAB().then(tab => {console.log('tab', tab);
         const hashlessUrl = _HASHLESS(tab.url);
-
+console.log('saved entries', this.entries);
         const entriesForThisTab = this.entries[tab.id];
         let entry = null;
         if (entriesForThisTab) {
           entry = entriesForThisTab[tab.url] || entriesForThisTab[hashlessUrl];
-        }
+        }console.log('send', entry);
         this.emit('entry:found-for-tab', entry);
       });
     },
