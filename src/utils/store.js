@@ -28,6 +28,10 @@ export class _STORE extends _MODULE {
     }
   }
 
+  onToggledSync() {
+    this.init().then(() => this.emit('set-areas-after-sync-change'));
+  }
+
   get(field = 'storage') {
     if (this.initializing) {
       return (new Promise(r => window.setTimeout(() => r(this.get(field)), 10)));

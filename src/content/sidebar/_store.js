@@ -3,7 +3,7 @@ import { _STORE } from './../_shared/utils'
 export default new _STORE({
   events: {
     ENV: {
-      'toggled:sync': 'init',
+      'toggled:sync': 'onToggledSync',
       'saved:entry': 'updateEntry',
       'entry:found': 'updateEntryOnFound',
       'entry:found-for-tab': 'updateEntry',
@@ -11,6 +11,7 @@ export default new _STORE({
     }
   },
 
+  env: 'sidebar',
   entry: null,
   locked: false,
 

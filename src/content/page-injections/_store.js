@@ -3,7 +3,7 @@ import { _STORE } from './../_shared/utils'
 export default new _STORE({
   events: {
     ENV: {
-      'toggled:sync': 'init',
+      'toggled:sync': 'onToggledSync',
       'updated:naming-settings': 'updateStatus',
       'updated:hashopt-settings': 'updateStatus',
       'updated:entry-sync': 'setSyncForEntry',
@@ -12,6 +12,8 @@ export default new _STORE({
       'hashchange': 'resume'
     }
   },
+
+  env: 'injection',
 
   url: '',
   hashlessURL: '',

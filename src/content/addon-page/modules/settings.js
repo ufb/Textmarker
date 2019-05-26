@@ -10,7 +10,7 @@ export default function() {
         'imported:settings': 'update',
         'updated:bg-color-settings': 'update',
         'updated:custom-search-settings': 'showCustomSearchSettingSuccess',
-        'toggled:sync-settings': 'update'
+        'set-areas-after-sync-change': 'update'
       },
       DOM: {
         change: {

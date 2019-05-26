@@ -3,9 +3,10 @@ import { _STORE } from './../_shared/utils'
 export default new _STORE({
   events: {
     ENV: {
-      'toggled:sync': 'init'
+      'toggled:sync': 'onToggledSync'
     }
   },
+  env: 'addon-page',
 
   _get_download_option() {
     return browser.storage[this.area_settings].get().then(storage => {

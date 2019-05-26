@@ -6,7 +6,7 @@ new _DOMMODULE({
     ENV: {
       'started:app': 'render',
       'updated:settings': 'render',
-      'toggled:sync-settings': 'render',
+      'set-areas-after-sync-change': 'render',
       'changed:selection': 'toggleMarkerButtons',
       'page-state': 'onPageState'
     },

@@ -7,7 +7,7 @@ new _DOMMODULE({
     ENV: {
       'started:app': 'toggleSave',
       'updated:settings': 'toggleSave',
-      'toggled:sync-settings': 'toggleSave',
+      'set-areas-after-sync-change': 'toggleSave',
       'updated:entry-on-save': 'deactivateSave',
       'saved:entry': 'deactivateSave',
       'unsaved-changes': 'activateSave',
