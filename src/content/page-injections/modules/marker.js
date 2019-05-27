@@ -275,7 +275,7 @@ new _MODULE({
 		if (order) this.orderMarksVisually();
 	},
   recreate(mark) {
-    this.selection = new _SELECTION(null, { programmatically: true });
+    this.selection = new _SELECTION();
     this.store(this.mark(mark.key, mark), false, false);
   },
   onFinishedRestoration() {

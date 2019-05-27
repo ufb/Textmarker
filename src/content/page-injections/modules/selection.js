@@ -20,12 +20,14 @@ export default class _SELECTION {
             .collectNodes(true)
             .retrieveText();
       } else {
-        this.collectNodes()
-            .reduceToOneRange()
+        this.text = selection.toString();
+        this.reduceToOneRange()
             .update()
+            .collectNodes()
+            //.update()
             .adjust()
-            .update()
-            .retrieveText();
+            //.update()
+            //.retrieveText();
       }
       try { selection.collapseToStart(); } catch(e) {}
     }
@@ -96,7 +98,8 @@ export default class _SELECTION {
       nodes.push(textNode);
     }
     nodes = this.trimSelection(nodes);
-    this.nodes = this.options.programmatically ? this.reduceToSelectable(nodes) : nodes;
+    //this.nodes = this.options.programmatically ? this.reduceToSelectable(nodes) : nodes;
+    this.nodes = this.reduceToSelectable(nodes);
     this.parentNodes = this.collectParentNodes(this.nodes);
 
     return this;
