@@ -15,7 +15,7 @@ export default new _STORE({
   entry: null,
   locked: false,
 
-  updateEntry(entry) {console.log('updateEntry', entry);
+  updateEntry(entry) {
     if (entry) {
       const isArr = Array.isArray(entry);
       const currentEntry = !!this.entry;
@@ -34,7 +34,7 @@ export default new _STORE({
       else this.emit('stored:entry', this.entry);
     }
   },
-  updateEntryOnFound(entry) {console.log('updateEntryOnFound', entry);
+  updateEntryOnFound(entry) {
     if (entry) {
       this.updateEntry(entry);
       if (!Array.isArray(entry)) {

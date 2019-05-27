@@ -1,3 +1,8 @@
+@keyframes btn {
+  from { color: $color-bg--turquoise; }
+  to { color: $color-text--light; }
+}
+
 button, .btn {
   @extend %button;
   &--small {
@@ -13,7 +18,8 @@ button, .btn {
 
     &:hover {
       background: $color-bg--turquoise;
-      color: $color-text--light;
+      //color: $color-text--light;
+      animation: 1s forwards btn;
     }
   }
 }

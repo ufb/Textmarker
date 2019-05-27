@@ -20,7 +20,7 @@ new _DOMMODULE({
 
   autoinit() {
     _STORE.get('settings').then(settings => {
-      if (!settings.sb) return;
+      if (!settings || !settings.sb) return;
       const tabSettings = settings.sb.tabs;
       for (let tab in tabSettings) {
         this.tabs[tab] = document.getElementById('tab--' + tab);

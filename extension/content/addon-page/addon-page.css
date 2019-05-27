@@ -810,6 +810,12 @@ ol {
   .subnav li.disabled {
     color: #c8c8c8; }
 
+@keyframes btn {
+  from {
+    color: #2ba5b7; }
+  to {
+    color: #fbfbfb; } }
+
 button--small, .btn--small {
   height: 22px;
   width: 22px;
@@ -822,7 +828,7 @@ button:not(.btn--small), .btn:not(.btn--small) {
   background: #fff; }
   button:not(.btn--small):hover, .btn:not(.btn--small):hover {
     background: #2ba5b7;
-    color: #fbfbfb; }
+    animation: 1s forwards btn; }
 
 aside {
   position: absolute;
