@@ -57,6 +57,9 @@ ul,
 li {
   list-style-type: none;
 }
+li {
+  -moz-user-select: none;
+}
 ol {
   margin: -5px 0 1em 0;
 
