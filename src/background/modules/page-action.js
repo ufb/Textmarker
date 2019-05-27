@@ -5,7 +5,7 @@ export default function() {
   return new _MODULE({
     events: {
       ENV: {
-        'changed:url': 'show'
+        'completed:tab': 'show'
       }
     },
 
