@@ -47,10 +47,14 @@ new _MODULE({
 
     if (!registered || reloaded) {
       this.inject(tabId, newUrl, 0).then(lastFrameId => {
-        browser.webNavigation.getAllFrames({ tabId }).then(frames => {
-          frames.forEach(frame => {
-            if (frame.frameId !== lastFrameId) this.inject(tabId, frame.url, frame.frameId);
-          });
+        _STORAGE.get('settings').then(settings => {
+          if (settings.addon.iframes) {
+            browser.webNavigation.getAllFrames({ tabId }).then(frames => {
+              frames.forEach(frame => {
+                if (frame.frameId !== lastFrameId) this.inject(tabId, frame.url, frame.frameId);
+              });
+            });
+          }
         });
       });
     }

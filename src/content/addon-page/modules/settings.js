@@ -37,7 +37,8 @@ export default function() {
           '#drop-losses': 'toggleDropLossesOpt',
           '#autonote-color': 'changeAutoNoteOpt',
           '#ignore-hash': 'changeHashOpt',
-          '#addon-autocs': 'toggleAutocsOpt'
+          '#addon-autocs': 'toggleAutocsOpt',
+          '#addon-iframes': 'toggleIFrameOpt'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -211,6 +212,7 @@ export default function() {
       }
 
       document.getElementById('addon-autocs').checked = settings.addon.autocs;
+      document.getElementById('addon-iframes').checked = settings.addon.iframes;
     },
     showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('u-display--none');
@@ -242,6 +244,9 @@ export default function() {
     },
     toggleAutocsOpt(e, el) {
       this.emit('change:autocs-setting', el.checked);
+    },
+    toggleIFrameOpt(e, el) {
+      this.emit('change:iframe-setting', el.checked);
     },
     addMarker(e, el) {
       let key = el.value,

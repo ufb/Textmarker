@@ -34,6 +34,7 @@ new _MODULE({
       'change:custom-search-setting': 'changeCustomSearch',
       'changed:per-page-count': 'changeCountPerPage',
       'change:autocs-setting': 'toggleAutocsOpt',
+      'change:iframe-setting': 'toggleIFrameOpt',
 
       'remove:custom-marker': 'removeCustomMarker',
       'add:custom-marker': 'addCustomMarker',
@@ -283,6 +284,13 @@ new _MODULE({
       settings => { settings.addon.autocs = val; return settings; },
       'autocs',
       'error_save_autocs'
+    );
+  },
+  toggleIFrameOpt(val) {
+    this.updateSettings(
+      settings => { settings.addon.iframes = val; return settings; },
+      'iframes',
+      'error_save_iframes'
     );
   },
   changeSBSettings(tab, unfolded) {

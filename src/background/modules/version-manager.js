@@ -103,6 +103,9 @@ new _MODULE({
         if (typeof settings.addon.autocs !== 'boolean') {
           settings.addon.autocs = defaultSettings.addon.autocs;
         }
+        if (typeof settings.addon.iframes !== 'boolean') {
+          settings.addon.iframes = defaultSettings.addon.iframes;
+        }
       }
     } catch(e) {
       this.emit('error', 'error_import_settings_not_found');

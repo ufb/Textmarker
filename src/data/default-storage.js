@@ -43,7 +43,8 @@ export default {
     },
     addon: {
       active: true,
-      autocs: true
+      autocs: true,
+      iframes: true
     },
     misc: {
       bmicon: true,
