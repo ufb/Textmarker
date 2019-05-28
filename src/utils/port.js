@@ -35,7 +35,7 @@ export class _PORT extends _MODULE {
       }
     }
   }
-  passMessage(req, sender, sendResponse) {
+  passMessage(req, sender, sendResponse) {console.log('pass:', req.ev);
     req.args = req.args || [];
     let args = [].concat(req.ev, req.args);
     if (!sender || !sender.name) args = args.concat(sender, sendResponse);

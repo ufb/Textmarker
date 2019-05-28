@@ -298,6 +298,7 @@ new _MODULE({
       _STORE.redescribing = false;
       this.save();
     }
+    this.emit('completed:restoration-process');
   },
   addNote(id) {
     this.emit('add:note', this.findMark(id));

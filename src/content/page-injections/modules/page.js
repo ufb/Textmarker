@@ -5,6 +5,10 @@ new _DOMMODULE({
   el: window.document,
   autoPause: true,
   events: {
+    ENV: {
+      'started:restorations': 'removeListeners',
+      'completed:restoration-process': 'addListeners'
+    },
     DOM: {
       keydown: {
         '*': 'delegate'
@@ -15,6 +19,7 @@ new _DOMMODULE({
     }
   },
 
+  selectionCollapsed: true,
   shiftSensitiveKeys: [13, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 171, 173],
   keyCodeMap: {
     '13': 'Enter',
@@ -85,6 +90,10 @@ new _DOMMODULE({
     });
   },
   onSelectionChange(e) {
-    this.emit('changed:selection', !window.getSelection().isCollapsed);
+    const selectionCollapsed = window.getSelection().isCollapsed;
+    if (this.selectionCollapsed !== selectionCollapsed) {
+      this.emit('changed:selection', !selectionCollapsed);
+      this.selectionCollapsed = selectionCollapsed;
+    }
   }
 });

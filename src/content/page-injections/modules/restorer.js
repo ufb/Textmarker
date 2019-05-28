@@ -687,6 +687,8 @@ export default function() {
       this.entries = entries;
       this.count = entries.length;
 
+      this.emit('started:restorations');
+
       entries.forEach(entry => {
         if (entry.immut) new ImmutRestorer(entry);
         else new Restorer(entry);
