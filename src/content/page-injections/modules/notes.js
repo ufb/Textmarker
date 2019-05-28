@@ -13,7 +13,8 @@ new _MODULE({
       'sidebar:toggle-notes': 'toggleAll',
       'updated:misc-settings': 'updateTransp',
       'start:drag': 'startDraggingNote',
-      'opened:sidebar': 'sendNotesState'
+      'opened:sidebar': 'sendNotesState',
+      'finished:all-restorations': 'report'
     }
   },
 
@@ -28,7 +29,7 @@ new _MODULE({
   add(mark, color) {
     const note = this.notes[mark.id];
     if (note) return note;
-    this.emit('added:note');
+    if (!_STORE.restoring) this.emit('added:note');
     return this.notes[mark.id] = new _NOTE(mark, color);
   },
   restore(marks) {
@@ -99,5 +100,8 @@ new _MODULE({
   },
   sendNotesState(info) {
     this.emit('notes-state', !this.isEmpty(this.notes), info);
+  },
+  report() {
+    this.isEmpty(this.notes) || this.emit('added:note');
   }
 });

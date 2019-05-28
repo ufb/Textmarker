@@ -18,6 +18,8 @@ export default new _STORE({
   url: '',
   hashlessURL: '',
 
+  restoring: false,
+
   iframe: false,
   name: undefined,
   isNew: true,

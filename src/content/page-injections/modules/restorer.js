@@ -1,4 +1,5 @@
 import { _MODULE } from './../../_shared/utils'
+import _STORE from '../_store'
 import _SELECTION from './selection'
 
 class RestorerBase extends _MODULE {
@@ -688,6 +689,7 @@ export default function() {
       this.count = entries.length;
 
       this.emit('started:restorations');
+      _STORE.restoring = true;
 
       entries.forEach(entry => {
         if (entry.immut) new ImmutRestorer(entry);
@@ -711,6 +713,7 @@ export default function() {
     onFinishedRestoration() {
       if (++this.restored === this.count) {
         this.emit('finished:all-restorations');
+        _STORE.restoring = false;
         if (this.failed) this.emit('failed:restoration', this.getReport());
         else this.emit('succeeded:restoration');
       }
