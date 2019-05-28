@@ -21,6 +21,7 @@ new _DOMMODULE({
     }
   },
 
+  frame: 0,
   automarkEnabled: false,
 
   autoinit() {
@@ -138,14 +139,15 @@ new _DOMMODULE({
     this.emit('change:bg-setting', el.name, el.value);
   },
   select(e, el) {
-    this.emit('sidebar:selected-marker', el.getAttribute('data-key'), { tab: 'active' });
+    this.emit('sidebar:selected-marker', el.getAttribute('data-key'), { tab: 'active', frameId: this.frame });
   },
   applyColor(e, el) {
     if (el.classList.contains('disabled')) return;
-    this.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: 'active' });
+    this.emit('sidebar:highlight', el.getAttribute('data-key'), { tab: 'active', frameId: this.frame });
   },
-  toggleMarkerButtons(show) {
+  toggleMarkerButtons(show, sender) {
     if (this.automarkEnabled) return;
+    this.frame = sender && sender.frameId ? sender.frameId : 0;
     const meth = show ? 'removeAttribute' : 'setAttribute';
     Array.from(document.getElementsByClassName('marker__apply')).forEach(btn => btn[meth]('disabled', true));
   },
