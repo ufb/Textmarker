@@ -54,7 +54,7 @@ export class _PORT extends _MODULE {
         if (tab === 'active') {
           browser.tabs.query({ active: true }).then(tabs => {
             for (let tab of tabs)
-              browser.tabs.sendMessage(tab.id, msg).catch(() => {});
+              browser.tabs.sendMessage(tab.id, msg, { frameId: lastArg.frameId || 0 }).catch(() => {});
           });
         } else {
           browser.tabs.sendMessage(lastArg.tab, msg, { frameId: lastArg.frameId || 0 }).catch(() => {});

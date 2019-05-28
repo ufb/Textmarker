@@ -14,6 +14,7 @@ new _DOMMODULE({
       }
     }
   },
+  frame: 0,
   buttons: [],
 
   autoinit() {
@@ -21,9 +22,11 @@ new _DOMMODULE({
   },
   markAction(e, el) {
     if (el.hasAttribute('disabled')) return;
-    this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: 'active' });
+    this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: 'active', frameId: this.frame });
   },
-  activate(markInfos) {
+  activate(markInfos, sender) {
+    this.frame = sender && sender.frameId ? sender.frameId : 0;
+
     this.buttons.forEach(btn => {
       let type = btn.getAttribute('data-action');
       if (
