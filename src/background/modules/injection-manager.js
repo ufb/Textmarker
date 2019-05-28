@@ -68,7 +68,7 @@ new _MODULE({
 
       _STORAGE.get('history').then(history => {
         const matches = this.findMatchingEntries(history, url);
-        const entries = this.filterMatches(matches);
+        const entries = this.filterMatches(matches, frameId);
 
         if (entries) {
           this.emit('entries:found', {
@@ -136,7 +136,7 @@ new _MODULE({
     return { lockedEntries, nonLockedEntries };
   },
 
-  filterMatches(matches) {
+  filterMatches(matches, frameId) {
     const lockedEntries = matches.lockedEntries;
     const nonLockedEntries = matches.nonLockedEntries;
     const lockedEntriesCount = lockedEntries.length;
@@ -152,10 +152,10 @@ new _MODULE({
       if (nonLockedEntriesCount > 1) {
         this.emit('warn:multiple-unlocked-entries');
       }
-      this.emit('entry:found', entries[0]);
+      if (!frameId) this.emit('entry:found', entries[0]);
     }
     if (lockedEntriesCount) {
-      this.emit('entry:found', lockedEntries);
+      if (!frameId) this.emit('entry:found', lockedEntries);
     }
     return entries;
   },

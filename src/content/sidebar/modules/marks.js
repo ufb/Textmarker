@@ -29,7 +29,7 @@ new _DOMMODULE({
   setFilters: false,
   toggleMap: { '1': [false, false], '2': [true, false], '3': [false, true], '4': [true, true] },
 
-  render() {
+  render(a,b,c) {
     const entry = this.entry = _STORE.entry;
     if (entry) {
       this.setMarks();
@@ -53,7 +53,7 @@ new _DOMMODULE({
       marks;
     this.length = this.marks.length;
   },
-  setMarkIDs(ids) {
+  setMarkIDs(ids,b,c) {
     this.markIDs = ids;
     this.render();
   },

@@ -440,7 +440,7 @@ new _MODULE({
 			}
 		});
     this.visuallyOrderedMarkIDs = this.visuallyOrderedMarks.map(mark => parseInt(mark.getAttribute('data-tm-id')));
-    this.emit('visually-ordered:marks', this.visuallyOrderedMarkIDs);
+    if (!_STORE.iframe) this.emit('visually-ordered:marks', this.visuallyOrderedMarkIDs);
 	},
   marksIntersect(mark1, mark2) {
 		let wrappers1 = mark1.wrappers,
