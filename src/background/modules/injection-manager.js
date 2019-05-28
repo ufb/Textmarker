@@ -46,22 +46,11 @@ new _MODULE({
     const reloaded = registered && !noReload;
 
     if (!registered || reloaded) {
-
-      this.injectContentScript(tabId, newUrl).then(() => {
-
-        _STORAGE.get('history').then(history => {
-          const matches = this.findMatchingEntries(history, newUrl);
-          const entries = this.filterMatches(matches);
-
-          if (entries) {
-            this.emit('entries:found', {
-              entries,
-              recentlyOpenedEntry: this.recentlyOpenedEntry,
-              locked: !!matches.lockedEntries.length
-            }, { tab: tabId });
-
-            this.recentlyOpenedEntry = null;
-          }
+      this.inject(tabId, newUrl, 0).then(lastFrameId => {
+        browser.webNavigation.getAllFrames({ tabId }).then(frames => {
+          frames.forEach(frame => {
+            if (frame.frameId !== lastFrameId) this.inject(tabId, frame.url, frame.frameId);
+          });
         });
       });
     }
@@ -70,15 +59,37 @@ new _MODULE({
     }
   },
 
-  injectContentScript(tabId, url) {
+  inject(tabId, url, frameId) {
+    return this.injectContentScript(tabId, url, frameId).then(() => {
+
+      _STORAGE.get('history').then(history => {
+        const matches = this.findMatchingEntries(history, url);
+        const entries = this.filterMatches(matches);
+
+        if (entries) {
+          this.emit('entries:found', {
+            entries,
+            recentlyOpenedEntry: this.recentlyOpenedEntry,
+            locked: !!matches.lockedEntries.length
+          }, { tab: tabId, frameId });
+
+          this.recentlyOpenedEntry = null;
+        }
+      });
+
+      return frameId;
+    });
+  },
+
+  injectContentScript(tabId, url, frameId) {
     return browser.tabs.executeScript(tabId, {
       file: '../content/page-injections/injection.wp.js',
-      allFrames: true,
+      frameId,
       runAt: 'document_idle'
     })
       .then(() => {
         this.injectedScripts[tabId] = { url };
-        this.insertCSS(tabId);
+        this.insertCSS(tabId, frameId);
       })
       .catch(e => {
         const msg = e.toString();
@@ -88,10 +99,10 @@ new _MODULE({
       });
   },
 
-  insertCSS(tabId) {
+  insertCSS(tabId, frameId) {
     browser.tabs.insertCSS(tabId, {
       file: '../content/page-injections/injection.css',
-      allFrames: true
+      frameId
     })
       .catch(e => {
         const msg = e.toString();

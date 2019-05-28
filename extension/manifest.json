@@ -23,7 +23,8 @@
     "tabs",
     "notifications",
     "menus",
-    "clipboardWrite"
+    "clipboardWrite",
+    "webNavigation"
   ],
 
   "icons": {

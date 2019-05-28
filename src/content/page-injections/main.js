@@ -5,7 +5,7 @@ import _RESTORER from './modules/restorer'
 new _MODULE({
   events: {
     ENV: {
-      'saved:entry': 'updateEntryStorage',
+      'saved:entry': 'onSavedEntry',
       'resumed-on-hashchange': 'setPageParams',
       'opened:sidebar': 'sendPageState',
       'failed:restoration': 'activateRetry',
@@ -52,17 +52,16 @@ new _MODULE({
 
   // @RESTORER
   onEntriesFound(info) {
-    _RESTORER();
-    this.updateEntryStorage(info.entries);
-    if (info.recentlyOpenedEntry) this.updateNameStorage(info.entries, info.recentlyOpenedEntry);
-    this.emit('restore:marks', info.entries);
-  },
-  updateEntryStorage(entries) {
+    let entries = info.entries;
     entries = Array.isArray(entries) ? entries : [entries];
+
+    _RESTORER();
     _STORE.addEntries(entries);
     this.emit('set:entries', entries);
+    if (info.recentlyOpenedEntry) this.updateName(entries, info.recentlyOpenedEntry);
+    this.emit('restore:marks', info.entries);
   },
-  updateNameStorage(entries, recentlyOpenedEntry) {
+  updateName(entries, recentlyOpenedEntry) {
     const firstEntry = entries[0];
     const ignoreHash = !firstEntry.hashSensitive;
     const url = ignoreHash ? _STORE.hashlessURL : _STORE.url;

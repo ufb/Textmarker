@@ -57,7 +57,7 @@ export class _PORT extends _MODULE {
               browser.tabs.sendMessage(tab.id, msg).catch(() => {});
           });
         } else {
-          browser.tabs.sendMessage(lastArg.tab, msg).catch(() => {});
+          browser.tabs.sendMessage(lastArg.tab, msg, { frameId: lastArg.frameId || 0 }).catch(() => {});
         }
       } else {
         browser.tabs.query({/* currentWindow: false, active: false */}).then(tabs => {
