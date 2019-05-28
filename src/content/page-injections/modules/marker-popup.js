@@ -62,7 +62,7 @@ new _DOMMODULE({
 
       popupHeight = popup.offsetHeight;
 
-      style.top = parseInt(style.top) - popupHeight + 'px';
+      style.top = Math.max(0, parseInt(style.top) - popupHeight) + 'px';
     }
     else if ((popupHeight = popup.offsetHeight) !== this.height) {
       style.top = parseInt(style.top) + popupHeight - this.height + 'px';
