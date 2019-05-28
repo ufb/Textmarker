@@ -10,7 +10,7 @@ new _DOMMODULE({
     DOM: {
       click: {
         '.tags__remove': 'removeTag',
-        '#add-tag': 'addTag'
+        '.add-tag': 'addTag'
       }
     }
   },
