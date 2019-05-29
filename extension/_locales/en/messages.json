@@ -468,6 +468,8 @@
 "tbb_mitem_8_tt":{"message":"Opens in new tab"},
 "tbb_mitem_9":{"message":"Syncing"},
 "tbb_mitem_9_tt":{"message":"Opens in new tab"},
+"tbb_pause_true":{"message":"pause"},
+"tbb_pause_false":{"message":"start"},
 "sb_paused":{"message":"Textmarker is paused"},
 "sb01":{"message":"Meta Infos"},
 "sb02":{"message":"Tags"},

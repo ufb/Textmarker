@@ -105,7 +105,8 @@ label sup {
 	vertical-align: 0;
   width: calc(100% - 40px);
 }
-label.fake-cb:not(.pull-right) sup {
+label.fake-cb:not(.pull-right) sup,
+label.fake-rb:not(.pull-right) sup {
 	display: inline-block;
 	vertical-align: middle;
 }

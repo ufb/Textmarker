@@ -17,6 +17,9 @@
     margin-bottom: $spacing--medium;
     border-bottom: 1px solid $color-border--light;
     position: relative;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 
     &:after {
       content: '';
@@ -42,6 +45,8 @@
   }
   &.open {
     h3 {
+      white-space: unset;
+
       &:after {
         transform: none;
       }

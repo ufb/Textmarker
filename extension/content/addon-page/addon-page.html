@@ -427,12 +427,15 @@
         </nav>
         <div id="settings-markers" class="tab u-display--none">
           <section id="customize-markers">
-            <h3 class="u-display--inline-block" data-l10n-id="h411"></h3>
-            <select id="customized-key" class="small">
-              <option value="m" selected>M</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
+            <h3 class="u-display--inline-block">
+              <span data-l10n-id="h411"></span>
+              <select id="customized-key" class="small">
+                <option value="m" selected>M</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </h3>
+
             <br>
             <div class="option-row">
               <input type="checkbox" checked id="bg-color-checkbox" class="toggle-button css css-color" data-target="bg-color" name="background-color">
@@ -596,14 +599,14 @@
               <label for="mark-method--auto" class="fake-rb"><span>&#149;</span> <sup data-l10n-id="t4216"></sup></label>
             </div>
             <div class="u-cf">
-              <div id="customize-shortcuts--left" class="u-float--left">
+              <div>
                 <h4 data-l10n-id="h422"></h4>
                 <table>
                   <tbody>
                     <tr>
                       <td>
                         <input type="checkbox" id="sc-m" name="m" class="sc-cb">
-                        <label for="sc-m" class="fake-cb"><span>&#10003;</span> <sup class="u-align--0" data-l10n-id="marker"></sup> M</label>
+                        <label for="sc-m" class="fake-cb"><span>&#10003;</span> <sup><sup class="u-align--0" data-l10n-id="marker"></sup> M</sup></label>
                       </td>
                       <td>
                         <select id="shortcut-select-m" class="shortcut-select big" name="m">
@@ -622,7 +625,7 @@
                     <tr>
                       <td>
                         <input type="checkbox" id="sc-2" name="2" class="sc-cb">
-                        <label for="sc-2" class="fake-cb"><span>&#10003;</span> <sup class="u-align--0" data-l10n-id="marker"></sup> 2</label>
+                        <label for="sc-2" class="fake-cb"><span>&#10003;</span> <sup><sup class="u-align--0" data-l10n-id="marker"></sup> 2</sup></label>
                       </td>
                       <td>
                         <select id="shortcut-select-2" class="shortcut-select big" name="2">
@@ -637,7 +640,7 @@
                     <tr>
                       <td>
                         <input type="checkbox" id="sc-3" name="3" class="sc-cb">
-                        <label for="sc-3" class="fake-cb"><span>&#10003;</span> <sup class="u-align--0" data-l10n-id="marker"></sup> 3</label>
+                        <label for="sc-3" class="fake-cb"><span>&#10003;</span> <sup><sup class="u-align--0" data-l10n-id="marker"></sup> 3</sup></label>
                       </td>
                       <td>
                         <select id="shortcut-select-3" class="shortcut-select big" name="3">
@@ -801,7 +804,7 @@
                     <tr>
                       <td>
                         <input type="checkbox" id="sc-arrowup" name="arrowup" class="sc-cb">
-                        <label for="sc-arrowup"><span>&#10003;</span> <sup data-l10n-id="t4212"></sup></label>
+                        <label for="sc-arrowup" class="fake-cb"><span>&#10003;</span> <sup data-l10n-id="t4212"></sup></label>
                       </td>
                       <td>
                         <select id="shortcut-select-arrowup" class="shortcut-select big" name="arrowup">
@@ -813,7 +816,7 @@
                     <tr>
                       <td>
                         <input type="checkbox" id="sc-arrowdown" name="arrowdown" class="sc-cb">
-                        <label for="sc-arrowdown"><span>&#10003;</span> <sup data-l10n-id="t4213"></sup></label>
+                        <label for="sc-arrowdown" class="fake-cb"><span>&#10003;</span> <sup data-l10n-id="t4213"></sup></label>
                       </td>
                       <td>
                         <select id="shortcut-select-arrowdown" class="shortcut-select big" name="arrowdown">
@@ -825,11 +828,11 @@
                   </tbody>
                 </table>
               </div>
-              <div id="customize-shortcuts--right" class="u-float--left">
+              <div>
                 <h4 data-l10n-id="h423"></h4>
                 <div class="option-row">
                   <input type="checkbox" id="cm-m" name="m" class="ctm-cb">
-                  <label for="cm-m" class="fake-cb"><span>&#10003;</span> <sup class="u-align--0" data-l10n-id="marker"></sup> M</label>
+                  <label for="cm-m" class="fake-cb"><span>&#10003;</span> <sup><sup class="u-align--0" data-l10n-id="marker"></sup> M</sup></label>
                 </div>
                 <div class="option-row">
                   <input type="checkbox" id="cm-n" name="n" class="ctm-cb">
@@ -869,11 +872,11 @@
             <h4 data-l10n-id="h432"></h4>
             <div class="option-row">
               <input type="radio" id="auto-save" name="save-opt" class="save-opt" data-id="1">
-              <label for="auto-save" class="fake-rb"><span>&#149;</span> <sup data-l10n-id="t431"></sup></label>
+              <label for="auto-save" class="fake-rb width--full"><span>&#149;</span> <sup data-l10n-id="t431"></sup></label>
             </div>
             <div class="option-row">
               <input type="radio" id="manual-save" name="save-opt" class="save-opt" data-id="">
-              <label for="manual-save" class="fake-rb"><span>&#149;</span> <sup data-l10n-id="t432"></sup></label>
+              <label for="manual-save" class="fake-rb width--full"><span>&#149;</span> <sup data-l10n-id="t432"></sup></label>
             </div>
             <br>
             <div class="option-row">
@@ -907,20 +910,20 @@
             <h4 data-l10n-id="h433"></h4>
             <div class="option-row">
               <input type="radio" id="name-date" class="naming-opt" name="naming-opt" data-id="date">
-              <label for="name-date" class="fake-rb"><span>&#149;</span> <sup data-l10n-id="t434"></sup></label>
+              <label for="name-date" class="fake-rb width--full"><span>&#149;</span> <sup data-l10n-id="t434"></sup></label>
             </div>
             <div class="option-row">
               <input type="radio" id="name-title" class="naming-opt" name="naming-opt" data-id="title">
-              <label for="name-title" class="fake-rb"><span>&#149;</span> <sup data-l10n-id="t435"></sup></label>
+              <label for="name-title" class="fake-rb width--full"><span>&#149;</span> <sup data-l10n-id="t435"></sup></label>
             </div>
             <div class="option-row open" id="custom-name-row">
               <input type="radio" id="name-custom" class="naming-opt" name="naming-opt" data-id="custom">
-              <label for="name-custom" class="fake-rb"><span>&#149;</span> <sup data-l10n-id="t436"></sup></label>
+              <label for="name-custom" class="fake-rb width--full"><span>&#149;</span> <sup data-l10n-id="t436"></sup></label>
             </div>
             <br>
             <div class="option-row" id="name-mark-box">
               <input type="radio" id="name-mark" class="naming-opt" name="naming-opt" data-id="mark">
-              <label for="name-mark" class="fake-rb"><span>&#149;</span> <sup><sup class="u-display--inline" data-l10n-id="t4319"></sup> <sup class="u-display--inline u-color--red">&#9888;</sup></sup></label>
+              <label for="name-mark" class="fake-rb width--full"><span>&#149;</span> <sup><sup class="u-display--inline" data-l10n-id="t4319"></sup> <sup class="u-display--inline u-color--red">&#9888;</sup></sup></label>
               <small class="u-display--none u-mt-small u-ml-huge u-pl-tiny">
                 <span class="u-color--red" data-l10n-id="experimental"></span><br>
                 <span data-l10n-id="t4320"></span><br>
@@ -1059,9 +1062,9 @@
             <div class="option-row">
               <h4 data-l10n-id="h452"></h4>
               <input type="radio" id="tbbpower-off" name="tbbpower" class="tbbpower-opt" data-id="0">
-              <label for="tbbpower-off" class="fake-rb"><span>&#149;</span> <sup data-l10n-id="t4412"></sup></label><br><br>
+              <label for="tbbpower-off" class="fake-rb width--full"><span>&#149;</span> <sup data-l10n-id="t4412"></sup></label><br><br>
               <input type="radio" id="tbbpower-on" name="tbbpower" class="tbbpower-opt" data-id="1">
-              <label for="tbbpower-on" class="fake-rb"><span>&#149;</span> <sup data-l10n-id="t4411"></sup></label>
+              <label for="tbbpower-on" class="fake-rb width--full"><span>&#149;</span> <sup data-l10n-id="t4411"></sup></label>
             </div>
           </section>
         </div>

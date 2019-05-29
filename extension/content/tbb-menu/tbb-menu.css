@@ -113,24 +113,26 @@ li {
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
-#activate.menu__icon--start {
-  background-image: url(../../icons/start.png);
-  background-repeat: no-repeat;
-  background-position: 0 0, 0 0;
-  background-size: unset, 100%; }
-
-#activate.menu__icon--pause {
-  background-image: url(../../icons/pause.png);
-  background-repeat: no-repeat;
-  background-position: 0 0, 0 0;
-  background-size: unset, 100%; }
+#activate {
+  padding-left: 22px;
+  color: #fff; }
+  #activate.menu__icon--start {
+    background-image: url(../../icons/start.png);
+    background-repeat: no-repeat;
+    background-position: 0 0, 0 0;
+    background-size: unset, 100%; }
+  #activate.menu__icon--pause {
+    background-image: url(../../icons/pause.png);
+    background-repeat: no-repeat;
+    background-position: 0 0, 0 0;
+    background-size: unset, 100%; }
 
 #donate, #github {
   float: right; }
 
 footer {
   background: #2ba5b7;
-  padding: 7px 10px 8px 12px; }
+  padding: 7px 6px 8px 12px; }
   footer .menu__icon {
     opacity: .85; }
     footer .menu__icon:hover {

@@ -39,6 +39,7 @@
 }
 #preview {
   position: relative;
+  margin-top: 26px;
 
   button {
   	position: absolute;
@@ -48,7 +49,6 @@
 }
 #example {
   padding: 0 5px;
-  margin-top: 30px;
 	overflow: hidden;
   float: left;
 }
@@ -58,15 +58,25 @@
 
 /* shortcuts */
 #customize-shortcuts {
-  table {
+  table, tr {
+    display: block;
     border-collapse: collapse;
     td {
+      display: inline-block;
+      width: 140px;
       padding: 12px 10px 0 0;
+
+      &:first-child {
+        width: calc(100% - 160px);
+      }
     }
   }
   label {
-    width: auto;
-    white-space: nowrap;
+    width: 100%;
+
+    sup sup {
+      width: auto;
+    }
   }
 }
 #overwrite-hint {
@@ -74,9 +84,7 @@
   display: inline-block;
   margin-left: 9px;
 }
-#customize-shortcuts--left {
-  margin: 0 40px 30px 0;
-}
+
 /* history */
 #notification {
   margin: 0 3px 0 5px;

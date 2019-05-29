@@ -44,6 +44,7 @@ aside {
     display: block;
     margin-bottom: 7px;
     opacity: .75;
+    transition: opacity .3s ease-in;
 
     &:hover {
       opacity: 1;
@@ -57,9 +58,11 @@ aside {
       background: $color-bg--turquoise;
       float: right;
       margin-left: 7px;
+      opacity: 1;
 
       &:hover {
         border: 0;
+        opacity: .75;
       }
 
       &.github {

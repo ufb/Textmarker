@@ -468,6 +468,8 @@
 "tbb_mitem_8_tt":{"message":"Ouvrir dans un nouvel onglet"},
 "tbb_mitem_9":{"message":"Synchronisation"},
 "tbb_mitem_9_tt":{"message":"Ouvrir dans un nouvel onglet"},
+"tbb_pause_true":{"message":""},
+"tbb_pause_false":{"message":""},
 "sb_paused":{"message":"Textmarker désactivé"},
 "sb01":{"message":"Métadonnées"},
 "sb02":{"message":"Étiquettes"},

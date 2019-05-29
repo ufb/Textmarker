@@ -448,7 +448,8 @@ label sup {
   vertical-align: 0;
   width: calc(100% - 40px); }
 
-label.fake-cb:not(.pull-right) sup {
+label.fake-cb:not(.pull-right) sup,
+label.fake-rb:not(.pull-right) sup {
   display: inline-block;
   vertical-align: middle; }
 
@@ -850,7 +851,8 @@ aside {
     border-radius: 0 3px 3px 0;
     display: block;
     margin-bottom: 7px;
-    opacity: .75; }
+    opacity: .75;
+    transition: opacity .3s ease-in; }
     aside a:hover {
       opacity: 1;
       border-color: #c8c8c8; }
@@ -861,9 +863,11 @@ aside {
         display: inline-block;
         background: #2ba5b7;
         float: right;
-        margin-left: 7px; }
+        margin-left: 7px;
+        opacity: 1; }
         aside a:hover {
-          border: 0; }
+          border: 0;
+          opacity: .75; }
         aside a.github {
           background-position: center !important; }
         aside a img {
@@ -913,7 +917,8 @@ aside {
   margin-bottom: 5px; }
 
 #preview {
-  position: relative; }
+  position: relative;
+  margin-top: 26px; }
   #preview button {
     position: absolute;
     right: 0;
@@ -921,7 +926,6 @@ aside {
 
 #example {
   padding: 0 5px;
-  margin-top: 30px;
   overflow: hidden;
   float: left; }
 
@@ -929,22 +933,25 @@ aside {
   vertical-align: bottom; }
 
 /* shortcuts */
-#customize-shortcuts table {
+#customize-shortcuts table, #customize-shortcuts tr {
+  display: block;
   border-collapse: collapse; }
-  #customize-shortcuts table td {
+  #customize-shortcuts table td, #customize-shortcuts tr td {
+    display: inline-block;
+    width: 140px;
     padding: 12px 10px 0 0; }
+    #customize-shortcuts table td:first-child, #customize-shortcuts tr td:first-child {
+      width: calc(100% - 160px); }
 
 #customize-shortcuts label {
-  width: auto;
-  white-space: nowrap; }
+  width: 100%; }
+  #customize-shortcuts label sup sup {
+    width: auto; }
 
 #overwrite-hint {
   text-indent: -9px;
   display: inline-block;
   margin-left: 9px; }
-
-#customize-shortcuts--left {
-  margin: 0 40px 30px 0; }
 
 /* history */
 #notification {
@@ -1320,7 +1327,10 @@ a .at {
     padding-bottom: 10px;
     margin-bottom: 15px;
     border-bottom: 1px solid #e1e2e3;
-    position: relative; }
+    position: relative;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap; }
     .news-box h3:after {
       content: '';
       display: block;
@@ -1339,8 +1349,10 @@ a .at {
       opacity: .5; }
   .news-box p {
     display: none; }
-  .news-box.open h3:after {
-    transform: none; }
+  .news-box.open h3 {
+    white-space: unset; }
+    .news-box.open h3:after {
+      transform: none; }
   .news-box.open p {
     display: block; }
   .news-box small {
