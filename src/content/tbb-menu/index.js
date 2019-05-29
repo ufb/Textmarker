@@ -42,6 +42,7 @@ new _DOMMODULE({
   setActivateText(active) {
     const btn = document.getElementById('activate');
     btn.title = browser.i18n.getMessage('tbb_mitem_1_' + active);
+    btn.textContent = browser.i18n.getMessage('tbb_pause_' + active);
     if (active) {
       btn.classList.remove('menu__icon--start');
       btn.classList.add('menu__icon--pause');

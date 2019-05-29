@@ -62,12 +62,17 @@ $links: (
     @include icon(#{$icon});
   }
 }
+#activate {
+  padding-left: 22px;
+  color: #fff;
 
-#activate.menu__icon--start {
-  @include icon('start');
-}
-#activate.menu__icon--pause {
-  @include icon('pause');
+  &.menu__icon--start {
+    @include icon('start');
+  }
+
+  &.menu__icon--pause {
+    @include icon('pause');
+  }
 }
 
 #donate, #github {
@@ -76,7 +81,7 @@ $links: (
 
 footer {
   background: $color-bg--turquoise;
-  padding: 7px 10px 8px 12px;
+  padding: 7px 6px 8px 12px;
 
   .menu__icon {
     opacity: .85;
