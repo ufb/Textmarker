@@ -350,6 +350,7 @@
 "t4413":{"message":"Wenn du Textmarker in einer Seite verwenden möchtest, klicke den Action-Button in der Adressleiste:"},
 "t4414":{"message":"Textmarker nur in Top-Level-Frames laden"},
 "t4415":{"message":"Bitte beachte, dass es nicht unbedingt offensichtlich ist, ob Text auf einer Seite in einem iFrame liegt."},
+"t4416":{"message":"automatisch"},
 "h451":{"message":"Benachrichtigung anzeigen, wenn ..."},
 "t451":{"message":"ein neuer Eintrag in die Chronik gespeichert wurde;"},
 "t451b":{"message":"d.h. für eine Seite erstmalig Markierungen gespeichert wurden."},

@@ -350,6 +350,7 @@
 "t4413":{"message":"If you want to use Textmarker on a page click the page action button inside the browser's address bar:"},
 "t4414":{"message":"Load Textmarker only into top-level-frames"},
 "t4415":{"message":"Note: If some text content on a page lies within an iframe might not be visible."},
+"t4416":{"message":"automatically"},
 "h451":{"message":"Show notifications"},
 "t451":{"message":"when a new entry has been saved to Textmarker's history -"},
 "t451b":{"message":"which means highlights have been saved for the first time on the current page."},
