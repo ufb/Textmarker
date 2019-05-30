@@ -386,8 +386,8 @@ new _MODULE({
       while (names.length) {
         name = names.pop();
         if (history.entries && Object.keys(history.entries).indexOf(name) !== -1) {
-          url = history.entries[name].url;
-          hashSensitive = history.entries[name].hashSensitive;
+          url = history.entries[name].url || '';
+          hashSensitive = history.entries[name].hashSensitive || '';
 
           delete history.entries[name];
           this.emit('deleted:entry', name, url, hashSensitive);
@@ -397,7 +397,7 @@ new _MODULE({
       }
       return history;
     }, area)
-      .catch(() => this.emit('failed:delete-entries', 'error_del_entry'))
+      .catch((e) =>{console.log(e, e.toString()); this.emit('failed:delete-entries', 'error_del_entry')})
       .then(() => { if (area === 'sync' && names_local.length) { this.deleteEntries(names_local, 'local'); }})
       .then(() => this.emit('deleted:entries'));
   },

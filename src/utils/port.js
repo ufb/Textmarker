@@ -50,7 +50,7 @@ export class _PORT extends _MODULE {
     else if (type === 'background') {
       const lastArg = args[args.length - 1];
       let tab;
-      if (lastArg !== undefined && (tab = lastArg.tab)) {
+      if (lastArg && (tab = lastArg.tab)) {
         if (tab === 'active') {
           browser.tabs.query({ active: true }).then(tabs => {
             for (let tab of tabs)

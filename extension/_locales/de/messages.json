@@ -451,6 +451,7 @@
 "detail_meta":{"message":"Metadaten"},
 "detail_sync":{"message":"Sync"},
 "detail_text":{"message":"Text"},
+"broken_entry":{"message":"Eintrag $1 ist fehlerhaft."},
 "tbb_mitem_1_false":{"message":"Aktiviere Textmarker"},
 "tbb_mitem_1_true":{"message":"Pausiere Textmarker"},
 "tbb_mitem_2":{"message":"Einstellungen"},

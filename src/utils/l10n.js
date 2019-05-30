@@ -19,7 +19,7 @@ function translateDocument() {
     const l10nId = dataset.l10nId;
 
     if (l10nId) {
-      data = browser.i18n.getMessage(l10nId);
+      data = browser.i18n.getMessage(l10nId, '');
 
       if(data && data != '??') {
         el.textContent = data;

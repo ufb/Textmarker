@@ -451,6 +451,7 @@
 "detail_meta":{"message":"Meta Data"},
 "detail_sync":{"message":"Synced"},
 "detail_text":{"message":"Text"},
+"broken_entry":{"message":"Entry $1 is broken."},
 "tbb_mitem_1_false":{"message":"Resume Textmarker"},
 "tbb_mitem_1_true":{"message":"Pause Textmarker"},
 "tbb_mitem_2":{"message":"Settings"},

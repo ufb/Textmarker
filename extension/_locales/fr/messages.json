@@ -451,6 +451,7 @@
 "detail_meta":{"message":"Métadonnées"},
 "detail_sync":{"message":"Synchronisation"},
 "detail_text":{"message":"Texte"},
+"broken_entry":{"message":"Entry $1 is broken."},
 "tbb_mitem_1_false":{"message":"Activer Textmarker"},
 "tbb_mitem_1_true":{"message":"Désactiver Textmarker"},
 "tbb_mitem_2":{"message":"Réglages"},

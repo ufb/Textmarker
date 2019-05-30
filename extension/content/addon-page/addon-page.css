@@ -1007,9 +1007,19 @@ aside {
 
 .entry {
   padding: 8px 20px; }
+  .entry--error {
+    padding: 8px 20px; }
+  .entry--broken .edit, .entry--broken .view, .entry--broken .switch, .entry--broken .immut, .entry--broken .locked, .entry--broken .details {
+    display: none !important; }
+  .entry--broken .error-message {
+    display: block !important;
+    margin: 3px 0 0 34px;
+    color: #c8c8c8; }
+  .entry .error-message {
+    display: none; }
   .entry input {
     float: right; }
-  .entry .name {
+  .entry .name, .entry .name--disabled {
     cursor: pointer;
     display: inline-block;
     max-width: calc(100% - 250px);
@@ -1019,8 +1029,13 @@ aside {
     position: relative;
     white-space: nowrap;
     top: 4px; }
-    .entry .name:hover {
+    .entry .name:hover, .entry .name--disabled:hover {
       text-decoration: underline; }
+  .entry .name--disabled {
+    color: #ad3a3a;
+    cursor: default; }
+    .entry .name--disabled:hover {
+      text-decoration: none; }
   .entry .view, .entry .edit {
     cursor: pointer;
     display: inline-block;

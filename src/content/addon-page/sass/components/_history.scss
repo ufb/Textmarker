@@ -22,10 +22,29 @@
 .entry {
   padding: 8px 20px;
 
+  &--error {
+    padding: 8px 20px;
+  }
+
+  &--broken {
+    .edit, .view, .switch, .immut, .locked, .details {
+      display: none !important;
+    }
+    .error-message {
+      display: block !important;
+      margin: 3px 0 0 34px;
+      color: $color-text--disabled;
+    }
+  }
+
+  .error-message {
+    display: none;
+  }
+
   input {
     float: right;
   }
-  .name {
+  .name, .name--disabled {
     cursor: pointer;
     display: inline-block;
     max-width: calc(100% - 250px);
@@ -40,6 +59,16 @@
       text-decoration: underline;
     }
   }
+
+  .name--disabled {
+    color: $color-text--red;
+    cursor: default;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
   .view, .edit {
     cursor: pointer;
     display: inline-block;

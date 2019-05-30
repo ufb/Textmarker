@@ -210,99 +210,121 @@ export default function() {
 
       for (; i < l; i++) {
         ((i, j) => {
-          name = names[i];
-          entry = entries[name];
+          name = names ? names[i] : null;
+          entry = entries ? entries[name] : null;
           if (entry) {
-            tags = entry.tag ? entry.tag.split(' ') : null;
-            locked = entry.locked;
-            immut = entry.immut;
-            clone = template.cloneNode(true);
-            container.appendChild(clone);
-            clone.id = 'entry-' + j;
-            clone.classList.remove('u-display--none');
-            clone.setAttribute('data-name', name);
-            nameField = clone.getElementsByClassName('name')[0];
-            input = clone.getElementsByTagName('input')[0];
-            label = clone.getElementsByTagName('label')[0];
-            details = clone.getElementsByClassName('details')[0];
-            searchResults = clone.getElementsByClassName('search-results')[0];
-            buttons = clone.getElementsByClassName('quick-action');
-            edit = clone.getElementsByClassName('edit')[0];
-            view = clone.getElementsByClassName('view')[0];
-            tagEl = clone.getElementsByClassName('tags')[0];
-            lockedEl = clone.getElementsByClassName('locked')[0];
-            immutEl = clone.getElementsByClassName('immut')[0];
-            b = buttons.length;
+            try {
+              tags = entry.tag ? entry.tag.split(' ') : null;
+              locked = entry.locked;
+              immut = entry.immut;
+              clone = template.cloneNode(true);
+              container.appendChild(clone);
+              clone.id = 'entry-' + j;
+              clone.classList.remove('u-display--none');
+              clone.setAttribute('data-name', name);
+              nameField = clone.getElementsByClassName('name')[0];
+              input = clone.getElementsByTagName('input')[0];
+              label = clone.getElementsByTagName('label')[0];
+              details = clone.getElementsByClassName('details')[0];
+              searchResults = clone.getElementsByClassName('search-results')[0];
+              buttons = clone.getElementsByClassName('quick-action');
+              edit = clone.getElementsByClassName('edit')[0];
+              view = clone.getElementsByClassName('view')[0];
+              tagEl = clone.getElementsByClassName('tags')[0];
+              lockedEl = clone.getElementsByClassName('locked')[0];
+              immutEl = clone.getElementsByClassName('immut')[0];
+              b = buttons.length;
 
-            while(b--) {
-                buttons[b].setAttribute('data-name', name);
-            }
-            nameField.appendChild(document.createTextNode(name));
-            nameField.setAttribute('data-url', entry.url);
-            nameField.setAttribute('data-name', name);
-            input.className = 'entry-cb';
-            input.id = 'entry-cb-' + j;
-            input.setAttribute('data-name', name);
-            view.setAttribute('data-name', name);
-            label.setAttribute('for', 'entry-cb-' + j);
+              while(b--) {
+                  buttons[b].setAttribute('data-name', name);
+              }
+              nameField.appendChild(document.createTextNode(name));
+              nameField.setAttribute('data-url', entry.url);
+              nameField.setAttribute('data-name', name);
+              input.className = 'entry-cb';
+              input.id = 'entry-cb-' + j;
+              input.setAttribute('data-name', name);
+              view.setAttribute('data-name', name);
+              label.setAttribute('for', 'entry-cb-' + j);
 
-            if (locked) {
-              lockedEl.classList.remove('u-display--none');
-            } else {
-              edit.classList.remove('u-display--none');
-              edit.setAttribute('data-name', name);
-            }
-            if (immut) immutEl.classList.remove('u-display--none');
+              if (locked) {
+                lockedEl.classList.remove('u-display--none');
+              } else {
+                edit.classList.remove('u-display--none');
+                edit.setAttribute('data-name', name);
+              }
+              if (immut) immutEl.classList.remove('u-display--none');
 
-            if (tags) {
-              tags.forEach(tag => {
-                let el = document.createElement('span');
-                tagEl.appendChild(el);
-                el.className = 'tags__item';
-                el.appendChild(document.createTextNode(tag));
-                el.setAttribute('title', browser.i18n.getMessage('title_filter'));
-              });
-            } else {
-              tagEl.innerText = browser.i18n.getMessage('detail_notag');
-            }
+              if (tags) {
+                tags.forEach(tag => {
+                  let el = document.createElement('span');
+                  tagEl.appendChild(el);
+                  el.className = 'tags__item';
+                  el.appendChild(document.createTextNode(tag));
+                  el.setAttribute('title', browser.i18n.getMessage('title_filter'));
+                });
+              } else {
+                tagEl.innerText = browser.i18n.getMessage('detail_notag');
+              }
 
-            clone.getElementsByClassName('created')[0].innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
-            clone.getElementsByClassName('last')[0].innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
-            clone.getElementsByClassName('count')[0].innerText = entry.marks.length;
-            //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
+              clone.getElementsByClassName('created')[0].innerText = this.optimizeDateString(new Date(entry.first).toLocaleString());
+              clone.getElementsByClassName('last')[0].innerText = this.optimizeDateString(new Date(entry.last).toLocaleString());
+              clone.getElementsByClassName('count')[0].innerText = entry.marks.length;
+              //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
 
-            if (entry.synced === undefined || entry.synced) {
-              clone.getElementsByClassName('switch--sync')[0].classList.add('active');
-            }
+              if (entry.synced === undefined || entry.synced) {
+                clone.getElementsByClassName('switch--sync')[0].classList.add('active');
+              }
 
-            if (searchedFullText) {
-              const fullTextSearchResults = this.fullTextSearchResults[name];
+              if (searchedFullText) {
+                const fullTextSearchResults = this.fullTextSearchResults[name];
 
-              if (fullTextSearchResults) {
-                let r = 0, res, mark, pos, markText, markTextEl, highlight, t1, t2, t3;
+                if (fullTextSearchResults) {
+                  let r = 0, res, mark, pos, markText, markTextEl, highlight, t1, t2, t3;
 
-                for (; r < fullTextSearchResults.length; r++) {
-                  res = fullTextSearchResults[r];
-                  mark = entry.marks[res.mark];
-                  pos = res.pos;
-                  markText = mark.text;
-                  markTextEl = document.createElement('div');
+                  for (; r < fullTextSearchResults.length; r++) {
+                    res = fullTextSearchResults[r];
+                    mark = entry.marks[res.mark];
+                    pos = res.pos;
+                    markText = mark.text;
+                    markTextEl = document.createElement('div');
 
-                  t1 = markText.substring(Math.max(pos-16, 0), pos);
-                  t2 = markText.substr(pos, searchTermLength);
-                  t3 = markText.substr(pos+searchTermLength, 16);
-                  t1 = t1 ? '... ' + t1 : t1;
-                  t3 = t3 ? t3 + ' ...' : t3;
+                    t1 = markText.substring(Math.max(pos-16, 0), pos);
+                    t2 = markText.substr(pos, searchTermLength);
+                    t3 = markText.substr(pos+searchTermLength, 16);
+                    t1 = t1 ? '... ' + t1 : t1;
+                    t3 = t3 ? t3 + ' ...' : t3;
 
-                  highlight = document.createElement('span');
-                  highlight.className = 'highlight';
-                  highlight.appendChild(document.createTextNode(t2));
-                  markTextEl.appendChild(document.createTextNode(t1));
-                  markTextEl.appendChild(highlight);
-                  markTextEl.appendChild(document.createTextNode(t3));
+                    highlight = document.createElement('span');
+                    highlight.className = 'highlight';
+                    highlight.appendChild(document.createTextNode(t2));
+                    markTextEl.appendChild(document.createTextNode(t1));
+                    markTextEl.appendChild(highlight);
+                    markTextEl.appendChild(document.createTextNode(t3));
 
-                  searchResults.appendChild(markTextEl);
+                    searchResults.appendChild(markTextEl);
+                  }
                 }
+              }
+
+              if (!entry.url) {
+                throw('Entry is missing URL field!');
+              }
+            } catch(e) {
+              const brokenEl = document.getElementById('entry-' + j);
+              if (brokenEl) {
+                brokenEl.classList.add('entry--broken');
+                brokenEl.title = e.toString();
+                const brokenNameEl = brokenEl.getElementsByClassName('name')[0];
+                if (brokenNameEl) {
+                  brokenNameEl.classList.remove('name');
+                  brokenNameEl.classList.add('name--disabled');
+                }
+              } else {
+                const errEl = document.createElement('div');
+                errEl.className = 'entry--error u-color--red';
+                errEl.appendChild(document.createTextNode(browser.i18n.getMessage('broken_entry', name)));
+                container.appendChild(errEl);
               }
             }
           }

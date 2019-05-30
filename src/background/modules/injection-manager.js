@@ -125,12 +125,14 @@ new _MODULE({
 
     for (let e in entries) {
       entry = entries[e];
-      pageUrl = entry.hashSensitive ? url : hashlessPageUrl;
-      entryUrl = entry.hashSensitive ? entry.url : _HASHLESS(entry.url);
+      if (entry.url) {
+        pageUrl = entry.hashSensitive ? url : hashlessPageUrl;
+        entryUrl = entry.hashSensitive ? entry.url : _HASHLESS(entry.url);
 
-      if (pageUrl === entryUrl) {
-        if (entry.locked) lockedEntries.push(entry);
-        else nonLockedEntries.push(entry);
+        if (pageUrl === entryUrl) {
+          if (entry.locked) lockedEntries.push(entry);
+          else nonLockedEntries.push(entry);
+        }
       }
     }
     return { lockedEntries, nonLockedEntries };
