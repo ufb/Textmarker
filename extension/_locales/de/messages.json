@@ -523,7 +523,7 @@
 "note_restoration_failure_reason_2":{"message":"Text gefunden, aber stimmt nicht mit Meta-Bedingungen (c1) überein"},
 "note_restoration_failure_reason_3":{"message":"Text gefunden, aber stimmt nicht mit Meta-Bedingungen (c2) überein"},
 "note_restoration_warning_1":{"message":"\nSowohl Multi-Highlight- als auch Single-Highlight-Einträge für diese URL gefunden.\nStelle nur letztere wieder her..."},
-"note_restoration_warning_2":{"message":"\nMehrere Multi-Highlight-Einträge für diese URL gefunden.\nStelle nur einen wieder her..."},
+"note_restoration_warning_2":{"message":"\nMehrere Multi-Highlight-Einträge für diese URL gefunden.\nStelle nur den aktuellsten wieder her..."},
 "note_restoration_success":{"message":"\nDeine Markierungen konnten erfolgreich wieder hergestellt werden!"},
 "canceled_save_warning":{"message":"\nÄnderungen werden nicht gespeichert, weil das Wiederherstellen der Markierungen abgebrochen wurde."},
 "note_error":{"message":"\nEin unerwarteter Fehler ist aufgetreten:\n\n$1\n\n"},

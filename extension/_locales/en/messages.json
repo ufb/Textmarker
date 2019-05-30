@@ -522,7 +522,7 @@
 "note_restoration_failure_reason_2":{"message":"Text found, but doesn't meet saved criteria (c1)"},
 "note_restoration_failure_reason_3":{"message":"Text found, but doesn't meet saved criteria (c2)"},
 "note_restoration_warning_1":{"message":"\nFound both multi- and single-highlight-entries for this URL.\nRestoring the latter only..."},
-"note_restoration_warning_2":{"message":"\nMore than one multi-highlight-entry for this URL found.\nRestoring one of them only..."},
+"note_restoration_warning_2":{"message":"\nMore than one multi-highlight-entry for this URL found.\nRestoring the latest one only..."},
 "note_restoration_success":{"message":"\nYour highlights have been restored successfully!"},
 "note_url":{"message":"For security reasons sites with privileged URLs can't be opened programmatically by addons (i.e. file://, chrome://, data://, about:...)."},
 "canceled_save_warning":{"message":"\n"},

@@ -150,7 +150,8 @@ new _MODULE({
       entries = lockedEntries;
     }
     else if (nonLockedEntriesCount) {
-      entries = [nonLockedEntries[0]];
+      // if multiple entries with same url found: take latest
+      entries = [nonLockedEntries.reduce((prev, current) => (prev.last > current.last) ? prev : current)];
       if (nonLockedEntriesCount > 1) {
         this.emit('warn:multiple-unlocked-entries');
       }
