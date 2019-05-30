@@ -529,7 +529,7 @@ new _MODULE({
 
     entry.name = locked ?
       entry.marks[0].text.trim().substring(0, _GLOBAL_SETTINGS.MAX_ENTRY_NAME_CHARS - 1) :
-      isNew ? name : entry.name;
+      isNew || !entry.name ? name : entry.name;
 
 		return entry;
 	},

@@ -153,6 +153,7 @@ new _MODULE({
       // if multiple entries with same url found: take latest
       entries = [nonLockedEntries.reduce((prev, current) => (prev.last > current.last) ? prev : current)];
       if (nonLockedEntriesCount > 1) {
+        this.recentlyOpenedEntry = null;
         this.emit('warn:multiple-unlocked-entries');
       }
       if (!frameId) this.emit('entry:found', entries[0]);

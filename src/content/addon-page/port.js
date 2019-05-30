@@ -34,6 +34,7 @@ export default new _PORT({
       'clean:entries',
       'open:entries',
       'rename:entry',
+      'correct-name:entry',
       'view:entry',
       'sync:entry',
       'sync:history',

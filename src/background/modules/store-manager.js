@@ -41,6 +41,7 @@ new _MODULE({
 
       'named:entry': 'saveEntry',
       'renamed:entry': 'saveNewName',
+      'correct-name:entry': 'correctName',
       'granted:update-entry': 'updateEntryOnPageAction',
       'delete:entries': 'deleteEntries',
       'finished:restoration': 'updateEntryOnRestoration',
@@ -342,8 +343,15 @@ new _MODULE({
       .then(history => this.emit('updated:entry updated:entry-name', history.entries[newName], oldName))
       .catch(() => this.emit('failed:update-entry', 'error_update_entry'));
   },
-  updateEntryOnPageAction(entry, area) {
+  correctName(name, area) {
+    _STORAGE.update('history', history => {
+      history.entries[name].name = name;
+      return history;
+    }, area);
+  },
+  updateEntryOnPageAction(entry, area, iteration = 0) {
     area = typeof area === 'string' ? area : entry.synced ? 'sync' : 'local';
+    iteration++;
 
     const name = entry.name;
     const receivedCompleteEntry = !!entry.url;
@@ -370,7 +378,7 @@ new _MODULE({
       return history;
     }, area)
       .catch((e) => this.emit('failed:update-entry', 'error_update_entry'))
-      .then(() => { if (!found) { this.updateEntryOnPageAction(entry, entry.synced ? 'local' : 'sync'); }})
+      .then(() => { if (!found && iteration < 2) { this.updateEntryOnPageAction(entry, entry.synced ? 'local' : 'sync', iteration); }})
       .then(() => this.emit('updated:entry updated:entry-on-save', entry));
   },
   deleteEntries(names, area) {
@@ -397,7 +405,7 @@ new _MODULE({
       }
       return history;
     }, area)
-      .catch((e) =>{console.log(e, e.toString()); this.emit('failed:delete-entries', 'error_del_entry')})
+      .catch((e) => this.emit('failed:delete-entries', 'error_del_entry'))
       .then(() => { if (area === 'sync' && names_local.length) { this.deleteEntries(names_local, 'local'); }})
       .then(() => this.emit('deleted:entries'));
   },

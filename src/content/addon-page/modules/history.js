@@ -214,6 +214,10 @@ export default function() {
           entry = entries ? entries[name] : null;
           if (entry) {
             try {
+              if (entry.name !== name) {
+                entry.name = name;
+                this.emit('correct-name:entry', name, entry.synced ? 'sync' : 'local');
+              }
               tags = entry.tag ? entry.tag.split(' ') : null;
               locked = entry.locked;
               immut = entry.immut;
@@ -272,7 +276,7 @@ export default function() {
               clone.getElementsByClassName('count')[0].innerText = entry.marks.length;
               //clone.getElementsByClassName('lost')[0].innerText = entry.lost ? entry.lost.length : 0;
 
-              if (entry.synced === undefined || entry.synced) {
+              if (entry.synced) {
                 clone.getElementsByClassName('switch--sync')[0].classList.add('active');
               }
 
