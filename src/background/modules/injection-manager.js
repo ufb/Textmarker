@@ -159,6 +159,7 @@ new _MODULE({
       if (!frameId) this.emit('entry:found', entries[0]);
     }
     if (lockedEntriesCount) {
+      entries = lockedEntries;
       if (!frameId) this.emit('entry:found', lockedEntries);
     }
     return entries;

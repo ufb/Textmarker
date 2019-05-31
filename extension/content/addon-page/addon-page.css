@@ -368,10 +368,13 @@ label span {
   border-radius: 2px;
   vertical-align: -5px;
   margin-right: 8px;
-  transition: color .3s ease-in, border .3s ease-in; }
+  transition: color .3s ease-in; }
   label span:hover {
-    border-color: #aaa;
+    border-color: #777;
     background-color: #fff; }
+  label span:active {
+    background-color: #2ba5b7;
+    color: #fbfbfb !important; }
 
 select {
   background-image: url(../../icons/arrow-down.png);

@@ -6,7 +6,7 @@ new _MODULE({
   events: {
     ENV: {
       'saved:entry': 'onSavedEntry',
-      'resumed-on-hashchange': 'setPageParams',
+      'resumed-on-hashchange': 'updateStore',
       'opened:sidebar': 'sendPageState',
       'failed:restoration': 'activateRetry',
       'succeeded:restoration': 'deactivateRetry',
@@ -20,10 +20,10 @@ new _MODULE({
   retryActive: false,
 
   autoinit() {
-    this.setPageParams();
+    this.updateStore();
   },
 
-  setPageParams() {
+  updateStore() {
     _STORE.iframe = window !== window.parent.window;
     _STORE.url = window.document.URL;
     _STORE.hashlessURL = _HASHLESS(_STORE.url);
@@ -52,9 +52,16 @@ new _MODULE({
 
   // @RESTORER
   onEntriesFound(info) {
+    if (!_STORE.updated) {
+      this.on('updated:store-status', this.proxy(this, this.startRestoration, info));
+    } else {
+      this.startRestoration(info);
+    }
+  },
+  startRestoration(info) {
     let entries = info.entries;
     entries = Array.isArray(entries) ? entries : [entries];
-
+    _STORE.locked = info.locked;
     _RESTORER();
     _STORE.addEntries(entries);
     this.emit('set:entries', entries);

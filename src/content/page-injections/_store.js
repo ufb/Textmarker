@@ -18,6 +18,7 @@ export default new _STORE({
   url: '',
   hashlessURL: '',
 
+  updated: false,
   restoring: false,
 
   iframe: false,
@@ -44,7 +45,7 @@ export default new _STORE({
   },
 
   updateStatus() {
-    if (!this.isNew || document.querySelector('[data-tm-id]')) return;//show notification
+    if (!this.isNew || document.querySelector('[data-tm-id]')) return;
 
     this.get('settings').then(settings => {
       const historySettings = settings ? settings.history : null;
@@ -52,6 +53,8 @@ export default new _STORE({
         this.locked = historySettings.naming === 'mark';
         this.hashSensitive = historySettings.ignoreHash === false;
       }
+      this.updated = true;
+      this.emit('updated:store-status');
     });
   },
 
