@@ -86,7 +86,7 @@ new _DOMMODULE({
         cb.name = 'marker-cb';
         cbLabel.className = 'fake-rb';
         cbLabel.setAttribute('for', 'marker__cb--' + m);
-        cbSpan.textContent = String.fromCharCode(0x229a);
+        cbSpan.textContent = String.fromCharCode(0x25CF);
 
         cbLabel.appendChild(cbSpan);
         cbBox.appendChild(cb);
