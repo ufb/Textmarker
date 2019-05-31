@@ -42,7 +42,8 @@ export default function() {
         },
         click: {
           '#custom-search': 'changeCustomSearch',
-          '.custom-search-input': 'hideCustomSearchSettingSuccess'
+          '.custom-search-input': 'hideCustomSearchSettingSuccess',
+          '#disable-notifs': 'disableAllNotifications'
         }
       }
     },
@@ -335,6 +336,13 @@ export default function() {
     },
     toggleNotes(e, el) {
       this.emit('toggle:notification-setting', el.name, el.checked);
+    },
+    disableAllNotifications() {
+      const cbs = [document.getElementById('notes-new')].concat(Array.from(document.getElementsByClassName('notes-cb')));
+      const interval = setInterval(() => {
+        if (!cbs.length) return clearInterval(interval);
+        cbs.pop().click();
+      }, 100);
     },
     toggleMisc(e, el) {
       this.emit('toggle:misc-setting', el.name, el.checked);
