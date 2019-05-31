@@ -279,7 +279,9 @@ new _MODULE({
     this.store(this.mark(mark.key, mark), false, false);
   },
   onFinishedRestoration() {
-    if (!this.done.length) return this;
+    if (!this.done.length) {
+      return this.emit('completed:restoration-process');
+    }
 
     this.emit('restore:notes', this.done);
 
