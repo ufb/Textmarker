@@ -1107,75 +1107,78 @@ tmnoteminimize:before {
   background-position: 0 0, 0 0;
   background-size: 12px, 100%; }
 
-.textmarker-sidebar--dark {
+.textmarker-sidebar--tm {
+  background: #37414b !important; }
+
+.textmarker-sidebar--dark, .textmarker-sidebar--tm {
   background: #38383d;
   color: #fff; }
-  .textmarker-sidebar--dark button {
+  .textmarker-sidebar--dark button, .textmarker-sidebar--tm button {
     border-color: transparent;
     color: #38383d;
     background-color: #aaa !important; }
-    .textmarker-sidebar--dark button:hover {
+    .textmarker-sidebar--dark button:hover, .textmarker-sidebar--tm button:hover {
       background-color: #c8c8c8 !important; }
-  .textmarker-sidebar--dark #mark-action--delete-highlight {
+  .textmarker-sidebar--dark #mark-action--delete-highlight, .textmarker-sidebar--tm #mark-action--delete-highlight {
     background-image: url(../../icons/bin.png); }
-  .textmarker-sidebar--dark #mark-action--bookmark {
+  .textmarker-sidebar--dark #mark-action--bookmark, .textmarker-sidebar--tm #mark-action--bookmark {
     background-image: url(../../icons/bm3.png); }
-  .textmarker-sidebar--dark #mark-action--delete-bookmark {
+  .textmarker-sidebar--dark #mark-action--delete-bookmark, .textmarker-sidebar--tm #mark-action--delete-bookmark {
     background-image: url(../../icons/del-bm.png); }
-  .textmarker-sidebar--dark #mark-action--add-note {
+  .textmarker-sidebar--dark #mark-action--add-note, .textmarker-sidebar--tm #mark-action--add-note {
     background-image: url(../../icons/note2.png); }
-  .textmarker-sidebar--dark #page-action--save {
+  .textmarker-sidebar--dark #page-action--save, .textmarker-sidebar--tm #page-action--save {
     background-image: url(../../icons/save.png); }
-  .textmarker-sidebar--dark #page-action--retry {
+  .textmarker-sidebar--dark #page-action--retry, .textmarker-sidebar--tm #page-action--retry {
     background-image: url(../../icons/retry.png); }
-  .textmarker-sidebar--dark #page-action--undo {
+  .textmarker-sidebar--dark #page-action--undo, .textmarker-sidebar--tm #page-action--undo {
     background-image: url(../../icons/undo.png); }
-  .textmarker-sidebar--dark #page-action--redo {
+  .textmarker-sidebar--dark #page-action--redo, .textmarker-sidebar--tm #page-action--redo {
     background-image: url(../../icons/redo.png); }
-  .textmarker-sidebar--dark #page-action--scroll {
+  .textmarker-sidebar--dark #page-action--scroll, .textmarker-sidebar--tm #page-action--scroll {
     background-image: url(../../icons/to-bm.png); }
-  .textmarker-sidebar--dark #page-action--notes {
+  .textmarker-sidebar--dark #page-action--notes, .textmarker-sidebar--tm #page-action--notes {
     background-image: url(../../icons/toggle-notes.png); }
-  .textmarker-sidebar--dark #nav-action--up {
+  .textmarker-sidebar--dark #nav-action--up, .textmarker-sidebar--tm #nav-action--up {
     background-image: url(../../icons/up.png); }
-  .textmarker-sidebar--dark #nav-action--down {
+  .textmarker-sidebar--dark #nav-action--down, .textmarker-sidebar--tm #nav-action--down {
     background-image: url(../../icons/down.png); }
-  .textmarker-sidebar--dark .marker__apply {
+  .textmarker-sidebar--dark .marker__apply, .textmarker-sidebar--tm .marker__apply {
     background-image: url(../../icons/highlight.png); }
-  .textmarker-sidebar--dark input[type="text"] {
+  .textmarker-sidebar--dark input[type="text"], .textmarker-sidebar--tm input[type="text"] {
     background-color: rgba(255, 255, 255, 0.1); }
-  .textmarker-sidebar--dark select {
+  .textmarker-sidebar--dark select, .textmarker-sidebar--tm select {
     background-color: transparent;
     color: #777; }
-  .textmarker-sidebar--dark .switch__indicator {
+  .textmarker-sidebar--dark .switch__indicator, .textmarker-sidebar--tm .switch__indicator {
     background-color: rgba(255, 255, 255, 0.1); }
-  .textmarker-sidebar--dark .tab__header {
+  .textmarker-sidebar--dark .tab__header, .textmarker-sidebar--tm .tab__header {
     position: relative;
     color: #aaa; }
-    .textmarker-sidebar--dark .tab__header:hover {
+    .textmarker-sidebar--dark .tab__header:hover, .textmarker-sidebar--tm .tab__header:hover {
       color: #fbfbfb; }
-  .textmarker-sidebar--dark .tab__title {
+  .textmarker-sidebar--dark .tab__title, .textmarker-sidebar--tm .tab__title {
     border-color: #777; }
-    .tab--folded .textmarker-sidebar--dark .tab__title {
+    .tab--folded .textmarker-sidebar--dark .tab__title, .tab--folded .textmarker-sidebar--tm .tab__title {
       border-color: #777; }
-  .textmarker-sidebar--dark .tab__toggle {
+  .textmarker-sidebar--dark .tab__toggle, .textmarker-sidebar--tm .tab__toggle {
     border-color: #777; }
-  .textmarker-sidebar--dark .tags__item {
+  .textmarker-sidebar--dark .tags__item, .textmarker-sidebar--tm .tags__item {
     background: #37414b; }
-  .textmarker-sidebar--dark .tags__remove:hover {
+  .textmarker-sidebar--dark .tags__remove:hover, .textmarker-sidebar--tm .tags__remove:hover {
     color: #d37a7a; }
-  .textmarker-sidebar--dark .mark__text-container {
+  .textmarker-sidebar--dark .mark__text-container, .textmarker-sidebar--tm .mark__text-container {
     border-color: #37414b;
     background-color: #4c4c51;
     color: #e1e2e3; }
-  .textmarker-sidebar--dark .mark__text {
+  .textmarker-sidebar--dark .mark__text, .textmarker-sidebar--tm .mark__text {
     border-color: #37414b; }
-  .textmarker-sidebar--dark .mark__note {
+  .textmarker-sidebar--dark .mark__note, .textmarker-sidebar--tm .mark__note {
     color: #38383d; }
-  .textmarker-sidebar--dark .link {
+  .textmarker-sidebar--dark .link, .textmarker-sidebar--tm .link {
     opacity: 1;
     color: #fff; }
-    .textmarker-sidebar--dark .link:hover {
+    .textmarker-sidebar--dark .link:hover, .textmarker-sidebar--tm .link:hover {
       color: #2ba5b7; }
 
 a, .link {

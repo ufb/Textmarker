@@ -1,6 +1,10 @@
 .textmarker-sidebar {
 
-  &--dark {
+  &--tm {
+    background: $color-grey--darker !important;
+  }
+
+  &--dark, &--tm {
     background: #38383d;
     color: #fff;
 

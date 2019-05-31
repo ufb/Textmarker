@@ -76,7 +76,7 @@ export default {
         links: { unfolded: false },
         themes: { unfolded: false }
       },
-      theme: 'default'
+      theme: 'tm'
     }
   },
   history: {

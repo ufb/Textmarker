@@ -28,12 +28,6 @@ new _DOMMODULE({
   },
   update(theme) {
     this.theme = theme;
-    const sidebar = document.getElementById('textmarker-sidebar');
-    const className = 'textmarker-sidebar--dark';
-    if (theme === 'default') {
-      sidebar.classList.remove(className);
-    } else {
-      sidebar.classList.add(className);
-    }
+    document.getElementById('textmarker-sidebar').className = `textmarker-sidebar--${theme}`;
   }
 });

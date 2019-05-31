@@ -510,6 +510,7 @@
 "sb75":{"message":"Don"},
 "sb81":{"message":""},
 "sb82":{"message":""},
+"sb83":{"message":""},
 "del_confirm":{"message":"Veuillez confirmer votre demande de suppression."},
 "del_confirm_locked":{"message":"La suppression des entrées  en mode « un surlignage par entrée » peut rendre les autres entrées de même URL irrécupérables."},
 "nm_message":{"message":"Donnez un nom à cette nouvelle entrée dans l’historique$1 :"},
