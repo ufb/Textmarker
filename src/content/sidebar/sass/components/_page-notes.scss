@@ -52,6 +52,7 @@ tmnote {
   }
   .tmnote__header {
     width: calc(100% - 70px);
+    height:22px !important;
     border: 0;
     color: $color-text--grey;
   }

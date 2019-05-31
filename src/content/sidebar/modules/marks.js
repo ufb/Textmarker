@@ -152,7 +152,9 @@ new _DOMMODULE({
   },
   toggleNote(e, el) {
     document.getElementById('fold-marks').value = 0;
-    el.parentNode.getElementsByClassName('mark__note')[0].classList.toggle('unfolded');
+    const markEl = el.parentNode;
+    markEl.classList.toggle('open-note');
+    markEl.getElementsByClassName('mark__note')[0].classList.toggle('unfolded');
   },
   toggle(type, show) {
     const meth = show ? 'add' : 'remove';

@@ -1,16 +1,12 @@
 .textmarker-sidebar {
 
-  &--tm {
-    background: $color-grey--darker !important;
-  }
-
   &--dark, &--tm {
-    background: #38383d;
-    color: #fff;
+    background: $color-bg--dark-ff;
+    color: $color-text--light;
 
     button {
       border-color: transparent;
-      color: #38383d;
+      color: $color-bg--dark-ff;
       background-color: $color-grey--medium-light !important;
 
       &:hover {
@@ -42,7 +38,7 @@
     }
 
     input[type="text"] {
-      background-color: transparentize(#fff, .9);
+      background-color: rgba(0, 0, 0, .1);
     }
 
     select {
@@ -50,8 +46,15 @@
       color: $color-grey--medium;
     }
 
+    label span {
+      background-color: rgba(0, 0, 0, .1);
+    }
+
     .switch__indicator {
-      background-color: transparentize(#fff, .9);
+      background-color: rgba(255, 255, 255, .1);
+    }
+    .switch--immut {
+      background-color: rgba(0, 0, 0, .1);
     }
 
     .tab {
@@ -89,15 +92,23 @@
 
     .mark {
       &__text-container {
-        border-color: $color-border--dark;
-        background-color: #4c4c51;
+        border-color: $color-border--dark !important;
+        background-color: rgba(0, 0, 0, .1);
         color: $color-text--light-grey;
       }
       &__text {
-        border-color: $color-border--dark;
+        &.unfolded {
+          background-color: $color-bg--dark-ff;
+        }
       }
       &__note {
-        color: #38383d;
+        color: $color-bg--dark-ff;
+      }
+    }
+
+    .open-note {
+      .mark__text {
+        background-color: $color-bg--dark-ff;
       }
     }
 
@@ -107,6 +118,32 @@
 
       &:hover {
         color: $color-text--turquoise;
+      }
+    }
+  }
+
+  &--tm {
+    background: $color-grey--darker;
+
+    button {
+      color: $color-bg--dark;
+    }
+
+    .mark {
+      &__text {
+        &.unfolded {
+          background-color: $color-bg--dark;
+        }
+      }
+
+      &__note {
+        color: $color-bg--dark;
+      }
+    }
+
+    .open-note {
+      .mark__text {
+        background-color: $color-bg--dark;
       }
     }
   }

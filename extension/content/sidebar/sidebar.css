@@ -1023,6 +1023,7 @@ tmnote {
         color: transparent; }
   tmnote .tmnote__header {
     width: calc(100% - 70px);
+    height: 22px !important;
     border: 0;
     color: #777; }
 
@@ -1107,12 +1108,9 @@ tmnoteminimize:before {
   background-position: 0 0, 0 0;
   background-size: 12px, 100%; }
 
-.textmarker-sidebar--tm {
-  background: #37414b !important; }
-
 .textmarker-sidebar--dark, .textmarker-sidebar--tm {
   background: #38383d;
-  color: #fff; }
+  color: #fbfbfb; }
   .textmarker-sidebar--dark button, .textmarker-sidebar--tm button {
     border-color: transparent;
     color: #38383d;
@@ -1146,12 +1144,16 @@ tmnoteminimize:before {
   .textmarker-sidebar--dark .marker__apply, .textmarker-sidebar--tm .marker__apply {
     background-image: url(../../icons/highlight.png); }
   .textmarker-sidebar--dark input[type="text"], .textmarker-sidebar--tm input[type="text"] {
-    background-color: rgba(255, 255, 255, 0.1); }
+    background-color: rgba(0, 0, 0, 0.1); }
   .textmarker-sidebar--dark select, .textmarker-sidebar--tm select {
     background-color: transparent;
     color: #777; }
+  .textmarker-sidebar--dark label span, .textmarker-sidebar--tm label span {
+    background-color: rgba(0, 0, 0, 0.1); }
   .textmarker-sidebar--dark .switch__indicator, .textmarker-sidebar--tm .switch__indicator {
     background-color: rgba(255, 255, 255, 0.1); }
+  .textmarker-sidebar--dark .switch--immut, .textmarker-sidebar--tm .switch--immut {
+    background-color: rgba(0, 0, 0, 0.1); }
   .textmarker-sidebar--dark .tab__header, .textmarker-sidebar--tm .tab__header {
     position: relative;
     color: #aaa; }
@@ -1168,18 +1170,31 @@ tmnoteminimize:before {
   .textmarker-sidebar--dark .tags__remove:hover, .textmarker-sidebar--tm .tags__remove:hover {
     color: #d37a7a; }
   .textmarker-sidebar--dark .mark__text-container, .textmarker-sidebar--tm .mark__text-container {
-    border-color: #37414b;
-    background-color: #4c4c51;
+    border-color: #37414b !important;
+    background-color: rgba(0, 0, 0, 0.1);
     color: #e1e2e3; }
-  .textmarker-sidebar--dark .mark__text, .textmarker-sidebar--tm .mark__text {
-    border-color: #37414b; }
+  .textmarker-sidebar--dark .mark__text.unfolded, .textmarker-sidebar--tm .mark__text.unfolded {
+    background-color: #38383d; }
   .textmarker-sidebar--dark .mark__note, .textmarker-sidebar--tm .mark__note {
     color: #38383d; }
+  .textmarker-sidebar--dark .open-note .mark__text, .textmarker-sidebar--tm .open-note .mark__text {
+    background-color: #38383d; }
   .textmarker-sidebar--dark .link, .textmarker-sidebar--tm .link {
     opacity: 1;
     color: #fff; }
     .textmarker-sidebar--dark .link:hover, .textmarker-sidebar--tm .link:hover {
       color: #2ba5b7; }
+
+.textmarker-sidebar--tm {
+  background: #37414b; }
+  .textmarker-sidebar--tm button {
+    color: #37414b; }
+  .textmarker-sidebar--tm .mark__text.unfolded {
+    background-color: #37414b; }
+  .textmarker-sidebar--tm .mark__note {
+    color: #37414b; }
+  .textmarker-sidebar--tm .open-note .mark__text {
+    background-color: #37414b; }
 
 a, .link {
   color: inherit;
