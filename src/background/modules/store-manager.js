@@ -269,8 +269,7 @@ new _MODULE({
   changeMiscSetting(prop, val) {
     this.updateSettings(
       settings => { settings.misc[prop] = val; return settings; },
-      'misc',
-      'error_save_bmicon'
+      'misc'
     );
   },
   toggleTBBPowerSetting(prop, val) {

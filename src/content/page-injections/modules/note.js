@@ -64,6 +64,7 @@ export default function(mark, color) {
         this.pos = noteData.pos || this.pos;
         this.size = noteData.size || this.size;
       }
+      this.fs = this.mark.keyData.note.fs = this.mark.keyData.note.fs || _STORE.noteFontSize;
     },
     createNoteElement() {
       const note = this.el = document.createElement('tmnote');
@@ -147,11 +148,12 @@ export default function(mark, color) {
         left = this.pos.l = innerWindowWidth - 340;
       }
 
-      const size = this.size.w ? 'width:' + this.size.w + ';height:' + this.size.h + ';' : '';
+      const size = this.size.w ? `width:${this.size.w};height:${this.size.h};` : '';
+      const fontSize = `font-size: ${this.fs}px !important;`;
 
       BODY.appendChild(el);
-      el.setAttribute('style', 'display:block;top:' + top + 'px;left:' + left + 'px;');
-      el.getElementsByTagName('textarea')[0].setAttribute('style', size);
+      el.setAttribute('style', `display:block;top:${top}px;left:${left}px;`);
+      el.getElementsByTagName('textarea')[0].setAttribute('style', (size + fontSize));
       this.connectMutationObserver();
       this.visible = true;
     },

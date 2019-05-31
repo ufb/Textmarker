@@ -38,7 +38,8 @@ export default function() {
           '#autonote-color': 'changeAutoNoteOpt',
           '#ignore-hash': 'changeHashOpt',
           '#addon-autocs': 'toggleAutocsOpt',
-          '#addon-iframes': 'toggleIFrameOpt'
+          '#addon-iframes': 'toggleIFrameOpt',
+          '#misc-notefontsize': 'changeNotesFontSize'
         },
         click: {
           '#custom-search': 'changeCustomSearch',
@@ -196,6 +197,7 @@ export default function() {
       document.getElementById('misc-noteonclick').checked = miscSettings.noteonclick;
       document.getElementById('misc-notetransp').checked = miscSettings.notetransp;
       document.getElementById('misc-noteplainview').checked = miscSettings.noteplainview;
+      document.getElementById('misc-notefontsize').value = miscSettings.notefontsize;
       document.getElementById('notes-restoration-failure').checked = miscSettings.failureNote;
       document.getElementById('notes-restoration-success').checked = miscSettings.successNote;
       document.getElementById('notes-pbm').checked = miscSettings.pbmNote;
@@ -354,6 +356,11 @@ export default function() {
     changeTmuiPositionOpt(e, el) {
       this.emit('change:misc-setting', el.name, el.value);
       Array.from(this.el.getElementsByClassName('tmuipos')).forEach(select => select.value = el.value);
+    },
+    changeNotesFontSize(e, el) {
+      if (el.validity.valid) {
+        this.emit('change:misc-setting', el.name, el.value);
+      }
     },
     changeCustomSearch(e, el) {
       this.hideCustomSearchSettingSuccess();

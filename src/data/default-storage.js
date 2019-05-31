@@ -52,6 +52,7 @@ export default {
       noteonclick: true,
       notetransp: false,
       noteplainview: false,
+      notefontsize: 12,
       overwrite: false,
       failureNote: true,
       successNote: true,

@@ -30,6 +30,7 @@ export default new _STORE({
   hashSensitive: false,
   tmid: '',
   noteColor: 'yellow',
+  noteFontSize: 12,
   immut: false,
   redescribing: false,
 

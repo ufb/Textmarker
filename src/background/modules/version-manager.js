@@ -86,6 +86,9 @@ new _MODULE({
         if (typeof misc.noteplainview !== 'boolean') {
           misc.noteplainview = defaultSettings.misc.noteplainview;
         }
+        if (!misc.notefontsize) {
+          misc.notefontsize = defaultSettings.misc.notefontsize;
+        }
         if (!misc.markmethod) {
           misc.markmethod = defaultSettings.misc.markmethod;
         }

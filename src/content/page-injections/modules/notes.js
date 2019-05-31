@@ -11,7 +11,7 @@ new _MODULE({
       'removed:mark': 'removeNote',
       'toggle:notes': 'toggleAll',
       'sidebar:toggle-notes': 'toggleAll',
-      'updated:misc-settings': 'updateTransp',
+      'updated:misc-settings': 'updateStyle',
       'start:drag': 'startDraggingNote',
       'opened:sidebar': 'sendNotesState',
       'finished:all-restorations': 'report'
@@ -24,7 +24,7 @@ new _MODULE({
   dragStopHandler: null,
 
   autoinit() {
-      this.updateTransp();
+      this.updateStyle();
   },
   add(mark, color) {
     const note = this.notes[mark.id];
@@ -62,7 +62,7 @@ new _MODULE({
       }
     }
   },
-  updateTransp() {
+  updateStyle() {
     const bodyClasses = window.document.body.classList;
     _STORE.get('settings').then(settings => {
       if (settings && settings.misc) {
@@ -70,6 +70,7 @@ new _MODULE({
         else bodyClasses.remove('tmnotes--0_8');
         if (settings.misc.noteplainview) bodyClasses.add('tmnotes--plain-view');
         else bodyClasses.remove('tmnotes--plain-view');
+        _STORE.noteFontSize = settings.misc.notefontsize || 12;
       }
     });
   },
