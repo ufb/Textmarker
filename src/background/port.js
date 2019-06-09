@@ -72,7 +72,8 @@ new _PORT({
       'entry:found',
       'entry:found-for-tab',
       'entry:deleted-for-tab',
-      'entry:ordered-marks'
+      'entry:ordered-marks',
+      'hashchange'
     ]
   }
 });

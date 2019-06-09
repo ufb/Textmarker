@@ -10,7 +10,8 @@ new _MODULE({
       'save:entry?': 'onSaveNewRequest',
       'update:entry?': 'onUpdateRequest',
       'name:entry?': 'onNamingRequest',
-      'opened:entry': 'tempSaveEntryMetaData'
+      'opened:entry': 'tempSaveEntryMetaData',
+      'fetch:entries': 'onFetchEntriesRequest'
     }
   },
   queuedForTabCompleted: {},
@@ -32,6 +33,10 @@ new _MODULE({
     }
   },
 
+  onFetchEntriesRequest(url, sender) {
+    this.collectEntries(sender.tab.id, url, sender.frameId, true);
+  },
+
   attemptInjections(tabId, newUrl, noReload) {
     _STORAGE.get('settings').then(settings => {
       if (settings.addon.autocs) {
@@ -41,11 +46,7 @@ new _MODULE({
   },
 
   handleInjections(tabId, newUrl, noReload) {
-    const registered = this.injectedScripts[tabId];
-    const sameHashlessUrls = registered && _HASHLESS(registered.url) === _HASHLESS(newUrl);
-    const reloaded = registered && !noReload;
-
-    if (!registered || reloaded) {
+    if (!this.injectedScripts[tabId] || !noReload) {
       this.inject(tabId, newUrl, 0).then(lastFrameId => {
         _STORAGE.get('settings').then(settings => {
           if (settings.addon.iframes) {
@@ -58,29 +59,12 @@ new _MODULE({
         });
       });
     }
-    else if (sameHashlessUrls && registered.entry && registered.entry.hashSensitive) {
-      this.emit('hash:changed', newUrl);
-    }
   },
 
   inject(tabId, url, frameId) {
     return this.injectContentScript(tabId, url, frameId).then(() => {
 
-      _STORAGE.get('history').then(history => {
-        const matches = this.findMatchingEntries(history, url);
-        const entries = this.filterMatches(matches, frameId);
-
-        if (entries) {
-          this.emit('entries:found', {
-            entries,
-            recentlyOpenedEntry: this.recentlyOpenedEntry,
-            locked: !!matches.lockedEntries.length
-          }, { tab: tabId, frameId });
-
-          this.recentlyOpenedEntry = null;
-        }
-      });
-
+      this.collectEntries(tabId, url, frameId);
       return frameId;
     });
   },
@@ -116,8 +100,24 @@ new _MODULE({
       });
   },
 
-  findMatchingEntries(history, url) {
-    const hashlessPageUrl = _HASHLESS(url);
+  collectEntries(tabId, url, frameId, hashSensitive) {
+    _STORAGE.get('history').then(history => {
+      const matches = this.findMatchingEntries(history, url, hashSensitive);
+      const entries = this.filterMatches(matches, frameId);
+
+      if (entries) {
+        this.emit('entries:found', {
+          entries,
+          recentlyOpenedEntry: this.recentlyOpenedEntry,
+          locked: !!matches.lockedEntries.length
+        }, { tab: tabId, frameId });
+
+        this.recentlyOpenedEntry = null;
+      }
+    });
+  },
+
+  findMatchingEntries(history, url, hashSensitive) {
     const entries = history.entries;
     const lockedEntries = [];
     const nonLockedEntries = [];
@@ -126,8 +126,8 @@ new _MODULE({
     for (let e in entries) {
       entry = entries[e];
       if (entry.url) {
-        pageUrl = entry.hashSensitive ? url : hashlessPageUrl;
-        entryUrl = entry.hashSensitive ? entry.url : _HASHLESS(entry.url);
+        pageUrl = hashSensitive || entry.hashSensitive ? url : _HASHLESS(url);
+        entryUrl = hashSensitive || entry.hashSensitive ? entry.url : _HASHLESS(entry.url);
 
         if (pageUrl === entryUrl) {
           if (entry.locked) lockedEntries.push(entry);

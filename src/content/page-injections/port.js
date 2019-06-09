@@ -21,6 +21,7 @@ export default new _PORT({
       'page-state',
       'notes-state',
       'visually-ordered:marks',
+      'fetch:entries',
 
       // @RESTORER
       'finished:restoration',

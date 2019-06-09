@@ -671,7 +671,8 @@ export default function() {
         'restore:marks': 'restore',
         'lost:marks': 'onFailure',
         'finished:restoration': 'onFinishedRestoration',
-        'resumed:markers': 'retry'
+        'resumed:markers': 'retry',
+        'resumed-on-hashchange': 'resume'
       }
     },
 

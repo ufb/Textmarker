@@ -1,15 +1,9 @@
-import { _STORE } from './../_shared/utils'
+import { _STORE, _HASHLESS } from './../_shared/utils'
 
 export default new _STORE({
   events: {
     ENV: {
-      'toggled:sync': 'onToggledSync',
-      'updated:naming-settings': 'updateStatus',
-      'updated:hashopt-settings': 'updateStatus',
-      'updated:entry-sync': 'setSyncForEntry',
-      'updated:entry-name': 'renameEntry',
-      'deleted:entry': 'removeEntry',
-      'hashchange': 'resume'
+      'toggled:sync': 'onToggledSync'
     }
   },
 
@@ -34,10 +28,6 @@ export default new _STORE({
   immut: false,
   redescribing: false,
 
-  autoinit() {
-    this.updateStatus();
-  },
-
   resume() {
     this.entries = {};
     this.name = undefined;
@@ -45,10 +35,16 @@ export default new _STORE({
     this.isNew = true;
   },
 
+  updateLocation() {
+    this.iframe = window !== window.parent.window;
+    this.url = window.document.URL;
+    this.hashlessURL = _HASHLESS(this.url);
+  },
+
   updateStatus() {
     if (!this.isNew || document.querySelector('[data-tm-id]')) return;
 
-    this.get('settings').then(settings => {
+    return this.get('settings').then(settings => {
       const historySettings = settings ? settings.history : null;
       if (historySettings) {
         this.locked = historySettings.naming === 'mark';
@@ -90,14 +86,20 @@ export default new _STORE({
   },
 
   addEntries(entries) {
-    if (!this.locked) this.name = entries[0].name;
+    if (!entries) return false;
+
+    const firstEntry = entries[0];
     const e = entries.length;
+
+    if (!this.locked) this.name = firstEntry.name;
+
     for (let i = 0, entry; i < e; i++) {
       entry = entries[i];
       this.entries[entry.name] = entry;
     }
     this.isNew = false;
-    this.immut = !!entries[0].immut;
+    this.immut = !!firstEntry.immut;
+    this.hashSensitive = firstEntry.hashSensitive;
   },
 
   _get_bmicon() {

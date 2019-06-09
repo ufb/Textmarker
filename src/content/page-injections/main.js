@@ -1,16 +1,23 @@
-import { _MODULE, _HASHLESS } from '../_shared/utils'
+import { _MODULE } from '../_shared/utils'
 import _STORE from './_store'
 import _RESTORER from './modules/restorer'
 
 new _MODULE({
   events: {
     ENV: {
-      'saved:entry': 'onSavedEntry',
-      'resumed-on-hashchange': 'updateStore',
       'opened:sidebar': 'sendPageState',
+
       'failed:restoration': 'activateRetry',
       'succeeded:restoration': 'deactivateRetry',
       'update:entry?': 'deactivateRetry',
+
+      'updated:naming-settings': 'updateStatus',
+      'updated:hashopt-settings': 'updateStatus',
+      'updated:entry-sync': 'setSyncForEntry',
+      'updated:entry-name': 'renameEntry',
+      'saved:entry': 'onSavedEntry',
+      'deleted:entry': 'removeEntry',
+      'resumed-on-hashchange': 'onResumed',
 
       // @RESTORER
       'entries:found': 'onEntriesFound'
@@ -18,15 +25,26 @@ new _MODULE({
   },
 
   retryActive: false,
+  restorer: null,
 
   autoinit() {
-    this.updateStore();
+    _STORE.updateLocation();
+    _STORE.updateStatus();
+    if (!this.iframe) {
+      window.addEventListener('hashchange', this.proxy(this, this.onHashChange), false);
+    }
   },
 
-  updateStore() {
-    _STORE.iframe = window !== window.parent.window;
-    _STORE.url = window.document.URL;
-    _STORE.hashlessURL = _HASHLESS(_STORE.url);
+  onHashChange() {
+    if (_STORE.hashSensitive) {
+      this.emit('hashchange');
+    }
+  },
+  onResumed() {
+    _STORE.updateLocation();
+    _STORE.isNew || _STORE.resume();
+
+    this.emit('fetch:entries', _STORE.url);
   },
   onSavedEntry(entry) {
     const ignoreHash = !entry.hashSensitive;
@@ -50,6 +68,19 @@ new _MODULE({
     }, info);
   },
 
+  updateStatus() {
+    _STORE.updateStatus();
+  },
+  setSyncForEntry(...args) {
+    _STORE.setSyncForEntry(...args);
+  },
+  renameEntry(...args) {
+    _STORE.renameEntry(...args);
+  },
+  removeEntry(...args) {
+    _STORE.removeEntry(...args);
+  },
+
   // @RESTORER
   onEntriesFound(info) {
     if (!_STORE.updated) {
@@ -62,7 +93,7 @@ new _MODULE({
     let entries = info.entries;
     entries = Array.isArray(entries) ? entries : [entries];
     _STORE.locked = info.locked;
-    _RESTORER();
+    if (!this.restorer) this.restorer = _RESTORER();
     _STORE.addEntries(entries);
     this.emit('set:entries', entries);
     if (info.recentlyOpenedEntry) this.updateName(entries, info.recentlyOpenedEntry);
