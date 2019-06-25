@@ -29,7 +29,7 @@ function translateDocument() {
   for(el of attrElements) {
     dataset = el.dataset;
 
-    ['Title', 'Placeholder'].forEach(attr => {
+    ['Title', 'Placeholder', 'Href'].forEach(attr => {
       const l10nAttr = dataset['l10n' + attr];
 
       if (l10nAttr) {

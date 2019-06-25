@@ -163,6 +163,7 @@ $spacing-sizes: (
 
 // alignment
 .u-align {
+  // vertical
   &--top {
     vertical-align: top;
   }
@@ -174,6 +175,17 @@ $spacing-sizes: (
   }
   &--0 {
     vertical-align: 0 !important;
+  }
+
+  // horizontal
+  &--left {
+    text-align: left !important;
+  }
+  &--right {
+    text-align: right !important;
+  }
+  &--center {
+    text-align: center !important;
   }
 }
 

@@ -8,7 +8,7 @@
 
   &.open {
     max-height: 1000px;
-    transition: max-height 1s ease-in;
+    transition: max-height .5s ease-in;
   }
 
   h3 {

@@ -95,6 +95,12 @@ li {
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
+#troubleshooting .menu__icon {
+  background-image: url(../../icons/debug.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
 #logs .menu__icon {
   background-image: url(../../icons/dna.png);
   background-repeat: no-repeat;

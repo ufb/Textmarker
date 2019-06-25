@@ -65,7 +65,8 @@ aside {
         opacity: .75;
       }
 
-      &.github {
+      &.github,
+      &.email {
         background-position: center !important;
       }
 
@@ -76,6 +77,10 @@ aside {
 
     &.github {
       @include icon('github', 9px center);
+    }
+
+    &.email {
+      @include icon('email', center center);
     }
 
     img {

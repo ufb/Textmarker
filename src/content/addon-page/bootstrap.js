@@ -7,6 +7,7 @@ import _LOGGING from './modules/logs'
 import _SYNCING from './modules/syncing'
 import _IMPORT from './modules/import'
 import _CONTACT from './modules/contact'
+import _TROUBLESHOOTING from './modules/troubleshooting'
 import _PAGINATOR from './modules/history-pagination'
 
 import _NAV from './modules/nav'
@@ -19,7 +20,7 @@ new _MODULE({
       'updated:history': 'start'
     }
   },
-  allowedHashes: ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'logs'],
+  allowedHashes: ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'troubleshooting', 'logs'],
   bootstrapped: false,
   autoinit() {
     _STORE.get().then(storage => {
@@ -35,6 +36,7 @@ new _MODULE({
       _SYNCING();
       _IMPORT();
       _CONTACT();
+      _TROUBLESHOOTING();
       _PAGINATOR();
       this.initMainNav();
     }

@@ -327,6 +327,15 @@ body {
 .u-align--0 {
   vertical-align: 0 !important; }
 
+.u-align--left {
+  text-align: left !important; }
+
+.u-align--right {
+  text-align: right !important; }
+
+.u-align--center {
+  text-align: center !important; }
+
 button, .btn {
   border: 1px solid #c8c8c8;
   background-image: linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%);
@@ -795,6 +804,12 @@ ol {
   background-position: 0 0, 0 0;
   background-size: unset, 100%; }
 
+#mainnav-troubleshooting:before {
+  background-image: url(../../icons/debug.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: unset, 100%; }
+
 #mainnav-logs:before {
   background-image: url(../../icons/dna.png);
   background-repeat: no-repeat;
@@ -878,7 +893,7 @@ aside {
         aside a:hover {
           border: 0;
           opacity: .75; }
-        aside a.github {
+        aside a.github, aside a.email {
           background-position: center !important; }
         aside a img {
           margin-top: 6px !important; } }
@@ -886,6 +901,11 @@ aside {
       background-image: url(../../icons/github.png);
       background-repeat: no-repeat;
       background-position: 9px center, 0 0;
+      background-size: unset, 100%; }
+    aside a.email {
+      background-image: url(../../icons/email.png);
+      background-repeat: no-repeat;
+      background-position: center center, 0 0;
       background-size: unset, 100%; }
     aside a img {
       width: 20px;
@@ -1346,7 +1366,7 @@ a .at {
   transition: none; }
   .news-box.open {
     max-height: 1000px;
-    transition: max-height 1s ease-in; }
+    transition: max-height .5s ease-in; }
   .news-box h3 {
     padding-right: 20px;
     padding-bottom: 10px;
@@ -1383,6 +1403,125 @@ a .at {
   .news-box small {
     display: block;
     margin-top: 5px; }
+
+#troubleshooting {
+  margin: 0 -20px;
+  width: calc(100% + 40px); }
+  #troubleshooting h2 {
+    padding-left: 20px;
+    padding-right: 20px; }
+  #troubleshooting article {
+    max-height: 0;
+    overflow: hidden;
+    transition: all .3s;
+    padding: 0;
+    clear: both; }
+    #troubleshooting article.open {
+      max-height: 2000px;
+      padding: 20px 0; }
+      #troubleshooting article.open.trouble {
+        padding: 20px; }
+    #troubleshooting article.answered--yes > .trouble__result--yes,
+    #troubleshooting article.answered--no > .trouble__result--no {
+      max-height: 1000px;
+      padding: 15px 0 0; }
+      #troubleshooting article.answered--yes > .trouble__result--yes.trouble__result--final,
+      #troubleshooting article.answered--no > .trouble__result--no.trouble__result--final {
+        padding: 20px 5px;
+        border-top: 1px solid #e1e2e3;
+        margin-top: 15px; }
+    #troubleshooting article.answered--yes > .trouble__answer .trouble__answer--yes,
+    #troubleshooting article.answered--no > .trouble__answer .trouble__answer--no {
+      padding: 0;
+      height: auto; }
+    #troubleshooting article.answered--no > .trouble__answer .trouble__answer--no {
+      width: 100%; }
+    #troubleshooting article.answered--yes > .trouble__answer .trouble__answer--no,
+    #troubleshooting article.answered--no > .trouble__answer .trouble__answer--yes {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+      color: transparent; }
+  #troubleshooting select {
+    padding: 0 25px 0 20px;
+    background-color: #37414b;
+    background-size: 21px;
+    background-position: calc(100% - 12px) 17px;
+    width: 100%;
+    height: 44px;
+    border: 0;
+    color: #aaa;
+    font-size: 1rem;
+    -moz-appearance: none;
+    outline: 0;
+    cursor: pointer; }
+
+.trouble {
+  position: relative; }
+  .trouble__cancel {
+    font-size: 1.333rem;
+    position: absolute;
+    top: 0;
+    right: 20px;
+    background: #fbfbfb !important;
+    animation: none !important;
+    border: 0;
+    display: none;
+    padding-right: 0; }
+    .answered .trouble__cancel {
+      display: block; }
+  .trouble__question {
+    padding: 0 30px 20px 5px; }
+    .answered > .trouble__question {
+      padding-bottom: 0 !important;
+      float: left;
+      width: 80%;
+      color: #777; }
+      .answered > .trouble__question small {
+        display: none; }
+      .answered > .trouble__question a {
+        color: inherit; }
+  .trouble__answer button {
+    position: relative;
+    background: #2ba5b7;
+    color: #fbfbfb;
+    border: 0;
+    width: calc(50% - 10px);
+    height: 44px;
+    transition: color .5s;
+    font-size: 1rem;
+    text-transform: uppercase;
+    animation: none !important; }
+    .trouble__answer button small {
+      color: inherit !important;
+      position: absolute;
+      top: 13px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: inherit;
+      background: #2ba5b7; }
+  .trouble__answer--yes {
+    float: left; }
+  .trouble__answer--no {
+    float: right; }
+  .answered > .trouble__answer {
+    float: left; }
+    .answered > .trouble__answer button {
+      cursor: default;
+      background: transparent;
+      color: #2ba5b7; }
+      .answered > .trouble__answer button.trouble__answer--no {
+        color: #ad3a3a; }
+        .answered > .trouble__answer button.trouble__answer--no:hover {
+          color: #ad3a3a !important; }
+      .answered > .trouble__answer button:hover {
+        background: transparent;
+        color: #2ba5b7; }
+      .answered > .trouble__answer button small {
+        display: none; }
+  .trouble__result--final {
+    color: #2ba5b7;
+    width: calc(80% + 40px); }
 
 a, .link {
   color: #2ba5b7;

@@ -7,7 +7,8 @@ export default function(el) {
 		events: {
       DOM: {
         click: {
-          'li': 'toggle'
+          'li': 'toggle',
+          '.navitem': 'toggle'
         }
       }
 		},
@@ -17,7 +18,9 @@ export default function(el) {
     autoinit() {
       this.pageNav = el.hasAttribute('data-page-nav');
       let current = this.current = el.getElementsByClassName('active')[0];
-      this.open(current);
+      if (current) {
+        this.open(current);
+      }
     },
 
     toggle(e, el) {

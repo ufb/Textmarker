@@ -6,7 +6,7 @@ export default function() {
     events: {
       ENV: {
         'toggled:addon': 'toggleTabEventHandlers',
-        //'started:app': 'openInitPage',
+        'started:app': 'openInitPage',
         'open:addon-page(sb)': 'openAddonPage',
         'open:addon-page(tbb)': 'openAddonPage',
         'open:addon-page(am)': 'openAddonPage',
@@ -21,6 +21,7 @@ export default function() {
       info: 'content/addon-page/addon-page.html#page=new',
       help: 'content/addon-page/addon-page.html#page=manual',
       contact: 'content/addon-page/addon-page.html#page=contact',
+      troubleshooting: 'content/addon-page/addon-page.html#page=troubleshooting',
       logs: 'content/addon-page/addon-page.html#page=logs',
       export: 'content/addon-page/addon-page.html#page=export',
       sync: 'content/addon-page/addon-page.html#page=sync'
@@ -93,7 +94,10 @@ export default function() {
       this.open(this.urls[id]);
     },
     openInitPage(version, loadReason) {
-      if (loadReason && loadReason === 'install' || loadReason === 'update') this.openAddonPage('news');
+      if (loadReason) {
+        if (loadReason === 'install') this.openAddonPage('help');
+        else if (loadReason === 'update') this.openAddonPage('news');
+      }
     },
     openSearch(word) {
       _STORAGE.get('settings').then(settings => {

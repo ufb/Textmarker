@@ -20,13 +20,14 @@
         <li id="mainnav-sync" data-target="sync" class="nav-button" data-l10n-id="sync"></li>
         <li id="mainnav-export" data-target="export" class="nav-button" data-l10n-id="export"></li>
   			<li id="mainnav-contact" data-target="contact" class="nav-button" data-l10n-id="contact"></li>
+  			<li id="mainnav-troubleshooting" data-target="troubleshooting" class="nav-button" data-l10n-id="troubleshooting"></li>
   			<li id="mainnav-logs" data-target="logs" class="nav-button" data-l10n-id="logs"></li>
   		</ul>
   	</nav>
 
     <section id="main">
       <h1>
-        <a class="moz-addon" href="">Textmarker <span id="version-number"></span></a>
+        <a data-l10n-attr data-l10n-href="href_addon">Textmarker <span id="version-number"></span></a>
         <span><span data-l10n-id="by"></span> underflyingbirches</span>
       </h1>
 
@@ -35,6 +36,7 @@
           <img src="https://ko-fi.com/img/cuplogo.svg">
         </a>
         <a class="github" href="https://github.com/ufb/Textmarker" data-l10n-attr data-l10n-title="title_github"></a>
+        <a class="email" href="mailto:undflybir@gmx.de" title="undflybir@gmx.de"></a>
       </aside>
 
       <div id="news" class="content u-display--none">
@@ -156,17 +158,15 @@
         <h2 data-l10n-id="h20"></h2>
         <nav class="subnav nav">
           <ul>
-            <li data-target="manual-quickstart" class="nav-button active" data-l10n-id="subnav_manual_quick"></li><li data-target="manual-control" class="nav-button" data-l10n-id="subnav_manual_control"></li><li data-target="manual-mark" class="nav-button" data-l10n-id="subnav_manual_mark"></li><li data-target="manual-functions" class="nav-button" data-l10n-id="subnav_manual_func"></li><li data-target="manual-history" class="nav-button" data-l10n-id="subnav_manual_history"></li><li data-target="manual-trouble" class="nav-button" data-l10n-id="subnav_manual_trouble"></li>
+            <li data-target="manual-quickstart" class="nav-button active" data-l10n-id="subnav_manual_quick"></li><li data-target="manual-control" class="nav-button" data-l10n-id="subnav_manual_control"></li><li data-target="manual-mark" class="nav-button" data-l10n-id="subnav_manual_mark"></li><li data-target="manual-functions" class="nav-button" data-l10n-id="subnav_manual_func"></li><li data-target="manual-history" class="nav-button" data-l10n-id="subnav_manual_history"></li>
           </ul>
         </nav>
         <div id="manual-quickstart" class="tab u-display--none">
-          <h3 data-l10n-id="h211"></h3>
-          <ol>
-            <li><strong class="u-color--turquoise">1.&nbsp;</strong> <span data-l10n-id="t211"></span></li>
-            <li><span data-l10n-id="t211b" class="u-ml-large"></span></li>
-            <li><strong class="u-color--turquoise">2.&nbsp;</strong> <span data-l10n-id="t211c"></span></li>
-          </ol>
-          <br>
+          <h3 data-l10n-id="h211"></h3><br><br>
+          <img src="../../icons/sel.jpg"> <span style="vertical-align:13px">text and click</span> <img src="../../icons/m.png"><br>
+          <span data-l10n-id="t211"></span>
+          <br><br><br><br>
+          <div class="seperator"></div>
           <p data-l10n-id="t212"></p>
           <p data-l10n-id="t213"></p>
           <small><span data-l10n-id="see"></span>: <span data-l10n-id="settings"></span>:<span data-l10n-id="subnav_settings_sc"></span></small><br><br>
@@ -375,45 +375,6 @@
               <span data-l10n-id="t2521"></span>
             </p>
             <small data-l10n-id="ref_settings_history"></small>
-          </article>
-        </div>
-        <div id="manual-trouble" class="tab u-display--none">
-          <h3 data-l10n-id="h261"></h3>
-          <article>
-            <h4 data-l10n-id="x267"></h4>
-            <p data-l10n-id="x268"></p>
-            <p data-l10n-id="x269"></p>
-          </article>
-          <article>
-            <h4 data-l10n-id="x2610"></h4>
-            <p data-l10n-id="x2611"></p>
-            <p data-l10n-id="x2612"></p>
-          </article>
-          <article>
-            <h4 data-l10n-id="x261"></h4>
-            <p><span data-l10n-id="x262"></span></p>
-          </article>
-          <article>
-            <h4 data-l10n-id="h262"></h4>
-            <p><span data-l10n-id="t261"></span><br>
-							<span data-l10n-id="t262"></span><br>
-							<span data-l10n-id="t263"></span><br>
-              <span data-l10n-id="t264"></span>
-            </p>
-          </article>
-          <article>
-            <h4 data-l10n-id="h263"></h4>
-            <p data-l10n-id="t265"></p>
-            <ol>
-              <li data-l10n-id="t266"></li>
-              <li data-l10n-id="t267"></li>
-            </ol>
-          </article>
-          <article>
-            <h4 data-l10n-id="h265"></h4>
-            <p><span data-l10n-id="t2613"></span><br>
-              <span data-l10n-id="t2614"></span>
-            </p>
           </article>
         </div>
       </div>
@@ -1206,7 +1167,9 @@
             <p class="u-float--left" data-l10n-id="t915"></p>
           </div>
           <br>
-          <p data-l10n-id="t913"></p>
+          <p><span data-l10n-id="t913"></span> <strong data-l10n-id="t916"></strong> !</p>
+          <p><span data-l10n-id="t917"></span> <a data-l10n-attr title="Link: Firefox Account" data-l10n-href="href_ffaccount" data-l10n-id="t918"></a>.</p>
+          <p>Please make sure you always sync your Firefox profiles, before restoring your highlights.</p>
           <p data-l10n-id="t914"></p>
         </section>
       </div>
@@ -1269,11 +1232,276 @@
         <div class="seperator"></div>
         <section class="block-spacing">
           <p data-l10n-id="t716"></p>
-          <a id="moz-addon--contact" class="moz-addon" href=""></a>
+          <a data-l10n-id="href_addon" data-l10n-attr data-l10n-href="href_addon"></a>
           <br><br>
           <p data-l10n-id="t718"></p>
           <a id="github--code" href="https://github.com/ufb/Textmarker">https://github.com/ufb/Textmarker/</a>
         </section>
+      </div>
+
+      <div id="troubleshooting" class="content u-display--none">
+        <h2 data-l10n-id="hA0"></h2>
+        <section class="block-spacing">
+          <select>
+            <option disabled selected data-l10n-id="tA11"></option>
+            <option data-target="trouble--1" data-l10n-id="tA12"></option>
+            <option data-target="trouble--2" data-l10n-id="tA13"></option>
+            <option data-target="trouble--3" data-l10n-id="tA14"></option>
+            <option data-target="trouble--4" data-l10n-id="tA15"></option>
+            <option data-target="trouble--5" data-l10n-id="tA16"></option>
+            <option data-target="trouble--6" data-l10n-id="tA17"></option>
+            <option data-target="trouble--7" data-l10n-id="tA18"></option>
+            <option data-target="trouble--x" data-l10n-id="tA19"></option>
+          </select>
+        </section>
+        <article id="trouble--1" class="trouble">
+          <button class="trouble__cancel">&#10005;</button>
+          <div class="trouble__question"><span data-l10n-id="tA110"></span> <a href="addon-page.html#page=history" target="_blank" title="opens in new tab" data-l10n-id="tA111"></a></div>
+          <div class="trouble__answer u-cf">
+            <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+            <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+          </div>
+          <article class="trouble__result trouble__result--no trouble__result--final u-align--left" data-l10n-id="tA112"></article>
+          <article class="trouble__result trouble__result--yes">
+            <div class="trouble__question" data-l10n-id="tA113"></div>
+            <div class="trouble__answer u-cf">
+              <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+              <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+            </div>
+            <article class="trouble__result trouble__result--yes">
+              <div class="trouble__question">
+                <span data-l10n-id="tA114"></span> <a href="addon-page.html#page=logs" target="_blank" title="opens in new tab" data-l10n-id="tA115"></a>:<br>
+                <span data-l10n-id="tA116"></span>
+              </div>
+              <div class="trouble__answer u-cf">
+                <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+              </div>
+              <article class="trouble__result trouble__result--yes">
+                <div class="trouble__question" data-l10n-id="tA117"></div>
+                <div class="trouble__answer u-cf">
+                  <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                  <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+                </div>
+                <article class="trouble__result trouble__result--yes">
+                  <div class="trouble__question" data-l10n-id="tA118"></div>
+                  <div class="trouble__answer u-cf">
+                    <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                    <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+                  </div>
+                  <article class="trouble__result trouble__result--yes trouble__result--final u-align--left">
+                    <span data-l10n-id="tA121"></span> <span data-l10n-id="tA119"></span>
+                  </article>
+                  <article class="trouble__result trouble__result--final trouble__result--no" data-l10n-id="tA124"></article>
+                </article>
+                <article class="trouble__result trouble__result--no trouble__result--final u-align--left">
+                  <span data-l10n-id="tA125"></span><br><br>
+                  <span data-l10n-id="tA126"></span><br>
+                  <span data-l10n-id="tA119"></span>
+                </article>
+              </article>
+              <article class="trouble__result trouble__result--final trouble__result--no">
+                <span data-l10n-id="tA121"></span> <span data-l10n-id="tA119"></span>
+              </article>
+            </article>
+            <article class="trouble__result trouble__result--no">
+              <div class="trouble__question">Textmarker meldet erfolgreiche Wiederherstellung</div>
+              <div class="trouble__answer u-cf">
+                <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+              </div>
+              <article class="trouble__result trouble__result--yes trouble__result--final u-align--left">
+                Möglicherweise schlug die Wiederherstellung zuvor schonmal schief; wenn in den Einstellungen > Chronik erneute Wiederherstellungsversuche deaktiviert sind, betrachtet Textmarker den Eintrag als leer.<br>
+                <span data-l10n-id="tA121"></span> <span data-l10n-id="tA119"></span>
+              </article>
+              <article class="trouble__result trouble__result--no">
+                <div class="trouble__question">
+                  <span data-l10n-id="tA114"></span> <a href="addon-page.html#page=logs" target="_blank" title="opens in new tab" data-l10n-id="tA115"></a>:<br>
+                  <span data-l10n-id="tA116"></span>
+                </div>
+                <div class="trouble__answer u-cf">
+                  <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                  <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+                </div>
+                <article class="trouble__result trouble__result--yes">
+                  <div class="trouble__question" data-l10n-id="tA117"></div>
+                  <div class="trouble__answer u-cf">
+                    <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                    <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+                  </div>
+                  <article class="trouble__result trouble__result--yes">
+                    <div class="trouble__question" data-l10n-id="tA118"></div>
+                    <div class="trouble__answer u-cf">
+                      <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                      <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+                    </div>
+                    <article class="trouble__result trouble__result--yes trouble__result--final u-align--left">
+                      <span data-l10n-id="tA121"></span> <span data-l10n-id="tA119"></span>
+                    </article>
+                    <article class="trouble__result trouble__result--final trouble__result--no" data-l10n-id="tA124"></article>
+                  </article>
+                  <article class="trouble__result trouble__result--no trouble__result--final u-align--left">
+                    <span data-l10n-id="tA125"></span><br><br>
+                    <span data-l10n-id="tA126"></span> <span data-l10n-id="tA119"></span>
+                  </article>
+                </article>
+                <article class="trouble__result trouble__result--no">
+                  <div class="trouble__question" data-l10n-id="tA127"></div>
+                  <div class="trouble__answer u-cf">
+                    <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                    <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+                  </div>
+                  <article class="trouble__result trouble__result--final trouble__result--yes u-align--left">
+                    <span data-l10n-id="tA128"></span><br><br>
+                    <span data-l10n-id="tA129"></span><vr>
+                    <span data-l10n-id="tA121"></span> <span data-l10n-id="tA119"></span>
+                  </article>
+                  <article class="trouble__result trouble__result--final trouble__result--no u-align--left">
+                    <span data-l10n-id="tA121"></span> <span data-l10n-id="tA119"></span>
+                  </article>
+                </article>
+              </article>
+            </article>
+          </article>
+        </article>
+        <article id="trouble--2" class="trouble">
+          <button class="trouble__cancel">&#10005;</button>
+          <div class="trouble__question"><span data-l10n-id="tA130"></span> <a href="addon-page.html#page=manual" target="_blank" title="opens in new tab" data-l10n-id="tA131"></a> <span data-l10n-id="tA132"></span></div>
+          <div class="trouble__answer u-cf">
+            <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+            <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+          </div>
+          <article class="trouble__result trouble__result--no trouble__result--final" data-l10n-id="tA122"></article>
+          <article class="trouble__result trouble__result--yes">
+            <div class="trouble__question" data-l10n-id="tA133"></div>
+            <div class="trouble__answer u-cf">
+              <button class="trouble__answer--yes trouble__answer--btn" data-value="yes"><span class="trouble__answer--sub" data-l10n-id="yes"></span><small class="trouble__answer--sub" data-l10n-id="true"></small></button>
+              <button class="trouble__answer--no trouble__answer--btn" data-value="no"><span class="trouble__answer--sub" data-l10n-id="no"></span><small class="trouble__answer--sub" data-l10n-id="false"></small></button>
+            </div>
+            <article class="trouble__result trouble__result--no">
+              <div class="trouble__question" data-l10n-id="tA134"></div>
+              <div class="trouble__answer u-cf">
+                <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+              </div>
+              <article class="trouble__result trouble__result--no trouble__result--final" data-l10n-id="tA122"></article>
+              <article class="trouble__result trouble__result--yes trouble__result--final" data-l10n-id="tA121"></article>
+            </article>
+            <article class="trouble__result trouble__result--yes trouble__result--final" data-l10n-id="tA121"></article>
+          </article>
+        </article>
+        <article id="trouble--3" class="trouble">
+          <button class="trouble__cancel">&#10005;</button>
+          <div class="trouble__question"><span data-l10n-id="tA135"></span> <a href="addon-page.html#page=history" target="_blank" title="opens in new tab" data-l10n-id="tA111"></a></div>
+          <div class="trouble__answer u-cf">
+            <button class="trouble__answer--yes trouble__answer--no-entries" data-value="yes"><span class="trouble__answer--no-entries" data-l10n-id="yes"></span><small class="trouble__answer--no-entries" data-l10n-id="true"></small></button>
+            <button class="trouble__answer--no trouble__answer--btn" data-value="no"><span class="trouble__answer--sub" data-l10n-id="no"></span><small class="trouble__answer--sub" data-l10n-id="false"></small></button>
+          </div>
+          <article class="trouble__result trouble__result--no trouble__result--final">
+            <span data-l10n-id="tA121"></span> <span data-l10n-id="tA121b"></span>
+          </article>
+          <article id="history-scan" class="trouble__result trouble__result--yes trouble__result--final u-align--left">
+            <strong data-l10n-id="tA136"></strong><br><br>
+            <div id="history-scan__nonempty" class="u-display--none">
+              <span data-l10n-id="tA137"></span> <strong id="history-scan__count"></strong><br><br>
+              <span data-l10n-id="tA138"></span> <span id="history-scan__nomarks" class="u-display--none" data-l10n-id="tA139"></span><br><br>
+              <span data-l10n-id="tA121"></span>
+            </div>
+            <div id="history-scan__empty" class="u-display--none">
+              <span data-l10n-id="tA140"></span><br><br>
+              <span data-l10n-id="tA141"></span><br><br>
+              <span data-l10n-id="tA142"></span>
+            </div>
+            <div id="history-scan__error" class="u-display--none">
+              <span data-l10n-id="tA143"></span> <span id="history-scan__errormsg1"></span><br>
+              <span data-l10n-id="tA121"></span>
+            </div>
+          </article>
+        </article>
+        <article id="trouble--4" class="trouble">
+          <button class="trouble__cancel">&#10005;</button>
+          <div class="trouble__question" data-l10n-id="tA144"></div>
+          <div class="trouble__answer u-cf">
+            <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+            <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+          </div>
+          <article class="trouble__result trouble__result--no trouble__result--final" data-l10n-id="tA122"></article>
+          <article class="trouble__result trouble__result--yes">
+            <div class="trouble__question" data-l10n-id="tA145"></div>
+            <div class="trouble__answer u-cf">
+              <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+              <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+            </div>
+            <article class="trouble__result trouble__result--yes">
+              <div class="trouble__question" data-l10n-id="tA146"></div>
+              <div class="trouble__answer u-cf">
+                <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+                <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+              </div>
+              <article class="trouble__result trouble__result--no trouble__result--final" data-l10n-id="tA122"></article>
+              <article class="trouble__result trouble__result--yes trouble__result--final">
+                <span data-l10n-id="tA147"></span> - <br><span data-l10n-id="tA148"></span><br><br>
+                <span data-l10n-id="tA149"></span>
+              </article>
+            </article>
+            <article class="trouble__result trouble__result--no trouble__result--final u-align--left">
+              <span data-l10n-id="tA150"></span><br>
+              <span data-l10n-id="tA151"></span><br>
+              <span data-l10n-id="tA152"></span> <span data-l10n-id="tA147"></span> - <span data-l10n-id="tA148"></span><br>
+              <span data-l10n-id="tA153"></span>
+            </article>
+          </article>
+        </article>
+        <article id="trouble--5" class="trouble answered--yes">
+          <article class="trouble trouble__result trouble__result--yes trouble__result--final u-align--left">
+            <span data-l10n-id="tA154"></span><br><br>
+            <span data-l10n-id="tA155"></span>
+          </article>
+        </article>
+        <article id="trouble--6" class="trouble">
+          <button class="trouble__cancel">&#10005;</button>
+          <div class="trouble__question" data-l10n-id="tA156"></div>
+          <div class="trouble__answer u-cf">
+            <button class="trouble__answer--yes trouble__answer--btn" data-value="yes" data-l10n-id="yes"></button>
+            <button class="trouble__answer--no trouble__answer--btn" data-value="no" data-l10n-id="no"></button>
+          </div>
+          <article class="trouble__result trouble__result--no trouble__result--final" data-l10n-id="tA122"></article>
+          <article class="trouble__result trouble__result--yes trouble__result--final u-align--left">
+            <span data-l10n-id="tA147"></span> - <br><span data-l10n-id="tA148"></span>*<br>
+            <span data-l10n-id="tA149"></span><br><br>
+
+            <small data-l10n-id="tA157"></small>
+          </article>
+        </article>
+        <article id="trouble--7" class="trouble answered--yes">
+          <article class="trouble trouble__result trouble__result--yes trouble__result--final u-align--left">
+            <span data-l10n-id="tA158"></span><br><br>
+            <button class="toggle-button" data-target="trouble__sc-email" data-toggle="add" data-l10n-id="tA159"></button>
+            <div id="trouble__sc-email" class="u-display--none">
+              <br>
+              <span data-l10n-id="tA121"></span> <span data-l10n-id="tA121b"></span>
+            </div>
+          </article>
+        </article>
+        <article id="trouble--x" class="trouble answered--yes">
+          <article class="trouble trouble__result trouble__result--yes trouble__result--final u-align--left">
+            <span data-l10n-id="tA121"></span><br><br>
+            <div class="u-color--default">
+              <span data-l10n-id="tA160"></span><br><br>
+              <span data-l10n-id="tA161"></span><br>
+              <span data-l10n-id="tA162"></span><br>
+              <span data-l10n-id="tA163"></span><br>
+              <span data-l10n-id="tA164"></span><br>
+              <span data-l10n-id="tA165"></span><br><br>
+              <span data-l10n-id="tA166"></span><br>
+              <span data-l10n-id="tA167"></span><br>
+              <span data-l10n-id="tA168"></span><br>
+              <span data-l10n-id="tA169"></span><br><br><br>
+              <span data-l10n-id="tA170"></span><br>
+              <span data-l10n-id="tA171"></span>
+            </div>
+          </article>
+        </article>
       </div>
 
       <div id="logs" class="content u-display--none nologs">

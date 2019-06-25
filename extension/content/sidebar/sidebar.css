@@ -309,6 +309,15 @@ body {
 .u-align--0 {
   vertical-align: 0 !important; }
 
+.u-align--left {
+  text-align: left !important; }
+
+.u-align--right {
+  text-align: right !important; }
+
+.u-align--center {
+  text-align: center !important; }
+
 .switch {
   box-shadow: 0 0 2px #aaa inset; }
 
@@ -1098,6 +1107,12 @@ tmnoteminimize:before {
 
 .link--help .link__icon {
   background-image: url(../../icons/book.png);
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  background-size: 12px, 100%; }
+
+.link--troubleshooting .link__icon {
+  background-image: url(../../icons/debug.png);
   background-repeat: no-repeat;
   background-position: 0 0, 0 0;
   background-size: 12px, 100%; }
