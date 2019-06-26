@@ -11,6 +11,14 @@
     transition: max-height .5s ease-in;
   }
 
+  &--simple {
+    h3 {
+      &:after {
+        display: none !important;
+      }
+    }
+  }
+
   h3 {
     padding-right: $spacing--large;
     padding-bottom: $spacing--small;
