@@ -1179,6 +1179,7 @@ new _utils._MODULE({
       'sidebar:immut': 'immut',
       'sidebar:save-changes': 'save',
       'sidebar:retry-restoration': 'resume',
+      'restorer:retry-restoration': 'resume',
       'sidebar:undo': 'undo',
       'sidebar:redo': 'redo',
       'sidebar:copy': 'copy',
@@ -2354,12 +2355,14 @@ exports["default"] = function () {
     count: 0,
     restored: 0,
     failed: 0,
+    attempt: 0,
     failureReport: {},
     restore: function restore(entries) {
       if (!entries) return;
       if (!Array.isArray(entries)) entries = [entries];
       this.entries = entries;
       this.count = entries.length;
+      this.attempt++;
       this.emit('started:restorations');
       _store2["default"].restoring = true;
       entries.forEach(function (entry) {
@@ -2384,11 +2387,42 @@ exports["default"] = function () {
       }
     },
     onFinishedRestoration: function onFinishedRestoration() {
+      var _this8 = this;
+
       if (++this.restored === this.count) {
-        this.emit('finished:all-restorations');
         _store2["default"].restoring = false;
-        if (this.failed) this.emit('failed:restoration', this.getReport());else this.emit('succeeded:restoration');
+
+        if (this.failed) {
+          if (this.attempt === 1) {
+            _store2["default"].get('settings').then(function (settings) {
+              if (!settings || !settings.history || settings.history.autoRetry) {
+                _this8.emit('failed:restoration', {
+                  report: _this8.getReport(),
+                  attempt: _this8.attempt,
+                  autoRetry: true
+                });
+
+                setTimeout(function () {
+                  return _this8.emit('restorer:retry-restoration');
+                }, 5000);
+              } else {
+                _this8.finish(false);
+              }
+            });
+          } else {
+            this.finish(false);
+          }
+        } else {
+          this.finish(true);
+        }
       }
+    },
+    finish: function finish(success) {
+      if (success) this.emit('succeeded:restoration');else this.emit('failed:restoration', {
+        report: this.getReport(),
+        attempt: this.attempt
+      });
+      this.emit('finished:all-restorations');
     },
     getReport: function getReport() {
       var report = this.failureReport;
@@ -3852,7 +3886,8 @@ exports["default"] = {
       sorted: 'date-last',
       view: 'list',
       pp: 10,
-      ignoreHash: true
+      ignoreHash: true,
+      autoRetry: true
     },
     addon: {
       active: true,

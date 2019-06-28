@@ -1553,6 +1553,7 @@ exports["default"] = function () {
             td_msg,
             node_date,
             node_msg,
+            node_attempt,
             log,
             time,
             msg,
@@ -1580,6 +1581,12 @@ exports["default"] = function () {
 
               reason.innerText = log[2];
               td_msg.appendChild(reason);
+            }
+
+            if (log[3]) {
+              node_attempt = document.createElement('span');
+              node_attempt.appendChild(document.createTextNode("[#".concat(log[3], "]")));
+              td_msg.insertBefore(node_attempt, node_msg);
             }
 
             tr.appendChild(td_date);
@@ -2009,6 +2016,7 @@ exports["default"] = function () {
           '#auto-note': 'toggleAutoNoteOpt',
           '#immut': 'toggleImmutOpt',
           '#drop-losses': 'toggleDropLossesOpt',
+          '#autoRetry': 'toggleAutoRetryOpt',
           '#autonote-color': 'changeAutoNoteOpt',
           '#ignore-hash': 'changeHashOpt',
           '#addon-autocs': 'toggleAutocsOpt',
@@ -2147,6 +2155,7 @@ exports["default"] = function () {
       document.getElementById('private-save').checked = historySettings.saveInPriv;
       document.getElementById('immut').checked = historySettings.immut;
       document.getElementById('drop-losses').checked = historySettings.dropLosses;
+      document.getElementById('autoRetry').checked = historySettings.autoRetry;
       document.getElementById('notes-new').checked = historySettings.saveNote;
       document.getElementById('ignore-hash').checked = !historySettings.ignoreHash;
 
@@ -2210,6 +2219,9 @@ exports["default"] = function () {
     },
     toggleDropLossesOpt: function toggleDropLossesOpt(e, el) {
       this.emit('change:dropLosses-setting', el.checked);
+    },
+    toggleAutoRetryOpt: function toggleAutoRetryOpt(e, el) {
+      this.emit('change:autoRetry-setting', el.checked);
     },
     toggleAutocsOpt: function toggleAutocsOpt(e, el) {
       this.emit('change:autocs-setting', el.checked);
@@ -2594,7 +2606,7 @@ exports["default"] = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'change:hash-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'toggle:tbbpower-setting', 'change:autocs-setting', 'change:iframe-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'correct-name:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:autoRetry-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'change:hash-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'toggle:tbbpower-setting', 'change:autocs-setting', 'change:iframe-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'correct-name:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
   }
 });
 
@@ -2677,7 +2689,8 @@ exports["default"] = {
       sorted: 'date-last',
       view: 'list',
       pp: 10,
-      ignoreHash: true
+      ignoreHash: true,
+      autoRetry: true
     },
     addon: {
       active: true,

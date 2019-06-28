@@ -448,7 +448,7 @@ new _utils._MODULE({
       'failed:inject-stylesheet': 'onCSSInjectionFailure'
     }
   },
-  log: function log(error, report) {
+  log: function log(error, info) {
     var _this = this;
 
     var log, msg;
@@ -458,8 +458,9 @@ new _utils._MODULE({
     } else {
       log = [new Date().getTime(), _logKeys2["default"][error] || error];
 
-      if (report && typeof report === 'string') {
-        log.push(report);
+      if (info && info.report && typeof info.report === 'string') {
+        log.push(info.report);
+        if (info.attempt) log.push(info.attempt);
       }
     }
 
@@ -482,8 +483,8 @@ new _utils._MODULE({
   onMultipleUnlockedEntries: function onMultipleUnlockedEntries() {
     this.log('note_restoration_warning_2');
   },
-  onFailedRestoration: function onFailedRestoration(report) {
-    this.log('note_restoration_failure', report);
+  onFailedRestoration: function onFailedRestoration(info) {
+    this.log('note_restoration_failure', info);
   },
   onOpenTabFailure: function onOpenTabFailure() {
     this.log('note_url');
@@ -946,10 +947,12 @@ exports["default"] = function () {
         return settings.misc.successNote;
       }, browser.i18n.getMessage('note_restoration_success'), 'success');
     },
-    onFailedRestoration: function onFailedRestoration() {
+    onFailedRestoration: function onFailedRestoration(info) {
+      var msg = browser.i18n.getMessage('note_restoration_failure');
+      if (info && info.autoRetry) msg += browser.i18n.getMessage('auto_retry');
       this.notify(function (settings) {
         return settings.misc.failureNote;
-      }, browser.i18n.getMessage('note_restoration_failure'), 'error');
+      }, msg, 'error');
     },
     onSaveError: function onSaveError(error) {
       this.notify(function (settings) {
@@ -1200,6 +1203,7 @@ new _utils._MODULE({
       'change:saveopt-setting': 'changeSaveOpt',
       'change:immut-setting': 'toggleImmutOpt',
       'change:dropLosses-setting': 'toggleDropLossesOpt',
+      'change:autoRetry-setting': 'toggleAutoRetryOpt',
       'change:hash-setting': 'toggleHashOpt',
       'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
@@ -1380,13 +1384,19 @@ new _utils._MODULE({
     this.updateSettings(function (settings) {
       settings.history.immut = val;
       return settings;
-    }, 'immutopt', 'error_save_autosave');
+    }, 'immutopt');
   },
   toggleDropLossesOpt: function toggleDropLossesOpt(val) {
     this.updateSettings(function (settings) {
       settings.history.dropLosses = val;
       return settings;
-    }, 'droplossesopt', 'error_save_autosave');
+    }, 'droplossesopt');
+  },
+  toggleAutoRetryOpt: function toggleAutoRetryOpt(val) {
+    this.updateSettings(function (settings) {
+      settings.history.autoRetry = val;
+      return settings;
+    }, 'autoRetryopt');
   },
   toggleHashOpt: function toggleHashOpt(val) {
     this.updateSettings(function (settings) {
@@ -1986,6 +1996,10 @@ new _utils._MODULE({
           history.dropLosses = defaultSettings.history.dropLosses;
         }
 
+        if (typeof history.autoRetry !== 'boolean') {
+          history.autoRetry = defaultSettings.history.autoRetry;
+        }
+
         noteTypes.forEach(function (noteType) {
           if (typeof misc[noteType] !== 'boolean') {
             misc[noteType] = defaultSettings.misc[noteType];
@@ -2578,7 +2592,8 @@ exports["default"] = {
       sorted: 'date-last',
       view: 'list',
       pp: 10,
-      ignoreHash: true
+      ignoreHash: true,
+      autoRetry: true
     },
     addon: {
       active: true,

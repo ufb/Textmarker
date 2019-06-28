@@ -19,6 +19,7 @@ new _MODULE({
       'change:saveopt-setting': 'changeSaveOpt',
       'change:immut-setting': 'toggleImmutOpt',
       'change:dropLosses-setting': 'toggleDropLossesOpt',
+      'change:autoRetry-setting': 'toggleAutoRetryOpt',
       'change:hash-setting': 'toggleHashOpt',
       'toggle:priv-setting': 'togglePrivSaveOpt',
       'change:namingopt-setting': 'changeNamingOpt',
@@ -207,15 +208,19 @@ new _MODULE({
   toggleImmutOpt(val) {
     this.updateSettings(
       settings => { settings.history.immut = val; return settings; },
-      'immutopt',
-      'error_save_autosave'
+      'immutopt'
     );
   },
   toggleDropLossesOpt(val) {
     this.updateSettings(
       settings => { settings.history.dropLosses = val; return settings; },
-      'droplossesopt',
-      'error_save_autosave'
+      'droplossesopt'
+    );
+  },
+  toggleAutoRetryOpt(val) {
+    this.updateSettings(
+      settings => { settings.history.autoRetry = val; return settings; },
+      'autoRetryopt'
     );
   },
   toggleHashOpt(val) {

@@ -35,6 +35,7 @@ export default function() {
           '#auto-note': 'toggleAutoNoteOpt',
           '#immut': 'toggleImmutOpt',
           '#drop-losses': 'toggleDropLossesOpt',
+          '#autoRetry': 'toggleAutoRetryOpt',
           '#autonote-color': 'changeAutoNoteOpt',
           '#ignore-hash': 'changeHashOpt',
           '#addon-autocs': 'toggleAutocsOpt',
@@ -179,6 +180,7 @@ export default function() {
       document.getElementById('private-save').checked = historySettings.saveInPriv;
       document.getElementById('immut').checked = historySettings.immut;
       document.getElementById('drop-losses').checked = historySettings.dropLosses;
+      document.getElementById('autoRetry').checked = historySettings.autoRetry;
       document.getElementById('notes-new').checked = historySettings.saveNote;
       document.getElementById('ignore-hash').checked = !historySettings.ignoreHash;
 
@@ -244,6 +246,9 @@ export default function() {
     },
     toggleDropLossesOpt(e, el) {
       this.emit('change:dropLosses-setting', el.checked);
+    },
+    toggleAutoRetryOpt(e, el) {
+      this.emit('change:autoRetry-setting', el.checked);
     },
     toggleAutocsOpt(e, el) {
       this.emit('change:autocs-setting', el.checked);

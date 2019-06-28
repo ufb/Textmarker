@@ -680,6 +680,7 @@ export default function() {
     count: 0,
     restored: 0,
     failed: 0,
+    attempt: 0,
     failureReport: {},
 
     restore(entries) {
@@ -688,6 +689,7 @@ export default function() {
 
       this.entries = entries;
       this.count = entries.length;
+      this.attempt++;
 
       this.emit('started:restorations');
       _STORE.restoring = true;
@@ -713,11 +715,29 @@ export default function() {
     },
     onFinishedRestoration() {
       if (++this.restored === this.count) {
-        this.emit('finished:all-restorations');
         _STORE.restoring = false;
-        if (this.failed) this.emit('failed:restoration', this.getReport());
-        else this.emit('succeeded:restoration');
+        if (this.failed) {
+          if (this.attempt === 1) {
+            _STORE.get('settings').then(settings => {
+              if (!settings || !settings.history || settings.history.autoRetry) {
+                this.emit('failed:restoration', { report: this.getReport(), attempt: this.attempt, autoRetry: true });
+                setTimeout(() => this.emit('restorer:retry-restoration'), 5000);
+              } else {
+                this.finish(false);
+              }
+            });
+          } else {
+            this.finish(false);
+          }
+        } else {
+          this.finish(true);
+        }
       }
+    },
+    finish(success) {
+      if (success) this.emit('succeeded:restoration');
+      else this.emit('failed:restoration', { report: this.getReport(), attempt: this.attempt });
+      this.emit('finished:all-restorations');
     },
     getReport() {
       const report = this.failureReport;

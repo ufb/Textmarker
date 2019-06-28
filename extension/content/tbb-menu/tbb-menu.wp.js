@@ -323,7 +323,8 @@ exports["default"] = {
       sorted: 'date-last',
       view: 'list',
       pp: 10,
-      ignoreHash: true
+      ignoreHash: true,
+      autoRetry: true
     },
     addon: {
       active: true,

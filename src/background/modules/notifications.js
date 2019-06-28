@@ -112,10 +112,13 @@ export default function() {
       );
     },
 
-    onFailedRestoration() {
+    onFailedRestoration(info) {
+      let msg = browser.i18n.getMessage('note_restoration_failure');
+      if (info && info.autoRetry) msg += browser.i18n.getMessage('auto_retry');
+      
       this.notify(
         settings => settings.misc.failureNote,
-        browser.i18n.getMessage('note_restoration_failure'),
+        msg,
         'error'
       );
     },

@@ -34,6 +34,7 @@ new _MODULE({
       'sidebar:immut': 'immut',
       'sidebar:save-changes': 'save',
       'sidebar:retry-restoration': 'resume',
+      'restorer:retry-restoration': 'resume',
       'sidebar:undo': 'undo',
       'sidebar:redo': 'redo',
       'sidebar:copy': 'copy',

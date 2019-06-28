@@ -71,6 +71,9 @@ new _MODULE({
         if (typeof history.dropLosses !== 'boolean') {
           history.dropLosses = defaultSettings.history.dropLosses;
         }
+        if (typeof history.autoRetry !== 'boolean') {
+          history.autoRetry = defaultSettings.history.autoRetry;
+        }
 
         noteTypes.forEach(noteType => {
           if (typeof misc[noteType] !== 'boolean') {
