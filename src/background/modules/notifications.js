@@ -115,7 +115,7 @@ export default function() {
     onFailedRestoration(info) {
       let msg = browser.i18n.getMessage('note_restoration_failure');
       if (info && info.autoRetry) msg += browser.i18n.getMessage('auto_retry');
-      
+
       this.notify(
         settings => settings.misc.failureNote,
         msg,
@@ -147,10 +147,13 @@ export default function() {
       );
     },
 
-    onScriptInjectionFailure() {
+    onScriptInjectionFailure(err) {
+      let msg = browser.i18n.getMessage('js_injection_failure');
+      if (err) msg += `\n\n${err}\n\n`;
+
       this.notify(
         settings => settings.misc.vipNote,
-        browser.i18n.getMessage('js_injection_failure'),
+        msg,
         'error'
       );
     },

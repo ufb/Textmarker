@@ -30,9 +30,14 @@ new _MODULE({
       log = [error.time, error.message + ' [' + error.location + ']'];
     } else {
       log = [(new Date().getTime()), _LOG_KEYS[error] || error];
-      if (info && info.report && typeof info.report === 'string') {
-        log.push(info.report);
-        if (info.attempt) log.push(info.attempt);
+      if (info) {
+        if (info.report && typeof info.report === 'string') {
+          log.push(info.report);
+          if (info.attempt) log.push(info.attempt);
+        }
+        else if (typeof info === 'string') {
+          log.push(info);
+        }
       }
     }
     _STORAGE.set('log', log).then(() => this.emit('updated:logs logged:error', log));
@@ -55,8 +60,8 @@ new _MODULE({
   onFailedPBM() {
     this.log('note_pbm');
   },
-  onScriptInjectionFailure() {
-    this.log('js_injection_failure');
+  onScriptInjectionFailure(err) {
+    this.log('js_injection_failure', err);
   },
   onCSSInjectionFailure() {
     this.log('css_injection_failure');

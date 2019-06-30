@@ -80,9 +80,11 @@ new _MODULE({
         this.insertCSS(tabId, frameId);
       })
       .catch(e => {
-        const msg = e.toString();
-        if (!msg.includes('Missing host permission for the tab')) {
-          this.emit('failed:inject-content-script');
+        if (!frameId) {
+          const msg = e.toString();
+          if (!msg.includes('Missing host permission for the tab')) {
+            this.emit('failed:inject-content-script', msg);
+          }
         }
       });
   },
