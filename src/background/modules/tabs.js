@@ -43,7 +43,7 @@ export default function() {
 
       if (!this.tabEventHandlers.onUpdated) {
         const onUpdated = this.tabEventHandlers.onUpdated = this.onUpdated.bind(this);
-        browser.tabs.onUpdated.addListener(onUpdated, { properties: ['status'] });
+        browser.tabs.onUpdated.addListener(onUpdated/*, { properties: ['status'] }*/); // ESR throws wrong argument type error when using filters
       }
     },
     removeTabEventHandlers() {

@@ -458,9 +458,13 @@ new _utils._MODULE({
     } else {
       log = [new Date().getTime(), _logKeys2["default"][error] || error];
 
-      if (info && info.report && typeof info.report === 'string') {
-        log.push(info.report);
-        if (info.attempt) log.push(info.attempt);
+      if (info) {
+        if (info.report && typeof info.report === 'string') {
+          log.push(info.report);
+          if (info.attempt) log.push(info.attempt);
+        } else if (typeof info === 'string') {
+          log.push(info);
+        }
       }
     }
 
@@ -492,8 +496,8 @@ new _utils._MODULE({
   onFailedPBM: function onFailedPBM() {
     this.log('note_pbm');
   },
-  onScriptInjectionFailure: function onScriptInjectionFailure() {
-    this.log('js_injection_failure');
+  onScriptInjectionFailure: function onScriptInjectionFailure(err) {
+    this.log('js_injection_failure', err);
   },
   onCSSInjectionFailure: function onCSSInjectionFailure() {
     this.log('css_injection_failure');
@@ -603,10 +607,12 @@ new _utils._MODULE({
 
       _this4.insertCSS(tabId, frameId);
     })["catch"](function (e) {
-      var msg = e.toString();
+      if (!frameId) {
+        var msg = e.toString();
 
-      if (!msg.includes('Missing host permission for the tab')) {
-        _this4.emit('failed:inject-content-script');
+        if (!msg.includes('Missing host permission for the tab')) {
+          _this4.emit('failed:inject-content-script', msg);
+        }
       }
     });
   },
@@ -969,10 +975,12 @@ exports["default"] = function () {
         return settings.misc.errorNote;
       }, browser.i18n.getMessage('note_error', browser.i18n.getMessage(error)), 'error');
     },
-    onScriptInjectionFailure: function onScriptInjectionFailure() {
+    onScriptInjectionFailure: function onScriptInjectionFailure(err) {
+      var msg = browser.i18n.getMessage('js_injection_failure');
+      if (err) msg += "\n\n".concat(err, "\n\n");
       this.notify(function (settings) {
         return settings.misc.vipNote;
-      }, browser.i18n.getMessage('js_injection_failure'), 'error');
+      }, msg, 'error');
     },
     onCSSInjectionFailure: function onCSSInjectionFailure() {
       this.notify(function (settings) {
@@ -1810,9 +1818,9 @@ exports["default"] = function () {
 
       if (!this.tabEventHandlers.onUpdated) {
         var onUpdated = this.tabEventHandlers.onUpdated = this.onUpdated.bind(this);
-        browser.tabs.onUpdated.addListener(onUpdated, {
-          properties: ['status']
-        });
+        browser.tabs.onUpdated.addListener(onUpdated
+        /*, { properties: ['status'] }*/
+        ); // ESR throws wrong argument type error when using filters
       }
     },
     removeTabEventHandlers: function removeTabEventHandlers() {
