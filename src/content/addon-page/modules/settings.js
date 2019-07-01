@@ -217,7 +217,7 @@ export default function() {
       }
 
       document.getElementById('addon-autocs').checked = settings.addon.autocs;
-      document.getElementById('addon-iframes').checked = settings.addon.iframes;
+      document.getElementById('addon-iframes').checked = !settings.addon.iframes;
     },
     showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('u-display--none');
@@ -254,7 +254,7 @@ export default function() {
       this.emit('change:autocs-setting', el.checked);
     },
     toggleIFrameOpt(e, el) {
-      this.emit('change:iframe-setting', el.checked);
+      this.emit('change:iframe-setting', !el.checked);
     },
     addMarker(e, el) {
       let key = el.value,
