@@ -259,10 +259,10 @@ new _MODULE({
   },
   copy(granted) {
     if (granted === false) {
-      browser.i18n.getMessage('nm_message_copy_nopermission');
+      alert(browser.i18n.getMessage('nm_message_copy_nopermission'));
     }
     else if (!navigator.clipboard || !navigator.clipboard.writeText) {
-      browser.i18n.getMessage('nm_message_copy_nosupport');
+      alert(browser.i18n.getMessage('nm_message_copy_nosupport'));
     } else {
       const mark = this.findMark();
       if (!mark) return false;
