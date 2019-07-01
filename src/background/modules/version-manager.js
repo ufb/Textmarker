@@ -44,6 +44,9 @@ new _MODULE({
         if (!shortcuts.cm) {
           shortcuts.cm = defaultSettings.shortcuts.cm;
         }
+        if (!shortcuts.c) {
+          shortcuts.c = defaultSettings.shortcuts.c;
+        }
 
         if (!markers.m.style) {
           let style;
