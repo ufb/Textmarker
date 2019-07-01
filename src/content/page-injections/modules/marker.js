@@ -258,7 +258,10 @@ new _MODULE({
     });
   },
   copy(granted) {
-    if (granted === false) {
+    if (_STORE.url.search(/^https/) === -1) {
+      alert(browser.i18n.getMessage('nm_message_copy_httpsonly'));
+    }
+    else if (granted === false) {
       alert(browser.i18n.getMessage('nm_message_copy_nopermission'));
     }
     else if (!navigator.clipboard || !navigator.clipboard.writeText) {
