@@ -387,8 +387,18 @@ exports["default"] = function () {
       });
     },
     onClick: function onClick(infos, tab) {
+      var _this3 = this;
+
       var id = infos.menuItemId;
-      if (id === 'w') this.emit('lookup:word', infos.selectionText);else if (id === 'sb') browser.sidebarAction.open();else this.emit('ctx:' + id, null, null, {
+      if (id === 'w') this.emit('lookup:word', infos.selectionText);else if (id === 'sb') browser.sidebarAction.open();else if (id === 'c') {
+        browser.permissions.contains({
+          permissions: ['clipboardWrite']
+        }).then(function (granted) {
+          _this3.emit('ctx:' + id, granted, null, {
+            tab: tab.id
+          });
+        });
+      } else this.emit('ctx:' + id, null, null, {
         tab: tab.id
       });
     }
@@ -570,17 +580,19 @@ new _utils._MODULE({
 
     if (!this.injectedScripts[tabId] || !noReload) {
       this.inject(tabId, newUrl, 0).then(function (lastFrameId) {
-        _storage2["default"].get('settings').then(function (settings) {
-          if (settings.addon.iframes) {
-            browser.webNavigation.getAllFrames({
-              tabId: tabId
-            }).then(function (frames) {
-              frames.forEach(function (frame) {
-                if (frame.frameId !== lastFrameId) _this2.inject(tabId, frame.url, frame.frameId);
+        if (browser.webNavigation && browser.webNavigation.getAllFrames) {
+          _storage2["default"].get('settings').then(function (settings) {
+            if (settings.addon.iframes) {
+              browser.webNavigation.getAllFrames({
+                tabId: tabId
+              }).then(function (frames) {
+                frames.forEach(function (frame) {
+                  if (frame.frameId !== lastFrameId) _this2.inject(tabId, frame.url, frame.frameId);
+                });
               });
-            });
-          }
-        });
+            }
+          });
+        }
       });
     }
   },
@@ -1967,6 +1979,10 @@ new _utils._MODULE({
 
         if (!shortcuts.cm) {
           shortcuts.cm = defaultSettings.shortcuts.cm;
+        }
+
+        if (!shortcuts.c) {
+          shortcuts.c = defaultSettings.shortcuts.c;
         }
 
         if (!markers.m.style) {

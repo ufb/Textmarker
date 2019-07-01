@@ -548,11 +548,26 @@ new _utils._DOMMODULE({
     this.buttons = Array.from(this.el.getElementsByTagName('button'));
   },
   markAction: function markAction(e, el) {
+    var _this = this;
+
     if (el.hasAttribute('disabled')) return;
-    this.emit('sidebar:' + el.getAttribute('data-action'), null, null, {
-      tab: 'active',
-      frameId: this.frame
-    });
+    var action = el.getAttribute('data-action');
+
+    if (action === 'copy') {
+      browser.permissions.contains({
+        permissions: ['clipboardWrite']
+      }).then(function (granted) {
+        _this.emit('sidebar:' + el.getAttribute('data-action'), granted, null, {
+          tab: 'active',
+          frameId: _this.frame
+        });
+      });
+    } else {
+      this.emit('sidebar:' + el.getAttribute('data-action'), null, null, {
+        tab: 'active',
+        frameId: this.frame
+      });
+    }
   },
   activate: function activate(markInfos, sender) {
     this.frame = sender && sender.frameId ? sender.frameId : 0;

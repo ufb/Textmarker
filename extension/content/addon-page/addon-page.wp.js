@@ -2191,7 +2191,7 @@ exports["default"] = function () {
       }
 
       document.getElementById('addon-autocs').checked = settings.addon.autocs;
-      document.getElementById('addon-iframes').checked = settings.addon.iframes;
+      document.getElementById('addon-iframes').checked = !settings.addon.iframes;
     },
     showCustomSearchSettingSuccess: function showCustomSearchSettingSuccess() {
       document.getElementById('custom-search--submitted').classList.remove('u-display--none');
@@ -2227,7 +2227,7 @@ exports["default"] = function () {
       this.emit('change:autocs-setting', el.checked);
     },
     toggleIFrameOpt: function toggleIFrameOpt(e, el) {
-      this.emit('change:iframe-setting', el.checked);
+      this.emit('change:iframe-setting', !el.checked);
     },
     addMarker: function addMarker(e, el) {
       var key = el.value,

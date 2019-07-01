@@ -1392,17 +1392,26 @@ new _utils._MODULE({
       if (autosave) _this2.save();else _this2.emit('unsaved-changes');
     });
   },
-  copy: function copy() {
-    var mark = this.findMark();
-    if (!mark) return false;
-    var range = mark.range;
-    var selection = mark.selection.self;
-    var wrappers = mark.wrappers;
-    range.setStart(wrappers[0], 0);
-    range.setEnd(wrappers[wrappers.length - 1], 1);
-    selection.addRange(range);
-    navigator.clipboard.writeText(selection.toString().trim().replace(/(\r\n){1,}/g, '\r\n'));
-    selection.collapseToStart();
+  copy: function copy(granted) {
+    if (_store2["default"].url.search(/^https/) === -1) {
+      alert(browser.i18n.getMessage('nm_message_copy_httpsonly'));
+    } else if (granted === false) {
+      alert(browser.i18n.getMessage('nm_message_copy_nopermission'));
+    } else if (!navigator.clipboard || !navigator.clipboard.writeText) {
+      alert(browser.i18n.getMessage('nm_message_copy_nosupport'));
+    } else {
+      var mark = this.findMark();
+      if (!mark) return false;
+      var range = mark.range;
+      var selection = mark.selection.self;
+      var wrappers = mark.wrappers;
+      range.setStart(wrappers[0], 0);
+      range.setEnd(wrappers[wrappers.length - 1], 1);
+      selection.addRange(range);
+      console.log(navigator);
+      navigator.clipboard.writeText(selection.toString().trim().replace(/(\r\n){1,}/g, '\r\n'));
+      selection.collapseToStart();
+    }
   },
   store: function store(mark, save, order) {
     this.done.push(mark);
