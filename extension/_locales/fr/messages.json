@@ -623,6 +623,8 @@
 "nm_message":{"message":"Donnez un nom à cette nouvelle entrée dans l’historique$1 :"},
 "nm_message_iframe":{"message":"\n(cadre intégré : surlignages enregistrés séparément)"},
 "nm_message_edit":{"message":"Saisir le nouveau nom :"},
+"nm_message_copy_nopermission":{"message":""},
+"nm_message_copy_nosupport":{"message":""},
 "note_saved_entry":{"message":"\nVos surlignages ont été enregistrés dans l’historique.\n\nL’historique est accessible par le menu de l’icône de la barre de navigation.\n\n"},
 "note_pbm":{"message":"\nÉchec de l’enregistrement.\nIl faut autoriser l’enregistrement en mode de navigation privée dans les réglages, à l’onglet « Historique ».\n\n"},
 "note_updated_entry":{"message":"\n\nVos modifications ont été enregistrées.\n\n"},

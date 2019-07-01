@@ -623,6 +623,8 @@
 "nm_message":{"message":"Benenne den neuen Eintrag für Deine Textmarker Chronik$1:"},
 "nm_message_iframe":{"message":"\n(Dies ist ein iFrame - die Markierungen darin werden separat gespeichert)"},
 "nm_message_edit":{"message":"Gebe einen neuen Namen ein:"},
+"nm_message_copy_nopermission":{"message":"Du hast Textmarker nicht die Berechtigung erteilt, in die Zwischenablage zu schreiben"},
+"nm_message_copy_nosupport":{"message":"Dein Browser unterstützt diese Funktion nicht"},
 "note_saved_entry":{"message":"\nDeine Markierungen wurden in die Textmarker-Chronik gespeichert.\n\nDie Chronik ist via Textmarker-Icon in der Navigationsbar erreichbar.\n\n"},
 "note_pbm":{"message":"\nSpeichern im privaten Browser-Modus ist deaktiviert.\nAktiviere in Einstellungen > Chronik.\n\n"},
 "note_updated_entry":{"message":"\n\nDeine Änderungen wurden gespeichert.\n\n"},

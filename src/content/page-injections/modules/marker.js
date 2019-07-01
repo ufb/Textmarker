@@ -257,18 +257,25 @@ new _MODULE({
       else this.emit('unsaved-changes');
     });
   },
-  copy() {
-    const mark = this.findMark();
-    if (!mark) return false;
-    const range = mark.range;
-    const selection = mark.selection.self;
-    const wrappers = mark.wrappers;
+  copy(granted) {
+    if (granted === false) {
+      browser.i18n.getMessage('nm_message_copy_nopermission');
+    }
+    else if (!navigator.clipboard || !navigator.clipboard.writeText) {
+      browser.i18n.getMessage('nm_message_copy_nosupport');
+    } else {
+      const mark = this.findMark();
+      if (!mark) return false;
+      const range = mark.range;
+      const selection = mark.selection.self;
+      const wrappers = mark.wrappers;
 
-    range.setStart(wrappers[0], 0);
-    range.setEnd(wrappers[wrappers.length - 1], 1);
-    selection.addRange(range);
-		navigator.clipboard.writeText(selection.toString().trim().replace(/(\r\n){1,}/g, '\r\n'));
-    selection.collapseToStart();
+      range.setStart(wrappers[0], 0);
+      range.setEnd(wrappers[wrappers.length - 1], 1);
+      selection.addRange(range);console.log(navigator);
+  		navigator.clipboard.writeText(selection.toString().trim().replace(/(\r\n){1,}/g, '\r\n'));
+      selection.collapseToStart();
+    }
   },
   store(mark, save, order) {
 		this.done.push(mark);

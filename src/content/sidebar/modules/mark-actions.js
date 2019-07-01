@@ -22,7 +22,14 @@ new _DOMMODULE({
   },
   markAction(e, el) {
     if (el.hasAttribute('disabled')) return;
-    this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: 'active', frameId: this.frame });
+    const action = el.getAttribute('data-action');
+    if (action === 'copy') {
+      browser.permissions.contains({ permissions: ['clipboardWrite'] }).then(granted => {
+        this.emit('sidebar:' + el.getAttribute('data-action'), granted, null, { tab: 'active', frameId: this.frame });
+      });
+    } else {
+      this.emit('sidebar:' + el.getAttribute('data-action'), null, null, { tab: 'active', frameId: this.frame });
+    }
   },
   activate(markInfos, sender) {
     this.frame = sender && sender.frameId ? sender.frameId : 0;

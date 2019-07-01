@@ -66,8 +66,14 @@ export default function() {
     },
     onClick(infos, tab) {
       const id = infos.menuItemId;
+
       if (id === 'w') this.emit('lookup:word', infos.selectionText);
       else if (id === 'sb') browser.sidebarAction.open();
+      else if (id === 'c') {
+        browser.permissions.contains({ permissions: ['clipboardWrite'] }).then(granted => {
+          this.emit('ctx:' + id, granted, null, { tab: tab.id });
+        });
+      }
       else this.emit('ctx:' + id, null, null, { tab: tab.id });
     }
   });
