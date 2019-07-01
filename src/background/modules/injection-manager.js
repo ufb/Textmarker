@@ -48,15 +48,17 @@ new _MODULE({
   handleInjections(tabId, newUrl, noReload) {
     if (!this.injectedScripts[tabId] || !noReload) {
       this.inject(tabId, newUrl, 0).then(lastFrameId => {
-        _STORAGE.get('settings').then(settings => {
-          if (settings.addon.iframes && browser.webNavigation && browser.webNavigation.getAllFrames) {
-            browser.webNavigation.getAllFrames({ tabId }).then(frames => {
-              frames.forEach(frame => {
-                if (frame.frameId !== lastFrameId) this.inject(tabId, frame.url, frame.frameId);
+        if (browser.webNavigation && browser.webNavigation.getAllFrames) {
+          _STORAGE.get('settings').then(settings => {
+            if (settings.addon.iframes) {
+              browser.webNavigation.getAllFrames({ tabId }).then(frames => {
+                frames.forEach(frame => {
+                  if (frame.frameId !== lastFrameId) this.inject(tabId, frame.url, frame.frameId);
+                });
               });
-            });
-          }
-        });
+            }
+          });
+        }
       });
     }
   },
