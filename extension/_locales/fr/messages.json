@@ -177,7 +177,7 @@
 "h241":{"message":"Fonctions de Textmarker et leur utilisation"},
 "h242":{"message":"Surligner un texte"},
 "t241":{"message":"Surligne le texte que vous avez préalablement sélectionné (par exemple avec la souris)."},
-"t242":{"message":"raccourcis prédéfinis : M, 2 et 3 - ou par le menu contextuel"},
+"t242":{"message":"raccourcis prédéfinis : M, 1, 2, 3, 4 et 5 - ou par le menu contextuel"},
 "t243":{"message":"activé par défaut"},
 "h243":{"message":"Annuler et rétablir un surlignage"},
 "t244":{"message":"Annule le dernier surlignage effectué ou rétablit le surlignage précédemment annulé."},
