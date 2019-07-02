@@ -587,7 +587,7 @@ new _utils._MODULE({
                 tabId: tabId
               }).then(function (frames) {
                 frames.forEach(function (frame) {
-                  if (frame.frameId !== lastFrameId) _this2.inject(tabId, frame.url, frame.frameId);
+                  if (frame.frameId !== lastFrameId && frame.url !== newUrl) _this2.inject(tabId, frame.url, frame.frameId);
                 });
               });
             }
@@ -651,6 +651,8 @@ new _utils._MODULE({
       var entries = _this6.filterMatches(matches, frameId);
 
       if (entries) {
+        console.log('found for', url, frameId);
+
         _this6.emit('entries:found', {
           entries: entries,
           recentlyOpenedEntry: _this6.recentlyOpenedEntry,
@@ -3012,6 +3014,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _HASHLESS = function _HASHLESS(url) {
+  if (!url) return '';
   var h = url.lastIndexOf('#');
   if (h === -1) return url;else return url.substr(0, h);
 };

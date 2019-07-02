@@ -53,7 +53,7 @@ new _MODULE({
             if (settings.addon.iframes) {
               browser.webNavigation.getAllFrames({ tabId }).then(frames => {
                 frames.forEach(frame => {
-                  if (frame.frameId !== lastFrameId) this.inject(tabId, frame.url, frame.frameId);
+                  if (frame.frameId !== lastFrameId && frame.url !== newUrl) this.inject(tabId, frame.url, frame.frameId);
                 });
               });
             }
@@ -109,7 +109,7 @@ new _MODULE({
       const matches = this.findMatchingEntries(history, url, hashSensitive);
       const entries = this.filterMatches(matches, frameId);
 
-      if (entries) {
+      if (entries) {console.log('found for', url, frameId);
         this.emit('entries:found', {
           entries,
           recentlyOpenedEntry: this.recentlyOpenedEntry,
