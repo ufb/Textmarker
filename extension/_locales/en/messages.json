@@ -170,7 +170,7 @@
 "t232":{"message":"Once the text is been selected click a marker key - the text will be highlighted."},
 "t233":{"message":"Keyboard keys that function as markers are by default M, 2 and 3."},
 "h233":{"message":"Add custom markers"},
-"t234":{"message":"If you need more markers than the ones on keys M, 2 and 3 you can add up to 11 custom markers and style them."},
+"t234":{"message":"If you need more markers than the ones on keys M and 1-5 you can add up to 8 custom markers and style them."},
 "h234":{"message":"Customize style of a marker"},
 "t235":{"message":"In the Settings under 'Markers' you can customize the style for any marker."},
 "t236":{"message":"For example if you want to change the style of the marker that is on key 2 then chose '2' using the uppermost select. Then use the other selects to define background color, text color, text size, font or other stylings."},

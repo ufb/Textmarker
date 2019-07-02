@@ -171,7 +171,7 @@
 "t232":{"message":"Dann drücke eine Marker-Taste (lasse vorher die Maustaste los). Der Text wird gehighlightet/markiert."},
 "t233":{"message":"Tasten, die als Marker dienen, sind per default M, 2 und 3."},
 "h233":{"message":"Benutzerdefinierte Marker hinzufügen"},
-"t234":{"message":"Wenn du mehr als 3 Marker benötigst, kannst du zusätzlich bis zu 11 Tasten zu Markern machen und deren Style-Verhalten individuell festlegen."},
+"t234":{"message":"Wenn du mehr als 6 Marker benötigst, kannst du zusätzlich bis zu 8 Tasten zu Markern machen und deren Style-Verhalten individuell festlegen."},
 "h234":{"message":"Styling von Markern bestimmen"},
 "t235":{"message":"In den Einstellungen kannst du unter 'Marker' das Styling für alle Marker definieren."},
 "t236":{"message":"Wenn du z.B. das Styling für den Marker auf der Taste 2 ändern möchtest, wähle '2' im obersten Select. Dann bestimme das Styling (Hintergrundfarbe, Textfarbe, Textgröße, Schriftart u.a.) für diesen Marker über die anderen Selects."},
