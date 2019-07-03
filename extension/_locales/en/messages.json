@@ -493,7 +493,7 @@
 "tA119":{"message":"If possible, please attach the corresponding history entry (you can download it on the history page)."},
 "tA120":{"message":"Textmarker reported a successful restoration"},
 "tA121":{"message":"Please contact the developer via e-mail."},
-"tA121b":{"message":"and explain the problem"},
+"tA121b":{"message":"And explain the problem."},
 "tA122":{"message":"Please try that and see if it solves the problem"},
 "tA123":{"message":"Note: Your highlights might be already lost (depending on your setting for trying to restore lost marks more than once), so you might have to create them again."},
 "tA124":{"message":"Well, if the text isn't on the page anymore Textmarker can't highlight it ;)"},

@@ -109,7 +109,7 @@ new _MODULE({
       const matches = this.findMatchingEntries(history, url, hashSensitive);
       const entries = this.filterMatches(matches, frameId);
 
-      if (entries) {console.log('found for', url, frameId);
+      if (entries) {
         this.emit('entries:found', {
           entries,
           recentlyOpenedEntry: this.recentlyOpenedEntry,

@@ -1408,7 +1408,6 @@ new _utils._MODULE({
       range.setStart(wrappers[0], 0);
       range.setEnd(wrappers[wrappers.length - 1], 1);
       selection.addRange(range);
-      console.log(navigator);
       navigator.clipboard.writeText(selection.toString().trim().replace(/(\r\n){1,}/g, '\r\n'));
       selection.collapseToStart();
     }

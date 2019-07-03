@@ -651,8 +651,6 @@ new _utils._MODULE({
       var entries = _this6.filterMatches(matches, frameId);
 
       if (entries) {
-        console.log('found for', url, frameId);
-
         _this6.emit('entries:found', {
           entries: entries,
           recentlyOpenedEntry: _this6.recentlyOpenedEntry,

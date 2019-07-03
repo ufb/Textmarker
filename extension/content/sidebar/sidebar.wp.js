@@ -1985,6 +1985,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _HASHLESS = function _HASHLESS(url) {
+  if (!url) return '';
   var h = url.lastIndexOf('#');
   if (h === -1) return url;else return url.substr(0, h);
 };
