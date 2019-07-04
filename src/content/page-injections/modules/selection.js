@@ -245,6 +245,9 @@ export default class _SELECTION {
       tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' &&
       tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' &&
       tag !== 'MATH' && tag !== 'OBJECT' &&
+      // Ruby annotations:
+      // For whatever reason <rt> can be selected, but `getSelection().toString()` won't contain its text content!
+      tag !== 'RP' && tag !== 'RT' && tag !== 'RTC' &&
       !this.isChildOf(parent, 'svg') //&&
       //!this.isChildOf(parent, 'math')
     );
