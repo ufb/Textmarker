@@ -1,9 +1,21 @@
 @import '../../_shared/sass/vars';
 @import '../../_shared/sass/buttons';
 
+@keyframes btn {
+  from { color: $color-bg--turquoise; }
+  to { color: $color-text--light; }
+}
+
 button {
   @extend %button;
+
   width: 120px;
   font-size: inherit;
   margin-bottom: 12px;
+  background: #fff;
+
+  &:hover {
+    background: $color-bg--turquoise;
+    animation: 1s forwards btn;
+  }
 }
