@@ -618,7 +618,7 @@ export default function() {
       const val = el.value;
       if (val === 'list') table.classList.remove('detailed-list');
       else table.classList.add('detailed-list');
-      this.emit('change:view-setting', val);
+      if (e) this.emit('change:view-setting', val);
     },
     setupView(view) {
       document.getElementById('set-view').value = view;
