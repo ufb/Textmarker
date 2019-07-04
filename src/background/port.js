@@ -22,6 +22,7 @@ new _PORT({
       'updated:custom-search-settings',
       'updated:saveopt-settings',
       'updated:mark-method-settings',
+      'updated:marker-settings',
       'entries:found',
       'saved:entry',
       'deleted:entry',

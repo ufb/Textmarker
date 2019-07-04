@@ -4,6 +4,7 @@ import _STORE from './../_store'
 new _DOMMODULE({
 	events: {
     ENV: {
+      'updated:marker-settings': 'recreate',
       'updated:mark-method-settings': 'update',
       'changed:selection': 'onSelectionChange'
     }
@@ -17,6 +18,9 @@ new _DOMMODULE({
     this.update().then(() => this.create());
   },
 
+  recreate() {
+    this.remove().update().then(() => this.create());
+  },
   update() {
     return _STORE.get('settings').then(settings => {
       this.active = settings.misc.markmethod === 'popup';
@@ -43,6 +47,7 @@ new _DOMMODULE({
       this.el.removeEventListener('mousedown', this.handler, false);
       this.appended = false;
     }
+    return this;
   },
   show() {
     const popup = this.el;
