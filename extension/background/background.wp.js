@@ -1887,7 +1887,7 @@ exports["default"] = function () {
     },
     openInitPage: function openInitPage(version, loadReason) {
       if (loadReason) {
-        if (loadReason === 'install') this.openAddonPage('help');else if (loadReason === 'update') this.openAddonPage('news');
+        if (loadReason === 'install') this.openAddonPage('help'); //else if (loadReason === 'update') this.openAddonPage('news');
       }
     },
     openSearch: function openSearch(word) {
