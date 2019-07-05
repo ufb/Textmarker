@@ -96,7 +96,7 @@ export default function() {
     openInitPage(version, loadReason) {
       if (loadReason) {
         if (loadReason === 'install') this.openAddonPage('help');
-        else if (loadReason === 'update') this.openAddonPage('news');
+        //else if (loadReason === 'update') this.openAddonPage('news');
       }
     },
     openSearch(word) {
