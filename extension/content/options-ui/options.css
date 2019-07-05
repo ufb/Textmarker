@@ -14,7 +14,17 @@ button {
     background-image: linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%);
     color: #37414b; }
 
+@keyframes btn {
+  from {
+    color: #2ba5b7; }
+  to {
+    color: #fbfbfb; } }
+
 button {
   width: 120px;
   font-size: inherit;
-  margin-bottom: 12px; }
+  margin-bottom: 12px;
+  background: #fff; }
+  button:hover {
+    background: #2ba5b7;
+    animation: 1s forwards btn; }

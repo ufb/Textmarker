@@ -1269,7 +1269,7 @@ exports["default"] = function () {
     var table = document.getElementById('entries');
     var val = el.value;
     if (val === 'list') table.classList.remove('detailed-list');else table.classList.add('detailed-list');
-    this.emit('change:view-setting', val);
+    if (e) this.emit('change:view-setting', val);
   }), _defineProperty(_ref, "setupView", function setupView(view) {
     document.getElementById('set-view').value = view;
     this.setView(null, {
@@ -1537,15 +1537,28 @@ exports["default"] = function () {
       }
     },
     autoinit: function autoinit() {
-      this.log();
+      var _this = this;
+
+      this.logMissingPermissions().then(function () {
+        return _this.log();
+      });
+    },
+    logMissingPermissions: function logMissingPermissions() {
+      return browser.permissions.contains({
+        permissions: ['webNavigation']
+      }).then(function (granted) {
+        if (!granted) {
+          document.getElementById('no-permission--webNavigation').classList.remove('u-display--none');
+        }
+      });
     },
     log: function log() {
-      var _this = this;
+      var _this2 = this;
 
       _store2["default"].get('logs').then(function (logs) {
         logs = logs || [];
 
-        var tableBody = _this.el.getElementsByTagName('tbody')[0],
+        var tableBody = _this2.el.getElementsByTagName('tbody')[0],
             l = logs.length,
             frag = document.createDocumentFragment(),
             tr,
@@ -1560,14 +1573,14 @@ exports["default"] = function () {
             reason;
 
         if (l) {
-          _this.el.classList.remove('nologs');
+          _this2.el.classList.remove('nologs');
 
           while (l--) {
             log = logs[l];
             msg = log[1];
             if (typeof msg === 'number') msg = browser.i18n.getMessage(_logKeys2["default"].getKeyByValue(log[1])); //'nu',{year:'numeric',month:'2-digit',day:'2-digit',hour:'numeric',second:'numeric',minute:'numeric'}
 
-            time = _this.optimizeDateString(new Date(log[0]).toLocaleString());
+            time = _this2.optimizeDateString(new Date(log[0]).toLocaleString());
             tr = document.createElement('tr');
             td_date = document.createElement('td');
             td_msg = document.createElement('td');
@@ -1597,7 +1610,7 @@ exports["default"] = function () {
           tableBody.innerText = '';
           tableBody.appendChild(frag);
         } else {
-          _this.el.classList.add('nologs');
+          _this2.el.classList.add('nologs');
         }
       });
     },

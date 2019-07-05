@@ -1030,6 +1030,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 new _utils._DOMMODULE({
   events: {
     ENV: {
+      'updated:marker-settings': 'recreate',
       'updated:mark-method-settings': 'update',
       'changed:selection': 'onSelectionChange'
     }
@@ -1044,12 +1045,19 @@ new _utils._DOMMODULE({
       return _this.create();
     });
   },
-  update: function update() {
+  recreate: function recreate() {
     var _this2 = this;
 
+    this.remove().update().then(function () {
+      return _this2.create();
+    });
+  },
+  update: function update() {
+    var _this3 = this;
+
     return _store2["default"].get('settings').then(function (settings) {
-      _this2.active = settings.misc.markmethod === 'popup';
-      _this2.markers = settings.markers;
+      _this3.active = settings.misc.markmethod === 'popup';
+      _this3.markers = settings.markers;
     });
   },
   create: function create() {
@@ -1074,6 +1082,8 @@ new _utils._DOMMODULE({
       this.el.removeEventListener('mousedown', this.handler, false);
       this.appended = false;
     }
+
+    return this;
   },
   show: function show() {
     var popup = this.el;
@@ -3572,7 +3582,9 @@ function () {
     value: function hasNormalParent(node) {
       var parent = node.parentNode;
       var tag = parent.tagName.toUpperCase();
-      return tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' && tag !== 'BASE' && tag !== 'TITLE' && tag !== 'NOSCRIPT' && tag !== 'IMG' && tag !== 'IFRAME' && tag !== 'EMBED' && tag !== 'PARAM' && tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' && tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' && tag !== 'MATH' && tag !== 'OBJECT' && !this.isChildOf(parent, 'svg') //&&
+      return tag !== 'SCRIPT' && tag !== 'STYLE' && tag !== 'LINK' && tag !== 'META' && tag !== 'BASE' && tag !== 'TITLE' && tag !== 'NOSCRIPT' && tag !== 'IMG' && tag !== 'IFRAME' && tag !== 'EMBED' && tag !== 'PARAM' && tag !== 'VIDEO' && tag !== 'AUDIO' && tag !== 'SOURCE' && tag !== 'TRACK' && tag !== 'CANVAS' && tag !== 'MAP' && tag !== 'AREA' && tag !== 'MATH' && tag !== 'OBJECT' && // Ruby annotations:
+      // For whatever reason <rt> can be selected, but `getSelection().toString()` won't contain its text content!
+      tag !== 'RP' && tag !== 'RT' && tag !== 'RTC' && !this.isChildOf(parent, 'svg') //&&
       //!this.isChildOf(parent, 'math')
       ;
     }
