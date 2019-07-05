@@ -16,7 +16,15 @@ export default function() {
       }
     },
     autoinit() {
-      this.log();
+      this.logMissingPermissions().then(() => this.log());
+    },
+    logMissingPermissions() {
+      return browser.permissions.contains({ permissions: ['webNavigation'] })
+        .then(granted => {
+          if (!granted) {
+            document.getElementById('no-permission--webNavigation').classList.remove('u-display--none');
+          }
+        });
     },
     log() {
       _STORE.get('logs').then(logs => {
