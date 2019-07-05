@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Textmarker",
-  "version": "5.0.0",
+  "version": "5.0.1",
 
   "applications": {
     "gecko": {
