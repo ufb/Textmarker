@@ -51,7 +51,8 @@ new _PORT({
       'sidebar:retry-restoration',
       'sidebar:selected-marker',
       'opened:sidebar',
-      'changed:url'
+      'changed:url',
+      'injected?'
     ],
     CONNECTION: [
       'started:app',

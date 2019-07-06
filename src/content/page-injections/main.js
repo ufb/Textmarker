@@ -20,7 +20,10 @@ new _MODULE({
       'resumed-on-hashchange': 'onResumed',
 
       // @RESTORER
-      'entries:found': 'onEntriesFound'
+      'entries:found': 'onEntriesFound',
+
+      // respond to bug
+      'injected?': 'notifyBG'
     }
   },
 
@@ -107,5 +110,9 @@ new _MODULE({
     if (recentlyOpenedEntry.url === url) {
       _STORE.name = recentlyOpenedEntry.name;
     }
+  },
+
+  notifyBG(sender, sendResponse) {
+    sendResponse(true);
   }
 });

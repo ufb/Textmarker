@@ -535,6 +535,7 @@ var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 new _utils._MODULE({
+  type: 'background',
   events: {
     ENV: {
       'changed:url': 'onURLChange',
@@ -548,7 +549,6 @@ new _utils._MODULE({
     }
   },
   queuedForTabCompleted: {},
-  injectedScripts: {},
   recentlyOpenedEntry: null,
   onTabCompleted: function onTabCompleted(tabId) {
     if (this.queuedForTabCompleted[tabId]) {
@@ -578,7 +578,7 @@ new _utils._MODULE({
   handleInjections: function handleInjections(tabId, newUrl, noReload) {
     var _this2 = this;
 
-    if (!this.injectedScripts[tabId] || !noReload) {
+    if (!noReload) {
       this.inject(tabId, newUrl, 0).then(function (lastFrameId) {
         if (browser.webNavigation && browser.webNavigation.getAllFrames) {
           _storage2["default"].get('settings').then(function (settings) {
@@ -613,18 +613,19 @@ new _utils._MODULE({
       frameId: frameId,
       runAt: 'document_idle'
     }).then(function () {
-      _this4.injectedScripts[tabId] = {
-        url: url
-      };
-
-      _this4.insertCSS(tabId, frameId);
+      return _this4.insertCSS(tabId, frameId);
     })["catch"](function (e) {
-      if (!frameId) {
-        var msg = e.toString();
+      var msg = e.toString();
 
-        if (!msg.includes('Missing host permission for the tab')) {
-          _this4.emit('failed:inject-content-script', msg);
-        }
+      if (frameId === 0 && !msg.includes('host permission')) {
+        _this4.request('injected?', {
+          tabId: tabId,
+          frameId: frameId
+        }).then(function () {
+          return _this4.insertCSS(tabId, frameId);
+        })["catch"](function () {
+          return _this4.emit('failed:inject-content-script', "".concat(msg, "\nURL: ").concat(url));
+        });
       }
     });
   },
@@ -2317,7 +2318,7 @@ new _utils._PORT({
   type: 'background',
   postponeConnection: true,
   events: {
-    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:entry-sync', 'updated:entry-name', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'updated:marker-settings', 'entries:found', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'ctx:c', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:copy', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar', 'changed:url'],
+    ONEOFF: ['started:app', 'toggled:addon', 'toggled:sync', 'updated:settings', 'updated:history', 'updated:history-on-restoration', 'updated:entry-sync', 'updated:entry-name', 'updated:logs', 'updated:ctm-settings', 'updated:misc-settings', 'updated:naming-settings', 'updated:bg-color-settings', 'updated:custom-search-settings', 'updated:saveopt-settings', 'updated:mark-method-settings', 'updated:marker-settings', 'entries:found', 'saved:entry', 'deleted:entry', 'deleted:entries', 'imported:settings', 'imported:history', 'ctx:m', 'ctx:d', 'ctx:b', 'ctx:-b', 'ctx:n', 'ctx:c', 'sidebar:highlight', 'sidebar:delete-highlight', 'sidebar:bookmark', 'sidebar:delete-bookmark', 'sidebar:note', 'sidebar:immut', 'sidebar:save-changes', 'sidebar:undo', 'sidebar:redo', 'sidebar:copy', 'sidebar:scroll-to-bookmark', 'sidebar:toggle-notes', 'sidebar:next-mark', 'sidebar:retry-restoration', 'sidebar:selected-marker', 'opened:sidebar', 'changed:url', 'injected?'],
     CONNECTION: ['started:app', 'toggled:addon', 'toggled:sync', 'updated:settings', 'updated:entry-on-save', 'saved:entry', 'updated:pagenotes', 'changed:selection', 'unsaved-changes', 'clicked:mark', 'added:bookmark', 'removed:bookmark', 'added:note', 'removed:last-note', 'page-state', 'notes-state', 'entry:found', 'entry:found-for-tab', 'entry:deleted-for-tab', 'entry:ordered-marks', 'hashchange']
   }
 });
@@ -3084,11 +3085,20 @@ function () {
         args[_key2 - 1] = arguments[_key2];
       }
 
-      return browser.runtime.sendMessage({
-        ev: event,
-        args: args,
-        wait: true
-      })["catch"](function () {});
+      if (this.type === 'background') {
+        return browser.tabs.sendMessage(args[0].tabId, {
+          ev: event,
+          wait: true
+        }, {
+          frameId: args[0].frameId
+        });
+      } else {
+        return browser.runtime.sendMessage({
+          ev: event,
+          args: args,
+          wait: true
+        })["catch"](function () {});
+      }
     }
   }, {
     key: "proxy",

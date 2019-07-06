@@ -390,7 +390,9 @@ new _utils._MODULE({
       'deleted:entry': 'removeEntry',
       'resumed-on-hashchange': 'onResumed',
       // @RESTORER
-      'entries:found': 'onEntriesFound'
+      'entries:found': 'onEntriesFound',
+      // respond to bug
+      'injected?': 'notifyBG'
     }
   },
   retryActive: false,
@@ -476,6 +478,9 @@ new _utils._MODULE({
     if (recentlyOpenedEntry.url === url) {
       _store2["default"].name = recentlyOpenedEntry.name;
     }
+  },
+  notifyBG: function notifyBG(sender, sendResponse) {
+    sendResponse(true);
   }
 });
 
@@ -2384,7 +2389,9 @@ exports["default"] = function () {
       this.emit('started:restorations');
       _store2["default"].restoring = true;
       entries.forEach(function (entry) {
-        if (entry.immut) new ImmutRestorer(entry);else new Restorer(entry);
+        if (entry.marks && entry.marks.length) {
+          if (entry.immut) new ImmutRestorer(entry);else new Restorer(entry);
+        }
       });
     },
     resume: function resume() {
@@ -4487,11 +4494,20 @@ function () {
         args[_key2 - 1] = arguments[_key2];
       }
 
-      return browser.runtime.sendMessage({
-        ev: event,
-        args: args,
-        wait: true
-      })["catch"](function () {});
+      if (this.type === 'background') {
+        return browser.tabs.sendMessage(args[0].tabId, {
+          ev: event,
+          wait: true
+        }, {
+          frameId: args[0].frameId
+        });
+      } else {
+        return browser.runtime.sendMessage({
+          ev: event,
+          args: args,
+          wait: true
+        })["catch"](function () {});
+      }
     }
   }, {
     key: "proxy",

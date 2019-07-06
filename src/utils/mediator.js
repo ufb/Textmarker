@@ -20,7 +20,11 @@ export default class {
     }
   }
   request(event, ...args) {
-    return browser.runtime.sendMessage({ ev: event, args: args, wait: true }).catch(() => {});
+    if (this.type === 'background') {
+      return browser.tabs.sendMessage(args[0].tabId, { ev: event, wait: true }, { frameId: args[0].frameId });
+    } else {
+      return browser.runtime.sendMessage({ ev: event, args: args, wait: true }).catch(() => {});
+    }
   }
   proxy(context, func, ...args1) {
     return function(...args2) {

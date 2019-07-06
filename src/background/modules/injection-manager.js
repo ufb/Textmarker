@@ -2,6 +2,7 @@ import _STORAGE from './../storage'
 import { _MODULE, _HASHLESS } from './../utils'
 
 new _MODULE({
+  type: 'background',
   events: {
     ENV: {
       'changed:url': 'onURLChange',
@@ -15,7 +16,6 @@ new _MODULE({
     }
   },
   queuedForTabCompleted: {},
-  injectedScripts: {},
   recentlyOpenedEntry: null,
 
   onTabCompleted(tabId) {
@@ -46,7 +46,7 @@ new _MODULE({
   },
 
   handleInjections(tabId, newUrl, noReload) {
-    if (!this.injectedScripts[tabId] || !noReload) {
+    if (!noReload) {
       this.inject(tabId, newUrl, 0).then(lastFrameId => {
         if (browser.webNavigation && browser.webNavigation.getAllFrames) {
           _STORAGE.get('settings').then(settings => {
@@ -77,16 +77,13 @@ new _MODULE({
       frameId,
       runAt: 'document_idle'
     })
-      .then(() => {
-        this.injectedScripts[tabId] = { url };
-        this.insertCSS(tabId, frameId);
-      })
+      .then(() => this.insertCSS(tabId, frameId))
       .catch(e => {
-        if (!frameId) {
-          const msg = e.toString();
-          if (!msg.includes('Missing host permission for the tab')) {
-            this.emit('failed:inject-content-script', msg);
-          }
+        let msg = e.toString();
+        if (frameId === 0 && !msg.includes('host permission')) {
+          this.request('injected?', { tabId, frameId })
+            .then(() => this.insertCSS(tabId, frameId))
+            .catch(() => this.emit('failed:inject-content-script', `${msg}\nURL: ${url}`));
         }
       });
   },
