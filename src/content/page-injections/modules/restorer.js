@@ -695,8 +695,10 @@ export default function() {
       _STORE.restoring = true;
 
       entries.forEach(entry => {
-        if (entry.immut) new ImmutRestorer(entry);
-        else new Restorer(entry);
+        if (entry.marks && entry.marks.length) {
+          if (entry.immut) new ImmutRestorer(entry);
+          else new Restorer(entry);
+        }
       });
     },
     resume() {
