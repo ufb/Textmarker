@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Textmarker",
-  "version": "5.0.2",
+  "version": "5.1.0",
 
   "applications": {
     "gecko": {
@@ -23,7 +23,8 @@
     "tabs",
     "notifications",
     "menus",
-    "clipboardWrite"
+    "clipboardWrite",
+    "webNavigation"
   ],
 
   "optional_permissions": [
