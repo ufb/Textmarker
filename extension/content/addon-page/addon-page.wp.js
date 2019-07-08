@@ -233,6 +233,10 @@ var _historyPagination = __webpack_require__(/*! ./modules/history-pagination */
 
 var _historyPagination2 = _interopRequireDefault(_historyPagination);
 
+var _permissions = __webpack_require__(/*! ./modules/permissions */ "./content/addon-page/modules/permissions.js");
+
+var _permissions2 = _interopRequireDefault(_permissions);
+
 var _nav = __webpack_require__(/*! ./modules/nav */ "./content/addon-page/modules/nav.js");
 
 var _nav2 = _interopRequireDefault(_nav);
@@ -267,6 +271,7 @@ new _utils._MODULE({
       (0, _contact2["default"])();
       (0, _troubleshooting2["default"])();
       (0, _historyPagination2["default"])();
+      (0, _permissions2["default"])();
       this.initMainNav();
     }
   },
@@ -1532,7 +1537,8 @@ exports["default"] = function () {
       },
       DOM: {
         click: {
-          '#clear-logs': 'clear'
+          '#clear-logs': 'clear',
+          '.permission': 'askPermission'
         }
       }
     },
@@ -1622,6 +1628,21 @@ exports["default"] = function () {
         return '0' + p + q;
       }).replace(/(\D{1})(\d{1}\D{1})/g, function (m, p, q) {
         return p + '0' + q;
+      });
+    },
+    askPermission: function askPermission() {
+      var _this3 = this;
+
+      browser.permissions.request({
+        permissions: ['webNavigation']
+      }).then(function (granted) {
+        if (granted) {
+          _this3.emit('granted-permission:webNavigation');
+
+          Array.from(document.getElementsByClassName('permission-alert')).forEach(function (alert) {
+            return alert.classList.add('u-display--none');
+          });
+        }
       });
     }
   });
@@ -1974,6 +1995,63 @@ exports["default"] = function (el) {
     close: function close(el) {
       el.classList.remove('active');
       document.getElementById(el.getAttribute('data-target')).classList.add('u-display--none');
+    }
+  });
+};
+
+var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
+
+/***/ }),
+
+/***/ "./content/addon-page/modules/permissions.js":
+/*!***************************************************!*\
+  !*** ./content/addon-page/modules/permissions.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports["default"] = function () {
+  return new _utils._DOMMODULE({
+    el: document.getElementById('permission-alert'),
+    events: {
+      DOM: {
+        click: {
+          '.permission': 'askPermission'
+        }
+      }
+    },
+    autoinit: function autoinit() {
+      var _this = this;
+
+      browser.permissions.contains({
+        permissions: ['webNavigation']
+      }).then(function (granted) {
+        if (!granted) {
+          _this.el.classList.remove('u-display--none');
+        }
+      });
+    },
+    askPermission: function askPermission() {
+      var _this2 = this;
+
+      browser.permissions.request({
+        permissions: ['webNavigation']
+      }).then(function (granted) {
+        if (granted) {
+          _this2.emit('granted-permission:webNavigation');
+
+          Array.from(document.getElementsByClassName('permission-alert')).forEach(function (alert) {
+            return alert.classList.add('u-display--none');
+          });
+        }
+      });
     }
   });
 };
@@ -2619,7 +2697,7 @@ exports["default"] = new _utils._PORT({
   name: 'addon-page',
   type: 'content',
   events: {
-    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:autoRetry-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'change:hash-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'toggle:tbbpower-setting', 'change:autocs-setting', 'change:iframe-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'correct-name:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries']
+    ONEOFF: ['change:style-setting', 'change:autonote-setting', 'change:mark-method-setting', 'toggle:shortcut-setting', 'change:shortcut-setting', 'toggle:ctm-setting', 'change:saveopt-setting', 'toggle:priv-setting', 'change:immut-setting', 'change:dropLosses-setting', 'change:autoRetry-setting', 'change:namingopt-setting', 'change:sort-setting', 'change:view-setting', 'change:hash-setting', 'toggle:noteopt-setting', 'toggle:quickbuttonopt-setting', 'switch:quickbuttonopt-setting', 'toggle:notification-setting', 'toggle:misc-setting', 'change:misc-setting', 'toggle:tbbpower-setting', 'change:autocs-setting', 'change:iframe-setting', 'add:custom-marker', 'remove:custom-marker', 'delete:entries', 'clean:entries', 'open:entries', 'rename:entry', 'correct-name:entry', 'view:entry', 'sync:entry', 'sync:history', 'sync:settings', 'import:storage', 'toggle:sync', 'change:custom-search-setting', 'changed:per-page-count', 'error:browser-console', 'clear:logs', 'tag:entries', 'granted-permission:webNavigation']
   }
 });
 

@@ -11,7 +11,8 @@ export default function() {
       },
       DOM: {
         click: {
-          '#clear-logs': 'clear'
+          '#clear-logs': 'clear',
+          '.permission': 'askPermission'
         }
       }
     },
@@ -80,6 +81,15 @@ export default function() {
       return (date
         .replace(/^(\d{1})(\D{1})/, (m, p, q)=> '0' + p + q)
         .replace(/(\D{1})(\d{1}\D{1})/g, (m, p, q) => p + '0' + q));
+    },
+    askPermission() {
+      browser.permissions.request({ permissions: ['webNavigation'] }).then(granted => {
+        if (granted) {
+          this.emit('granted-permission:webNavigation');
+          Array.from(document.getElementsByClassName('permission-alert'))
+            .forEach(alert => alert.classList.add('u-display--none'));
+        }
+      });
     }
   });
 }

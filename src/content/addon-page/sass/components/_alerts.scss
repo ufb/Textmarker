@@ -1,0 +1,18 @@
+.tm-alert {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 240px;
+  color: #fbfbfb;
+  z-index: 2;
+
+  @include mq('mobile') {
+    position: relative;
+    padding: 10px;
+  }
+
+  &--error {
+    background: transparentize($color-red, .1);
+  }
+}

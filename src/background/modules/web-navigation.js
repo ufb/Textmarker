@@ -2,14 +2,24 @@ import { _MODULE } from './../utils'
 
 export default function() {
   return new _MODULE({
+    events: {
+      ENV: {
+        'granted-permission:webNavigation': 'addListener'
+      }
+    },
     autoinit() {
-      browser.permissions.contains({ permissions: ['webNavigation'] }).then(granted => {
+      const permission = { permissions: ['webNavigation'] };
+
+      browser.permissions.contains(permission).then(granted => {
         if (granted) {
-          browser.webNavigation.onDOMContentLoaded.addListener(infos => this.emit('dom:loaded', infos));
+          this.addListener();
         } else {
           this.emit('missing-permission:webNavigation');
         }
       });
+    },
+    addListener() {
+      browser.webNavigation.onDOMContentLoaded.addListener(infos => this.emit('dom:loaded', infos));
     }
   });
 }

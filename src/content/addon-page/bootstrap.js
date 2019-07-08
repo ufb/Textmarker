@@ -9,6 +9,7 @@ import _IMPORT from './modules/import'
 import _CONTACT from './modules/contact'
 import _TROUBLESHOOTING from './modules/troubleshooting'
 import _PAGINATOR from './modules/history-pagination'
+import _PERMISSIONS from './modules/permissions'
 
 import _NAV from './modules/nav'
 
@@ -38,6 +39,7 @@ new _MODULE({
       _CONTACT();
       _TROUBLESHOOTING();
       _PAGINATOR();
+      _PERMISSIONS();
       this.initMainNav();
     }
   },

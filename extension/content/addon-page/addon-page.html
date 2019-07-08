@@ -10,6 +10,14 @@
 
   <div class="u-cf toggle-button" data-target="mainnav-list" data-toggle="remove">
 
+    <div id="permission-alert" class="tm-alert tm-alert--error permission-alert u-display--none">
+      <p>
+        <sup class="u-display--inline">&#9888;</sup> <span data-l10n-id="t816"></span><br>
+        &rarr; <span data-l10n-id="t815"></span>: <span data-l10n-id="t1147"></span><br><br>
+        <button type="button" class="permission" data-l10n-id="t817"></button>
+      </p>
+    </div>
+
   	<nav id="mainnav" class="nav" data-page-nav>
       <div class="menu-toggler toggle-button" data-target="mainnav-list" data-toggle="toggle"></div>
   		<ul id="mainnav-list">
@@ -1627,9 +1635,10 @@
       <div id="logs" class="content u-display--none">
         <h2 data-l10n-id="h80"></h2>
         <section class="block-spacing">
-          <p id="no-permission--webNavigation" class="u-display--none">
+          <p id="no-permission--webNavigation" class="permission-alert u-display--none">
             <sup class="u-display--inline u-color--red">&#9888;</sup> <span data-l10n-id="t816"></span><br>
             &rarr; <span data-l10n-id="t815" class="u-color--red"></span>: <span data-l10n-id="t1147"></span><br><br>
+            <button type="button" class="permission" data-l10n-id="t817"></button><br><br>
           </p>
           <p id="no-logs" data-l10n-id="t811" class="u-display--none"></p>
           <table id="logs-table">

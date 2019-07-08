@@ -2303,19 +2303,30 @@ Object.defineProperty(exports, "__esModule", {
 
 exports["default"] = function () {
   return new _utils._MODULE({
+    events: {
+      ENV: {
+        'granted-permission:webNavigation': 'addListener'
+      }
+    },
     autoinit: function autoinit() {
       var _this = this;
 
-      browser.permissions.contains({
+      var permission = {
         permissions: ['webNavigation']
-      }).then(function (granted) {
+      };
+      browser.permissions.contains(permission).then(function (granted) {
         if (granted) {
-          browser.webNavigation.onDOMContentLoaded.addListener(function (infos) {
-            return _this.emit('dom:loaded', infos);
-          });
+          _this.addListener();
         } else {
           _this.emit('missing-permission:webNavigation');
         }
+      });
+    },
+    addListener: function addListener() {
+      var _this2 = this;
+
+      browser.webNavigation.onDOMContentLoaded.addListener(function (infos) {
+        return _this2.emit('dom:loaded', infos);
       });
     }
   });

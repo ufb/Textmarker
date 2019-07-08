@@ -46,7 +46,8 @@ export default new _PORT({
       'changed:per-page-count',
       'error:browser-console',
       'clear:logs',
-      'tag:entries'
+      'tag:entries',
+      'granted-permission:webNavigation'
     ]
   }
 })
