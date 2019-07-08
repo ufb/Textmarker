@@ -21,7 +21,8 @@ export default function() {
         'warn:mixed-entry-types': 'onMixedEntryTypes',
         'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries',
         'failed:inject-content-script': 'onScriptInjectionFailure',
-        'failed:inject-stylesheet': 'onCSSInjectionFailure'
+        'failed:inject-stylesheet': 'onCSSInjectionFailure',
+        'missing-permission:webNavigation': 'onMissingWebNavigationPermission'
       }
     },
 
@@ -162,6 +163,14 @@ export default function() {
       this.notify(
         settings => settings.misc.vipNote,
         browser.i18n.getMessage('css_injection_failure'),
+        'error'
+      );
+    },
+
+    onMissingWebNavigationPermission() {
+      this.notify(
+        settings => settings.misc.vipNote,
+        browser.i18n.getMessage('missing_permission_wn'),
         'error'
       );
     },

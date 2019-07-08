@@ -2825,6 +2825,7 @@ exports["default"] = {
   error_save_mark_method: 36,
   js_injection_failure: 37,
   css_injection_failure: 38,
+  missing_permission_wn: 39,
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {

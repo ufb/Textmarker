@@ -460,7 +460,8 @@ new _utils._MODULE({
       'clear:logs': 'clear',
       'failed:restore-range': 'log',
       'failed:inject-content-script': 'onScriptInjectionFailure',
-      'failed:inject-stylesheet': 'onCSSInjectionFailure'
+      'failed:inject-stylesheet': 'onCSSInjectionFailure',
+      'missing-permission:webNavigation': 'onMissingWebNavigationPermission'
     }
   },
   log: function log(error, info) {
@@ -516,6 +517,9 @@ new _utils._MODULE({
   },
   onCSSInjectionFailure: function onCSSInjectionFailure() {
     this.log('css_injection_failure');
+  },
+  onMissingWebNavigationPermission: function onMissingWebNavigationPermission() {
+    this.log('missing_permission_wn');
   }
 });
 
@@ -573,37 +577,49 @@ new _utils._MODULE((_ref = {
     });
   },
   onFetchEntriesRequest: function onFetchEntriesRequest(url, sender) {
-    this.collectEntries(sender.tab.id, url, sender.frameId, true);
+    this.collectEntries({
+      tabId: sender.tab.id,
+      url: url,
+      frameId: sender.frameId
+    }, true);
   }
 }, _defineProperty(_ref, "autoinject", function autoinject(infos) {
-  var tabId = infos.tabId,
-      url = infos.url,
-      frameId = infos.frameId;
-  if (!this.iframeInjections && frameId !== 0) return false;
-  if (this.autoinject) this.inject(tabId, url, frameId);
+  if (!this.iframeInjections && infos.frameId !== 0) return false;
+  if (this.autoinject) this.inject(infos);
 }), _defineProperty(_ref, "injectManually", function injectManually(tabId, url) {
   var _this2 = this;
 
-  this.injectContentScript(tabId, url, null).then(function () {
+  this.injectContentScript({
+    tabId: tabId,
+    url: url,
+    frameId: null
+  }).then(function () {
     if (browser.webNavigation && browser.webNavigation.getAllFrames && _this2.iframeInjections) {
       browser.webNavigation.getAllFrames({
         tabId: tabId
       }).then(function (frames) {
         return frames.forEach(function (frame) {
-          return _this2.collectEntries(tabId, frame.url, frame.frameId);
+          return _this2.collectEntries({
+            tabId: tabId,
+            url: frame.url,
+            frameId: frame.frameId
+          });
         });
       });
     }
   });
-}), _defineProperty(_ref, "inject", function inject(tabId, url, frameId) {
+}), _defineProperty(_ref, "inject", function inject(infos) {
   var _this3 = this;
 
-  this.injectContentScript(tabId, url, frameId).then(function () {
-    return _this3.collectEntries(tabId, url, frameId);
+  this.injectContentScript(infos).then(function () {
+    return _this3.collectEntries(infos);
   });
-}), _defineProperty(_ref, "injectContentScript", function injectContentScript(tabId, url, frameId) {
+}), _defineProperty(_ref, "injectContentScript", function injectContentScript(infos) {
   var _this4 = this;
 
+  var tabId = infos.tabId,
+      url = infos.url,
+      frameId = infos.frameId;
   var details = {
     file: '../content/page-injections/injection.wp.js'
   };
@@ -650,8 +666,12 @@ new _utils._MODULE((_ref = {
       _this5.emit('failed:inject-stylesheet');
     }
   });
-}), _defineProperty(_ref, "collectEntries", function collectEntries(tabId, url, frameId, hashSensitive) {
+}), _defineProperty(_ref, "collectEntries", function collectEntries(infos, hashSensitive) {
   var _this6 = this;
+
+  var tabId = infos.tabId,
+      url = infos.url,
+      frameId = infos.frameId;
 
   _storage2["default"].get('history').then(function (history) {
     var matches = _this6.findMatchingEntries(history, url, hashSensitive);
@@ -904,7 +924,8 @@ exports["default"] = function () {
         'warn:mixed-entry-types': 'onMixedEntryTypes',
         'warn:multiple-unlocked-entries': 'onMultipleUnlockedEntries',
         'failed:inject-content-script': 'onScriptInjectionFailure',
-        'failed:inject-stylesheet': 'onCSSInjectionFailure'
+        'failed:inject-stylesheet': 'onCSSInjectionFailure',
+        'missing-permission:webNavigation': 'onMissingWebNavigationPermission'
       }
     },
     notify: function notify(condition, message, type) {
@@ -999,6 +1020,11 @@ exports["default"] = function () {
       this.notify(function (settings) {
         return settings.misc.vipNote;
       }, browser.i18n.getMessage('css_injection_failure'), 'error');
+    },
+    onMissingWebNavigationPermission: function onMissingWebNavigationPermission() {
+      this.notify(function (settings) {
+        return settings.misc.vipNote;
+      }, browser.i18n.getMessage('missing_permission_wn'), 'error');
     },
     onError: function onError(error) {
       this.notify(function (settings) {
@@ -2280,8 +2306,16 @@ exports["default"] = function () {
     autoinit: function autoinit() {
       var _this = this;
 
-      browser.webNavigation.onDOMContentLoaded.addListener(function (infos) {
-        return _this.emit('dom:loaded', infos);
+      browser.permissions.contains({
+        permissions: ['webNavigation']
+      }).then(function (granted) {
+        if (granted) {
+          browser.webNavigation.onDOMContentLoaded.addListener(function (infos) {
+            return _this.emit('dom:loaded', infos);
+          });
+        } else {
+          _this.emit('missing-permission:webNavigation');
+        }
       });
     }
   });
@@ -2806,6 +2840,7 @@ exports["default"] = {
   error_save_mark_method: 36,
   js_injection_failure: 37,
   css_injection_failure: 38,
+  missing_permission_wn: 39,
   getKeyByValue: function getKeyByValue(val) {
     for (var key in this) {
       if (this[key] == val) {

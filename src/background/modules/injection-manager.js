@@ -32,29 +32,29 @@ new _MODULE({
   },
 
   onFetchEntriesRequest(url, sender) {
-    this.collectEntries(sender.tab.id, url, sender.frameId, true);
+    this.collectEntries({ tabId: sender.tab.id, url, frameId: sender.frameId }, true);
   },
 
   autoinject(infos) {
-    const { tabId, url, frameId } = infos;
-    if (!this.iframeInjections && frameId !== 0) return false;
-    if (this.autoinject) this.inject(tabId, url, frameId);
+    if (!this.iframeInjections && infos.frameId !== 0) return false;
+    if (this.autoinject) this.inject(infos);
   },
 
   injectManually(tabId, url) {
-    this.injectContentScript(tabId, url, null).then(() => {
+    this.injectContentScript({ tabId, url, frameId: null }).then(() => {
       if (browser.webNavigation && browser.webNavigation.getAllFrames && this.iframeInjections) {
         browser.webNavigation.getAllFrames({ tabId })
-          .then(frames => frames.forEach(frame => this.collectEntries(tabId, frame.url, frame.frameId)));
+          .then(frames => frames.forEach(frame => this.collectEntries({ tabId, url: frame.url, frameId: frame.frameId })));
       }
     });
   },
 
-  inject(tabId, url, frameId) {
-    this.injectContentScript(tabId, url, frameId).then(() => this.collectEntries(tabId, url, frameId));
+  inject(infos) {
+    this.injectContentScript(infos).then(() => this.collectEntries(infos));
   },
 
-  injectContentScript(tabId, url, frameId) {
+  injectContentScript(infos) {
+    const { tabId, url, frameId } = infos;
     const details = { file: '../content/page-injections/injection.wp.js' };
     if (frameId === null) {
       details.allFrames = true;
@@ -91,7 +91,8 @@ new _MODULE({
       });
   },
 
-  collectEntries(tabId, url, frameId, hashSensitive) {
+  collectEntries(infos, hashSensitive) {
+    const { tabId, url, frameId } = infos;
     _STORAGE.get('history').then(history => {
       const matches = this.findMatchingEntries(history, url, hashSensitive);
       const entries = this.filterMatches(matches, frameId);

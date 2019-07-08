@@ -37,6 +37,7 @@ export default {
   error_save_mark_method: 36,
   js_injection_failure: 37,
   css_injection_failure: 38,
+  missing_permission_wn: 39,
 
   getKeyByValue(val) {
     for (let key in this) {

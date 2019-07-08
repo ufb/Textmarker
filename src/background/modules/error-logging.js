@@ -20,7 +20,8 @@ new _MODULE({
       'clear:logs': 'clear',
       'failed:restore-range': 'log',
       'failed:inject-content-script': 'onScriptInjectionFailure',
-      'failed:inject-stylesheet': 'onCSSInjectionFailure'
+      'failed:inject-stylesheet': 'onCSSInjectionFailure',
+      'missing-permission:webNavigation': 'onMissingWebNavigationPermission'
     }
   },
 
@@ -65,5 +66,8 @@ new _MODULE({
   },
   onCSSInjectionFailure() {
     this.log('css_injection_failure');
-  }
+  },
+  onMissingWebNavigationPermission() {
+    this.log('missing_permission_wn');
+  },
 });
