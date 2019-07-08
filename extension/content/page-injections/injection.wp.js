@@ -391,7 +391,7 @@ new _utils._MODULE({
       'resumed-on-hashchange': 'onResumed',
       // @RESTORER
       'entries:found': 'onEntriesFound',
-      // respond to bug
+      // register at BG
       'injected?': 'notifyBG'
     }
   },

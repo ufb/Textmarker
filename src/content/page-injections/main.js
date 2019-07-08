@@ -22,7 +22,7 @@ new _MODULE({
       // @RESTORER
       'entries:found': 'onEntriesFound',
 
-      // respond to bug
+      // register at BG
       'injected?': 'notifyBG'
     }
   },

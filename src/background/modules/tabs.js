@@ -61,12 +61,9 @@ export default function() {
     onActivated(tab) {
       this.emit('activated:tab', tab.tabId, (tab.url || ''));
     },
-    onUpdated(tabId, changed) {
+    onUpdated(tabId, changed, tab) {
       if (changed.url) {
-        this.emit('changed:url', tabId, changed);
-      }
-      else if (changed.status && changed.status === 'complete') {
-        this.emit('completed:tab', tabId);
+        this.emit('changed:url', tabId, changed, tab);
       }
     },
 

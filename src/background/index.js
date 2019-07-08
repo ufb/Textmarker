@@ -12,6 +12,7 @@ import _STORAGE from './storage'
 import './port'
 import './modules/error-logging'
 import './modules/injection-manager'
+import _WEBNAVIGATION from './modules/web-navigation'
 import _NOTIFICATIONS from './modules/notifications'
 import _TABS from './modules/tabs'
 import _WINDOWS from './modules/windows'
@@ -65,6 +66,7 @@ new _MODULE({
     _STORAGE.set('version', this.version);
 
     //_IDB();
+    _WEBNAVIGATION();
     _NOTIFICATIONS();
     _TABS();
     _NAMER();

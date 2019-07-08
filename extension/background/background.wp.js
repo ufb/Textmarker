@@ -126,6 +126,10 @@ __webpack_require__(/*! ./modules/error-logging */ "./background/modules/error-l
 
 __webpack_require__(/*! ./modules/injection-manager */ "./background/modules/injection-manager.js");
 
+var _webNavigation = __webpack_require__(/*! ./modules/web-navigation */ "./background/modules/web-navigation.js");
+
+var _webNavigation2 = _interopRequireDefault(_webNavigation);
+
 var _notifications = __webpack_require__(/*! ./modules/notifications */ "./background/modules/notifications.js");
 
 var _notifications2 = _interopRequireDefault(_notifications);
@@ -204,6 +208,7 @@ new _utils._MODULE({
     _storage2["default"].set('version', this.version); //_IDB();
 
 
+    (0, _webNavigation2["default"])();
     (0, _notifications2["default"])();
     (0, _tabs2["default"])();
     (0, _namer2["default"])();
@@ -526,6 +531,8 @@ new _utils._MODULE({
 "use strict";
 
 
+var _ref;
+
 var _storage = __webpack_require__(/*! ./../storage */ "./background/storage.js");
 
 var _storage2 = _interopRequireDefault(_storage);
@@ -534,230 +541,223 @@ var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-new _utils._MODULE({
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+new _utils._MODULE((_ref = {
   type: 'background',
   events: {
     ENV: {
-      'changed:url': 'onURLChange',
-      'completed:tab': 'onTabCompleted',
-      'clicked:page-action': 'handleInjections',
+      'dom:loaded': 'autoinject',
+      'clicked:page-action': 'injectManually',
       'save:entry?': 'onSaveNewRequest',
       'update:entry?': 'onUpdateRequest',
       'name:entry?': 'onNamingRequest',
       'opened:entry': 'tempSaveEntryMetaData',
-      'fetch:entries': 'onFetchEntriesRequest'
+      'fetch:entries': 'onFetchEntriesRequest',
+      'updated:autocs-settings': 'updateInjectionStatus',
+      'updated:iframes-settings': 'updateInjectionStatus'
     }
   },
-  queuedForTabCompleted: {},
+  autoinject: true,
+  iframeInjections: true,
   recentlyOpenedEntry: null,
-  onTabCompleted: function onTabCompleted(tabId) {
-    if (this.queuedForTabCompleted[tabId]) {
-      this.attemptInjections(tabId, this.queuedForTabCompleted[tabId]);
-      delete this.queuedForTabCompleted[tabId];
-    }
+  autoinit: function autoinit() {
+    this.updateInjectionStatus();
   },
-  onURLChange: function onURLChange(tabId, changed) {
-    if (changed.status && changed.status !== 'complete') {
-      this.queuedForTabCompleted[tabId] = changed.url;
-    } else {
-      this.attemptInjections(tabId, changed.url, true);
-    }
-  },
-  onFetchEntriesRequest: function onFetchEntriesRequest(url, sender) {
-    this.collectEntries(sender.tab.id, url, sender.frameId, true);
-  },
-  attemptInjections: function attemptInjections(tabId, newUrl, noReload) {
+  updateInjectionStatus: function updateInjectionStatus() {
     var _this = this;
 
     _storage2["default"].get('settings').then(function (settings) {
-      if (settings.addon.autocs) {
-        _this.handleInjections(tabId, newUrl, noReload);
-      }
+      _this.autoinject = !settings || settings.addon.autocs ? true : false;
+      _this.iframeInjections = !settings || settings.addon.iframes ? true : false;
     });
   },
-  handleInjections: function handleInjections(tabId, newUrl, noReload) {
-    var _this2 = this;
+  onFetchEntriesRequest: function onFetchEntriesRequest(url, sender) {
+    this.collectEntries(sender.tab.id, url, sender.frameId, true);
+  }
+}, _defineProperty(_ref, "autoinject", function autoinject(infos) {
+  var tabId = infos.tabId,
+      url = infos.url,
+      frameId = infos.frameId;
+  if (!this.iframeInjections && frameId !== 0) return false;
+  if (this.autoinject) this.inject(tabId, url, frameId);
+}), _defineProperty(_ref, "injectManually", function injectManually(tabId, url) {
+  var _this2 = this;
 
-    if (!noReload) {
-      this.inject(tabId, newUrl, 0).then(function (lastFrameId) {
-        if (browser.webNavigation && browser.webNavigation.getAllFrames) {
-          _storage2["default"].get('settings').then(function (settings) {
-            if (settings.addon.iframes) {
-              browser.webNavigation.getAllFrames({
-                tabId: tabId
-              }).then(function (frames) {
-                frames.forEach(function (frame) {
-                  if (frame.frameId !== lastFrameId && frame.url !== newUrl) _this2.inject(tabId, frame.url, frame.frameId);
-                });
-              });
-            }
-          });
-        }
+  this.injectContentScript(tabId, url, null).then(function () {
+    if (browser.webNavigation && browser.webNavigation.getAllFrames && _this2.iframeInjections) {
+      browser.webNavigation.getAllFrames({
+        tabId: tabId
+      }).then(function (frames) {
+        return frames.forEach(function (frame) {
+          return _this2.collectEntries(tabId, frame.url, frame.frameId);
+        });
       });
     }
-  },
-  inject: function inject(tabId, url, frameId) {
-    var _this3 = this;
+  });
+}), _defineProperty(_ref, "inject", function inject(tabId, url, frameId) {
+  var _this3 = this;
 
-    return this.injectContentScript(tabId, url, frameId).then(function () {
-      _this3.collectEntries(tabId, url, frameId);
+  this.injectContentScript(tabId, url, frameId).then(function () {
+    return _this3.collectEntries(tabId, url, frameId);
+  });
+}), _defineProperty(_ref, "injectContentScript", function injectContentScript(tabId, url, frameId) {
+  var _this4 = this;
 
-      return frameId;
-    });
-  },
-  injectContentScript: function injectContentScript(tabId, url, frameId) {
-    var _this4 = this;
+  var details = {
+    file: '../content/page-injections/injection.wp.js'
+  };
 
-    return browser.tabs.executeScript(tabId, {
-      file: '../content/page-injections/injection.wp.js',
-      frameId: frameId,
-      runAt: 'document_idle'
+  if (frameId === null) {
+    details.allFrames = true;
+  } else {
+    details.frameId = frameId;
+  }
+
+  return browser.tabs.executeScript(tabId, details).then(function () {
+    return _this4.insertCSS(tabId, frameId);
+  })["catch"](function (e) {
+    var msg = e.toString(); //if (frameId === 0 && !msg.includes('host permission')) {
+
+    _this4.request('injected?', {
+      tabId: tabId,
+      frameId: frameId || 0
     }).then(function () {
       return _this4.insertCSS(tabId, frameId);
-    })["catch"](function (e) {
-      var msg = e.toString();
+    })["catch"](function () {
+      return _this4.emit('failed:inject-content-script', "".concat(msg, "\nURL: ").concat(url));
+    }); //}
 
-      if (frameId === 0 && !msg.includes('host permission')) {
-        _this4.request('injected?', {
-          tabId: tabId,
-          frameId: frameId
-        }).then(function () {
-          return _this4.insertCSS(tabId, frameId);
-        })["catch"](function () {
-          return _this4.emit('failed:inject-content-script', "".concat(msg, "\nURL: ").concat(url));
-        });
-      }
-    });
-  },
-  insertCSS: function insertCSS(tabId, frameId) {
-    var _this5 = this;
+  });
+}), _defineProperty(_ref, "insertCSS", function insertCSS(tabId, frameId) {
+  var _this5 = this;
 
-    browser.tabs.insertCSS(tabId, {
-      file: '../content/page-injections/injection.css',
-      frameId: frameId
-    })["catch"](function (e) {
-      var msg = e.toString();
+  var details = {
+    file: '../content/page-injections/injection.css',
+    cssOrigin: 'user'
+  };
 
-      if (!msg.includes('Missing host permission for the tab')) {
-        _this5.emit('failed:inject-stylesheet');
-      }
-    });
-  },
-  collectEntries: function collectEntries(tabId, url, frameId, hashSensitive) {
-    var _this6 = this;
-
-    _storage2["default"].get('history').then(function (history) {
-      var matches = _this6.findMatchingEntries(history, url, hashSensitive);
-
-      var entries = _this6.filterMatches(matches, frameId);
-
-      if (entries) {
-        _this6.emit('entries:found', {
-          entries: entries,
-          recentlyOpenedEntry: _this6.recentlyOpenedEntry,
-          locked: !!matches.lockedEntries.length
-        }, {
-          tab: tabId,
-          frameId: frameId
-        });
-
-        _this6.recentlyOpenedEntry = null;
-      }
-    });
-  },
-  findMatchingEntries: function findMatchingEntries(history, url, hashSensitive) {
-    var entries = history.entries;
-    var lockedEntries = [];
-    var nonLockedEntries = [];
-    var entry, pageUrl, entryUrl;
-
-    for (var e in entries) {
-      entry = entries[e];
-
-      if (entry.url) {
-        pageUrl = hashSensitive || entry.hashSensitive ? url : (0, _utils._HASHLESS)(url);
-        entryUrl = hashSensitive || entry.hashSensitive ? entry.url : (0, _utils._HASHLESS)(entry.url);
-
-        if (pageUrl === entryUrl) {
-          if (entry.locked) lockedEntries.push(entry);else nonLockedEntries.push(entry);
-        }
-      }
-    }
-
-    return {
-      lockedEntries: lockedEntries,
-      nonLockedEntries: nonLockedEntries
-    };
-  },
-  filterMatches: function filterMatches(matches, frameId) {
-    var lockedEntries = matches.lockedEntries;
-    var nonLockedEntries = matches.nonLockedEntries;
-    var lockedEntriesCount = lockedEntries.length;
-    var nonLockedEntriesCount = nonLockedEntries.length;
-    var entries;
-
-    if (lockedEntriesCount && nonLockedEntriesCount) {
-      this.emit('warn:mixed-entry-types');
-      entries = lockedEntries;
-    } else if (nonLockedEntriesCount) {
-      // if multiple entries with same url found: take latest
-      entries = [nonLockedEntries.reduce(function (prev, current) {
-        return prev.last > current.last ? prev : current;
-      })];
-
-      if (nonLockedEntriesCount > 1) {
-        this.recentlyOpenedEntry = null;
-        this.emit('warn:multiple-unlocked-entries');
-      }
-
-      if (!frameId) this.emit('entry:found', entries[0]);
-    }
-
-    if (lockedEntriesCount) {
-      entries = lockedEntries;
-      if (!frameId) this.emit('entry:found', lockedEntries);
-    }
-
-    return entries;
-  },
-  onNamingRequest: function onNamingRequest(sender, sendResponse) {
-    var _this7 = this;
-
-    return browser.windows.getLastFocused().then(function (windowInfo) {
-      var priv = windowInfo.incognito;
-      if (!priv) sendResponse(!priv);else {
-        _storage2["default"].get('privsave').then(function (saveInPriv) {
-          if (!saveInPriv) _this7.emit('failed:pbm');else sendResponse(saveInPriv);
-        });
-      }
-    });
-  },
-  onSaveNewRequest: function onSaveNewRequest(entry) {
-    var _this8 = this;
-
-    return browser.windows.getLastFocused().then(function (windowInfo) {
-      if (!windowInfo.incognito) _this8.emit('granted:save-entry', entry);else {
-        _storage2["default"].get('privsave').then(function (saveInPriv) {
-          if (!saveInPriv) _this8.emit('failed:pbm');else _this8.emit('granted:save-entry', entry);
-        });
-      }
-    });
-  },
-  onUpdateRequest: function onUpdateRequest(entry) {
-    var _this9 = this;
-
-    return browser.windows.getLastFocused().then(function (windowInfo) {
-      if (!windowInfo.incognito) _this9.emit('granted:update-entry', entry);else {
-        _storage2["default"].get('privsave').then(function (saveInPriv) {
-          if (!saveInPriv) _this9.emit('failed:pbm');else _this9.emit('granted:update-entry', entry);
-        });
-      }
-    });
-  },
-  tempSaveEntryMetaData: function tempSaveEntryMetaData(data) {
-    this.recentlyOpenedEntry = data;
+  if (frameId === null) {
+    details.allFrames = true;
+  } else {
+    details.frameId = frameId;
   }
-});
+
+  browser.tabs.insertCSS(tabId, details)["catch"](function (e) {
+    var msg = e.toString();
+
+    if (!msg.includes('Missing host permission for the tab')) {
+      _this5.emit('failed:inject-stylesheet');
+    }
+  });
+}), _defineProperty(_ref, "collectEntries", function collectEntries(tabId, url, frameId, hashSensitive) {
+  var _this6 = this;
+
+  _storage2["default"].get('history').then(function (history) {
+    var matches = _this6.findMatchingEntries(history, url, hashSensitive);
+
+    var entries = _this6.filterMatches(matches, frameId);
+
+    if (entries) {
+      _this6.emit('entries:found', {
+        entries: entries,
+        recentlyOpenedEntry: _this6.recentlyOpenedEntry,
+        locked: !!matches.lockedEntries.length
+      }, {
+        tab: tabId,
+        frameId: frameId
+      });
+
+      _this6.recentlyOpenedEntry = null;
+    }
+  });
+}), _defineProperty(_ref, "findMatchingEntries", function findMatchingEntries(history, url, hashSensitive) {
+  var entries = history.entries;
+  var lockedEntries = [];
+  var nonLockedEntries = [];
+  var entry, pageUrl, entryUrl;
+
+  for (var e in entries) {
+    entry = entries[e];
+
+    if (entry.url) {
+      pageUrl = hashSensitive || entry.hashSensitive ? url : (0, _utils._HASHLESS)(url);
+      entryUrl = hashSensitive || entry.hashSensitive ? entry.url : (0, _utils._HASHLESS)(entry.url);
+
+      if (pageUrl === entryUrl) {
+        if (entry.locked) lockedEntries.push(entry);else nonLockedEntries.push(entry);
+      }
+    }
+  }
+
+  return {
+    lockedEntries: lockedEntries,
+    nonLockedEntries: nonLockedEntries
+  };
+}), _defineProperty(_ref, "filterMatches", function filterMatches(matches, frameId) {
+  var lockedEntries = matches.lockedEntries;
+  var nonLockedEntries = matches.nonLockedEntries;
+  var lockedEntriesCount = lockedEntries.length;
+  var nonLockedEntriesCount = nonLockedEntries.length;
+  var entries;
+
+  if (lockedEntriesCount && nonLockedEntriesCount) {
+    this.emit('warn:mixed-entry-types');
+    entries = lockedEntries;
+  } else if (nonLockedEntriesCount) {
+    // if multiple entries with same url found: take latest
+    entries = [nonLockedEntries.reduce(function (prev, current) {
+      return prev.last > current.last ? prev : current;
+    })];
+
+    if (nonLockedEntriesCount > 1) {
+      this.recentlyOpenedEntry = null;
+      this.emit('warn:multiple-unlocked-entries');
+    }
+
+    if (!frameId) this.emit('entry:found', entries[0]);
+  }
+
+  if (lockedEntriesCount) {
+    entries = lockedEntries;
+    if (!frameId) this.emit('entry:found', lockedEntries);
+  }
+
+  return entries;
+}), _defineProperty(_ref, "onNamingRequest", function onNamingRequest(sender, sendResponse) {
+  var _this7 = this;
+
+  return browser.windows.getLastFocused().then(function (windowInfo) {
+    var priv = windowInfo.incognito;
+    if (!priv) sendResponse(!priv);else {
+      _storage2["default"].get('privsave').then(function (saveInPriv) {
+        if (!saveInPriv) _this7.emit('failed:pbm');else sendResponse(saveInPriv);
+      });
+    }
+  });
+}), _defineProperty(_ref, "onSaveNewRequest", function onSaveNewRequest(entry) {
+  var _this8 = this;
+
+  return browser.windows.getLastFocused().then(function (windowInfo) {
+    if (!windowInfo.incognito) _this8.emit('granted:save-entry', entry);else {
+      _storage2["default"].get('privsave').then(function (saveInPriv) {
+        if (!saveInPriv) _this8.emit('failed:pbm');else _this8.emit('granted:save-entry', entry);
+      });
+    }
+  });
+}), _defineProperty(_ref, "onUpdateRequest", function onUpdateRequest(entry) {
+  var _this9 = this;
+
+  return browser.windows.getLastFocused().then(function (windowInfo) {
+    if (!windowInfo.incognito) _this9.emit('granted:update-entry', entry);else {
+      _storage2["default"].get('privsave').then(function (saveInPriv) {
+        if (!saveInPriv) _this9.emit('failed:pbm');else _this9.emit('granted:update-entry', entry);
+      });
+    }
+  });
+}), _defineProperty(_ref, "tempSaveEntryMetaData", function tempSaveEntryMetaData(data) {
+  this.recentlyOpenedEntry = data;
+}), _ref));
 
 /***/ }),
 
@@ -1036,23 +1036,31 @@ exports["default"] = function () {
   return new _utils._MODULE({
     events: {
       ENV: {
-        'completed:tab': 'show'
+        'dom:loaded': 'show',
+        'updated:autocs-settings': 'update'
       }
     },
+    active: false,
     autoinit: function autoinit() {
       var _this = this;
 
+      this.update();
       browser.pageAction.onClicked.addListener(function (tab) {
         _this.emit('clicked:page-action', tab.id, tab.url);
 
         browser.pageAction.hide(tab.id);
       });
     },
-    show: function show(tabId) {
+    show: function show(infos) {
+      if (this.active) {
+        browser.pageAction.show(infos.tabId);
+      }
+    },
+    update: function update() {
+      var _this2 = this;
+
       _storage2["default"].get('settings').then(function (settings) {
-        if (!settings.addon.autocs) {
-          browser.pageAction.show(tabId);
-        }
+        _this2.active = !settings || settings.addon.autocs ? false : true;
       });
     }
   });
@@ -1852,11 +1860,9 @@ exports["default"] = function () {
     onActivated: function onActivated(tab) {
       this.emit('activated:tab', tab.tabId, tab.url || '');
     },
-    onUpdated: function onUpdated(tabId, changed) {
+    onUpdated: function onUpdated(tabId, changed, tab) {
       if (changed.url) {
-        this.emit('changed:url', tabId, changed);
-      } else if (changed.status && changed.status === 'complete') {
-        this.emit('completed:tab', tabId);
+        this.emit('changed:url', tabId, changed, tab);
       }
     },
     open: function open(urls, names) {
@@ -2252,6 +2258,36 @@ new _utils._MODULE({
     });
   }
 });
+
+/***/ }),
+
+/***/ "./background/modules/web-navigation.js":
+/*!**********************************************!*\
+  !*** ./background/modules/web-navigation.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports["default"] = function () {
+  return new _utils._MODULE({
+    autoinit: function autoinit() {
+      var _this = this;
+
+      browser.webNavigation.onDOMContentLoaded.addListener(function (infos) {
+        return _this.emit('dom:loaded', infos);
+      });
+    }
+  });
+};
+
+var _utils = __webpack_require__(/*! ./../utils */ "./background/utils.js");
 
 /***/ }),
 

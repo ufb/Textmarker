@@ -5,94 +5,84 @@ new _MODULE({
   type: 'background',
   events: {
     ENV: {
-      'changed:url': 'onURLChange',
-      'completed:tab': 'onTabCompleted',
-      'clicked:page-action': 'handleInjections',
+      'dom:loaded': 'autoinject',
+      'clicked:page-action': 'injectManually',
       'save:entry?': 'onSaveNewRequest',
       'update:entry?': 'onUpdateRequest',
       'name:entry?': 'onNamingRequest',
       'opened:entry': 'tempSaveEntryMetaData',
-      'fetch:entries': 'onFetchEntriesRequest'
+      'fetch:entries': 'onFetchEntriesRequest',
+      'updated:autocs-settings': 'updateInjectionStatus',
+      'updated:iframes-settings': 'updateInjectionStatus'
     }
   },
-  queuedForTabCompleted: {},
+  autoinject: true,
+  iframeInjections: true,
   recentlyOpenedEntry: null,
 
-  onTabCompleted(tabId) {
-    if (this.queuedForTabCompleted[tabId]) {
-      this.attemptInjections(tabId, this.queuedForTabCompleted[tabId]);
-      delete this.queuedForTabCompleted[tabId];
-    }
+  autoinit() {
+    this.updateInjectionStatus();
   },
 
-  onURLChange(tabId, changed) {
-    if (changed.status && changed.status !== 'complete') {
-      this.queuedForTabCompleted[tabId] = changed.url;
-    } else {
-      this.attemptInjections(tabId, changed.url, true);
-    }
+  updateInjectionStatus() {
+    _STORAGE.get('settings').then(settings => {
+      this.autoinject = !settings || settings.addon.autocs ? true : false;
+      this.iframeInjections = !settings || settings.addon.iframes ? true : false;
+    });
   },
 
   onFetchEntriesRequest(url, sender) {
     this.collectEntries(sender.tab.id, url, sender.frameId, true);
   },
 
-  attemptInjections(tabId, newUrl, noReload) {
-    _STORAGE.get('settings').then(settings => {
-      if (settings.addon.autocs) {
-        this.handleInjections(tabId, newUrl, noReload);
+  autoinject(infos) {
+    const { tabId, url, frameId } = infos;
+    if (!this.iframeInjections && frameId !== 0) return false;
+    if (this.autoinject) this.inject(tabId, url, frameId);
+  },
+
+  injectManually(tabId, url) {
+    this.injectContentScript(tabId, url, null).then(() => {
+      if (browser.webNavigation && browser.webNavigation.getAllFrames && this.iframeInjections) {
+        browser.webNavigation.getAllFrames({ tabId })
+          .then(frames => frames.forEach(frame => this.collectEntries(tabId, frame.url, frame.frameId)));
       }
     });
   },
 
-  handleInjections(tabId, newUrl, noReload) {
-    if (!noReload) {
-      this.inject(tabId, newUrl, 0).then(lastFrameId => {
-        if (browser.webNavigation && browser.webNavigation.getAllFrames) {
-          _STORAGE.get('settings').then(settings => {
-            if (settings.addon.iframes) {
-              browser.webNavigation.getAllFrames({ tabId }).then(frames => {
-                frames.forEach(frame => {
-                  if (frame.frameId !== lastFrameId && frame.url !== newUrl) this.inject(tabId, frame.url, frame.frameId);
-                });
-              });
-            }
-          });
-        }
-      });
-    }
-  },
-
   inject(tabId, url, frameId) {
-    return this.injectContentScript(tabId, url, frameId).then(() => {
-
-      this.collectEntries(tabId, url, frameId);
-      return frameId;
-    });
+    this.injectContentScript(tabId, url, frameId).then(() => this.collectEntries(tabId, url, frameId));
   },
 
   injectContentScript(tabId, url, frameId) {
-    return browser.tabs.executeScript(tabId, {
-      file: '../content/page-injections/injection.wp.js',
-      frameId,
-      runAt: 'document_idle'
-    })
+    const details = { file: '../content/page-injections/injection.wp.js' };
+    if (frameId === null) {
+      details.allFrames = true;
+    } else {
+      details.frameId = frameId;
+    }
+
+    return browser.tabs.executeScript(tabId, details)
       .then(() => this.insertCSS(tabId, frameId))
       .catch(e => {
         let msg = e.toString();
-        if (frameId === 0 && !msg.includes('host permission')) {
-          this.request('injected?', { tabId, frameId })
+        //if (frameId === 0 && !msg.includes('host permission')) {
+          this.request('injected?', { tabId, frameId: frameId || 0 })
             .then(() => this.insertCSS(tabId, frameId))
             .catch(() => this.emit('failed:inject-content-script', `${msg}\nURL: ${url}`));
-        }
+        //}
       });
   },
 
   insertCSS(tabId, frameId) {
-    browser.tabs.insertCSS(tabId, {
-      file: '../content/page-injections/injection.css',
-      frameId
-    })
+    const details = { file: '../content/page-injections/injection.css', cssOrigin: 'user' };
+    if (frameId === null) {
+      details.allFrames = true;
+    } else {
+      details.frameId = frameId;
+    }
+
+    browser.tabs.insertCSS(tabId, details)
       .catch(e => {
         const msg = e.toString();
         if (!msg.includes('Missing host permission for the tab')) {
