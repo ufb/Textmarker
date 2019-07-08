@@ -589,10 +589,11 @@ new _utils._MODULE((_ref = {
 }), _defineProperty(_ref, "injectManually", function injectManually(tabId, url) {
   var _this2 = this;
 
+  var frameId = !this.iframeInjections ? 0 : null;
   this.injectContentScript({
     tabId: tabId,
     url: url,
-    frameId: null
+    frameId: frameId
   }).then(function () {
     if (browser.webNavigation && browser.webNavigation.getAllFrames && _this2.iframeInjections) {
       browser.webNavigation.getAllFrames({
@@ -605,6 +606,12 @@ new _utils._MODULE((_ref = {
             frameId: frame.frameId
           });
         });
+      });
+    } else {
+      _this2.collectEntries({
+        tabId: tabId,
+        url: url,
+        frameId: frameId
       });
     }
   });
@@ -633,17 +640,18 @@ new _utils._MODULE((_ref = {
   return browser.tabs.executeScript(tabId, details).then(function () {
     return _this4.insertCSS(tabId, frameId);
   })["catch"](function (e) {
-    var msg = e.toString(); //if (frameId === 0 && !msg.includes('host permission')) {
+    var msg = e.toString();
 
-    _this4.request('injected?', {
-      tabId: tabId,
-      frameId: frameId || 0
-    }).then(function () {
-      return _this4.insertCSS(tabId, frameId);
-    })["catch"](function () {
-      return _this4.emit('failed:inject-content-script', "".concat(msg, "\nURL: ").concat(url));
-    }); //}
-
+    if (frameId === 0 && !msg.includes('host permission')) {
+      _this4.request('injected?', {
+        tabId: tabId,
+        frameId: frameId || 0
+      }).then(function () {
+        return _this4.insertCSS(tabId, frameId);
+      })["catch"](function () {
+        return _this4.emit('failed:inject-content-script', "".concat(msg, "\nURL: ").concat(url));
+      });
+    }
   });
 }), _defineProperty(_ref, "insertCSS", function insertCSS(tabId, frameId) {
   var _this5 = this;

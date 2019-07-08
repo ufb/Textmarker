@@ -41,10 +41,13 @@ new _MODULE({
   },
 
   injectManually(tabId, url) {
-    this.injectContentScript({ tabId, url, frameId: null }).then(() => {
+    const frameId = !this.iframeInjections ? 0 : null;
+    this.injectContentScript({ tabId, url, frameId }).then(() => {
       if (browser.webNavigation && browser.webNavigation.getAllFrames && this.iframeInjections) {
         browser.webNavigation.getAllFrames({ tabId })
           .then(frames => frames.forEach(frame => this.collectEntries({ tabId, url: frame.url, frameId: frame.frameId })));
+      } else {
+        this.collectEntries({ tabId, url, frameId });
       }
     });
   },
@@ -66,11 +69,11 @@ new _MODULE({
       .then(() => this.insertCSS(tabId, frameId))
       .catch(e => {
         let msg = e.toString();
-        //if (frameId === 0 && !msg.includes('host permission')) {
+        if (frameId === 0 && !msg.includes('host permission')) {
           this.request('injected?', { tabId, frameId: frameId || 0 })
             .then(() => this.insertCSS(tabId, frameId))
             .catch(() => this.emit('failed:inject-content-script', `${msg}\nURL: ${url}`));
-        //}
+        }
       });
   },
 
