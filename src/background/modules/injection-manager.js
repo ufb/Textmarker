@@ -78,7 +78,7 @@ new _MODULE({
   },
 
   insertCSS(tabId, frameId) {
-    const details = { file: '../content/page-injections/injection.css', cssOrigin: 'user' };
+    const details = { file: '../content/page-injections/injection.css' };
     if (frameId === null) {
       details.allFrames = true;
     } else {

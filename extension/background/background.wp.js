@@ -657,8 +657,7 @@ new _utils._MODULE((_ref = {
   var _this5 = this;
 
   var details = {
-    file: '../content/page-injections/injection.css',
-    cssOrigin: 'user'
+    file: '../content/page-injections/injection.css'
   };
 
   if (frameId === null) {
