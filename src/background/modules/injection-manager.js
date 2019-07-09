@@ -69,7 +69,7 @@ new _MODULE({
       .then(() => this.insertCSS(tabId, frameId))
       .catch(e => {
         let msg = e.toString();
-        if (frameId === 0 && !msg.includes('host permission')) {
+        if (frameId === 0 && !msg.includes('host permission') && !msg.includes('Message manager disconnected')) {
           this.request('injected?', { tabId, frameId: frameId || 0 })
             .then(() => this.insertCSS(tabId, frameId))
             .catch(() => this.emit('failed:inject-content-script', `${msg}\nURL: ${url}`));
