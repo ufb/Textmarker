@@ -88,7 +88,7 @@ new _MODULE({
     browser.tabs.insertCSS(tabId, details)
       .catch(e => {
         const msg = e.toString();
-        if (!msg.includes('Missing host permission for the tab')) {
+        if (!msg.includes('Missing host permission for the tab') && !msg.includes('Message manager disconnected')) {
           this.emit('failed:inject-stylesheet');
         }
       });

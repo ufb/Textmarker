@@ -642,7 +642,7 @@ new _utils._MODULE((_ref = {
   })["catch"](function (e) {
     var msg = e.toString();
 
-    if (frameId === 0 && !msg.includes('host permission')) {
+    if (frameId === 0 && !msg.includes('host permission') && !msg.includes('Message manager disconnected')) {
       _this4.request('injected?', {
         tabId: tabId,
         frameId: frameId || 0
@@ -669,7 +669,7 @@ new _utils._MODULE((_ref = {
   browser.tabs.insertCSS(tabId, details)["catch"](function (e) {
     var msg = e.toString();
 
-    if (!msg.includes('Missing host permission for the tab')) {
+    if (!msg.includes('Missing host permission for the tab') && !msg.includes('Message manager disconnected')) {
       _this5.emit('failed:inject-stylesheet');
     }
   });
