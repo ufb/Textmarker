@@ -345,6 +345,7 @@ exports["default"] = {
       changedNote: false,
       errorNote: true,
       vipNote: true,
+      loadNote: false,
       customSearch: false,
       tmuipos: 'top-right',
       markmethod: 'popup',

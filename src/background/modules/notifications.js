@@ -153,7 +153,7 @@ export default function() {
       if (err) msg += `\n\n${err}\n\n`;
 
       this.notify(
-        settings => settings.misc.vipNote,
+        settings => settings.misc.loadNote,
         msg,
         'error'
       );
@@ -161,7 +161,7 @@ export default function() {
 
     onCSSInjectionFailure() {
       this.notify(
-        settings => settings.misc.vipNote,
+        settings => settings.misc.loadNote,
         browser.i18n.getMessage('css_injection_failure'),
         'error'
       );

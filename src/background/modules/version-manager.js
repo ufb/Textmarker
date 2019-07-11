@@ -24,7 +24,7 @@ new _MODULE({
         const markers = settings.markers;
         const history = settings.history;
         const misc = settings.misc;
-        const noteTypes = 'pbmNote changedNote errorNote successNote vipNote'.split(' ');
+        const noteTypes = 'pbmNote changedNote errorNote successNote vipNote loadNote'.split(' ');
 
         if (!shortcuts.n) {
           shortcuts.n = defaultSettings.shortcuts.n;

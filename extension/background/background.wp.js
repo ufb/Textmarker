@@ -1020,12 +1020,12 @@ exports["default"] = function () {
       var msg = browser.i18n.getMessage('js_injection_failure');
       if (err) msg += "\n\n".concat(err, "\n\n");
       this.notify(function (settings) {
-        return settings.misc.vipNote;
+        return settings.misc.loadNote;
       }, msg, 'error');
     },
     onCSSInjectionFailure: function onCSSInjectionFailure() {
       this.notify(function (settings) {
-        return settings.misc.vipNote;
+        return settings.misc.loadNote;
       }, browser.i18n.getMessage('css_injection_failure'), 'error');
     },
     onMissingWebNavigationPermission: function onMissingWebNavigationPermission() {
@@ -1996,7 +1996,7 @@ new _utils._MODULE({
         var markers = settings.markers;
         var history = settings.history;
         var misc = settings.misc;
-        var noteTypes = 'pbmNote changedNote errorNote successNote vipNote'.split(' ');
+        var noteTypes = 'pbmNote changedNote errorNote successNote vipNote loadNote'.split(' ');
 
         if (!shortcuts.n) {
           shortcuts.n = defaultSettings.shortcuts.n;
@@ -2727,6 +2727,7 @@ exports["default"] = {
       changedNote: false,
       errorNote: true,
       vipNote: true,
+      loadNote: false,
       customSearch: false,
       tmuipos: 'top-right',
       markmethod: 'popup',

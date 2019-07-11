@@ -205,6 +205,7 @@ export default function() {
       document.getElementById('notes-pbm').checked = miscSettings.pbmNote;
       document.getElementById('notes-error').checked = miscSettings.errorNote;
       document.getElementById('vip-note').checked = miscSettings.vipNote;
+      document.getElementById('notes-load').checked = miscSettings.loadNote;
       document.getElementById('custom-search--start').value = miscSettings.customSearch ? miscSettings.customSearch[0] : this.customSearch;
       document.getElementById('custom-search--end').value = miscSettings.customSearch ? miscSettings.customSearch[1] : '';
       document.getElementById('tmuipos--noteicon').value = miscSettings.tmuipos;
