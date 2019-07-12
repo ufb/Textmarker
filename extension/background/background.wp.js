@@ -2086,7 +2086,7 @@ new _utils._MODULE({
           misc.notefontsize = defaultSettings.misc.notefontsize;
         }
 
-        if (!misc.markmethod) {
+        if (typeof misc.markmethod !== 'string') {
           misc.markmethod = defaultSettings.misc.markmethod;
         }
 
@@ -2185,11 +2185,8 @@ new _utils._MODULE({
       }, area);
     });
   },
-  setStorageOnUpgrade: function setStorageOnUpgrade() {
+  setStorageOnUpgrade: function setStorageOnUpgrade(_, loadReason) {
     var _this = this;
-
-    var prevVersion = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '2';
-    var loadReason = arguments.length > 1 ? arguments[1] : undefined;
 
     _storage2["default"].isEmpty('local').then(function (empty) {
       if (empty) {
@@ -2210,9 +2207,9 @@ new _utils._MODULE({
       return _storage2["default"].set('storage', 'sync');
     }) //.then(() => _STORAGE.set('storage', 'local'))
     .then(function () {
-      return _this.emit('initialized:storage', prevVersion);
+      return _this.emit('initialized:storage');
     })["catch"](function (e) {
-      _this.emit('initialized:storage', prevVersion);
+      _this.emit('initialized:storage');
 
       _this.emit('error', 'error_storage_migration', e.toString());
     });
