@@ -95,7 +95,7 @@ new _MODULE({
         if (!misc.notefontsize) {
           misc.notefontsize = defaultSettings.misc.notefontsize;
         }
-        if (!misc.markmethod) {
+        if (typeof misc.markmethod !== 'string') {
           misc.markmethod = defaultSettings.misc.markmethod;
         }
         if (typeof misc.tbbpower !== 'boolean') {
@@ -189,7 +189,7 @@ new _MODULE({
     });
   },
 
-  setStorageOnUpgrade(prevVersion = '2', loadReason) {
+  setStorageOnUpgrade(_, loadReason) {
     _STORAGE.isEmpty('local').then(empty => {
       if (empty) {
         if (loadReason !== 'install') this.emit('error', 'error_empty_local_storage_onupdate');
@@ -201,9 +201,9 @@ new _MODULE({
     .then(() => _STORAGE.update('settings', settings => this.updateSettings(settings), 'local'))
     .then(() => _STORAGE.set('storage', 'sync'))
     //.then(() => _STORAGE.set('storage', 'local'))
-    .then(() => this.emit('initialized:storage', prevVersion))
+    .then(() => this.emit('initialized:storage'))
     .catch(e => {
-      this.emit('initialized:storage', prevVersion);
+      this.emit('initialized:storage');
       this.emit('error', 'error_storage_migration', e.toString());
     });
   },
