@@ -603,7 +603,7 @@
 "sb53":{"message":"Save"},
 "sb54":{"message":"Undo"},
 "sb55":{"message":"Redo"},
-"sb56":{"message":"Delete"},
+"sb56":{"message":"Delete selected highlight"},
 "sb57":{"message":"Scroll to bookmark"},
 "sb58":{"message":"Set as bookmark"},
 "sb59":{"message":"Toggle sticky notes"},
