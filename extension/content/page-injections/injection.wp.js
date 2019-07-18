@@ -1884,6 +1884,8 @@ exports["default"] = function (mark, color) {
     attemptUpdate: function attemptUpdate(e, el, force) {
       var _this2 = this;
 
+      if (e.keyCode === 27) this.hide();
+
       if (force) {
         this.update(el);
       } else if (!this.recentlyUpdated) {
@@ -1925,6 +1927,7 @@ exports["default"] = function (mark, color) {
       el.getElementsByTagName('textarea')[0].setAttribute('style', size + fontSize);
       this.connectMutationObserver();
       this.visible = true;
+      this.textElement.focus();
     },
     bringUpFront: function bringUpFront() {
       var _this3 = this;

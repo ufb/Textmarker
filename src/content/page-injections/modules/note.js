@@ -114,6 +114,7 @@ export default function(mark, color) {
       this.emit('removed:note', this.mark.id);
     },
     attemptUpdate(e, el, force) {
+      if (e.keyCode === 27) this.hide();
       if (force) {
         this.update(el);
       }
@@ -156,6 +157,7 @@ export default function(mark, color) {
       el.getElementsByTagName('textarea')[0].setAttribute('style', (size + fontSize));
       this.connectMutationObserver();
       this.visible = true;
+      this.textElement.focus();
     },
     bringUpFront() {
       Array.from(BODY.getElementsByTagName('tmnote')).forEach(note => {
