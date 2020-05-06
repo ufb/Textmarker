@@ -698,6 +698,8 @@ export default function() {
         if (entry.marks && entry.marks.length) {
           if (entry.immut) new ImmutRestorer(entry);
           else new Restorer(entry);
+        } else {
+          this.onFinishedRestoration();
         }
       });
     },
