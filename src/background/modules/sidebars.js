@@ -17,9 +17,10 @@ export default function() {
 
     entries: {},
 
-    setPanel(tabId, url) {
+    setPanel(tabId, tabInfos) {
       this.isOpen().then(open => {
         if (open) {
+          const url = tabInfos.url || 'blank';
           browser.sidebarAction.setPanel({
             panel: browser.runtime.getURL(`content/sidebar/sidebar.html#${tabId}_${url}`),
             tabId
