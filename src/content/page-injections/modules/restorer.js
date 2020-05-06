@@ -740,7 +740,7 @@ export default function() {
     },
     finish(success) {
       if (success) this.emit('succeeded:restoration');
-      else this.emit('failed:restoration', { report: this.getReport(), attempt: this.attempt });
+      else this.emit('failed:restoration', { url: _STORE.url, report: this.getReport(), attempt: this.attempt });
       this.emit('finished:all-restorations');
     },
     getReport() {

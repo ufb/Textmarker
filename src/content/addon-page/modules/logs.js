@@ -33,7 +33,7 @@ export default function() {
         let tableBody = this.el.getElementsByTagName('tbody')[0],
             l = logs.length,
             frag = document.createDocumentFragment(),
-            tr, td_date, td_msg, node_date, node_msg, node_attempt, log, time, msg, reason;
+            tr, td_date, td_msg, node_date, node_msg, node_attempt, url, log, time, msg, reason;
 
         if (l) {
           this.el.classList.remove('nologs');
@@ -62,6 +62,11 @@ export default function() {
               node_attempt = document.createElement('span');
               node_attempt.appendChild(document.createTextNode(`[#${log[3]}]`));
               td_msg.insertBefore(node_attempt, node_msg);
+            }
+            if (log[4]) {
+              url = document.createElement('div');
+              url.appendChild(document.createTextNode(`URL: ${log[4]}`));
+              td_msg.appendChild(url);
             }
             tr.appendChild(td_date);
             tr.appendChild(td_msg);

@@ -35,6 +35,7 @@ new _MODULE({
         if (info.report && typeof info.report === 'string') {
           log.push(info.report);
           if (info.attempt) log.push(info.attempt);
+          if (info.url) log.push(info.url);
         }
         else if (typeof info === 'string') {
           log.push(info);
