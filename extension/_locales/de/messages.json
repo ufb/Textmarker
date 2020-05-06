@@ -471,7 +471,7 @@
 "t913":{"message":"Der Sync-Speicher ist durch Firefox beschränkt auf"},
 "t914":{"message":"Du kannst für alle Chronik-Einträge auch nachträglich direkt in der Chronik festlegen, ob diese gesynct werden sollen."},
 "t915":{"message":"Allgemeine Seitennotizen syncen"},
-"t916":{"message":"100 ko"},
+"t916":{"message":"100 kb"},
 "t917":{"message":"Zum Syncen von Erweiterungen benötigst du einen"},
 "t918":{"message":"Firefox-Account"},
 "t919":{"message":"Deine Firefox-Profile sollten immer erst gesynct werden, bevor du eine Seite mit Markierungen neu-lädst bzw. aufrufst."},
