@@ -1,8 +1,9 @@
-import { _PORT } from './../_shared/utils'
+import { _PRIVPORT } from './../_shared/utils'
 
-export default new _PORT({
+export default new _PRIVPORT({
   name: 'sidebar',
   type: 'privileged',
+  id: Math.random().toString().slice(2, 16),
   events: {
     CONNECTION: [
       'change:bg-setting',

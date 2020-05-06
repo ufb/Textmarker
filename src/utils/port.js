@@ -1,37 +1,21 @@
 import { _MODULE } from './module'
 
-export class _PORT extends _MODULE {
+class _PORT extends _MODULE {
 
   constructor(obj) {
     super(obj)
-
-    this.port = null;
-
-    const type = this.type;
-
     browser.runtime.onMessage.addListener(this.proxy(this, this.passMessage));
-
-    if (type === 'privileged' || type === 'background') this.initPorting();
-
-    this.registerPortEvents();
+    this.registerOneOffEvents();
   }
   extend(events) {
-    this.registerPortEvents(events);
+    this.registerOneOffEvents(events.ONEOFF);
   }
-  registerPortEvents(events) {
-    events = events || this.events;
-    let oneOffEvents, connectionBasedEvents;
+  registerOneOffEvents(events) {
+    events || ( events = this.events.ONEOFF);
 
     if (events) {
-      oneOffEvents = events.ONEOFF;
-      if (oneOffEvents) {
-        for (let e of oneOffEvents)
-          this.on(e, this.proxy(this, this.sendMessage, e));
-      }
-      connectionBasedEvents = events.CONNECTION;
-      if (connectionBasedEvents) {
-        for (let f of connectionBasedEvents)
-          this.on(f, this.proxy(this, this.postMessage, f));
+      for (const e of events) {
+        this.on(e, this.proxy(this, this.sendMessage, e));
       }
     }
   }
@@ -67,26 +51,78 @@ export class _PORT extends _MODULE {
       }
     }
   }
-  postMessage(e, ...args) {
-    const msg = { ev: e, args: args };
-    if (this.port) this.port.postMessage(msg);
-  }
-  initPorting() {
-    if (!this.postponeConnection) {
-      this.connect();
-      this.addConnectionListeners();
-    } else {
-      this.addConnectionListeners(this.proxy(this, this.connect));
-    }
-  }
-  connect() {
-    const port = this.port = this.port || browser.runtime.connect({ name: this.name });
-    port.onDisconnect.addListener(() => this.port = null);
-  }
-  addConnectionListeners(cb) {
-    browser.runtime.onConnect.addListener(port => {
-      port.onMessage.addListener(this.proxy(this, this.passMessage));
-      !cb || cb();
-    });
-  }
 }
+
+class _PRIVPORT extends _PORT {
+    constructor(obj) {
+        super(obj)
+        this.port = null;
+        this.portListener = null;
+        this.connect();
+        this.registerConnectionBasedEvents();
+
+        window.addEventListener('pagehide', () => {
+          !this.port || this.port.onMessage.removeListener(this.portListener);
+        });
+    }
+    registerConnectionBasedEvents() {
+        const events = this.events.CONNECTION;
+
+        if (events) {
+            for (const e of events) {
+                this.on(e, this.proxy(this, this.postMessage, e));
+            }
+        }
+    }
+    postMessage(e, ...args) {
+        const msg = { ev: e, args: args };
+        if (this.port) this.port.postMessage(msg);
+    }
+    connect() {
+        const port = this.port = this.port || browser.runtime.connect({ name: `${this.name}_${this.id}` });
+        const listener = this.portListener = this.proxy(this, this.passMessage);
+        port.onMessage.addListener(listener);
+    }
+}
+
+class _BGPORT extends _PORT {
+    constructor(obj) {
+        super(obj)
+        this.ports = {};
+        this.registerOnConnectListener();
+        this.registerConnectionBasedEvents();
+    }
+    registerConnectionBasedEvents() {
+        const events = this.events.CONNECTION;
+
+        if (events) {
+            for (const e of events) {
+                this.on(e, this.proxy(this, this.postMessage, e));
+            }
+        }
+    }
+    registerOnConnectListener() {
+        browser.runtime.onConnect.addListener(port => {
+            const ports = this.ports;
+            const listener = this.proxy(this, this.passMessage);
+            ports[port.name] = port;
+            port.onMessage.addListener(listener);
+            port.onDisconnect.addListener(() => {
+                port.onMessage.removeListener(listener);
+                delete ports[port.name];
+            });
+        });
+    }
+    postMessage(e, ...args) {
+        const ports = this.ports;
+        const msg = { ev: e, args: args };
+
+        for (const p in ports) {
+            if (ports.hasOwnProperty(p)) {
+              ports[p].postMessage(msg);
+            }
+        }
+    }
+}
+
+export { _PORT, _PRIVPORT, _BGPORT }

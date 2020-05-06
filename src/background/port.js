@@ -1,6 +1,6 @@
-import { _PORT } from './utils'
+import { _BGPORT } from './utils'
 
-new _PORT({
+new _BGPORT({
   name: 'background',
   type: 'background',
   postponeConnection: true,
@@ -74,8 +74,7 @@ new _PORT({
       'entry:found',
       'entry:found-for-tab',
       'entry:deleted-for-tab',
-      'entry:ordered-marks',
-      'hashchange'
+      'entry:ordered-marks'
     ]
   }
 });
