@@ -11,7 +11,7 @@ export default {
       '-b': ['', '', true],
       m: ['', true, true],
       w: ['', true, true],
-      n: ['', '', true],
+      n: ['shiftKey', false, true],
       '2': ['', true],
       '3': ['', true],
       arrowup: ['altKey', false, false],

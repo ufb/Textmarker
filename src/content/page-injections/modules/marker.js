@@ -508,6 +508,7 @@ new _MODULE({
 			case 'arrowdown': self.gotoNextMark(1); break;
 			case 'd': self.remove(); break;
       case 'c': self.copy(); break;
+      case 'n': self.addNote(); break;
     }
   },
   preventDefault(e) {

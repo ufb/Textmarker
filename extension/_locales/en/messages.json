@@ -330,6 +330,7 @@
 "t4215":{"message":"Show marker popup on text selection"},
 "t4216":{"message":"Automatically highlight selected text"},
 "t4217":{"message":"Custom Marker"},
+"t4218":{"message":"Add Note (click highlight first)"},
 "h431":{"message":"Customize history settings"},
 "h432":{"message":"Saving to Textmarker history:"},
 "t431":{"message":"Save changes automatically"},

@@ -39,7 +39,7 @@ new _DOMMODULE({
         modKey = (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey),
         arrowKeys = ['arrowdown', 'arrowup'],
         lockedActions = ['b', 's', 'y', 'z', 'd'],
-        functionKeys = lockedActions.concat(arrowKeys).concat('c'),
+        functionKeys = lockedActions.concat(arrowKeys).concat(['c', 'n']),
         defaultMarkers = ['m', '2', '3'];
 
     if (_STORE.locked && lockedActions.includes(key)) return true;
