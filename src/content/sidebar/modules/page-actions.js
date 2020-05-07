@@ -2,7 +2,7 @@ import { _DOMMODULE } from './../../_shared/utils'
 import _STORE from './../_store'
 
 new _DOMMODULE({
-  el: document.getElementById('tab--actions'),
+  el: document.getElementById('page-actions'),
   events: {
     ENV: {
       'added:bookmark': 'activateBookmark',
