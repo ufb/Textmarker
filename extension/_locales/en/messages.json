@@ -616,6 +616,7 @@
 "sb62":{"message":"Unfold texts"},
 "sb63":{"message":"Unfold notes"},
 "sb64":{"message":"Unfold all"},
+"sb65":{"message":"(Un-)Fold"},
 "sb71":{"message":"Settings"},
 "sb72":{"message":"History"},
 "sb73":{"message":"Manual"},
