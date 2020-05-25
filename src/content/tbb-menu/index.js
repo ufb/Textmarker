@@ -21,12 +21,8 @@ new _DOMMODULE({
   disabled: false,
 
   autoinit() {
-    browser.storage.sync.get().then(storage => {
-      if (storage.settings) {
-        if (!storage || !storage.sync || storage.sync.settings) return storage.settings.addon.active;
-        return browser.storage.local.get().then(storage => storage.settings.addon.active);
-      }
-      return true;
+    browser.storage.local.get().then(storage => {
+      return storage && storage.settings ? storage.settings.addon.active : true;
     })
     .then(active => this.setActivateText(active));
   },
