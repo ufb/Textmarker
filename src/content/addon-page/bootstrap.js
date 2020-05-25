@@ -21,7 +21,7 @@ new _MODULE({
       'updated:history': 'start'
     }
   },
-  allowedHashes: ['news', 'manual', 'settings', 'history', 'contact', 'sync', 'export', 'troubleshooting', 'logs'],
+  allowedHashes: [/*'news', */'manual', 'settings', 'history', 'contact', 'sync', 'export', 'troubleshooting', 'logs'],
   bootstrapped: false,
   autoinit() {
     _STORE.get().then(storage => {
