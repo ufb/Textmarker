@@ -617,9 +617,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports["default"] = function () {
-  var _ref;
+  var _DOMMODULE2;
 
-  return new _utils._DOMMODULE((_ref = {
+  return new _utils._DOMMODULE((_DOMMODULE2 = {
     el: document.getElementById('history'),
     events: {
       ENV: {
@@ -675,7 +675,7 @@ exports["default"] = function () {
       this.filterOptionsSet = false;
       this.tags = [];
     }
-  }, _defineProperty(_ref, 'delete', function _delete(names) {
+  }, _defineProperty(_DOMMODULE2, 'delete', function _delete(names) {
     var msg = 'del_confirm';
     var l = names.length;
 
@@ -688,9 +688,9 @@ exports["default"] = function () {
 
     var confirmed = window.confirm(browser.i18n.getMessage(msg));
     if (confirmed) this.emit('delete:entries', names);
-  }), _defineProperty(_ref, "clean", function clean(names) {
+  }), _defineProperty(_DOMMODULE2, "clean", function clean(names) {
     this.emit('clean:entries', names);
-  }), _defineProperty(_ref, "download", function download(names, type, spec) {
+  }), _defineProperty(_DOMMODULE2, "download", function download(names, type, spec) {
     var _this = this;
 
     if (typeof type !== 'string') {
@@ -711,7 +711,7 @@ exports["default"] = function () {
       link.click();
       document.body.removeChild(link);
     });
-  }), _defineProperty(_ref, "export", function _export(names) {
+  }), _defineProperty(_DOMMODULE2, "export", function _export(names) {
     var backup = {
       history: {
         entries: {}
@@ -735,17 +735,17 @@ exports["default"] = function () {
       link.click();
       document.body.removeChild(link);
     });
-  }), _defineProperty(_ref, "sync", function sync(name, el) {
+  }), _defineProperty(_DOMMODULE2, "sync", function sync(name, el) {
     this.emit('sync:entry', name[0], el.classList.contains('active'));
-  }), _defineProperty(_ref, "visit", function visit(names) {
+  }), _defineProperty(_DOMMODULE2, "visit", function visit(names) {
     var _this2 = this;
 
     this.getURLs(names).then(function (urls) {
       return _this2.emit('open:entries', urls, names);
     });
-  }), _defineProperty(_ref, "open", function open(e, el) {
+  }), _defineProperty(_DOMMODULE2, "open", function open(e, el) {
     this.emit('open:entries', el.getAttribute('data-url'), el.getAttribute('data-name'));
-  }), _defineProperty(_ref, "edit", function edit(e, el) {
+  }), _defineProperty(_DOMMODULE2, "edit", function edit(e, el) {
     var newName = window.prompt(browser.i18n.getMessage('nm_message_edit'));
 
     if (newName) {
@@ -753,9 +753,9 @@ exports["default"] = function () {
       var area = el.parentNode.getElementsByClassName('switch--sync')[0].classList.contains('active') ? 'sync' : 'local';
       this.emit('rename:entry', oldName, newName, area);
     }
-  }), _defineProperty(_ref, "view", function view(e, el) {
+  }), _defineProperty(_DOMMODULE2, "view", function view(e, el) {
     this.emit('view:entry', el.getAttribute('data-name'));
-  }), _defineProperty(_ref, "tag", function tag(names, _tag, force) {
+  }), _defineProperty(_DOMMODULE2, "tag", function tag(names, _tag, force) {
     var _this3 = this;
 
     if (!_tag && !force) return;
@@ -767,9 +767,9 @@ exports["default"] = function () {
       if (_this3.origEntries[name].synced) o.sync.push(name);else o.local.push(name);
     });
     this.emit('tag:entries', o, _tag);
-  }), _defineProperty(_ref, "removeTags", function removeTags(names) {
+  }), _defineProperty(_DOMMODULE2, "removeTags", function removeTags(names) {
     this.tag(names, '', true);
-  }), _defineProperty(_ref, "processSelection", function processSelection() {
+  }), _defineProperty(_DOMMODULE2, "processSelection", function processSelection() {
     var checked = document.querySelectorAll('.entry-cb:checked'),
         i = checked.length;
     if (!i) return false;
@@ -789,7 +789,7 @@ exports["default"] = function () {
           spec = split[1];
       !this[action] || this[action](names, type, spec);
     }
-  }), _defineProperty(_ref, "renderEntries", function renderEntries() {
+  }), _defineProperty(_DOMMODULE2, "renderEntries", function renderEntries() {
     var _this4 = this;
 
     var template = this.entryTmpl,
@@ -974,7 +974,7 @@ exports["default"] = function () {
     }
 
     return this;
-  }), _defineProperty(_ref, "toggleHeaderFields", function toggleHeaderFields(l) {
+  }), _defineProperty(_DOMMODULE2, "toggleHeaderFields", function toggleHeaderFields(l) {
     var _this5 = this;
 
     var noEntriesHint = document.getElementById('no-entries');
@@ -1003,7 +1003,7 @@ exports["default"] = function () {
       var pp = _this5.perPage = settings.history.pp || 10;
       ppSelect.value = pp;
     });
-  }), _defineProperty(_ref, "setFilterOptions", function setFilterOptions() {
+  }), _defineProperty(_DOMMODULE2, "setFilterOptions", function setFilterOptions() {
     var _this6 = this;
 
     if (this.filterOptionsSet) return this;
@@ -1044,7 +1044,7 @@ exports["default"] = function () {
     }
 
     this.filterOptionsSet = true;
-  }), _defineProperty(_ref, "addFilterOpt", function addFilterOpt(tag, text, attrs) {
+  }), _defineProperty(_DOMMODULE2, "addFilterOpt", function addFilterOpt(tag, text, attrs) {
     if (this.tags.includes(tag)) return this;
     var select = document.getElementById('filter-entries');
     var opt = document.createElement('option');
@@ -1070,7 +1070,7 @@ exports["default"] = function () {
     }
 
     if (tag) this.tags.push(tag);
-  }), _defineProperty(_ref, "getText", function getText(names, spec) {
+  }), _defineProperty(_DOMMODULE2, "getText", function getText(names, spec) {
     var _this7 = this;
 
     var all_marks_plus_meta = spec === '+meta',
@@ -1145,7 +1145,7 @@ exports["default"] = function () {
 
       return text.trim();
     });
-  }), _defineProperty(_ref, "getData", function getData(names, type, spec) {
+  }), _defineProperty(_DOMMODULE2, "getData", function getData(names, type, spec) {
     var _this8 = this;
 
     if (type === 'text') return this.getText(names, spec);
@@ -1162,7 +1162,7 @@ exports["default"] = function () {
 
       return data;
     });
-  }), _defineProperty(_ref, "getURLs", function getURLs(names) {
+  }), _defineProperty(_DOMMODULE2, "getURLs", function getURLs(names) {
     return _store2["default"].get('history').then(function (history) {
       var entries = history.entries,
           urls = [],
@@ -1175,13 +1175,13 @@ exports["default"] = function () {
 
       return urls;
     });
-  }), _defineProperty(_ref, "optimizeDateString", function optimizeDateString(date) {
+  }), _defineProperty(_DOMMODULE2, "optimizeDateString", function optimizeDateString(date) {
     return date.replace(/^(\d{1})(\D{1})/, function (m, p, q) {
       return '0' + p + q;
     }).replace(/(\D{1})(\d{1}\D{1})/g, function (m, p, q) {
       return p + '0' + q;
     });
-  }), _defineProperty(_ref, "search", function search(e, el) {
+  }), _defineProperty(_DOMMODULE2, "search", function search(e, el) {
     var term = el.value.toLowerCase();
     var searchType = el.getAttribute ? el.getAttribute('data-type') : '';
     var countSelect = document.getElementById('count');
@@ -1190,7 +1190,7 @@ exports["default"] = function () {
     this.setupSearch(term, searchType).renderEntries();
     countSelect.classList[classMeth]('u-display--none');
     toggle.classList[classMeth]('active');
-  }), _defineProperty(_ref, "setupSearch", function setupSearch(term, searchType) {
+  }), _defineProperty(_DOMMODULE2, "setupSearch", function setupSearch(term, searchType) {
     term = typeof term === 'string' ? term : this.searchTerm;
     var history = this.el;
     var searchCount = document.getElementById('search-count');
@@ -1220,7 +1220,7 @@ exports["default"] = function () {
     }
 
     return this;
-  }), _defineProperty(_ref, "searchByName", function searchByName(term) {
+  }), _defineProperty(_DOMMODULE2, "searchByName", function searchByName(term) {
     var names = this.names;
     var l = names.length,
         i = 0,
@@ -1233,7 +1233,7 @@ exports["default"] = function () {
         this.searched.push(name);
       }
     }
-  }), _defineProperty(_ref, "searchFullText", function searchFullText(text) {
+  }), _defineProperty(_DOMMODULE2, "searchFullText", function searchFullText(text) {
     var entries = this.origEntries;
     var name, marks, i, markText, pos, found;
     var results = this.fullTextSearchResults = {};
@@ -1260,7 +1260,7 @@ exports["default"] = function () {
         this.searched.push(name);
       }
     }
-  }), _defineProperty(_ref, "toggleSearch", function toggleSearch(e, el) {
+  }), _defineProperty(_DOMMODULE2, "toggleSearch", function toggleSearch(e, el) {
     if (el.classList.contains('active')) {
       document.getElementById('search-entries--name').value = '';
       document.getElementById('search-entries--full-text').value = '';
@@ -1268,35 +1268,35 @@ exports["default"] = function () {
         value: ''
       });
     }
-  }), _defineProperty(_ref, "changeCountPerPage", function changeCountPerPage(e, el) {
+  }), _defineProperty(_DOMMODULE2, "changeCountPerPage", function changeCountPerPage(e, el) {
     var p = this.perPage = el.value * 1;
     this.page = 1;
     this.emit('changed:per-page-count', p);
     this.renderEntries();
-  }), _defineProperty(_ref, "setView", function setView(e, el) {
+  }), _defineProperty(_DOMMODULE2, "setView", function setView(e, el) {
     var table = document.getElementById('entries');
     var val = el.value;
     if (val === 'list') table.classList.remove('detailed-list');else table.classList.add('detailed-list');
     if (e) this.emit('change:view-setting', val);
-  }), _defineProperty(_ref, "setupView", function setupView(view) {
+  }), _defineProperty(_DOMMODULE2, "setupView", function setupView(view) {
     document.getElementById('set-view').value = view;
     this.setView(null, {
       value: view
     });
-  }), _defineProperty(_ref, "onChangeAction", function onChangeAction(e, el) {
+  }), _defineProperty(_DOMMODULE2, "onChangeAction", function onChangeAction(e, el) {
     if (el.value === 'tag') setTimeout(function () {
       return document.getElementById('tag').focus();
     }, 0);
-  }), _defineProperty(_ref, "sort", function sort(e, el) {
+  }), _defineProperty(_DOMMODULE2, "sort", function sort(e, el) {
     var sorted = this.sorted = el.value;
     this.emit('change:sort-setting', sorted);
     this.setupSort(sorted).renderEntries();
-  }), _defineProperty(_ref, "setupSort", function setupSort(sorted) {
+  }), _defineProperty(_DOMMODULE2, "setupSort", function setupSort(sorted) {
     sorted = sorted.split('-');
     this.names = _historySort2["default"].by[sorted[0]][sorted[1]](this.origEntries);
     this.sortSearchResults();
     return this;
-  }), _defineProperty(_ref, "filter", function filter(e, el) {
+  }), _defineProperty(_DOMMODULE2, "filter", function filter(e, el) {
     var filter = el.nodeName === 'SPAN' ? el.firstChild.data : el.value;
     var entries = this.origEntries;
     var filteredEntries = {};
@@ -1320,7 +1320,7 @@ exports["default"] = function () {
     this.page = 1;
     this.renderEntries();
     this.emit('filtered:history', c);
-  }), _defineProperty(_ref, "removeFilter", function removeFilter(e, el) {
+  }), _defineProperty(_DOMMODULE2, "removeFilter", function removeFilter(e, el) {
     el.parentNode.classList.remove('active');
     document.getElementById('filter-entries').selectedIndex = 0;
     this.entries = this.origEntries;
@@ -1328,7 +1328,7 @@ exports["default"] = function () {
     this.page = 1;
     this.renderEntries();
     this.emit('filtered:history', this.names.length);
-  }), _defineProperty(_ref, "sortSearchResults", function sortSearchResults() {
+  }), _defineProperty(_DOMMODULE2, "sortSearchResults", function sortSearchResults() {
     if (!this.searched.length) return;
     var names = this.names;
     this.searched.sort(function (a, b) {
@@ -1337,7 +1337,7 @@ exports["default"] = function () {
       if (a == b) return 0;
       return a < b ? -1 : 1;
     });
-  }), _defineProperty(_ref, "checkmarkAll", function checkmarkAll(e, el) {
+  }), _defineProperty(_DOMMODULE2, "checkmarkAll", function checkmarkAll(e, el) {
     var directly = typeof el === 'boolean',
         checked = directly ? el : el.checked,
         inputs = document.getElementById('entries').getElementsByTagName('input'),
@@ -1348,18 +1348,18 @@ exports["default"] = function () {
     }
 
     return false;
-  }), _defineProperty(_ref, "delegateButtonAction", function delegateButtonAction(e, el) {
+  }), _defineProperty(_DOMMODULE2, "delegateButtonAction", function delegateButtonAction(e, el) {
     var action = el.getAttribute('data-action'),
         name = el.getAttribute('data-name');
     name = name ? [name] : undefined;
     !this[action] || this[action](name, el);
-  }), _defineProperty(_ref, "toggleSwitch", function toggleSwitch(e, el) {
+  }), _defineProperty(_DOMMODULE2, "toggleSwitch", function toggleSwitch(e, el) {
     el = el.classList.contains('switch--sync') ? el : el.parentNode;
     el.classList.toggle('active');
     this.delegateButtonAction(e, el);
-  }), _defineProperty(_ref, "undoSyncToggle", function undoSyncToggle(name) {
+  }), _defineProperty(_DOMMODULE2, "undoSyncToggle", function undoSyncToggle(name) {
     document.querySelector('.switch--sync[data-name="' + name + '"]').classList.toggle('active');
-  }), _defineProperty(_ref, "render", function render() {
+  }), _defineProperty(_DOMMODULE2, "render", function render() {
     var _this9 = this;
 
     this.resume();
@@ -1381,15 +1381,15 @@ exports["default"] = function () {
         return _this9.renderEntries().setFilterOptions();
       });
     });
-  }), _defineProperty(_ref, "paginate", function paginate(page) {
+  }), _defineProperty(_DOMMODULE2, "paginate", function paginate(page) {
     this.page = page;
     this.renderEntries();
-  }), _defineProperty(_ref, "updateEntry", function updateEntry(entry) {
+  }), _defineProperty(_DOMMODULE2, "updateEntry", function updateEntry(entry) {
     var el = document.querySelector('.entry[data-name="' + entry.name + '"]');
     el.getElementsByClassName('created')[0].innerText = entry.first;
     el.getElementsByClassName('last')[0].innerText = entry.last;
     el.getElementsByClassName('count')[0].innerText = entry.marks.length; //el.getElementsByClassName('lost')[0].innerText = entry.lost.length;
-  }), _ref));
+  }), _DOMMODULE2));
 };
 
 var _utils = __webpack_require__(/*! ./../../_shared/utils */ "./content/_shared/utils.js");
@@ -1699,9 +1699,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var _MARKER =
-/*#__PURE__*/
-function () {
+var _MARKER = /*#__PURE__*/function () {
   function _MARKER(key, customBgColor) {
     var _this = this;
 
@@ -2541,9 +2539,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var _TOGGLER =
-/*#__PURE__*/
-function () {
+var _TOGGLER = /*#__PURE__*/function () {
   function _TOGGLER(el) {
     _classCallCheck(this, _TOGGLER);
 
@@ -2944,7 +2940,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var _COPY = function _COPY(src) {
   var target = Array.isArray(src) ? [] : {};
@@ -2984,7 +2980,7 @@ exports._DOMMODULE = undefined;
 
 var _module = __webpack_require__(/*! ./module */ "./utils/module.js");
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2992,20 +2988,24 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var _DOMMODULE =
-/*#__PURE__*/
-exports._DOMMODULE = function (_MODULE2) {
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var _DOMMODULE = /*#__PURE__*/exports._DOMMODULE = function (_MODULE2) {
   _inherits(_DOMMODULE, _MODULE2);
+
+  var _super = _createSuper(_DOMMODULE);
 
   function _DOMMODULE(obj) {
     var _this;
@@ -3014,7 +3014,7 @@ exports._DOMMODULE = function (_MODULE2) {
 
     obj._bound = {};
     obj._extraBound = [];
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(_DOMMODULE).call(this, obj));
+    _this = _super.call(this, obj);
     _this.addListenersManually || _this.addListeners();
     !_this.autoPause || _this.setAutoPause();
     return _this;
@@ -3261,6 +3261,12 @@ exports["default"] = function () {
   });
 };
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 /*
 * Translates a HTMl page in the web l10n style from the Add-on SDK with WebExtensions strings.
 * Modified by underflyingbirches
@@ -3276,12 +3282,12 @@ function translateDocument() {
 
   var textElements = document.querySelectorAll('*[data-l10n-id]');
   var attrElements = document.querySelectorAll('*[data-l10n-attr]');
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
+
+  var _iterator = _createForOfIteratorHelper(textElements),
+      _step;
 
   try {
-    for (var _iterator = textElements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
       el = _step.value;
       dataset = el.dataset;
       var l10nId = dataset.l10nId;
@@ -3295,26 +3301,16 @@ function translateDocument() {
       }
     }
   } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
+    _iterator.e(err);
   } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-        _iterator["return"]();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
+    _iterator.f();
   }
 
-  var _iteratorNormalCompletion2 = true;
-  var _didIteratorError2 = false;
-  var _iteratorError2 = undefined;
+  var _iterator2 = _createForOfIteratorHelper(attrElements),
+      _step2;
 
   try {
-    for (var _iterator2 = attrElements[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
       el = _step2.value;
       dataset = el.dataset;
       ['Title', 'Placeholder', 'Href'].forEach(function (attr) {
@@ -3330,18 +3326,9 @@ function translateDocument() {
       });
     }
   } catch (err) {
-    _didIteratorError2 = true;
-    _iteratorError2 = err;
+    _iterator2.e(err);
   } finally {
-    try {
-      if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-        _iterator2["return"]();
-      }
-    } finally {
-      if (_didIteratorError2) {
-        throw _iteratorError2;
-      }
-    }
+    _iterator2.f();
   }
 }
 
@@ -3369,9 +3356,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 var topics = {};
 
-var _default =
-/*#__PURE__*/
-function () {
+var _default = /*#__PURE__*/function () {
   function _default() {
     _classCallCheck(this, _default);
   }
@@ -3470,31 +3455,35 @@ var _mediator2 = _interopRequireDefault(_mediator);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var _MODULE =
-/*#__PURE__*/
-exports._MODULE = function (_MEDIATOR2) {
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var _MODULE = /*#__PURE__*/exports._MODULE = function (_MEDIATOR2) {
   _inherits(_MODULE, _MEDIATOR2);
+
+  var _super = _createSuper(_MODULE);
 
   function _MODULE(obj) {
     var _this;
 
     _classCallCheck(this, _MODULE);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(_MODULE).call(this));
+    _this = _super.call(this);
 
     for (o in obj) {
       _this[o] = obj[o];
@@ -3539,7 +3528,13 @@ exports._BGPORT = exports._PRIVPORT = exports._PORT = undefined;
 
 var _module = __webpack_require__(/*! ./module */ "./utils/module.js");
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3547,27 +3542,31 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var _PORT =
-/*#__PURE__*/
-function (_MODULE2) {
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var _PORT = /*#__PURE__*/function (_MODULE2) {
   _inherits(_PORT, _MODULE2);
+
+  var _super = _createSuper(_PORT);
 
   function _PORT(obj) {
     var _this;
 
     _classCallCheck(this, _PORT);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(_PORT).call(this, obj));
+    _this = _super.call(this, obj);
     browser.runtime.onMessage.addListener(_this.proxy(_assertThisInitialized(_this), _this.passMessage));
 
     _this.registerOneOffEvents();
@@ -3586,28 +3585,18 @@ function (_MODULE2) {
       events || (events = this.events.ONEOFF);
 
       if (events) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        var _iterator = _createForOfIteratorHelper(events),
+            _step;
 
         try {
-          for (var _iterator = events[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var e = _step.value;
             this.on(e, this.proxy(this, this.sendMessage, e));
           }
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _iterator.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-              _iterator["return"]();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          _iterator.f();
         }
       }
     }
@@ -3644,30 +3633,20 @@ function (_MODULE2) {
             browser.tabs.query({
               active: true
             }).then(function (tabs) {
-              var _iteratorNormalCompletion2 = true;
-              var _didIteratorError2 = false;
-              var _iteratorError2 = undefined;
+              var _iterator2 = _createForOfIteratorHelper(tabs),
+                  _step2;
 
               try {
-                for (var _iterator2 = tabs[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
                   var _tab = _step2.value;
                   browser.tabs.sendMessage(_tab.id, msg, {
                     frameId: lastArg.frameId || 0
                   })["catch"](function () {});
                 }
               } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
+                _iterator2.e(err);
               } finally {
-                try {
-                  if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
-                    _iterator2["return"]();
-                  }
-                } finally {
-                  if (_didIteratorError2) {
-                    throw _iteratorError2;
-                  }
-                }
+                _iterator2.f();
               }
             });
           } else {
@@ -3679,28 +3658,18 @@ function (_MODULE2) {
           browser.tabs.query({
             /* currentWindow: false, active: false */
           }).then(function (tabs) {
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iterator3 = _createForOfIteratorHelper(tabs),
+                _step3;
 
             try {
-              for (var _iterator3 = tabs[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+              for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
                 var _tab2 = _step3.value;
                 browser.tabs.sendMessage(_tab2.id, msg)["catch"](function () {});
               }
             } catch (err) {
-              _didIteratorError3 = true;
-              _iteratorError3 = err;
+              _iterator3.e(err);
             } finally {
-              try {
-                if (!_iteratorNormalCompletion3 && _iterator3["return"] != null) {
-                  _iterator3["return"]();
-                }
-              } finally {
-                if (_didIteratorError3) {
-                  throw _iteratorError3;
-                }
-              }
+              _iterator3.f();
             }
           });
         }
@@ -3711,17 +3680,17 @@ function (_MODULE2) {
   return _PORT;
 }(_module._MODULE);
 
-var _PRIVPORT =
-/*#__PURE__*/
-function (_PORT2) {
+var _PRIVPORT = /*#__PURE__*/function (_PORT2) {
   _inherits(_PRIVPORT, _PORT2);
+
+  var _super2 = _createSuper(_PRIVPORT);
 
   function _PRIVPORT(obj) {
     var _this2;
 
     _classCallCheck(this, _PRIVPORT);
 
-    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(_PRIVPORT).call(this, obj));
+    _this2 = _super2.call(this, obj);
     _this2.port = null;
     _this2.portListener = null;
 
@@ -3741,28 +3710,18 @@ function (_PORT2) {
       var events = this.events.CONNECTION;
 
       if (events) {
-        var _iteratorNormalCompletion4 = true;
-        var _didIteratorError4 = false;
-        var _iteratorError4 = undefined;
+        var _iterator4 = _createForOfIteratorHelper(events),
+            _step4;
 
         try {
-          for (var _iterator4 = events[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
             var e = _step4.value;
             this.on(e, this.proxy(this, this.postMessage, e));
           }
         } catch (err) {
-          _didIteratorError4 = true;
-          _iteratorError4 = err;
+          _iterator4.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion4 && _iterator4["return"] != null) {
-              _iterator4["return"]();
-            }
-          } finally {
-            if (_didIteratorError4) {
-              throw _iteratorError4;
-            }
-          }
+          _iterator4.f();
         }
       }
     }
@@ -3793,17 +3752,17 @@ function (_PORT2) {
   return _PRIVPORT;
 }(_PORT);
 
-var _BGPORT =
-/*#__PURE__*/
-function (_PORT3) {
+var _BGPORT = /*#__PURE__*/function (_PORT3) {
   _inherits(_BGPORT, _PORT3);
+
+  var _super3 = _createSuper(_BGPORT);
 
   function _BGPORT(obj) {
     var _this3;
 
     _classCallCheck(this, _BGPORT);
 
-    _this3 = _possibleConstructorReturn(this, _getPrototypeOf(_BGPORT).call(this, obj));
+    _this3 = _super3.call(this, obj);
     _this3.ports = {};
 
     _this3.registerOnConnectListener();
@@ -3819,28 +3778,18 @@ function (_PORT3) {
       var events = this.events.CONNECTION;
 
       if (events) {
-        var _iteratorNormalCompletion5 = true;
-        var _didIteratorError5 = false;
-        var _iteratorError5 = undefined;
+        var _iterator5 = _createForOfIteratorHelper(events),
+            _step5;
 
         try {
-          for (var _iterator5 = events[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
             var e = _step5.value;
             this.on(e, this.proxy(this, this.postMessage, e));
           }
         } catch (err) {
-          _didIteratorError5 = true;
-          _iteratorError5 = err;
+          _iterator5.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion5 && _iterator5["return"] != null) {
-              _iterator5["return"]();
-            }
-          } finally {
-            if (_didIteratorError5) {
-              throw _iteratorError5;
-            }
-          }
+          _iterator5.f();
         }
       }
     }
@@ -3916,7 +3865,7 @@ var _defaultStorage2 = _interopRequireDefault(_defaultStorage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3924,27 +3873,31 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var _STORE =
-/*#__PURE__*/
-exports._STORE = function (_MODULE2) {
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+var _STORE = /*#__PURE__*/exports._STORE = function (_MODULE2) {
   _inherits(_STORE, _MODULE2);
+
+  var _super = _createSuper(_STORE);
 
   function _STORE(obj) {
     var _this;
 
     _classCallCheck(this, _STORE);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(_STORE).call(this, obj));
+    _this = _super.call(this, obj);
     _this.initialized = false;
     _this.initializing = false;
     _this.area_settings = _defaultStorage2["default"].sync.settings ? 'sync' : 'local';

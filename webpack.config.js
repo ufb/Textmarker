@@ -22,7 +22,7 @@ module.exports = {
     },
     // avoid UglifyJS (-> https://developer.mozilla.org/en-US/Add-ons/Source_Code_Submission#Requirements_for_the_source_package)
     mode: 'development',//PROD ? 'production' : 'development',
-    devtool: PROD ? false : 'inline-source-map',
+    devtool: PROD ? false : 'npm inline-source-map',
     module: {
       rules: [{
         test: /\.js$/,
