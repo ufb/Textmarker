@@ -57,9 +57,9 @@ new _MODULE({
         }
       });
     });
-    _STORAGE.get('version').then(version => {
-      if (version && version === currentVersion) this.emit('check:storage');
-    });
+    // _STORAGE.get('version').then(version => {
+    //   if (version && version === currentVersion) this.emit('check:storage');
+    // });
   },
 
   start() {

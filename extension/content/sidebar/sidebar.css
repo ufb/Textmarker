@@ -624,6 +624,13 @@ h2 {
   font-weight: normal;
   position: relative; }
 
+h3 {
+  font-size: 80%;
+  margin: 0 0 8px;
+  color: #777;
+  font-weight: normal;
+  text-align: right; }
+
 label {
   float: left;
   padding-top: 2px;
@@ -1236,3 +1243,5 @@ a, .link {
 .textmarker-sidebar--locked #page-action--undo,
 .textmarker-sidebar--locked #page-action--redo {
   display: none !important; }
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjb250ZW50L3NpZGViYXIvc2lkZWJhci5jc3MiLCJzb3VyY2VSb290IjoiIn0=*/
