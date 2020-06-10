@@ -943,6 +943,11 @@ label span {
   #mark-action--copy:hover {
     background-image: url(../../icons/copy.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
 
+#page-action--delete {
+  background-image: url(../../icons/bin.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
+  #page-action--delete:hover {
+    background-image: url(../../icons/bin.png), linear-gradient(rgba(43, 165, 183, 0.1) 50%, transparent 50%); }
+
 #page-action--save {
   background-image: url(../../icons/save.png), linear-gradient(transparent 50%, rgba(43, 165, 183, 0.1) 50%); }
   #page-action--save:hover {
@@ -1243,3 +1248,5 @@ a, .link {
 .textmarker-sidebar--locked #page-action--undo,
 .textmarker-sidebar--locked #page-action--redo {
   display: none !important; }
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJjb250ZW50L3NpZGViYXIvc2lkZWJhci5jc3MiLCJzb3VyY2VSb290IjoiIn0=*/

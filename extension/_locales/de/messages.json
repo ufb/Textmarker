@@ -544,6 +544,8 @@
 "sb511":{"message":"Speicher- u. Wiederherstell-Aktionen"},
 "sb512":{"message":"Seiten-Aktionen"},
 "sb513":{"message":"Aktionen an aktivierter Markierung"},
+"sb514":{"message":"Lösche alle Markierungen, Notizen etc. (Chronikeintrag wird ebenfalls entfernt)"},
+"sb515":{"message":"Es scheint keinen zu dieser Seite gehörigen Chronikeintrag zu geben.\nStimmt nicht? Bitte kontaktiere den Entwickler - Danke!\nDen Eintag kannst Du in Deiner Chronik löschen."},
 "sb61":{"message":"Unausgeklappt"},
 "sb62":{"message":"Texte ausgeklappt"},
 "sb63":{"message":"Notizen ausgeklappt"},

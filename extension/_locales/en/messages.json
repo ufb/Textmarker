@@ -544,6 +544,8 @@
 "sb511":{"message":"Save- and Restore-Actions"},
 "sb512":{"message":"Page Actions"},
 "sb513":{"message":"Actions on activated highlight"},
+"sb514":{"message":"Delete all highlights, notes etc. (history entry will be removed as well)"},
+"sb515":{"message":"No entry found for current page.\nSeems untrue? Please contact the developer - thx!\nYou can also delete entries on your history page."},
 "sb61":{"message":"Folded"},
 "sb62":{"message":"Unfold texts"},
 "sb63":{"message":"Unfold notes"},
