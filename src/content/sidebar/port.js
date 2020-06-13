@@ -16,6 +16,7 @@ export default new _PRIVPORT({
       'sidebar:immut',
       'sidebar:save-changes',
       'sidebar:retry-restoration',
+      'sidebar:delete-entry',
       'sidebar:undo',
       'sidebar:redo',
       'sidebar:copy',

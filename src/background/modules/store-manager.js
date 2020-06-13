@@ -45,6 +45,7 @@ new _MODULE({
       'correct-name:entry': 'correctName',
       'granted:update-entry': 'updateEntryOnPageAction',
       'delete:entries': 'deleteEntries',
+      'sidebar:delete-entry': 'deleteEntries',
       'finished:restoration': 'updateEntryOnRestoration',
       'clean:entries': 'cleanEntries',
       'sync:entry': 'syncEntry',

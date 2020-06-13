@@ -21,6 +21,7 @@ new _DOMMODULE({
       click: {
         '#page-action--retry': 'retryRestoration',
         '#page-action--save': 'save',
+        '#page-action--delete': 'onDeleteRequest',
         '.switch': 'toggleImmut'
       }
     }
@@ -40,6 +41,16 @@ new _DOMMODULE({
   retryRestoration() {
     this.emit('sidebar:retry-restoration', { tab: 'active' });
     this.deactivateRetry();
+  },
+  onDeleteRequest() {
+    const confirmed = window.confirm(browser.i18n.getMessage('sb514'));
+    if (confirmed) {
+      if (_STORE.entry) {
+        this.emit('sidebar:delete-entry', [_STORE.entry.name], { tab: 'active' });
+      } else {
+        window.alert(browser.i18n.getMessage('sb515'));
+      }
+    }
   },
   toggleSave() {
     _STORE.get('autosave').then(autosave => {
