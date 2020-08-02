@@ -5,6 +5,7 @@
   "main": "src/main.js",
   "dependencies": {
     "cross-env": "^5.2.1",
+    "web-ext": "^5.0.0",
     "webpack": "^4.43.0"
   },
   "devDependencies": {
