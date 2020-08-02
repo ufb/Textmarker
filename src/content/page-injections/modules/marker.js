@@ -42,7 +42,8 @@ new _MODULE({
       'sidebar:scroll-to-bookmark': 'scrollToBookmark',
       'scroll-to-bookmark': 'scrollToBookmark',
       'clicked:mark': 'gotoMark',
-      'hashchange': 'onHashChange'
+      'hashchange': 'onHashChange',
+      'removed:entry': 'onEntryRemoved'
 		}
 	},
 	selection: null,
@@ -568,5 +569,8 @@ new _MODULE({
   onHashChange() {
     this.resume(null, { silent: true });
     this.emit('resumed-on-hashchange');
+  },
+  onEntryRemoved() {
+    this.resume(null, { silent: true });
   }
 });

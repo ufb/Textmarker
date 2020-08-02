@@ -412,7 +412,7 @@ new _MODULE({
     }, area)
       .catch((e) => this.emit('failed:delete-entries', 'error_del_entry'))
       .then(() => { if (area === 'sync' && names_local.length) { this.deleteEntries(names_local, 'local'); }})
-      .then(() => this.emit('deleted:entries'));
+      .then(() => this.emit('deleted:entries', names));
   },
   updateEntryOnRestoration(entryName, restoredMarks, lostMarks, area) {
     _STORAGE.get('settings').then(settings => {

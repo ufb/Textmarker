@@ -80,8 +80,11 @@ new _MODULE({
   renameEntry(...args) {
     _STORE.renameEntry(...args);
   },
-  removeEntry(...args) {
-    _STORE.removeEntry(...args);
+  removeEntry(name) {
+    if (_STORE.name === name) {
+      _STORE.removeEntry(name);
+      this.emit('removed:entry');
+    }
   },
 
   // @RESTORER
