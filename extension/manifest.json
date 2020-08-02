@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Textmarker",
-  "version": "5.2.3",
+  "version": "5.3.0",
 
   "applications": {
     "gecko": {
@@ -68,5 +68,14 @@
   "options_ui": {
     "page": "content/options-ui/options.html",
     "browser_style": true
+  },
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+T",
+        "mac": "MacCtrl+Shift+T"
+      }
+    }
   }
 }
