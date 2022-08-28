@@ -1,4 +1,6 @@
 {
+"depricated_1":{"message":"Achtung - Textmarker wird nicht mehr weiter entwickelt!"},
+"depricated_2":{"message":"Du kannst Textmarker weiterhin benutzen, das Addon könnte aber mit einer zukünftigen Firefox-Version aufhören zu funktionieren."},
 "del":{"message":"Löschen: "},
 "del_entries":{"message":"Einträge löschen?"},
 "entry":{"message":"Eintrag"},

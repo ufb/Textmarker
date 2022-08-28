@@ -20,6 +20,12 @@ body {
   width: 200px;
   font-family: system, 'Segoe UI', Tahoma; }
 
+#depricated {
+  background: rgba(173, 58, 58, 1);
+  color: #fbfbfb;
+  padding: 5px 8px 8px;
+}
+
 a {
   text-decoration: none; }
 

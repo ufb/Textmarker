@@ -1,4 +1,6 @@
 {
+"depricated_1":{"message":"Textmarker est obsolète et ne sera plus maintenu !"},
+"depricated_2":{"message":"Vous pouvez continuer à l'utiliser, mais sachez qu'il pourrait se casser dans une future version de Firefox."},
 "del":{"message":"Supprimer : "},
 "entry":{"message":"entrée"},
 "entries":{"message":"entrées"},
