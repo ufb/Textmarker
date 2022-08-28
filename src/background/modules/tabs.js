@@ -92,7 +92,7 @@ export default function() {
     },
     openInitPage(version, loadReason) {
       if (loadReason) {
-        if (loadReason === 'install') this.openAddonPage('help');
+        if (loadReason === 'install' || loadReason === 'update') this.openAddonPage('help');
         //else if (loadReason === 'update') this.openAddonPage('news');
       }
     },
