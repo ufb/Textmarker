@@ -1,3 +1,6 @@
+!DEPRICATED EXTENSION!
+========
+
 Textmaker
 ========
 
