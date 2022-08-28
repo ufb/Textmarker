@@ -12,8 +12,8 @@ The _extension/_ folder contains the addon code.
 
 ## Prerequisites
 
-* __node.js__ v10.15.3
-* __npm__ 6.1.0
+* __node.js__ v16.15.1
+* __npm__ 8.11.0
 
 ## Installing modules
 
