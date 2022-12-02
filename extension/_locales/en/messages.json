@@ -1,6 +1,6 @@
 {
-"depricated_1":{"message":"Textmarker has been depricated and will no longer be maintained!"},
-"depricated_2":{"message":"You can continue using it, but be aware that it might break in some future version of Firefox."},
+"depricated_1":{"message":"Textmarker is being continued after all!"},
+"depricated_2":{"message":"For now this means that the extension will remain compatible with future versions of firefox."},
 "del":{"message":"Delete: "},
 "entry":{"message":"entry"},
 "entries":{"message":"entries"},

@@ -1,6 +1,6 @@
 {
-"depricated_1":{"message":"Achtung - Textmarker wird nicht mehr weiter entwickelt!"},
-"depricated_2":{"message":"Du kannst Textmarker weiterhin benutzen, das Addon könnte aber mit einer zukünftigen Firefox-Version aufhören zu funktionieren."},
+"depricated_1":{"message":"Textmarker wird doch weitergeführt!"},
+"depricated_2":{"message":"Dies bedeutet erstmal, dass die Erweiterung mit zukünftigen versionen von firefox kompatibel bleibt."},
 "del":{"message":"Löschen: "},
 "del_entries":{"message":"Einträge löschen?"},
 "entry":{"message":"Eintrag"},

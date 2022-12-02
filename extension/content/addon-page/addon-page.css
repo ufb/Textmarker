@@ -1589,7 +1589,7 @@ a, .link {
   width: 100%;
   padding: 10px;
   z-index: 1;
-  background: rgba(173, 58, 58, 0.9);
+  background: #3aad74;
   color: #fbfbfb;
   font-size: 30px;
 }

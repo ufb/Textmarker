@@ -68,3 +68,15 @@ button {
   border-top: 1px solid $color-border;
   margin: 20px 0;
 }
+
+#deprication-note {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  z-index: 1;
+  background: #3aad74;
+  color: #fbfbfb;
+  font-size: 30px;
+}
