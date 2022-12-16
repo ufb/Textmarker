@@ -1,7 +1,6 @@
 const path = require('path');
 const process = require('process');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const PROD = (process.env.NODE_ENV === 'PROD');
 
@@ -46,13 +45,10 @@ module.exports = {
        }, {
         test: /\.scss$/,
         exclude: /node_modules/,
-        use: ExtractTextPlugin.extract({
-          use: ['css-loader', 'sass-loader']
-        })
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       }]
     },
     plugins: [
-      new ExtractTextPlugin('[name].css'),
-      new DuplicatePackageCheckerPlugin()
+      new MiniCssExtractPlugin({ filename: '[name].css' })
     ]
 }
