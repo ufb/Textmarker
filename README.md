@@ -1,4 +1,4 @@
-Textmaker
+Textmarker
 ========
 
 [![Firefox Add-on](https://img.shields.io/amo/v/textmarkerpro.svg)](https://addons.mozilla.org/firefox/addon/textmarkerpro/)
